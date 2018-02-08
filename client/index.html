@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>TRTR-Scroller</title>
+<style type="text/css">
+.touchArea {
+    position: absolute;
+    top:20%;/* Header Height */
+	left:0%;
+       bottom:10%;/* Footer Height */
+       width:80%;height:80%;}
+	   
+	   .speechArea {
+    position: absolute;
+    top:0%;/* Header Height */
+	left:25%;
+       bottom:80%;/* Footer Height */
+       width:80%;height:80%;}
+</style>
+
+<script type="text/javascript" src="./bundle.js"></script>
+
+
+</head>
+<body role="application">
+<div id="speech" class="speechArea" aria-live="polite"></div>
+<div class="touchArea" id="touchArea">Touch here</div>
+</body>
+</html>
