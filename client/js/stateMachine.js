@@ -1,4 +1,5 @@
 'use strict'
+	var event=new KeyboardInput();
 	
 import {KeyboardInput} from './input';
 import $ from 'jquery';
@@ -12,16 +13,19 @@ class StateMachine {
 	
 	setState(state) {
 	if (state==1) {
-	var event=new KeyboardInput();
+event=new KeyboardInput();
 	event.init();
-	var intro=so.create("buyinsurance");
+	var intro=so.create("logo");
 	intro.play();
-	if (event.isDown(KeyEvent.DOM_VK_SPACE)) {
+	$(document).keydown(function(event) {
+		if (event.which==KeyEvent.DOM_VK_SPACE || event.which==KeyEvent.DOM_VK_ESCAPE) {
 		intro.destroy();
+					$(document).off("keydown");
 		}
-
+		})
 	}
 				if (state == 2) {
+					event=null;
 			this.currentState = new Game();
 			this.state = state;
 		}
