@@ -63,7 +63,7 @@ class SoundObject {
 		this.queueLength = 0;
 		this.statusCallback = null;
 		
-		this.extension = ".wav";
+		this.extension = ".ogg";
 		if (isElectron == true) {
 			this.directory = "./sounds/";
 		} else {
@@ -220,7 +220,7 @@ class SoundObject {
 	}
 	
 	playOnce(file) {
-		this.oneShotSound = soundObject.create(file);
+		this.oneShotSound = so.create(file);
 		this.oneShotSound.stop();
 		this.oneShotSound.play();
 		var that = this;

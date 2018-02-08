@@ -14,7 +14,7 @@ class KeyboardInput {
 // 		$(document).keyup(function(event) { that.handleKeyUp(event); });
 		document.addEventListener("keydown", function(event) { that.handleKeyDown(event); });
 		document.addEventListener("keyup", function(event) { that.handleKeyUp(event); });
-	}
+			}
 	
 	handleKeyDown(event) {
 		
