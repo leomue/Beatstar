@@ -1,5 +1,5 @@
 "use strict";
-import {TTS,useWebTTS} from 'tts'
+import {TTS,useWebTTS} from './tts'
 if (typeof speech == "undefined") var speech = new TTS();
 var MenuTypes={
 	NORMAL:0,

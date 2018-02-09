@@ -1,8 +1,8 @@
 'use strict';
 import $ from 'jquery'
-import {KeyEvent} from 'keycodes'
-import {soundObject} from 'soundObject'
-import {TTS,useWebTTS} from 'tts'
+import {KeyEvent} from './keycodes'
+import {so} from './soundObject'
+import {TTS,useWebTTS} from './tts'
 if (typeof speech == "undefined") var speech = new TTS();
 if (runningText == undefined) var runningText = 0;
 class ScrollingText {
@@ -11,9 +11,9 @@ class ScrollingText {
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
 		this.currentLine=0;
-		this.sndOpen = soundObject.create("ui/textOpen");
-		this.sndContinue = soundObject.create("ui/textScroll");
-		this.sndClose = soundObject.create("ui/textClose");
+		this.sndOpen = so.create("ui/textOpen");
+		this.sndContinue = so.create("ui/textScroll");
+		this.sndClose = so.create("ui/textClose");
 		this.callback = callback;
 		var id = document.getElementById("touchArea");
 		//this.hammer = new Hammer(id);

@@ -2,6 +2,7 @@
 	var event=new KeyboardInput();
 	
 import {KeyboardInput} from './input';
+import './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
 import {KeyEvent} from './keycodes'
@@ -16,22 +17,23 @@ class StateMachine {
 event=new KeyboardInput();
 	event.init();
 	var intro=so.create("logo");
+	
 	intro.play();
 	$(document).keydown(function(event) {
 		if (event.which==KeyEvent.DOM_VK_SPACE || event.which==KeyEvent.DOM_VK_ESCAPE) {
-		intro.destroy();
+						intro.destroy();
 					$(document).off("keydown");
 		}
 		})
+		this.state = state;
 	}
 				if (state == 2) {
 					event=null;
 			this.currentState = new Game();
 			this.state = state;
 		}
-		
-		
-		
+
+
 	}
 	
 }

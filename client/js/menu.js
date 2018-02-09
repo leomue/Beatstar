@@ -1,29 +1,30 @@
 "use strict";
-import {speech} from 'scrollingText'
-import {TTS,useWebTTS} from 'tts'
+import {speech} from './scrollingText'
+import {TTS,useWebTTS} from './tts'
 if (typeof speech == "undefined") var speech = new TTS();
 import $ from 'jquery'
-import {soundObject} from 'soundObject.js'
-import {TTS} from 'tts'
-import {MenuTypes,MenuItem} from 'menuItem'
-import {KeyEvent} from 'keycodes'
-import {KeyboardInput} from 'input'
+import {so} from './soundObject.js'
+import {MenuTypes,MenuItem} from './menuItem'
+import {KeyEvent} from './keycodes'
+import {KeyboardInput} from './input'
 class Menu {
 	constructor(name, menuData) {
+	this.fadeInterval=null;
 		this.menuData = menuData;
 		this.cursor = 0;
 		this.name = name;
-		this.sndKeyChar = soundObject.create("ui/keyChar");
-		this.sndKeyDelete = soundObject.create("ui/keyDelete");
-		this.sndSliderLeft = soundObject.create("ui/menuSliderLeft");
-		this.sndSliderRight = soundObject.create("ui/menuSliderRight");
-		this.sndBoundary = soundObject.create("ui/menuBoundary");
-		this.sndChoose = soundObject.create("ui/menuChoose");
-		this.sndMove = soundObject.create("ui/menuMove");
-		this.sndOpen = soundObject.create("ui/menuOpen");
-		this.sndSelector = soundObject.create("ui/menuSelector");
-		this.sndWrap = soundObject.create("ui/menuWrap");
+		this.sndKeyChar = so.create("ui/keyChar");
+		this.sndKeyDelete = so.create("ui/keyDelete");
+		this.sndSliderLeft = so.create("ui/menuSliderLeft");
+		this.sndSliderRight = so.create("ui/menuSliderRight");
+		this.sndBoundary = so.create("ui/menuBoundary");
+		this.sndChoose = so.create("ui/menuChoose");
+		this.sndMove = so.create("ui/menuMove");
+		this.sndOpen = so.create("ui/menuOpen");
+		this.sndSelector = so.create("ui/menuSelector");
+		this.sndWrap = so.create("ui/menuWrap");
 		this.selectCallback = null;
+		this.music=null;
 		var id = document.getElementById("touchArea");
 		//this.hammer = new Hammer(id);
 		
@@ -103,10 +104,15 @@ class Menu {
 		this.sndOpen.destroy();
 		this.sndSelector.destroy();
 		this.sndWrap.destroy();
-		
+		if (typeof this.music!="undefined") this.music.destroy();
 	}
 	destroy() {
-		
+		if (typeof this.music!="undefined") {
+		var that=this;
+		this.fadeInterval=setInterval(function(event) {
+		that.fadeMusic();
+		},10);
+		}
 		
 		$(document).off("keydown");
 		$(document).off("keypress");
@@ -114,7 +120,13 @@ class Menu {
 		var that = this;
 		setTimeout(function() { that.destroySounds(); }, 500);
 	}
-	
+fadeMusic() {
+this.music.volume-=0.05;
+if (this.music.volume<-1) {
+clearInterval(this.fadeInterval);
+console.log("fade cleared.");
+}
+}	
 	handleKeys(event) {
 		
 		
@@ -149,6 +161,15 @@ class Menu {
 		}
 		
 	run(callback) {
+		if (typeof this.music=="object") {
+	this.music.play();
+	}
+	else if (typeof this.music=="string") {
+	this.music=so.create(this.music);
+	this.music.play();
+	}
+	else {
+	}
 		this.selectCallback = callback;
 		var that = this;
 		$(document).on("keypress", function(event) { that.handleInput(event) });
