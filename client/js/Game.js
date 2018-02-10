@@ -1,20 +1,22 @@
 'use strict';
 import { SoundSource } from './soundSource.js'
-import timer from 'game-timer'
-
+import Timer from 'game-timer'
+import {SoundHandler} from './soundHandler.js';
 import { KeyboardInput } from './input.js'
 import panner  from 'sono/effects/panner';
 import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {
 		var that = this;
-		this.timer = timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, 1/100)
-		this.timer.start();
-		
-
+//		this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, 1/100)
+//		this.timer.start();
+		this.score=0;
+this.bpms=[];
+this.level=0;
+this.pack="default";
 		this.input = new KeyboardInput();
 		this.input.init();
-		this.testx = 0;
+		this.handler=new SoundHandler();
 	}
 	
 	
