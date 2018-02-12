@@ -5,7 +5,7 @@ var isElectron = true;
 var playOnceTimer;
 class SoundObjectItem {
 	constructor(file, callback=0, tag=0) {
-		console.log(file);
+		if (so.debug) console.log(file);
 		var that = this;
 		this.fileName = file;
 		
@@ -54,6 +54,7 @@ class SoundObjectItem {
 class SoundObject {
 	constructor() {
 		this.sounds = new Array();
+		this.debug=false;
 		this.loadingQueue = false;
 		this.queueCallback = 0;
 		this.loadedSounds = 0;
@@ -135,7 +136,7 @@ class SoundObject {
 	enqueue(file) {
 		
 		file = this.directory + file + this.extension;
-		console.log("queuing "+file);
+		if (so.debug) console.log("queuing "+file);
 		this.queue.push(file);
 		this.queueLength = this.queue.length;
 		
@@ -194,7 +195,7 @@ class SoundObject {
 		if (result == 1) {
 			
 			if (typeof this.loadedCallback != "undefined" && this.loadedCallback != 0 && this.loadedCallback != null) {
-				console.log(this.loadedCallback);
+				if (so.debug) console.log(this.loadedCallback);
 				this.loadedCallback();
 			}
 		}

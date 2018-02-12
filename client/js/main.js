@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {utils} from './utilities';
 import {so} from './soundObject';
 import {st} from './stateMachine';
 import sono from 'sono';
@@ -10,6 +11,7 @@ var lang=1;
 var langs=["","english","spanish"]
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
+so.debug=true;
 function setup() {
 st.setState(1);
 document.removeEventListener("DOMContentLoaded",setup);
