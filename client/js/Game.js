@@ -1,6 +1,6 @@
 'use strict';
-import {mainWindow} from '../index.js'
 import {SoundHandler} from './soundHandler';
+import {utils} from './utilities';
 import {so} from './soundObject';
 import {st} from './stateMachine';
 import Timer from 'game-timer'
@@ -26,9 +26,6 @@ this.pack="default";
 		this.input.init();
 		this.levels=null;
 		var that=this;
-		this.input.justPressedEventCallback=function(event) {
-		that.handleKeys(event);	
-		}
 		this.setup();
 	}
 	setup() {
@@ -68,15 +65,13 @@ this.pack="default";
 }
 	}
 	this.keys=[0,0,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_BACKSPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT]
-						var that=this;
-mainWindow.on("browser-window-focus",that.focus());
-mainWindow.on("browser-window-blurr",that.defocus());
+var that=this;
     					this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
 					
 					this.music=this.pool.playStatic(this.packsdir+this.level+"music");
 							this.timer.start();
 		
-
+this.setupLevel();
 	}
 	defocus() {
 	this.eventsound.play();
@@ -106,6 +101,12 @@ mainWindow.on("browser-window-blurr",that.defocus());
 	handleKeys(event) {
 	
 	}
+	setupLevel() {
+	this.action=utils.randomInt(1,this.actions);
+	this.numberOfActions=utils.randomInt(4+this.level,this.level*1.5+4);
+	}
+destroy() {
+this.pool.destroy();
 }
-
+}
 export { Game };

@@ -14839,7 +14839,7 @@ document.removeEventListener("DOMContentLoaded",setup);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export utils */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return utils; });
 
 class GameUtils {
 distance3D(x1, y1, z1, x2, y2, z2) {
@@ -19549,9 +19549,8 @@ class EditItem extends MenuItem {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Game; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index_js__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__index_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__soundHandler__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__soundHandler__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utilities__ = __webpack_require__(84);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__soundObject__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__stateMachine__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_game_timer__ = __webpack_require__(174);
@@ -19580,7 +19579,7 @@ class Game {
 	this.test=__WEBPACK_IMPORTED_MODULE_2__soundObject__["a" /* so */].create("inserror");
 	this.eventsound=__WEBPACK_IMPORTED_MODULE_2__soundObject__["a" /* so */].create("fumble");
 				this.score=0;
-		this.pool=new __WEBPACK_IMPORTED_MODULE_1__soundHandler__["a" /* SoundHandler */]();
+		this.pool=new __WEBPACK_IMPORTED_MODULE_0__soundHandler__["a" /* SoundHandler */]();
 this.bpms=null;
 this.level=0;
 this.fileData=null;
@@ -19589,9 +19588,6 @@ this.pack="default";
 		this.input.init();
 		this.levels=null;
 		var that=this;
-		this.input.justPressedEventCallback=function(event) {
-		that.handleKeys(event);	
-		}
 		this.setup();
 	}
 	setup() {
@@ -19631,15 +19627,13 @@ this.pack="default";
 }
 	}
 	this.keys=[0,0,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_RETURN,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_SPACE,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_TAB,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_BACKSPACE,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_UP,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_DOWN,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_RIGHT,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_LEFT]
-						var that=this;
-__WEBPACK_IMPORTED_MODULE_0__index_js__["mainWindow"].on("browser-window-focus",that.focus());
-__WEBPACK_IMPORTED_MODULE_0__index_js__["mainWindow"].on("browser-window-blurr",that.defocus());
+var that=this;
     					this.timer = __WEBPACK_IMPORTED_MODULE_4_game_timer___default()({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
 					
 					this.music=this.pool.playStatic(this.packsdir+this.level+"music");
 							this.timer.start();
 		
-
+this.setupLevel();
 	}
 	defocus() {
 	this.eventsound.play();
@@ -19669,8 +19663,14 @@ __WEBPACK_IMPORTED_MODULE_0__index_js__["mainWindow"].on("browser-window-blurr",
 	handleKeys(event) {
 	
 	}
+	setupLevel() {
+	this.action=__WEBPACK_IMPORTED_MODULE_1__utilities__["a" /* utils */].randomInt(1,this.actions);
+	this.numberOfActions=__WEBPACK_IMPORTED_MODULE_1__utilities__["a" /* utils */].randomInt(4+this.level,this.level*1.5+4);
+	}
+destroy() {
+this.pool.destroy();
 }
-
+}
 
 
 /***/ }),
@@ -19805,6 +19805,14 @@ class SoundItem {
 		}
 		
 	}
+	destroy() {
+	this.dynamicSounds.foreach(function(i) {
+	this.dynamicSounds[i].destroy();
+	});
+		this.staticSounds.foreach(function(i) {
+	this.staticSounds[i].destroy();
+	});
+	}
 }
 
 
@@ -19851,104 +19859,6 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-
-/***/ }),
-/* 175 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(__dirname) {var fs = __webpack_require__(81)
-var path = __webpack_require__(176)
-
-var pathFile = path.join(__dirname, 'path.txt')
-
-if (fs.existsSync(pathFile)) {
-  module.exports = path.join(__dirname, fs.readFileSync(pathFile, 'utf-8'))
-} else {
-  throw new Error('Electron failed to install correctly, please delete node_modules/electron and try installing again')
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, "/"))
-
-/***/ }),
-/* 176 */
-/***/ (function(module, exports) {
-
-module.exports = require("path");
-
-/***/ }),
-/* 177 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(__dirname) {const electron = __webpack_require__(175)
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
-
-const path = __webpack_require__(176)
-const url = __webpack_require__(178)
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
-
-
-
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600, preload: 'inelectron.js'})
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-	
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
-  })
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-/* WEBPACK VAR INJECTION */}.call(exports, "/"))
-
-/***/ }),
-/* 178 */
-/***/ (function(module, exports) {
-
-module.exports = require("url");
 
 /***/ })
 /******/ ]);
