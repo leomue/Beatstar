@@ -1,4 +1,5 @@
 'use strict';
+import {mainWindow} from '../index.js'
 import {SoundHandler} from './soundHandler';
 import {so} from './soundObject';
 import {st} from './stateMachine';
@@ -11,7 +12,10 @@ import panner  from 'sono/effects/panner';
 import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {
+	this.timer=null;
+	this.music=null;
 	this.test=so.create("inserror");
+	this.eventsound=so.create("fumble");
 				this.score=0;
 		this.pool=new SoundHandler();
 this.bpms=null;
@@ -65,13 +69,30 @@ this.pack="default";
 	}
 	this.keys=[0,0,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_BACKSPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT]
 						var that=this;
-					this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
-					console.log("ok "+this.bpms[this.level]);
-					this.pool.playStatic(this.packsdir+this.level+"music");
-		this.timer.start();
+mainWindow.on("browser-window-focus",that.focus());
+mainWindow.on("browser-window-blurr",that.defocus());
+    					this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
+					
+					this.music=this.pool.playStatic(this.packsdir+this.level+"music");
+							this.timer.start();
 		
 
 	}
+	defocus() {
+	this.eventsound.play();
+		if (this.timer!=null) {
+	this.timer.stop();
+	var snd=this.pool.staticSounds[this.slot].sound;
+	console.log(snd.playbackRate);
+	//for (var i=snd.playbackRate;i<
+	}
+	}
+	focus() {
+	this.test.play();
+	if (this.timer!=null) {
+	}
+	}
+	
 	preload(lev) {
 		
 	}
