@@ -21,9 +21,9 @@ class SoundHandler {
 	
 	playStatic(file, loop = 1, slot = -1) {
 		if (slot = -1) {
-			slot = findFreeStaticSlot();
+			slot = this.findFreeStaticSlot();
 		}
-		this.staticSounds[slot] = new SoundHandlerItem(file, this.directional);
+		this.staticSounds[slot] = new SoundItem(file, this.directional);
 		if (loop == 1) {
 			this.staticSounds[slot].sound.loop = true;
 		}
