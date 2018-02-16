@@ -26,5 +26,9 @@ randomInt(min, max) {
 getRandomArbitrary(min, max) {
 return Math.random() * (max - min) + min;
   }
+sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 }
 export var utils=new GameUtils();

@@ -12,6 +12,7 @@ import panner  from 'sono/effects/panner';
 import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {
+		this.actionCompleted=false;
 	this.timer=null;
 	this.music=null;
 	this.test=so.create("inserror");
@@ -64,13 +65,9 @@ this.pack="default";
 		this.actions=i;
 }
 	}
-	this.keys=[0,0,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_BACKSPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT]
+this.keys=[0,0,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_BACK_SPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT]
 var that=this;
     					this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
-					
-					this.music=this.pool.playStatic(this.packsdir+this.level+"music");
-							this.timer.start();
-		
 this.setupLevel();
 	}
 	defocus() {
@@ -92,21 +89,51 @@ this.setupLevel();
 		
 	}
 	update(dt) {
-	console.log(dt);
-	this.test.play();
+		if (this.currentAction!=0) {
+			if (!this.actionCompleted) {
+				this.fail();
+				return;
+			}
+		}
+this.currentAction++;
+this.pool.playStatic(this.packsdir+"a"+this.action,0);
+	this.action=utils.randomInt(1,this.actions);
 	}
-	
+async 	fail() {
+	this.timer.stop();
+			var snd=this.pool.staticSounds[this.music].sound;
+//			this.pool.playStatic(this.packsdir+"fail",0);
+		for (var i=snd.playbackRate;i>0;i-=0.05) {
+			snd.playbackRate=i;
+			await utils.sleep(30);
+		}
+		snd.stop();
+	}
 	render() {
+		if (this.currentAction==0) {
+			if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
+				this.test.play();
+				this.stoptimer();
+			}
+			return;
+		}
 	}
 	handleKeys(event) {
 	
 	}
 	setupLevel() {
+			this.music=this.pool.playStatic(this.packsdir+this.level+"music");
+					this.timer.start();
+					console.log("start");
 	this.action=utils.randomInt(1,this.actions);
+	this.currentAction=0;
 	this.numberOfActions=utils.randomInt(4+this.level,this.level*1.5+4);
 	}
 destroy() {
 this.pool.destroy();
+}
+stoptimer() {
+	this.timer.stop();
 }
 }
 export { Game };

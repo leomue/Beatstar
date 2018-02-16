@@ -11,9 +11,9 @@ class ScrollingText {
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
 		this.currentLine=0;
-		this.sndOpen = so.create("ui/textOpen");
-		this.sndContinue = so.create("ui/textScroll");
-		this.sndClose = so.create("ui/textClose");
+		this.sndOpen = so.create("UI/textOpen");
+		this.sndContinue = so.create("UI/textScroll");
+		this.sndClose = so.create("UI/textClose");
 		this.callback = callback;
 		var id = document.getElementById("touchArea");
 		//this.hammer = new Hammer(id);

@@ -1,8 +1,8 @@
 {
-  "name": "node-audio-game-template",
+  "name": "beatstar",
   "version": "1.0.0",
-  "description": "Audio Game Development Template",
-  "main": "index.js",
+  "description": "Beatstar JS",
+  "main": "./client/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile-client": "webpack",
@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://tdrealms.com:8064/ghorthalon/nagkt"
+    "url": "http://oriolgomez.com:9900/ogomez92/beatjs"
   },
-  "author": "Ghorthalon",
+  "author": "Oriol Gomez",
   "license": "ISC",
   "dependencies": {
-    "electron": "^1.8.2",
+
     "express": "^4.16.2",
     "game-timer": "^1.0.1",
     "http-server": "^0.11.1",
