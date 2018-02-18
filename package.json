@@ -17,9 +17,7 @@
   "author": "Oriol Gomez",
   "license": "ISC",
   "dependencies": {
-
     "express": "^4.16.2",
-    "game-timer": "^1.0.1",
     "http-server": "^0.11.1",
     "jquery": "^3.2.1",
     "socket.io": "^2.0.4",

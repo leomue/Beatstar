@@ -30,4 +30,4 @@ class TTS {
 	
 } // end class
 if (typeof speech == "undefined") var speech = new TTS();
-export {useWebTTS,TTS,speech}
+export {TTS,speech}

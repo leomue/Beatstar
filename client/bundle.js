@@ -12964,7 +12964,6 @@ exports.default = panner;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export useWebTTS */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTS; });
 /* unused harmony export speech */
 
@@ -19440,14 +19439,15 @@ class EditItem extends MenuItem {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utilities__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__soundObject__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__stateMachine__ = __webpack_require__(79);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_game_timer__ = __webpack_require__(173);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_game_timer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_game_timer__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__timer__ = __webpack_require__(175);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__timer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__timer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__scrollingText__ = __webpack_require__(80);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__input_js__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_sono_effects_panner__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_sono_effects_panner___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_sono_effects_panner__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__keycodes_js__ = __webpack_require__(21);
 
+var os=__webpack_require__(176);
 
 
 
@@ -19516,7 +19516,7 @@ this.pack="default";
 	}
 this.keys=[0,0,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_SPACE,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_TAB,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_RETURN,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_BACK_SPACE,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_UP,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_DOWN,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_RIGHT,__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_LEFT]
 var that=this;
-    					this.timer = __WEBPACK_IMPORTED_MODULE_4_game_timer___default()({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
+    					this.timer = __WEBPACK_IMPORTED_MODULE_4__timer___default()({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
 this.setupLevel();
 	}
 	defocus() {
@@ -19551,7 +19551,7 @@ this.pool.playStatic(this.packsdir+"a"+this.action,0);
 async 	fail() {
 	this.timer.stop();
 			var snd=this.pool.staticSounds[this.music].sound;
-//			this.pool.playStatic(this.packsdir+"fail",0);
+			this.pool.playStatic(this.packsdir+"fail",0);
 		for (var i=snd.playbackRate;i>0;i-=0.05) {
 			snd.playbackRate=i;
 			await __WEBPACK_IMPORTED_MODULE_1__utilities__["a" /* utils */].sleep(30);
@@ -19561,8 +19561,9 @@ async 	fail() {
 	render() {
 		if (this.currentAction==0) {
 			if (this.input.isJustPressed(__WEBPACK_IMPORTED_MODULE_8__keycodes_js__["a" /* KeyEvent */].DOM_VK_S)) {
+				console.log(os.homedir());
 				this.test.play();
-				this.stoptimer();
+this.timer.change(1);
 			}
 			return;
 		}
@@ -19732,7 +19733,14 @@ class SoundItem {
 
 
 /***/ }),
-/* 173 */
+/* 173 */,
+/* 174 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 175 */
 /***/ (function(module, exports) {
 
 function Timer(callbacks, step) {
@@ -19768,10 +19776,15 @@ if (active)     frameId = requestAnimationFrame(onFrame);
     cancelAnimationFrame(frameId);
     console.log(frameId);
   }
-
+function change(value) {
+  inc =value|| 1/120;
+  stop();
+  start();
+}
   return {
     start: start,
     stop: stop,
+    change: change,
   };
 }
 
@@ -19779,10 +19792,10 @@ module.exports = Timer;
 
 
 /***/ }),
-/* 174 */
+/* 176 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs");
+module.exports = require("os");
 
 /***/ })
 /******/ ]);

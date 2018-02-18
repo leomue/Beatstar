@@ -1,9 +1,10 @@
 'use strict';
+var os=require('os');
 import {SoundHandler} from './soundHandler';
 import {utils} from './utilities';
 import {so} from './soundObject';
 import {st} from './stateMachine';
-import Timer from 'game-timer'
+import Timer from './timer'
 import {ScrollingText} from './scrollingText';
 var fs=require('fs');
 import { KeyboardInput } from './input.js'
@@ -102,7 +103,7 @@ this.pool.playStatic(this.packsdir+"a"+this.action,0);
 async 	fail() {
 	this.timer.stop();
 			var snd=this.pool.staticSounds[this.music].sound;
-//			this.pool.playStatic(this.packsdir+"fail",0);
+			this.pool.playStatic(this.packsdir+"fail",0);
 		for (var i=snd.playbackRate;i>0;i-=0.05) {
 			snd.playbackRate=i;
 			await utils.sleep(30);
@@ -112,8 +113,9 @@ async 	fail() {
 	render() {
 		if (this.currentAction==0) {
 			if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
+				console.log(os.homedir());
 				this.test.play();
-				this.stoptimer();
+this.timer.change(1);
 			}
 			return;
 		}
