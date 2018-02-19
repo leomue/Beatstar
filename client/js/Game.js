@@ -1,4 +1,5 @@
 'use strict';
+import {speech} from './tts';
 var os=require('os');
 import {SoundHandler} from './soundHandler';
 import {utils} from './utilities';
@@ -97,8 +98,10 @@ this.setupLevel();
 			}
 		}
 this.currentAction++;
-this.pool.playStatic(this.packsdir+"a"+this.action,0);
 	this.action=utils.randomInt(1,this.actions);
+	this.pool.playStatic(this.packsdir+"a"+this.action,0);
+	speech.speak(this.action);
+	if (this.action==1) this.actionCompleted=true;//freeze
 	}
 async 	fail() {
 	this.timer.stop();
@@ -110,24 +113,55 @@ async 	fail() {
 		}
 		snd.stop();
 	}
+	async quit() {
+		this.timer.stop();
+			var snd=this.pool.staticSounds[this.music].sound;
+											for (var i=snd.playbackRate;i>0;i-=0.045) {
+			snd.playbackRate=i;
+			await utils.sleep(30);
+		}
+				snd.stop();
+		st.setState(1);
+	}
+
 	render() {
+	if (this.input.isJustPressed(KeyEvent.DOM_VK_Q)) {
+	this.quit();
+	return;
+	}
 		if (this.currentAction==0) {
 			if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
 				console.log(os.homedir());
 				this.test.play();
-this.timer.change(1);
 			}
 			return;
 		}
+		this.handleKeys();
 	}
 	handleKeys(event) {
-	
+	var keys=this.input.keysDown();
+		if (keys.length>1){
+	console.log("length "+keys.length);
+	keys.forEach(function(i) {
+	console.log("key "+keys[i]);
+	});
+	this.fail();
+	return;
+	}
+	if (keys.length==1 && keys[0]==this.keys[this.action]){
+	this.pool.playStatic(packsdir+"o"+this.action);
+	return;
+		}
+			if (keys.length==1 && keys[0]!=this.keys[this.action]){
+			console.log("action "+this.action)
+			this.fail();
+			return;
+			}
 	}
 	setupLevel() {
 			this.music=this.pool.playStatic(this.packsdir+this.level+"music");
-					this.timer.start();
-					console.log("start");
-	this.action=utils.randomInt(1,this.actions);
+this.timer.change(this.bpms[this.level]/1000.0);
+						this.action=0;
 	this.currentAction=0;
 	this.numberOfActions=utils.randomInt(4+this.level,this.level*1.5+4);
 	}

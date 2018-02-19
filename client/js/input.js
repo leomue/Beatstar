@@ -59,6 +59,34 @@ class KeyboardInput {
 		}
 		return false;
 	}
+	keysDown() {
+	var kd=[];
+	this.keyDown.forEach(function(i) {
+	if (i) {
+	kd.push(i);
+	}
+	});
+	return kd;
+	}
+	keysPressed() {
+	var kd=[];
+	this.justPressed.forEach(function(i) {
+	if (i) {
+	kd.push(i);
+	}
+	});
+	return kd;
+	}
+	keysReleased() {
+	var kd=[];
+	this.justReleased.forEach(function(i) {
+	if (i) {
+	kd.push(i);
+	}
+	});
+	return kd;
+	}
+
 }
 
 export { KeyboardInput };
