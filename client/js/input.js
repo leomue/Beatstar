@@ -61,17 +61,17 @@ class KeyboardInput {
 	}
 	keysDown() {
 	var kd=[];
-	this.keyDown.forEach(function(i) {
-	if (i) {
+	this.keyDown.forEach(function(v,i) {
+	if (v) {
 	kd.push(i);
-	}
+		}
 	});
 	return kd;
 	}
 	keysPressed() {
 	var kd=[];
-	this.justPressed.forEach(function(i) {
-	if (i) {
+	this.justPressed.forEach(function(v,i) {
+	if (v) {
 	kd.push(i);
 	}
 	});
@@ -79,8 +79,8 @@ class KeyboardInput {
 	}
 	keysReleased() {
 	var kd=[];
-	this.justReleased.forEach(function(i) {
-	if (i) {
+	this.justReleased.forEach(function(v,i) {
+	if (v) {
 	kd.push(i);
 	}
 	});

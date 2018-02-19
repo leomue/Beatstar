@@ -11818,17 +11818,17 @@ class KeyboardInput {
 	}
 	keysDown() {
 	var kd=[];
-	this.keyDown.forEach(function(i) {
-	if (i) {
+	this.keyDown.forEach(function(v,i) {
+	if (v) {
 	kd.push(i);
-	}
+		}
 	});
 	return kd;
 	}
 	keysPressed() {
 	var kd=[];
-	this.justPressed.forEach(function(i) {
-	if (i) {
+	this.justPressed.forEach(function(v,i) {
+	if (v) {
 	kd.push(i);
 	}
 	});
@@ -11836,8 +11836,8 @@ class KeyboardInput {
 	}
 	keysReleased() {
 	var kd=[];
-	this.justReleased.forEach(function(i) {
-	if (i) {
+	this.justReleased.forEach(function(v,i) {
+	if (v) {
 	kd.push(i);
 	}
 	});
@@ -19655,7 +19655,7 @@ this.pack="default";
 		this.actions=i;
 }
 	}
-this.keys=[0,0,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_SPACE,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_TAB,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_RETURN,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_BACK_SPACE,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_UP,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_DOWN,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_RIGHT,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_LEFT]
+this.keys=[0,0,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_SPACE,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_TAB,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_ENTER,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_BACK_SPACE,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_UP,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_DOWN,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_RIGHT,__WEBPACK_IMPORTED_MODULE_9__keycodes_js__["a" /* KeyEvent */].DOM_VK_LEFT]
 var that=this;
     					this.timer = __WEBPACK_IMPORTED_MODULE_5__timer___default()({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
 this.setupLevel();
