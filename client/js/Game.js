@@ -179,6 +179,7 @@ async 	fail() {
 	if (keys.length==1 && keys[0]==this.keys[this.action]){
 	this.pool.playStatic(this.packsdir+"o"+this.action,0);
 	this.actionCompleted  =true;
+	this.calculateScore();
 	return;
 		}
 			if (keys.length==1 && keys[0]!=this.keys[this.action]){
@@ -226,6 +227,8 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		snd.seek(this.pauseTime);
 		this.timer.start();
 }
-
+calculateScore() {
+speech.speak(this.scoreTimer.elapsed);
+}
 }
 export { Game };

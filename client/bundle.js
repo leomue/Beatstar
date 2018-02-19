@@ -11857,7 +11857,7 @@ class KeyboardInput {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTS; });
-/* unused harmony export speech */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return speech; });
 
 var useWebTTS = true;
 
@@ -19773,6 +19773,7 @@ async 	fail() {
 	if (keys.length==1 && keys[0]==this.keys[this.action]){
 	this.pool.playStatic(this.packsdir+"o"+this.action,0);
 	this.actionCompleted  =true;
+	this.calculateScore();
 	return;
 		}
 			if (keys.length==1 && keys[0]!=this.keys[this.action]){
@@ -19820,7 +19821,9 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		snd.seek(this.pauseTime);
 		this.timer.start();
 }
-
+calculateScore() {
+__WEBPACK_IMPORTED_MODULE_0__tts__["b" /* speech */].speak(this.scoreTimer.elapsed);
+}
 }
 
 
