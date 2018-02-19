@@ -73,10 +73,12 @@ class KeyboardInput {
 	this.justPressed.forEach(function(v,i) {
 	if (v) {
 	kd.push(i);
-	}
+			}
 	});
+	this.justPressed.splice();
 	return kd;
 	}
+	
 	keysReleased() {
 	var kd=[];
 	this.justReleased.forEach(function(v,i) {
@@ -84,6 +86,7 @@ class KeyboardInput {
 	kd.push(i);
 	}
 	});
+	this.justReleased.splice();
 	return kd;
 	}
 

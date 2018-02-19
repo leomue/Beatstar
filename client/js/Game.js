@@ -1,5 +1,7 @@
 'use strict';
 import {speech} from './tts';
+import $ from 'jquery';
+import {OldTimer} from './oldtimer';
 var os=require('os');
 import {SoundHandler} from './soundHandler';
 import {utils} from './utilities';
@@ -9,12 +11,17 @@ import Timer from './timer'
 import {ScrollingText} from './scrollingText';
 var fs=require('fs');
 import { KeyboardInput } from './input.js'
-
 import panner  from 'sono/effects/panner';
 import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {
 		this.actionCompleted=false;
+		this.scoreTimer=new OldTimer();
+		var that=this;
+		$(document).on("blur",function() {
+		that.pause();
+		});
+				this.pauseTime=0;
 	this.timer=null;
 	this.music=null;
 	this.test=so.create("inserror");
@@ -67,41 +74,60 @@ this.pack="default";
 		this.actions=i;
 }
 	}
-this.keys=[0,0,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_ENTER,KeyEvent.DOM_VK_BACK_SPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT]
+this.keys=[0,0,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_BACK_SPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT]
 var that=this;
     					this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
 this.setupLevel();
 	}
 	defocus() {
-	this.eventsound.play();
-		if (this.timer!=null) {
-	this.timer.stop();
-	var snd=this.pool.staticSounds[this.slot].sound;
-	console.log(snd.playbackRate);
-	//for (var i=snd.playbackRate;i<
+			if (this.timer!=null) {
+			this.pause();
 	}
 	}
-	focus() {
-	this.test.play();
-	if (this.timer!=null) {
-	}
-	}
-	
 	preload(lev) {
 		
 	}
 	update(dt) {
-		if (this.currentAction!=0) {
-			if (!this.actionCompleted) {
+	if (this.currentAction==0) {
+	this.currentAction++;
+	return;
+	}
+					if (!this.actionCompleted && this.currentAction>1) {
 				this.fail();
 				return;
 			}
-		}
 this.currentAction++;
+//action and level checks go here
+if (this.currentAction>=this.numberOfActions) {
+this.pool.staticSounds[this.music].destroy();
+this.level++;
+var snd;
+var playing=false;
+this.timer.stop();
+if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
+snd=so.create(this.packsdir+"pre"+this.level);
+snd.play();
+playing=true;
+}
+if (fs.existsSync(this.packdir+"nlevel.ogg") && !playing) {
+snd=so.create(this.packsdir+"nlevel");
+snd.play();
+playing=true;
+}
+if (playing) {
+var that=this;
+snd.on("ended",function() {
+that.setupLevel();
+});
+}
+if (!playing) this.setupLevel();
+return;
+}
 	this.action=utils.randomInt(1,this.actions);
+	this.actionCompleted=false;
 	this.pool.playStatic(this.packsdir+"a"+this.action,0);
-	speech.speak(this.action);
-	if (this.action==1) this.actionCompleted=true;//freeze
+		if (this.action==1) this.actionCompleted=true;//freeze
+		this.scoreTimer.reset();
 	}
 async 	fail() {
 	this.timer.stop();
@@ -129,6 +155,10 @@ async 	fail() {
 	this.quit();
 	return;
 	}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
+		this.pause();
+		return;
+		}
 		if (this.currentAction==0) {
 			if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
 				console.log(os.homedir());
@@ -138,38 +168,64 @@ async 	fail() {
 		}
 		this.handleKeys();
 	}
-	handleKeys(event) {
-	var keys=this.input.keysDown();
+	handleKeys() {
+	if (this.actionCompleted) return;
+	var keys=this.input.keysPressed();
 		if (keys.length>1){
 	console.log("length "+keys.length);
-	keys.forEach(function(i) {
-	console.log("key "+keys[i]);
-	});
 	this.fail();
 	return;
 	}
 	if (keys.length==1 && keys[0]==this.keys[this.action]){
-	this.pool.playStatic(packsdir+"o"+this.action);
+	this.pool.playStatic(this.packsdir+"o"+this.action,0);
+	this.actionCompleted  =true;
 	return;
 		}
 			if (keys.length==1 && keys[0]!=this.keys[this.action]){
-			console.log("action "+this.action)
-			this.fail();
+						this.fail();
 			return;
 			}
 	}
 	setupLevel() {
 			this.music=this.pool.playStatic(this.packsdir+this.level+"music");
+			console.log("slot "+this.music);
 this.timer.change(this.bpms[this.level]/1000.0);
 						this.action=0;
+						this.actionCompleted=false;
 	this.currentAction=0;
-	this.numberOfActions=utils.randomInt(4+this.level,this.level*1.5+4);
+	this.numberOfActions=utils.randomInt(5+this.level,this.level*1.5+5);
+	//if after level 1 we don't want an extra round of timer we need to set this to 1.
+	//if (this.level>1) this.currentAction=1;
 	}
 destroy() {
-this.pool.destroy();
+so.resetQueue();
+so.resetQueuedInstance();
 }
-stoptimer() {
-	this.timer.stop();
+async pause() {
+var snd=this.pool.staticSounds[this.music].sound
+this.timer.stop();
+this.pauseTime=snd.currentTime;
+for (var i=snd.playbackRate;i>0;i-=0.05) {
+			snd.playbackRate=i;
+			await utils.sleep(30);
+		}
+		snd.pause();
+		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
+		await utils.sleep(10);
+		}
+		this.unpause();
 }
+async unpause() {
+var snd=this.pool.staticSounds[this.music].sound
+snd.play();
+for (var i=snd.playbackRate;i<=1;i+=0.05) {
+			snd.playbackRate=i;
+			console.log(snd.playbackRate);
+			await utils.sleep(8);
+		}
+		snd.seek(this.pauseTime);
+		this.timer.start();
+}
+
 }
 export { Game };

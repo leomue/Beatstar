@@ -33,6 +33,8 @@ if (active)     frameId = requestAnimationFrame(onFrame);
   }
 function change(value) {
   inc =value|| 1/120;
+  acc=inc;
+  tick=0;
   stop();
   start();
 }

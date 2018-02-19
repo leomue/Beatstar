@@ -123,12 +123,7 @@ class SoundItem {
 		
 	}
 	destroy() {
-	this.dynamicSounds.foreach(function(i) {
-	this.dynamicSounds[i].destroy();
-	});
-		this.staticSounds.foreach(function(i) {
-	this.staticSounds[i].destroy();
-	});
+	this.sound.destroy();
 	}
 }
 

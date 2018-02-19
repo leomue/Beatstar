@@ -25,10 +25,6 @@ function createWindow () {
 	
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
-//try to get focus and unfocus events working
-mainWindow.on("focus",function(event) {focusWindow(event)});
-mainWindow.on("blurr",function(event) { defocusWindow(event)});
-
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -62,9 +58,3 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-function focusWindow() {
-console.log("yes yes yes!");
-}
-function defocusWindow() {
-console.log("no yes yes!");
-}
