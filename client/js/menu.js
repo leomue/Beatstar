@@ -1,4 +1,6 @@
 "use strict";
+import {utils} from './utilities';
+import {strings} from './strings';
 import {speech} from './scrollingText'
 import {TTS,useWebTTS} from './tts'
 if (typeof speech == "undefined") var speech = new TTS();
@@ -8,9 +10,8 @@ import {MenuTypes,MenuItem} from './menuItem'
 import {KeyEvent} from './keycodes'
 import {KeyboardInput} from './input'
 class Menu {
-	constructor(name, menuData) {
-	this.fadeInterval=null;
-		this.menuData = menuData;
+	constructor(name, menuData,music) {
+			this.menuData = menuData;
 		this.cursor = 0;
 		this.name = name;
 		this.sndKeyChar = so.create("ui/keyChar");
@@ -24,7 +25,7 @@ class Menu {
 		this.sndSelector = so.create("ui/menuSelector");
 		this.sndWrap = so.create("ui/menuWrap");
 		this.selectCallback = null;
-		this.music=null;
+		if (typeof music!="undefined") this.music=music;
 		var id = document.getElementById("touchArea");
 		//this.hammer = new Hammer(id);
 		
@@ -106,27 +107,22 @@ class Menu {
 		this.sndWrap.destroy();
 		if (typeof this.music!="undefined") this.music.destroy();
 	}
-	destroy() {
-		if (typeof this.music!="undefined") {
-		var that=this;
-		this.fadeInterval=setInterval(function(event) {
-		that.fadeMusic();
-		},10);
+	async fade() {
+	for (var i=this.music.volume;i>0;i-=0.06) {
+		this.music.volume=i;
+		await utils.sleep(50);
 		}
-		
-		$(document).off("keydown");
+		this.music.destroy();
+		this.destroy();
+			}
+	destroy() {
+			$(document).off("keydown");
 		$(document).off("keypress");
+
 		//this.hammer.destroy();
 		var that = this;
 		setTimeout(function() { that.destroySounds(); }, 500);
 	}
-fadeMusic() {
-this.music.volume-=0.05;
-if (this.music.volume<-1) {
-clearInterval(this.fadeInterval);
-console.log("fade cleared.");
-}
-}	
 	handleKeys(event) {
 		
 		
@@ -134,7 +130,12 @@ console.log("fade cleared.");
 				case KeyEvent.DOM_VK_RETURN:
 					this.select();
 					break;
-					
+					case KeyEvent.DOM_VK_PAGE_UP:
+					this.music.volume+=0.06;
+					break;
+										case KeyEvent.DOM_VK_PAGE_DOWN:
+					this.music.volume-=0.06;
+					break;
 				case KeyEvent.DOM_VK_BACK_SPACE:
 					this.removeCharacter();
 					break;
@@ -162,10 +163,12 @@ console.log("fade cleared.");
 		
 	run(callback) {
 		if (typeof this.music=="object") {
+		this.music.volume=0.6;
 	this.music.play();
 	}
 	else if (typeof this.music=="string") {
 	this.music=so.create(this.music);
+	this.music.volume=0.6;
 	this.music.play();
 	}
 	else {
@@ -243,9 +246,11 @@ console.log("fade cleared.");
 			items:items
 		}
 		this.sndChoose.play();
-		
-		this.selectCallback(toReturn);
+		if (typeof this.music!="undefined") this.fade();
+		var that=this;
+		this.sndChoose.on("ended",function(){
+		that.selectCallback(toReturn);
+		});
 	}
-
 }
 export {Menu}

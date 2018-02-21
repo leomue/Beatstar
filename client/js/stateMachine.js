@@ -36,8 +36,13 @@ event=new KeyboardInput();
 		this.state = state;
 
 	}
-				if (state == 2) {
-					event=null;
+	if (state==2) {
+	event=null;
+	mainMenu();
+	this.state = state;
+	}
+				if (state == 3) {
+					
 			this.currentState = new Game();
 			this.state = state;
 		}
@@ -48,3 +53,4 @@ event=new KeyboardInput();
 }
 var st=new StateMachine();
 export {st};
+import {mainMenu} from './menuHandler';

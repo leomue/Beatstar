@@ -7,8 +7,9 @@ import sono from 'sono';
 import { effects } from 'sono/effects';
 import KeyEvent from './keycodes.js'
 import KeyboardInput from './input.js'
-var lang=1;
-var langs=["","english","spanish"]
+export var lang=1;
+export var langs=["","english","spanish"]
+export var pack="default";
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
 so.debug=true;

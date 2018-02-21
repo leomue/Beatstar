@@ -1,4 +1,5 @@
 'use strict';
+import {pack} from './main';
 import {speech} from './tts';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
@@ -16,6 +17,7 @@ import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {
 		this.actionCompleted=false;
+		this.toDestroy=new Array();
 		this.scoreTimer=new OldTimer();
 		var that=this;
 		$(document).on("blur",function() {
@@ -31,7 +33,6 @@ class Game {
 this.bpms=null;
 this.level=0;
 this.fileData=null;
-this.pack="default";
 		this.input = new KeyboardInput();
 		this.input.init();
 		this.levels=null;
@@ -39,8 +40,8 @@ this.pack="default";
 		this.setup();
 	}
 	setup() {
-		this.packdir="packs/"+this.pack+"/";	
-		this.packsdir="../packs/"+this.pack+"/";	
+		this.packdir="packs/"+pack+"/";	
+		this.packsdir="../packs/"+pack+"/";	
 		if (fs.existsSync(this.packdir+"bpm.txt")) {
 			this.fileData=fs.readFileSync(this.packdir+"bpm.txt","utf8");
 		}
@@ -125,19 +126,28 @@ return;
 }
 	this.action=utils.randomInt(1,this.actions);
 	this.actionCompleted=false;
-	this.pool.playStatic(this.packsdir+"a"+this.action,0);
+	this.toDestroy.push(this.pool.playStatic(this.packsdir+"a"+this.action,0));;
 		if (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
 async 	fail() {
 	this.timer.stop();
 			var snd=this.pool.staticSounds[this.music].sound;
-			this.pool.playStatic(this.packsdir+"fail",0);
+			var failsound=this.pool.playStatic(this.packsdir+"fail",0);
+			this.toDestroy.push(failsound);
 		for (var i=snd.playbackRate;i>0;i-=0.05) {
 			snd.playbackRate=i;
 			await utils.sleep(30);
 		}
 		snd.stop();
+		while(this.pool.staticSounds[failsound].sound.playing) {
+		await utils.sleep(10);
+		if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
+		this.pool.staticSounds[failsound].sound.stop();
+		}
+		}
+	this.destroyPool();
+	st.setState(2);
 	}
 	async quit() {
 		this.timer.stop();
@@ -147,7 +157,7 @@ async 	fail() {
 			await utils.sleep(30);
 		}
 				snd.stop();
-		st.setState(1);
+		st.setState(2);
 	}
 
 	render() {
@@ -177,7 +187,7 @@ async 	fail() {
 	return;
 	}
 	if (keys.length==1 && keys[0]==this.keys[this.action]){
-	this.pool.playStatic(this.packsdir+"o"+this.action,0);
+	this.toDestroy.push(this.pool.playStatic(this.packsdir+"o"+this.action,0));
 	this.actionCompleted  =true;
 	this.calculateScore();
 	return;
@@ -188,6 +198,9 @@ async 	fail() {
 			}
 	}
 	setupLevel() {
+	this.destroyPool();
+			
+
 			this.music=this.pool.playStatic(this.packsdir+this.level+"music");
 			console.log("slot "+this.music);
 this.timer.change(this.bpms[this.level]/1000.0);
@@ -229,6 +242,13 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 }
 calculateScore() {
 speech.speak(this.scoreTimer.elapsed);
+}
+destroyPool() {
+if (this.toDestroy.length>0) {
+	for (var i=0;i<this.toDestroy.length;i++) {
+	this.pool.staticSounds[this.toDestroy[i]].destroy();
+	}
+	}
 }
 }
 export { Game };
