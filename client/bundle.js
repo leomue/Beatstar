@@ -565,7 +565,7 @@ class SoundObjectItem {
 		if (so.debug) console.log(file);
 		var that = this;
 		this.fileName = file;
-		
+				
 		this.sound = __WEBPACK_IMPORTED_MODULE_0_sono___default.a.create({src:file,onComplete:function() { that.doneLoading(); } });
 		this.timeout = setTimeout(function() { that.checkProgress();}, 2000);
 		this.data = this.sound.data;
@@ -642,6 +642,7 @@ class SoundObject {
 	}
 	findSound(file) {
 		for (var i in this.sounds) {
+		console.log("finding "+this.sounds[i].fileName);
 			if (this.sounds[i].fileName == file) {
 				return this.sounds[i];
 			}
@@ -11475,7 +11476,7 @@ var actionKeys=[0,0,__WEBPACK_IMPORTED_MODULE_6__keycodes__["a" /* KeyEvent */].
 
 var lang=1;
 var langs=["","english","spanish"]
-var pack="default";
+var pack="defaulter";
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=__WEBPACK_IMPORTED_MODULE_8_sono___default.a.panner();
 __WEBPACK_IMPORTED_MODULE_5__soundObject__["a" /* so */].debug=true;
@@ -19697,8 +19698,8 @@ class Menu {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Game; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__main__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tts__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tts__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__main__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__oldtimer__ = __webpack_require__(173);
@@ -19713,6 +19714,7 @@ class Menu {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_sono_effects_panner__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_sono_effects_panner___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_sono_effects_panner__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__keycodes_js__ = __webpack_require__(22);
+
 
 
 
@@ -19754,8 +19756,8 @@ this.fileData=null;
 		this.setup();
 	}
 	setup() {
-		this.packdir="packs/"+__WEBPACK_IMPORTED_MODULE_0__main__["pack"]+"/";	
-		this.packsdir="../packs/"+__WEBPACK_IMPORTED_MODULE_0__main__["pack"]+"/";	
+		this.packdir="packs/"+__WEBPACK_IMPORTED_MODULE_1__main__["pack"]+"/";	
+		this.packsdir="../packs/"+__WEBPACK_IMPORTED_MODULE_1__main__["pack"]+"/";	
 		if (fs.existsSync(this.packdir+"bpm.txt")) {
 			this.fileData=fs.readFileSync(this.packdir+"bpm.txt","utf8");
 		}
@@ -19769,18 +19771,11 @@ this.fileData=null;
 		this.levels=this.bpms.length-1;
 		if (this.bpms[this.levels]=="") this.levels--;
 				this.level++;
-		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueue();
-		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueuedInstance();
 		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"fail");
 				__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"nlevel");
 								__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"win");
 										__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"select");
-														for (var i=1;i<=this.levels;i++) {
-		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+i+"music");
-		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {
-		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"pre"+i);
-		}
-		}
+										
 		for (var i=1;i<=10;i++) {
 				if (fs.existsSync(this.packdir+"a"+i+".ogg")) {
 		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"a"+i);
@@ -19790,12 +19785,13 @@ this.fileData=null;
 		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"o"+i);
 		}
 	}
-this.keys=__WEBPACK_IMPORTED_MODULE_0__main__["actionKeys"];
+this.keys=__WEBPACK_IMPORTED_MODULE_1__main__["actionKeys"];
 var that=this;
     					this.timer = __WEBPACK_IMPORTED_MODULE_8__timer___default()({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
     					__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].setQueueCallback(function() {
     					that.setupLevel();
     					});
+    					this.queueLevels();
 __WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].loadQueue();
 	}
 	update(dt) {
@@ -19813,12 +19809,14 @@ if (this.currentAction>=this.numberOfActions) {
 this.music.destroy();
 this.level++;
 this.timer.stop();
+this.queueLevels();
 this.setupLevel();
+return;
 }
 	this.action=__WEBPACK_IMPORTED_MODULE_5__utilities__["a" /* utils */].randomInt(1,this.actions);
 	this.actionCompleted=false;
 	this.toDestroy.push(this.pool.playStatic(this.packsdir+"a"+this.action,0));;
-		if (this.action==1) this.actionCompleted=true;//freeze
+//		if (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
 async fail() {
@@ -19863,7 +19861,7 @@ async fail() {
 				this.handleKeys();
 	}
 	handleKeys() {
-	//if (this.actionCompleted) return;
+	if (this.actionCompleted) return;
 	var keys=this.input.keysPressed();
 	if (keys.length>0 && this.action==1) {
 	this.fail();
@@ -19886,7 +19884,7 @@ async fail() {
 	}
 async setupLevel() {
 	var playing=false;
-			if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
+				if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
 this.preSound=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].create(this.packsdir+"pre"+this.level);
 this.preSound.play();
 playing=true;
@@ -19898,10 +19896,13 @@ playing=true;
 }
 while(playing && this.preSound.playing) {
 await __WEBPACK_IMPORTED_MODULE_5__utilities__["a" /* utils */].sleep(5);
+if (this.input.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes_js__["a" /* KeyEvent */].DOM_VK_RETURN)) {
+this.preSound.stop();
+}
 }
 playing=false;
 				this.music=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].create(this.packsdir+this.level+"music");
-				this.music.loop=true;
+								this.music.loop=true;
 								this.music.play();
 																this.timer.change(this.bpms[this.level]/1000.0)
 									this.action=0;
@@ -19942,7 +19943,7 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		this.scoreTimer.resume();
 }
 calculateScore() {
-__WEBPACK_IMPORTED_MODULE_1__tts__["b" /* speech */].speak(this.scoreTimer.elapsed);
+__WEBPACK_IMPORTED_MODULE_0__tts__["b" /* speech */].speak(this.scoreTimer.elapsed);
 }
 destroyPool() {
 if (this.toDestroy.length>0) {
@@ -19955,6 +19956,29 @@ if (this.toDestroy.length>0) {
 		this.pool.staticSounds.splice(this.toDestroy[i]);
 	}
 	}
+}
+queueLevels() {
+var levelLimit=this.level+3;
+										if (this.levels<levelLimit) levelLimit=this.levels;
+										__WEBPACK_IMPORTED_MODULE_0__tts__["b" /* speech */].speak(this.level+", "+levelLimit);
+										if (this.level>1) {
+										for (var i=1;i<=this.level-1;i++) {
+										var snd=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].findSound(this.packsdir+i+"music.ogg");
+										console.log("gonna destroy "+snd.fileName);
+										if (typeof snd=="object") snd.destroy();
+										}
+										}
+														for (var i=this.level;i<=levelLimit;i++) {
+																__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+i+"music");
+		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {
+		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+"pre"+i);
+		}
+		}
+		if (this.level>1) __WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].setQueueCallback(0);
+		if (this.level>1) {
+		console.log("loading");
+		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].loadQueue();
+				}
 }
 }
 

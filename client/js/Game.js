@@ -1,4 +1,5 @@
 'use strict';
+import {speech} from './tts';
 import {actionKeys} from './main';
 import {pack} from './main';
 import {speech} from './tts';
@@ -54,18 +55,11 @@ this.fileData=null;
 		this.levels=this.bpms.length-1;
 		if (this.bpms[this.levels]=="") this.levels--;
 				this.level++;
-		so.resetQueue();
-		so.resetQueuedInstance();
 		so.enqueue(this.packsdir+"fail");
 				so.enqueue(this.packsdir+"nlevel");
 								so.enqueue(this.packsdir+"win");
 										so.enqueue(this.packsdir+"select");
-														for (var i=1;i<=this.levels;i++) {
-		so.enqueue(this.packsdir+i+"music");
-		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {
-		so.enqueue(this.packsdir+"pre"+i);
-		}
-		}
+										
 		for (var i=1;i<=10;i++) {
 				if (fs.existsSync(this.packdir+"a"+i+".ogg")) {
 		so.enqueue(this.packsdir+"a"+i);
@@ -81,6 +75,7 @@ var that=this;
     					so.setQueueCallback(function() {
     					that.setupLevel();
     					});
+    					this.queueLevels();
 so.loadQueue();
 	}
 	update(dt) {
@@ -98,12 +93,14 @@ if (this.currentAction>=this.numberOfActions) {
 this.music.destroy();
 this.level++;
 this.timer.stop();
+this.queueLevels();
 this.setupLevel();
+return;
 }
 	this.action=utils.randomInt(1,this.actions);
 	this.actionCompleted=false;
 	this.toDestroy.push(this.pool.playStatic(this.packsdir+"a"+this.action,0));;
-		if (this.action==1) this.actionCompleted=true;//freeze
+//		if (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
 async fail() {
@@ -148,7 +145,7 @@ async fail() {
 				this.handleKeys();
 	}
 	handleKeys() {
-	//if (this.actionCompleted) return;
+	if (this.actionCompleted) return;
 	var keys=this.input.keysPressed();
 	if (keys.length>0 && this.action==1) {
 	this.fail();
@@ -171,7 +168,7 @@ async fail() {
 	}
 async setupLevel() {
 	var playing=false;
-			if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
+				if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
 this.preSound=so.create(this.packsdir+"pre"+this.level);
 this.preSound.play();
 playing=true;
@@ -183,10 +180,13 @@ playing=true;
 }
 while(playing && this.preSound.playing) {
 await utils.sleep(5);
+if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+this.preSound.stop();
+}
 }
 playing=false;
 				this.music=so.create(this.packsdir+this.level+"music");
-				this.music.loop=true;
+								this.music.loop=true;
 								this.music.play();
 																this.timer.change(this.bpms[this.level]/1000.0)
 									this.action=0;
@@ -240,6 +240,29 @@ if (this.toDestroy.length>0) {
 		this.pool.staticSounds.splice(this.toDestroy[i]);
 	}
 	}
+}
+queueLevels() {
+var levelLimit=this.level+3;
+										if (this.levels<levelLimit) levelLimit=this.levels;
+										speech.speak(this.level+", "+levelLimit);
+										if (this.level>1) {
+										for (var i=1;i<=this.level-1;i++) {
+										var snd=so.findSound(this.packsdir+i+"music.ogg");
+										console.log("gonna destroy "+snd.fileName);
+										if (typeof snd=="object") snd.destroy();
+										}
+										}
+														for (var i=this.level;i<=levelLimit;i++) {
+																so.enqueue(this.packsdir+i+"music");
+		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {
+		so.enqueue(this.packsdir+"pre"+i);
+		}
+		}
+		if (this.level>1) so.setQueueCallback(0);
+		if (this.level>1) {
+		console.log("loading");
+		so.loadQueue();
+				}
 }
 }
 export { Game };

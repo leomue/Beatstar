@@ -8,7 +8,7 @@ class SoundObjectItem {
 		if (so.debug) console.log(file);
 		var that = this;
 		this.fileName = file;
-		
+				
 		this.sound = sono.create({src:file,onComplete:function() { that.doneLoading(); } });
 		this.timeout = setTimeout(function() { that.checkProgress();}, 2000);
 		this.data = this.sound.data;
@@ -85,6 +85,7 @@ class SoundObject {
 	}
 	findSound(file) {
 		for (var i in this.sounds) {
+		console.log("finding "+this.sounds[i].fileName);
 			if (this.sounds[i].fileName == file) {
 				return this.sounds[i];
 			}
