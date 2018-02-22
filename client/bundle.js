@@ -11476,7 +11476,7 @@ var actionKeys=[0,0,__WEBPACK_IMPORTED_MODULE_6__keycodes__["a" /* KeyEvent */].
 
 var lang=1;
 var langs=["","english","spanish"]
-var pack="defaulter";
+var pack="default";
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=__WEBPACK_IMPORTED_MODULE_8_sono___default.a.panner();
 __WEBPACK_IMPORTED_MODULE_5__soundObject__["a" /* so */].debug=true;
@@ -19828,14 +19828,15 @@ async fail() {
 			snd.playbackRate=i;
 			await __WEBPACK_IMPORTED_MODULE_5__utilities__["a" /* utils */].sleep(30);
 		}
-		snd.stop();
+		snd.destroy();
 		while(this.pool.staticSounds[failsound].sound.playing) {
 		await __WEBPACK_IMPORTED_MODULE_5__utilities__["a" /* utils */].sleep(10);
 		if (this.input.isDown(__WEBPACK_IMPORTED_MODULE_12__keycodes_js__["a" /* KeyEvent */].DOM_VK_RETURN)) {
 		this.pool.staticSounds[failsound].sound.stop();
 		}
 		}
-	this.destroyPool();
+		__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueue();
+__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueuedInstance();
 	__WEBPACK_IMPORTED_MODULE_7__stateMachine__["a" /* st */].setState(2);
 	}
 	async quit() {
@@ -19845,7 +19846,9 @@ async fail() {
 			snd.playbackRate=i;
 			await __WEBPACK_IMPORTED_MODULE_5__utilities__["a" /* utils */].sleep(30);
 		}
-				snd.stop();
+				snd.destroy();
+				__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueue();
+__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueuedInstance();
 		__WEBPACK_IMPORTED_MODULE_7__stateMachine__["a" /* st */].setState(2);
 	}
 
@@ -19913,8 +19916,6 @@ playing=false;
 	//if (this.level>1) this.currentAction=1;
 	}
 destroy() {
-__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueue();
-__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].resetQueuedInstance();
 }
 async pause() {
 var snd=this.music;
@@ -19961,13 +19962,15 @@ queueLevels() {
 var levelLimit=this.level+3;
 										if (this.levels<levelLimit) levelLimit=this.levels;
 										__WEBPACK_IMPORTED_MODULE_0__tts__["b" /* speech */].speak(this.level+", "+levelLimit);
+										/*
 										if (this.level>1) {
 										for (var i=1;i<=this.level-1;i++) {
-										var snd=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].findSound(this.packsdir+i+"music.ogg");
+										var snd=so.findSound(this.packsdir+i+"music.ogg");
 										console.log("gonna destroy "+snd.fileName);
 										if (typeof snd=="object") snd.destroy();
 										}
 										}
+										*/
 														for (var i=this.level;i<=levelLimit;i++) {
 																__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue(this.packsdir+i+"music");
 		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {

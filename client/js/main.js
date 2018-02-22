@@ -13,7 +13,7 @@ import { effects } from 'sono/effects';
 import {KeyboardInput} from './input.js'
 export var lang=1;
 export var langs=["","english","spanish"]
-export var pack="defaulter";
+export var pack="default";
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
 so.debug=true;

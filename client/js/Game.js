@@ -112,14 +112,15 @@ async fail() {
 			snd.playbackRate=i;
 			await utils.sleep(30);
 		}
-		snd.stop();
+		snd.destroy();
 		while(this.pool.staticSounds[failsound].sound.playing) {
 		await utils.sleep(10);
 		if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
 		this.pool.staticSounds[failsound].sound.stop();
 		}
 		}
-	this.destroyPool();
+		so.resetQueue();
+so.resetQueuedInstance();
 	st.setState(2);
 	}
 	async quit() {
@@ -129,7 +130,9 @@ async fail() {
 			snd.playbackRate=i;
 			await utils.sleep(30);
 		}
-				snd.stop();
+				snd.destroy();
+				so.resetQueue();
+so.resetQueuedInstance();
 		st.setState(2);
 	}
 
@@ -197,8 +200,6 @@ playing=false;
 	//if (this.level>1) this.currentAction=1;
 	}
 destroy() {
-so.resetQueue();
-so.resetQueuedInstance();
 }
 async pause() {
 var snd=this.music;
@@ -245,6 +246,7 @@ queueLevels() {
 var levelLimit=this.level+3;
 										if (this.levels<levelLimit) levelLimit=this.levels;
 										speech.speak(this.level+", "+levelLimit);
+										/*
 										if (this.level>1) {
 										for (var i=1;i<=this.level-1;i++) {
 										var snd=so.findSound(this.packsdir+i+"music.ogg");
@@ -252,6 +254,7 @@ var levelLimit=this.level+3;
 										if (typeof snd=="object") snd.destroy();
 										}
 										}
+										*/
 														for (var i=this.level;i<=levelLimit;i++) {
 																so.enqueue(this.packsdir+i+"music");
 		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {
