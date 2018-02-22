@@ -2,6 +2,7 @@
 	var event=new KeyboardInput();
 	
 import {KeyboardInput} from './input';
+import {learnPack} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
@@ -47,7 +48,8 @@ event=new KeyboardInput();
 			this.state = state;
 		}
 
-
+//new states
+if (state==4) learnPack();
 	}
 	
 }

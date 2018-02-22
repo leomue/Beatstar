@@ -6,7 +6,7 @@ class SoundHandler {
 		this.staticSounds = []
 		this.dynamicSounds = []
 		this.currentDynamicSound = 0
-		this.maxDynamicSounds = 16;
+		this.maxDynamicSounds = 512;
 		this.currentStaticSound = 0;
 		this.maxStaticSounds = 512;
 		this.reuseSounds = true;
@@ -28,6 +28,7 @@ class SoundHandler {
 			this.staticSounds[slot].sound.loop = true;
 		}
 		this.staticSounds[slot].sound.play();
+		console.log("slot "+slot);
 		return slot;
 	}
 	findFreeStaticSlot() {
@@ -106,9 +107,20 @@ class SoundHandler {
 			}
 		}
 	}
+	destroy() {
+	for (var i=0;i<this.dynamicSounds.length;i++) {
+	console.log("destroying"+i);
+	this.dynamicSounds[i].destroy();
+	this.dynamicSounds.splice(i);
+	}
 	
+	for (var i=0;i<this.staticSounds.length;i++) {
+	this.staticSounds[i].destroy();
+	console.log("destroying"+i);
+	this.staticSounds.splice(i);
+	}
+	}
 }
-
 class SoundItem {
 	constructor(file, threeD=false) {
 		this.file = file;

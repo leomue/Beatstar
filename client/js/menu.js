@@ -164,11 +164,13 @@ class Menu {
 	run(callback) {
 		if (typeof this.music=="object") {
 		this.music.volume=0.6;
+			this.music.loop=true;
 	this.music.play();
 	}
 	else if (typeof this.music=="string") {
 	this.music=so.create(this.music);
 	this.music.volume=0.6;
+	this.music.loop=true;
 	this.music.play();
 	}
 	else {
@@ -246,6 +248,8 @@ class Menu {
 			items:items
 		}
 		this.sndChoose.play();
+		$(document).off("keydown");
+		$(document).off("keypress");
 		if (typeof this.music!="undefined") this.fade();
 		var that=this;
 		this.sndChoose.on("ended",function(){
