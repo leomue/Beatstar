@@ -14,10 +14,8 @@ this.sound.id=file;
 		this.sound.on("loaded",function() { that.doneLoading()
 		});
 		} else {
-			console.log("it's data "+file);
 			this.fileName = so.memName;
-			console.log(this.fileName);
-this.sound=sono.create(file.data);
+			this.sound=sono.create(file.data);
 this.sound.id=so.memName;
 this.fromMemory=true;
 		}
@@ -36,7 +34,6 @@ clearTimeout(this.timeout);
 	}
 	checkProgress() {
 		if (this.sound.progress == 0) {
-			console.log("progress soundicide");
 			this.sound.destroy();
 			var that=this;
 this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoading(); } });
@@ -69,7 +66,6 @@ this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoa
 		}
 			}
 	unload() {
-		console.log("unloadicide");
 		this.sound.unload();
 		
 	}
@@ -118,7 +114,6 @@ class SoundObject {
 	findSound(file) {
 		for (var i in this.sounds) {
 			if (this.sounds[i].fileName == file) {
-				console.log("found  sound");
 				return this.sounds[i];
 			}
 		}
@@ -126,11 +121,8 @@ class SoundObject {
 	}
 	findSoundIndex(file) {
 		for (var i in this.sounds) {
-			console.log("checking "+i+this.sounds[i].sound);
-		
+			
 			if (this.sounds[i].fileName == file) {
-				console.log("filename coincides");
-				console.log("found it "+i);
 				return i;
 			}
 		}
@@ -173,16 +165,14 @@ class SoundObject {
 			returnObject = new SoundObjectItem(found.sound, function() { that.doneLoading(); });
 								this.sounds.push(returnObject);
 						returnObject = returnObject.sound;
-			console.log("old data");
-		}
-
+			
+}
 		return returnObject;
 	}
 	
 	enqueue(file) {
 		
 		file = this.directory + file + this.extension;
-		if (so.debug) console.log("queuing "+file);
 		this.queue.push(file);
 		this.queueLength = this.queue.length;
 		
@@ -239,7 +229,6 @@ class SoundObject {
 		if (result == 1) {
 			
 			if (typeof this.loadedCallback != "undefined" && this.loadedCallback != 0 && this.loadedCallback != null) {
-				if (so.debug) console.log(this.loadedCallback);
 				this.loadedCallback();
 			}
 		}
@@ -279,16 +268,12 @@ class SoundObject {
 		var noMore=false;
 				var filename = this.directory + file + this.extension;
 				while (!noMore) {
-					console.log("running loop"+this.sounds.length);
 							var found = this.findSoundIndex(filename);
-							console.log("new index "+found);
 											if (found == -1 || this.sounds[found].sound.data == null) {
 												noMore=true;
-												console.log("no more");
-											}
+}												
 											else {
-												console.log("destroyed");
-												this.sounds[found].destroy();
+												this.sounds[found].sound.destroy();
 												this.sounds.splice(found,1);
 											}
 				}

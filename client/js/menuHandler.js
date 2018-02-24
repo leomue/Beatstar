@@ -10,11 +10,14 @@ import {Menu} from './menu';
 	var items=new Array();
 	items.push(new MenuItem(0,strings.get(lang,"mStart")));
 items.push(new MenuItem(1,strings.get(lang,"mLearn")));
-	var mainMenu=new Menu("main menu",items,packdir+"loop");
+	var mainMenu=new Menu("main menu",items);
+	so.directory="";
+	mainMenu.music=packdir+"loop";
 	mainMenu.sndChoose.destroy();
-	mainMenu.sndChoose=so.create(packdir+"/select");
+	mainMenu.sndChoose=so.create(packdir+"select");
+
 	mainMenu.run(function(s) {
-			console.log(s.selected);
+			so.directory="./sounds/";
 	switch(s.selected) {
 	case 0: st.setState(3); break;
 	case 1: st.setState(4); break;

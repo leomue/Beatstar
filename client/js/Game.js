@@ -1,7 +1,7 @@
 'use strict';
 import {speech} from './tts';
 import {actionKeys} from './main';
-import {pack} from './main';
+import {pack,packdir} from './main';
 import {speech} from './tts';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
@@ -40,8 +40,8 @@ this.fileData=null;
 		this.setup();
 	}
 	setup() {
-		if (fs.existsSync(this.packdir+"bpm.txt")) {
-			this.fileData=fs.readFileSync(this.packdir+"bpm.txt","utf8");
+		if (fs.existsSync(packdir+"bpm.txt")) {
+			this.fileData=fs.readFileSync(packdir+"bpm.txt","utf8");
 		}
 		else {
 			var error=new ScrollingText("There was an error loading the pack "+this.pack+".","\n",function() {
@@ -53,28 +53,31 @@ this.fileData=null;
 		this.levels=this.bpms.length-1;
 		if (this.bpms[this.levels]=="") this.levels--;
 				this.level++;
-		so.enqueue(this.packsdir+"fail");
-				so.enqueue(this.packsdir+"nlevel");
-								so.enqueue(this.packsdir+"win");
-										so.enqueue(this.packsdir+"select");
+				so.directory="";
+		so.enqueue(packdir+"fail");
+				so.enqueue(packdir+"nlevel");
+								so.enqueue(packdir+"win");
+										so.enqueue(packdir+"select");
 										
 		for (var i=1;i<=10;i++) {
-				if (fs.existsSync(this.packdir+"a"+i+".ogg")) {
-		so.enqueue(this.packsdir+"a"+i);
+				if (fs.existsSync(packdir+"a"+i+".ogg")) {
+		so.enqueue(packdir+"a"+i);
 		this.actions=i;
 		}
-		if (fs.existsSync(this.packdir+"o"+i+".ogg")) {
-		so.enqueue(this.packsdir+"o"+i);
+		if (fs.existsSync(packdir+"o"+i+".ogg")) {
+		so.enqueue(packdir+"o"+i);
 		}
 	}
 this.keys=actionKeys;
 var that=this;
     					this.timer = Timer({update: function(dt) { that.update(dt); }, render: function() { that.render(); }}, this.bpms[this.level]/1000.0);
     					so.setQueueCallback(function() {
+    					so.directory="./sounds/";
     					that.setupLevel();
     					});
     					this.queueLevels();
 so.loadQueue();
+
 	}
 	update(dt) {
 	if (this.currentAction==0) {
@@ -88,8 +91,9 @@ so.loadQueue();
 this.currentAction++;
 //action and level checks go here
 if (this.currentAction>=this.numberOfActions) {
-	this.music.stop();
-	so.destroy(this.packsdir+this.level+"music");
+so.directory="";
+	so.destroy(packdir+this.level+"music");
+	so.directory="./sounds/";
 this.level++;
 this.timer.stop();
 this.setupLevel();
@@ -97,14 +101,18 @@ return;
 }
 	this.action=utils.randomInt(1,this.actions);
 	this.actionCompleted=false;
-	this.toDestroy.push(this.pool.playStatic(this.packsdir+"a"+this.action,0));;
-//		if (this.action==1) this.actionCompleted=true;//freeze
+	so.directory="";
+	this.pool.playStatic(packdir+"a"+this.action,0);
+	so.directory="./sounds/";
+	//		if (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
 async fail() {
 	this.timer.stop();
 			var snd=this.music;
-			var failsound=this.pool.playStatic(this.packsdir+"fail",0);
+			so.directory="";
+			var failsound=this.pool.playStatic(packdir+"fail",0);
+			so.directory="./sounds/";
 			this.toDestroy.push(failsound);
 		for (var i=snd.playbackRate;i>0;i-=0.05) {
 			snd.playbackRate=i;
@@ -157,8 +165,10 @@ so.resetQueuedInstance();
 	return;
 	}
 	if (keys.length==1 && keys[0]==this.keys[this.action]){
-	this.toDestroy.push(this.pool.playStatic(this.packsdir+"o"+this.action,0));
-	this.actionCompleted  =true;
+	so.directory="";
+	this.pool.playStatic(packdir+"a"+this.action,0);
+	so.directory="./sounds/";
+		this.actionCompleted  =true;
 	this.calculateScore();
 	return;
 		}
@@ -168,15 +178,19 @@ so.resetQueuedInstance();
 			}
 	}
 async setupLevel() {
-				if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
+				if (fs.existsSync(packdir+"pre"+this.level+".ogg")) {
 					speech.speak("play pre fuck");
-this.preSound=so.create(this.packsdir+"pre"+this.level);
+					so.directory="";
+this.preSound=so.create(packdir+"pre"+this.level);
+so.directory="./sounds/";
 this.preSound.play();
 this.playing=true;
 }
-if (fs.existsSync(this.packdir+"nlevel.ogg") && !this.playing && this.level>1) {
+if (fs.existsSync(packdir+"nlevel.ogg") && !this.playing && this.level>1) {
 	speech.speak("next level");
-this.preSound=so.create(this.packsdir+"nlevel");
+	so.directory="";
+this.preSound=so.create(packdir+"nlevel");
+so.directory="./sounds/";
 this.preSound.play();
 this.playing=true;
 }
@@ -187,10 +201,11 @@ if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 this.preSound.stop();
 }
 }
-				this.music=so.create(this.packsdir+this.level+"music");
+so.directory="";
+				this.music=so.create(packdir+this.level+"music");
+				so.directory="./sounds/";
 								this.music.loop=true;
 								this.music.play();
-								console.log("playing");
 if (!this.playing) {
 									this.queueLevels();
 								}
@@ -231,7 +246,7 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		this.scoreTimer.resume();
 }
 calculateScore() {
-speech.speak(this.scoreTimer.elapsed);
+//speech.speak(this.scoreTimer.elapsed);
 }
 destroyPool() {
 if (this.toDestroy.length>0) {
@@ -253,22 +268,24 @@ var levelLimit=this.level+3;
 										/*
 										if (this.level>1) {
 										for (var i=1;i<=this.level-1;i++) {
-										var snd=so.findSound(this.packsdir+i+"music.ogg");
+										var snd=so.findSound(packdir+i+"music.ogg");
 										console.log("gonna destroy "+snd.fileName);
 										if (typeof snd=="object") snd.destroy();
 										}
 										}
 										*/
+										so.directory="";
 														for (var i=this.level;i<=levelLimit;i++) {
-																so.enqueue(this.packsdir+i+"music");
-		if (fs.existsSync(this.packdir+"pre"+i+".ogg")) {
-		so.enqueue(this.packsdir+"pre"+i);
+																so.enqueue(packdir+i+"music");
+		if (fs.existsSync(packdir+"pre"+i+".ogg")) {
+		so.enqueue(packdir+"pre"+i);
 		}
 		}
 		if (this.level>1) so.setQueueCallback(0);
 		if (this.level>1) {
 		console.log("loading");
 		so.loadQueue();
+		so.directory="./sounds/";
 				}
 }
 }

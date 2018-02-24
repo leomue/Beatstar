@@ -1,4 +1,5 @@
 import $ from 'jquery';
+var os=require('os');
 import {strings} from './strings';
 import {SoundHandler} from './soundHandler';
 import {speech} from './tts';
@@ -14,7 +15,7 @@ import {KeyboardInput} from './input.js'
 export var lang=1;
 export var langs=["","english","spanish"]
 export var pack="default";
-export var packdir=os.homedir()+"/beatpacks/"+pack;
+export var packdir=os.homedir()+"/beatpacks/"+pack+"/";
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
 so.debug=true;
@@ -29,7 +30,6 @@ function setup() {
 export async function learnPack() {
 const fs=require('fs');
 var pool=new SoundHandler();
-export var packdir=os.homedir()+"beatpacks/"+pack+"/";	
 var actions=0;
 				for (var i=1;i<=10;i++) {
 				if (fs.existsSync(packdir+"a"+i+".ogg")) {
