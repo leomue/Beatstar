@@ -1,29 +1,46 @@
 import sono from 'sono';
 import {panner} from 'sono/effects';
+import {speech} from './tts';
 
 var isElectron = true;
 var playOnceTimer;
 class SoundObjectItem {
 	constructor(file, callback=0, tag=0) {
-		if (so.debug) console.log(file);
 		var that = this;
+		if (typeof file=="string") {
 		this.fileName = file;
-				
-		this.sound = sono.create({src:file,onComplete:function() { that.doneLoading(); } });
+this.sound=sono.create(file);
+this.sound.id=file;
+		this.sound.on("loaded",function() { that.doneLoading()
+		});
+		} else {
+			console.log("it's data "+file);
+			this.fileName = so.memName;
+			console.log(this.fileName);
+this.sound=sono.create(file.data);
+this.sound.id=so.memName;
+this.fromMemory=true;
+		}
 		this.timeout = setTimeout(function() { that.checkProgress();}, 2000);
-		this.data = this.sound.data;
+//		this.data = this.sound.data;
 		this.loaded = false;
 		this.callback = callback;
 		this.timeToLoad = performance.now();
 		this.tag = tag;
+if (this.fromMemory) {
+	//it's from memory, check progress and doneLoading is useless and causes bugs.
+clearTimeout(this.timeout);
+//		this.data = this.sound.data;
+				this.loaded = true;
+}
 	}
 	checkProgress() {
-		
 		if (this.sound.progress == 0) {
+			console.log("progress soundicide");
 			this.sound.destroy();
-			this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoading(); } });
+			var that=this;
+this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoading(); } });
 		}
-		
 		if (this.sound.progress == 1) {
 			this.doneLoading();
 		} else {
@@ -35,11 +52,9 @@ class SoundObjectItem {
 	
 	doneLoading() {
 		clearTimeout(this.timeout);
-		this.data = this.sound.data;
+//		this.data = this.sound.data;
 		this.loaded = true;
-		
 		if (this.callback!=0) {
-			
 			this.callback();
 		}
 	}
@@ -47,9 +62,26 @@ class SoundObjectItem {
 		this.sound.play();
 	}
 	destroy() {
+		var active=this.findActive();
+		if (!active) {
 		this.sound.destroy();
+		console.log("soundicide");
+		}
+			}
+	unload() {
+		console.log("unloadicide");
+		this.sound.unload();
 		
 	}
+	findActive() {
+		if (this.fromMemory) return false;
+		for (var i in so.sounds) {
+			if (so.sounds[i].fileName==this.fileName && so.sounds[i].sound.data!=null) {
+				return true;
+			}
+		}
+	}
+	
 }
 class SoundObject {
 	constructor() {
@@ -85,13 +117,26 @@ class SoundObject {
 	}
 	findSound(file) {
 		for (var i in this.sounds) {
-		console.log("finding "+this.sounds[i].fileName);
 			if (this.sounds[i].fileName == file) {
+				console.log("found  sound");
 				return this.sounds[i];
 			}
 		}
 		return -1;
 	}
+	findSoundIndex(file) {
+		for (var i in this.sounds) {
+			console.log("checking "+i+this.sounds[i].sound);
+		
+			if (this.sounds[i].fileName == file) {
+				console.log("filename coincides");
+				console.log("found it "+i);
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	resetQueuedInstance() {
 		for (var i=0;i<this.sounds.length;i++) {
 			if (typeof this.sounds[i] != "undefined") {
@@ -118,19 +163,19 @@ class SoundObject {
 		file = this.directory + file + this.extension;
 		var found = this.findSound(file);
 		var returnObject = null;
-		if (found == -1 || found.data == null) {
+		if (found == -1 || found.sound.data == null) {
 			var that = this;
 			returnObject = new SoundObjectItem(file, function() { that.doneLoading(); });
-			
-			this.sounds.push(returnObject);
+								this.sounds.push(returnObject);
 			returnObject = returnObject.sound;
-			
 		} else {
-			
-			returnObject = sono.create("");
-			returnObject.data = sono.utils.cloneBuffer(found.data);
-			
+			this.memName=found.fileName;
+			returnObject = new SoundObjectItem(found.sound, function() { that.doneLoading(); });
+								this.sounds.push(returnObject);
+						returnObject = returnObject.sound;
+			console.log("old data");
 		}
+
 		return returnObject;
 	}
 	
@@ -167,10 +212,7 @@ class SoundObject {
 				this.statusCallback(1-this.queue.length/this.queueLength);
 			}
 			if (this.findSound(this.queue[0])!=-1) {
-				
-				
 				this.queue.splice(0, 1);
-				
 				this.handleQueue();
 				return;
 			}
@@ -181,6 +223,7 @@ class SoundObject {
 			
 				
 				this.loadingQueue = false;
+				console.log("finished with queue.");
 				if (typeof this.queueCallback != "undefined" && this.queueCallback != 0) {
 					this.queueCallback();
 				}
@@ -227,11 +270,30 @@ class SoundObject {
 		this.oneShotSound.play();
 		var that = this;
 		this.oneShotSound.on("ended", function() {
+			console.log("one shot destroy");
 		if (that.oneShotSound.playing==false) that.oneShotSound.destroy();
 		 });
 		
 	}
-	
+	destroy(file,callback) {
+		var noMore=false;
+				var filename = this.directory + file + this.extension;
+				while (!noMore) {
+					console.log("running loop"+this.sounds.length);
+							var found = this.findSoundIndex(filename);
+							console.log("new index "+found);
+											if (found == -1 || this.sounds[found].sound.data == null) {
+												noMore=true;
+												console.log("no more");
+											}
+											else {
+												console.log("destroyed");
+												this.sounds[found].destroy();
+												this.sounds.splice(found,1);
+											}
+				}
+				if (typeof callback!="undefined") callback();
+	}
 }
 let so = new SoundObject();
 export { so }

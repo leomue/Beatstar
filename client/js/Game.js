@@ -40,8 +40,6 @@ this.fileData=null;
 		this.setup();
 	}
 	setup() {
-		this.packdir="packs/"+pack+"/";	
-		this.packsdir="../packs/"+pack+"/";	
 		if (fs.existsSync(this.packdir+"bpm.txt")) {
 			this.fileData=fs.readFileSync(this.packdir+"bpm.txt","utf8");
 		}
@@ -90,10 +88,10 @@ so.loadQueue();
 this.currentAction++;
 //action and level checks go here
 if (this.currentAction>=this.numberOfActions) {
-this.music.destroy();
+	this.music.stop();
+	so.destroy(this.packsdir+this.level+"music");
 this.level++;
 this.timer.stop();
-this.queueLevels();
 this.setupLevel();
 return;
 }
@@ -170,28 +168,33 @@ so.resetQueuedInstance();
 			}
 	}
 async setupLevel() {
-	var playing=false;
 				if (fs.existsSync(this.packdir+"pre"+this.level+".ogg")) {
+					speech.speak("play pre fuck");
 this.preSound=so.create(this.packsdir+"pre"+this.level);
 this.preSound.play();
-playing=true;
+this.playing=true;
 }
-if (fs.existsSync(this.packdir+"nlevel.ogg") && !playing && this.level>1) {
+if (fs.existsSync(this.packdir+"nlevel.ogg") && !this.playing && this.level>1) {
+	speech.speak("next level");
 this.preSound=so.create(this.packsdir+"nlevel");
 this.preSound.play();
-playing=true;
+this.playing=true;
 }
-while(playing && this.preSound.playing) {
+while(this.playing && this.preSound.playing) {
+	this.queueLevels();
 await utils.sleep(5);
 if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 this.preSound.stop();
 }
 }
-playing=false;
 				this.music=so.create(this.packsdir+this.level+"music");
 								this.music.loop=true;
 								this.music.play();
-																this.timer.change(this.bpms[this.level]/1000.0)
+								console.log("playing");
+if (!this.playing) {
+									this.queueLevels();
+								}
+this.timer.change(this.bpms[this.level]/1000.0)
 									this.action=0;
 						this.actionCompleted=false;
 	this.currentAction=0;
@@ -238,14 +241,15 @@ if (this.toDestroy.length>0) {
 	console.log("destroying!");
 		
 		}
-		this.pool.staticSounds.splice(this.toDestroy[i]);
+		this.pool.staticSounds.splice(this.toDestroy[i],1);
 	}
 	}
 }
 queueLevels() {
+	this.playing=false;
 var levelLimit=this.level+3;
 										if (this.levels<levelLimit) levelLimit=this.levels;
-										speech.speak(this.level+", "+levelLimit);
+//										speech.speak(this.level+", "+levelLimit);
 										/*
 										if (this.level>1) {
 										for (var i=1;i<=this.level-1;i++) {

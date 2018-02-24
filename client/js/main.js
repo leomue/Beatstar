@@ -14,19 +14,23 @@ import {KeyboardInput} from './input.js'
 export var lang=1;
 export var langs=["","english","spanish"]
 export var pack="default";
+export var packdir=os.homedir()+"/beatpacks/"+pack;
 document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
 so.debug=true;
 function setup() {
-st.setState(1);
-document.removeEventListener("DOMContentLoaded",setup);
+	st.setState(1);
 }
+	function proceed() {
+	}
+//st.setState(1);
+//document.removeEventListener("DOMContentLoaded",setup);
+
 export async function learnPack() {
 const fs=require('fs');
 var pool=new SoundHandler();
-var packdir="packs/"+pack+"/";	
+export var packdir=os.homedir()+"beatpacks/"+pack+"/";	
 var actions=0;
-var packsdir="../packs/"+pack+"/";	
 				for (var i=1;i<=10;i++) {
 				if (fs.existsSync(packdir+"a"+i+".ogg")) {
 				actions=i;
@@ -39,23 +43,23 @@ var packsdir="../packs/"+pack+"/";
 				while (!event.isDown(KeyEvent.DOM_VK_Q)) {
 				await utils.sleep(10);
 				if (event.isJustPressed(actionKeys[2]))
-				pool.playStatic(packsdir+"a"+2,0);
+				pool.playStatic(packdir+"a"+2,0);
 								if (event.isJustPressed(actionKeys[3]))
-				pool.playStatic(packsdir+"a"+3,0);
+				pool.playStatic(packdir+"a"+3,0);
 				if (event.isJustPressed(actionKeys[4]))
-				pool.playStatic(packsdir+"a"+4,0);
+				pool.playStatic(packdir+"a"+4,0);
 				if (event.isJustPressed(actionKeys[5]))
-				pool.playStatic(packsdir+"a"+5,0);
+				pool.playStatic(packdir+"a"+5,0);
 				if (event.isJustPressed(actionKeys[6]))
-				pool.playStatic(packsdir+"a"+6,0);
+				pool.playStatic(packdir+"a"+6,0);
 				if (event.isJustPressed(actionKeys[7]))
-				pool.playStatic(packsdir+"a"+7,0);
+				pool.playStatic(packdir+"a"+7,0);
 				if (event.isJustPressed(actionKeys[8]))
-				pool.playStatic(packsdir+"a"+8,0);
+				pool.playStatic(packdir+"a"+8,0);
 				if (event.isJustPressed(actionKeys[9]))
-				pool.playStatic(packsdir+"a"+9,0);
+				pool.playStatic(packdir+"a"+9,0);
 				if (event.isJustPressed(KeyEvent.DOM_VK_PERIOD))
-				pool.playStatic(packsdir+"a"+1,0);
+				pool.playStatic(packdir+"a"+1,0);
 				}
 				pool.destroy();
 				st.setState(2);
