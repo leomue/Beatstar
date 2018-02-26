@@ -22,7 +22,7 @@ class ScrollingText {
 	init() {
 		var that = this;
 		runningText = this;
-		$(document).on("keydown", this.handleKeys);
+		document.addEventListener("keydown", this.handleKeys);
 		//this.hammer.on("swipeleft swiperight", function() { that.handleTap(0); });
 		//this.hammer.on("tap", function() { that.handleTap(1); });
 		this.sndOpen.play();
@@ -65,7 +65,7 @@ class ScrollingText {
 			this.readCurrentLine();
 		} else {
 			this.sndClose.play();
-			$(document).off("keydown");
+document.removeEventListener("keydown", this.handleKeys);
 //			this.hammer.destroy();
 			if (this.callback!=0) this.callback();
 		}

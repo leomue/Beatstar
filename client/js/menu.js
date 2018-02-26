@@ -118,7 +118,6 @@ class Menu {
 	destroy() {
 			$(document).off("keydown");
 		$(document).off("keypress");
-
 		//this.hammer.destroy();
 		var that = this;
 		setTimeout(function() { that.destroySounds(); }, 500);
@@ -131,10 +130,10 @@ class Menu {
 					this.select();
 					break;
 					case KeyEvent.DOM_VK_PAGE_UP:
-					this.music.volume+=0.06;
+					this.music.volume+=0.03;
 					break;
 										case KeyEvent.DOM_VK_PAGE_DOWN:
-					this.music.volume-=0.06;
+					this.music.volume-=0.03;
 					break;
 				case KeyEvent.DOM_VK_BACK_SPACE:
 					this.removeCharacter();

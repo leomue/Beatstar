@@ -2,7 +2,8 @@
 	var event=new KeyboardInput();
 	
 import {KeyboardInput} from './input';
-import {learnPack} from './main';
+import {speech} from './tts';
+import {learnPack,browsePacks} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
@@ -37,19 +38,24 @@ event=new KeyboardInput();
 		this.state = state;
 
 	}
-	if (state==2) {
+	else if (state==2) {
 	event=null;
 	mainMenu();
 	this.state = state;
 	}
-				if (state == 3) {
+				else if (state == 3) {
 					
 			this.currentState = new Game();
 			this.state = state;
 		}
 
+else if (state==4) { learnPack();
+}
 //new states
-if (state==4) learnPack();
+else if (state==5) {
+browsePacks();
+this.state = state;
+}
 	}
 	
 }

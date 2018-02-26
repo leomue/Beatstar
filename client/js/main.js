@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {ScrollingText} from './scrollingText';
 var os=require('os');
 import {strings} from './strings';
 import {SoundHandler} from './soundHandler';
@@ -41,7 +42,7 @@ var actions=0;
 				var event=new KeyboardInput();
 				event.init();
 				so.directory="";
-				while (!event.isDown(KeyEvent.DOM_VK_Q)) {
+				while (!event.isJustPressed(KeyEvent.DOM_VK_Q)) {
 				await utils.sleep(10);
 				if (event.isJustPressed(actionKeys[2]))
 				pool.playStatic(packdir+"a"+2,0);
@@ -65,4 +66,123 @@ var actions=0;
 				pool.destroy();
 				so.directory="./sounds/";
 				st.setState(2);
+}
+export async function browsePacks() {
+var fs=require('fs');
+var os=require('os');
+if (!fs.existsSync(os.homedir()+"/beatpacks/hashes.db")) {
+var error=0;
+if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...","\n",function() { rebuildHashes() });
+if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato así que ves a por un café o algo...","\n",function() { rebuildHashes() });
+return;
+}
+try {
+var packs=JSON.parse(fs.readFileSync(os.homedir()+"/beatpacks/hashes.db"));
+}
+catch(err) {
+var error=0;
+if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...","\n",function() { rebuildHashes() });
+if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato así que ves a por un café o algo...","\n",function() { rebuildHashes() });
+return;
+}
+var browsing=1;
+var timeout=-1;
+var browseArray=[];
+var browsePosition=-1;
+var event=new KeyboardInput();
+var snd;
+if (lang==1) speech.speak("ready. Browsing "+packs.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
+if (lang==2) speech.speak("listo. tienes "+packs.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.");
+event.init();
+if (browsing==1) browseArray=packs;
+so.directory="";
+while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
+//enter
+if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+if (typeof snd!="undefined") snd.stop();
+if (timeout!=-1) clearTimeout(timeout);
+if (browsePosition!=-1) {
+pack=browseArray[browsePosition].name;
+packdir=os.homedir()+"/beatpacks/"+pack+"/";
+so.directory="./sounds/";
+so.kill(function() {
+st.setState(2);
+});
+return;
+}
+}
+//down arrow
+if (event.isJustPressed(KeyEvent.DOM_VK_DOWN)) {
+if (typeof snd!="undefined") snd.stop();
+if (timeout!=-1) clearTimeout(timeout);
+browsePosition++;
+if (browsePosition>browseArray.length-1) browsePosition=0;
+if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
+if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
+timeout=setTimeout(function() {
+snd=so.create(browseArray[browsePosition].preview);
+snd.play();
+},1000);
+}
+//up arrow
+if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
+if (typeof snd!="undefined") snd.stop();
+if (timeout!=-1) clearTimeout(timeout);
+browsePosition--;
+if (browsePosition<0) browsePosition=browsePosition>browseArray.length-1;
+if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
+if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
+timeout=setTimeout(function() {
+snd=so.create(browseArray[browsePosition].preview);
+snd.play();
+},1000);
+}
+await utils.sleep(5);
+}
+if (timeout!=-1) clearTimeout(-1);
+so.directory="./sounds/";
+st.setState(2);
+}
+export function rebuildHashes() {
+var hash=require('hash-files');
+var corrupts="";
+var walk=require('fs-walk');
+var fs=require('fs');
+var newHash="abc";
+var packs=new Array();
+so.directory="";
+walk.dirsSync(os.homedir()+"/beatpack",function(pb,pf,stat,next) {
+if (!fs.existsSync(pb+"/"+pf+"/bpm.txt")) {
+corrupts+=pf+"\n";
+return; //discard non packs
+}
+var theFiles=new Array();
+var path=pb+"/"+pf+"/";
+walk.filesSync(path,function(pb,pf,stat) {
+theFiles.push(path+pf);
+});
+newHash=hash.sync({files: theFiles,noGlob:true});
+var fileData=fs.readFileSync(path+"bpm.txt","utf8");
+var levelsa=fileData.split(",");
+var levels=levelsa.length-1;
+if (levelsa[levels]=="") levels--;
+var temp={
+"name":pf,
+"preview":path+"name",
+"levels":levels,
+"hash":newHash,
+}
+packs.push(temp);
+});
+so.directory="./sounds/";
+var write=JSON.stringify(packs);
+fs.writeFileSync(os.homedir()+"/beatpacks/hashes.db",write);
+var message=0;
+if (lang==1) message=new ScrollingText("Hashes rebuilt; you have "+packs.length+" packs.","\n",function() {
+st.setState(2);
+});
+if (lang==2) message=new ScrollingText("Reconstruida la carpeta de packs; tienes "+packs.length+" packs.","\n",function() {
+st.setState(2);
+});
+so.directory="./sounds/";
 }

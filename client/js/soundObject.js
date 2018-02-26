@@ -252,7 +252,7 @@ class SoundObject {
 		 });
 		
 	}
-	destroy(file,callback) {
+	destroy(file,callback=0) {
 		var noMore=false;
 				var filename = this.directory + file + this.extension;
 				while (!noMore) {
@@ -265,15 +265,15 @@ class SoundObject {
 												this.sounds.splice(found,1);
 											}
 				}
-				if (typeof callback!="undefined") callback();
+				if (callback!=0) callback();
 	}
-	kill(callback) {
+	kill(callback=0) {
 				while (this.sounds.length>0) {
 					console.log("killing "+this.sounds.length);
 					this.sounds[0].sound.destroy();
 					this.sounds.splice(0,1);
 				}
-				if (typeof callback!="undefined") callback();
+				if (callback!=0) callback();
 	}
 
 }

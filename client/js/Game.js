@@ -18,6 +18,7 @@ import panner  from 'sono/effects/panner';
 import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {
+	this.canPause=true;
 		this.actionCompleted=false;
 		this.toDestroy=new Array();
 		this.scoreTimer=new OldTimer();
@@ -56,10 +57,7 @@ this.fileData=null;
 				so.directory="";
 		so.enqueue(packdir+"fail");
 				so.enqueue(packdir+"nlevel");
-								so.enqueue(packdir+"win");
-										so.enqueue(packdir+"select");
-										
-		for (var i=1;i<=10;i++) {
+												for (var i=1;i<=10;i++) {
 				if (fs.existsSync(packdir+"a"+i+".ogg")) {
 		so.enqueue(packdir+"a"+i);
 		this.actions=i;
@@ -178,6 +176,7 @@ so.resetQueuedInstance();
 			}
 	}
 async setupLevel() {
+this.canPause=true;
 	this.playing=false;
 				if (fs.existsSync(packdir+"pre"+this.level+".ogg")) {
 					so.directory="";
@@ -220,6 +219,8 @@ if (!this.playing && this.level>1) {
 destroy() {
 }
 async pause() {
+if (!this.canPause) return;
+this.canPause=false;
 var snd=this.music;
 this.timer.stop();
 this.scoreTimer.pause();
