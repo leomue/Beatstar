@@ -10,35 +10,58 @@ class SoundObjectItem {
 		if (typeof file=="string") {
 		this.fileName = file;
 this.sound=sono.create(file);
+this.onMemory=1;
 this.sound.id=file;
+this.fromMemory=false;
 		this.sound.on("loaded",function() { that.doneLoading()
 		});
+		this.sound.on("destroy",function() {
+			that.destroySound();
+			});
 		} else {
 			this.fileName = so.memName;
 			this.sound=sono.create(file.data);
+			this.sound.on("destroy",function() {
+	that.destroySound();
+			});
+		
 this.sound.id=so.memName;
 this.fromMemory=true;
 		}
 		this.timeout = setTimeout(function() { that.checkProgress();}, 2000);
-//		this.data = this.sound.data;
 		this.loaded = false;
 		this.callback = callback;
 		this.timeToLoad = performance.now();
 		this.tag = tag;
 if (this.fromMemory) {
-	//it's from memory, check progress and doneLoading is useless and causes bugs.
-clearTimeout(this.timeout);
-//		this.data = this.sound.data;
+	clearTimeout(this.timeout);
 				this.loaded = true;
 }
 	}
+	destroySound() {
+	if (this.fromMemory) {
+	var found=so.findSound(this.fileName);
+	found.onMemory--;
+console.log("I have been destroyed from memory. "+found.onMemory);
+return;
+}
+var found=this;
+found.onMemory--;
+console.log("got the sound on memory "+found.onMemory+" times.");
+if (found.onMemory==0 && found.sound.data!=null) {
+found.sound.unload();
+console.log("unloaded.");
+}
+}	
 	checkProgress() {
 		if (this.sound.progress == 0) {
-			this.sound.unload();
-			this.sound.destroy();
+						this.sound.destroy();
 			var that=this;
 this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoading(); } });
-		}
+this.sound.on("destroy",function() {
+			that.destroySound();
+			});
+				}
 		if (this.sound.progress == 1) {
 			this.doneLoading();
 		} else {
@@ -47,7 +70,6 @@ this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoa
 		}
 		
 	}
-	
 	doneLoading() {
 		clearTimeout(this.timeout);
 //		this.data = this.sound.data;
@@ -60,8 +82,7 @@ this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoa
 		this.sound.play();
 	}
 	destroy() {
-	this.sound.unload();
-		this.sound.destroy();
+			this.sound.destroy();
 			}
 	unload() {
 		this.sound.unload();
@@ -123,8 +144,7 @@ class SoundObject {
 		for (var i=0;i<this.sounds.length;i++) {
 			if (typeof this.sounds[i] != "undefined") {
 				if (this.sounds[i].tag == 1) {
-				this.sounds[i].sound.unload();
-					this.sounds[i].sound.destroy();
+									this.sounds[i].sound.destroy();
 					this.sounds.splice(i, 1);
 				}
 			}
@@ -154,9 +174,11 @@ class SoundObject {
 		} else {
 			this.memName=found.fileName;
 			returnObject = new SoundObjectItem(found.sound, function() { that.doneLoading(); });
-								this.sounds.push(returnObject);
-						returnObject = returnObject.sound;
-			
+			//I want to try this, we don't need to push this to the array if it's from memory.
+								//this.sounds.push(returnObject);
+	found.onMemory++;
+	console.log("on memory "+found.onMemory+" times.");
+														returnObject = returnObject.sound;
 }
 		return returnObject;
 	}
@@ -264,8 +286,7 @@ class SoundObject {
 												noMore=true;
 }												
 											else {
-												this.sounds[found].sound.unload();
-																								this.sounds[found].sound.destroy();
+																																				this.sounds[found].sound.destroy();
 												this.sounds.splice(found,1);
 											}
 				}
@@ -274,8 +295,7 @@ class SoundObject {
 	kill(callback=0) {
 				while (this.sounds.length>0) {
 					console.log("killing "+this.sounds.length);
-										this.sounds[0].sound.unload();
-					this.sounds[0].sound.destroy();
+															this.sounds[0].sound.destroy();
 					this.sounds.splice(0,1);
 				}
 				if (callback!=0) callback();
