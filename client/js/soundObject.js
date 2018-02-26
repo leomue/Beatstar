@@ -59,23 +59,11 @@ this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoa
 		this.sound.play();
 	}
 	destroy() {
-		var active=this.findActive();
-		if (!active) {
 		this.sound.destroy();
-		console.log("soundicide");
-		}
 			}
 	unload() {
 		this.sound.unload();
 		
-	}
-	findActive() {
-		if (this.fromMemory) return false;
-		for (var i in so.sounds) {
-			if (so.sounds[i].fileName==this.fileName && so.sounds[i].sound.data!=null) {
-				return true;
-			}
-		}
 	}
 	
 }
@@ -279,6 +267,15 @@ class SoundObject {
 				}
 				if (typeof callback!="undefined") callback();
 	}
+	kill(callback) {
+				while (this.sounds.length>0) {
+					console.log("killing "+this.sounds.length);
+					this.sounds[0].sound.destroy();
+					this.sounds.splice(0,1);
+				}
+				if (typeof callback!="undefined") callback();
+	}
+
 }
 let so = new SoundObject();
 export { so }

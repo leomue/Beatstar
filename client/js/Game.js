@@ -77,7 +77,6 @@ var that=this;
     					});
     					this.queueLevels();
 so.loadQueue();
-
 	}
 	update(dt) {
 	if (this.currentAction==0) {
@@ -93,6 +92,7 @@ this.currentAction++;
 if (this.currentAction>=this.numberOfActions) {
 so.directory="";
 	so.destroy(packdir+this.level+"music");
+		so.destroy(packdir+"pre"+this.level);
 	so.directory="./sounds/";
 this.level++;
 this.timer.stop();
@@ -113,7 +113,6 @@ async fail() {
 			so.directory="";
 			var failsound=this.pool.playStatic(packdir+"fail",0);
 			so.directory="./sounds/";
-			this.toDestroy.push(failsound);
 		for (var i=snd.playbackRate;i>0;i-=0.05) {
 			snd.playbackRate=i;
 			await utils.sleep(30);
@@ -127,7 +126,8 @@ async fail() {
 		}
 		so.resetQueue();
 so.resetQueuedInstance();
-	st.setState(2);
+this.pool.destroy();
+so.kill(function() {st.setState(2)});
 	}
 	async quit() {
 		this.timer.stop();
@@ -166,7 +166,7 @@ so.resetQueuedInstance();
 	}
 	if (keys.length==1 && keys[0]==this.keys[this.action]){
 	so.directory="";
-	this.pool.playStatic(packdir+"a"+this.action,0);
+	this.pool.playStatic(packdir+"o"+this.action,0);
 	so.directory="./sounds/";
 		this.actionCompleted  =true;
 	this.calculateScore();
@@ -178,8 +178,8 @@ so.resetQueuedInstance();
 			}
 	}
 async setupLevel() {
+	this.playing=false;
 				if (fs.existsSync(packdir+"pre"+this.level+".ogg")) {
-					speech.speak("play pre fuck");
 					so.directory="";
 this.preSound=so.create(packdir+"pre"+this.level);
 so.directory="./sounds/";
@@ -187,35 +187,35 @@ this.preSound.play();
 this.playing=true;
 }
 if (fs.existsSync(packdir+"nlevel.ogg") && !this.playing && this.level>1) {
-	speech.speak("next level");
 	so.directory="";
 this.preSound=so.create(packdir+"nlevel");
 so.directory="./sounds/";
 this.preSound.play();
 this.playing=true;
 }
-while(this.playing && this.preSound.playing) {
-	this.queueLevels();
-await utils.sleep(5);
-if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-this.preSound.stop();
-}
+if (this.playing) {
+		this.queueLevels();
+		while(this.preSound.playing) {
+		await utils.sleep(5);
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+		this.preSound.stop();
+		}
+		}
 }
 so.directory="";
+var that=this;
 				this.music=so.create(packdir+this.level+"music");
+				this.music.loop=true;
 				so.directory="./sounds/";
-								this.music.loop=true;
-								this.music.play();
-if (!this.playing) {
+this.music.play();
+	this.timer.change(that.bpms[that.level]/1000.0)
+if (!this.playing && this.level>1) {
 									this.queueLevels();
 								}
-this.timer.change(this.bpms[this.level]/1000.0)
 									this.action=0;
 						this.actionCompleted=false;
 	this.currentAction=0;
-	this.numberOfActions=utils.randomInt(5+this.level,this.level*1.5+5);
-	//if after level 1 we don't want an extra round of timer we need to set this to 1.
-	//if (this.level>1) this.currentAction=1;
+	this.numberOfActions=utils.randomInt(6+this.level,this.level*2+6);
 	}
 destroy() {
 }
@@ -248,32 +248,9 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 calculateScore() {
 //speech.speak(this.scoreTimer.elapsed);
 }
-destroyPool() {
-if (this.toDestroy.length>0) {
-	for (var i=0;i<this.toDestroy.length;i++) {
-	if (typeof this.pool.staticSounds[this.toDestroy[i]]!="undefined") {
-	this.pool.staticSounds[this.toDestroy[i]].destroy();
-	console.log("destroying!");
-		
-		}
-		this.pool.staticSounds.splice(this.toDestroy[i],1);
-	}
-	}
-}
 queueLevels() {
-	this.playing=false;
-var levelLimit=this.level+3;
-										if (this.levels<levelLimit) levelLimit=this.levels;
-//										speech.speak(this.level+", "+levelLimit);
-										/*
-										if (this.level>1) {
-										for (var i=1;i<=this.level-1;i++) {
-										var snd=so.findSound(packdir+i+"music.ogg");
-										console.log("gonna destroy "+snd.fileName);
-										if (typeof snd=="object") snd.destroy();
-										}
-										}
-										*/
+var levelLimit=this.level+1;
+			if (this.levels<levelLimit) levelLimit=this.levels;
 										so.directory="";
 														for (var i=this.level;i<=levelLimit;i++) {
 																so.enqueue(packdir+i+"music");
@@ -281,9 +258,8 @@ var levelLimit=this.level+3;
 		so.enqueue(packdir+"pre"+i);
 		}
 		}
-		if (this.level>1) so.setQueueCallback(0);
 		if (this.level>1) {
-		console.log("loading");
+			so.setQueueCallback(0);
 		so.loadQueue();
 		so.directory="./sounds/";
 				}

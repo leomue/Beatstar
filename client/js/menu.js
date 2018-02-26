@@ -163,13 +163,13 @@ class Menu {
 		
 	run(callback) {
 		if (typeof this.music=="object") {
-		this.music.volume=0.6;
+		this.music.volume=0.5;
 			this.music.loop=true;
 	this.music.play();
 	}
 	else if (typeof this.music=="string") {
 	this.music=so.create(this.music);
-	this.music.volume=0.6;
+	this.music.volume=0.5;
 	this.music.loop=true;
 	this.music.play();
 	}

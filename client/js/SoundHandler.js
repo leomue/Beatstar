@@ -111,13 +111,13 @@ class SoundHandler {
 	for (var i=0;i<this.dynamicSounds.length;i++) {
 	console.log("destroying"+i);
 	this.dynamicSounds[i].destroy();
-	this.dynamicSounds.splice(i);
+	this.dynamicSounds.splice(i,1);
 	}
 	
 	for (var i=0;i<this.staticSounds.length;i++) {
 	this.staticSounds[i].destroy();
 	console.log("destroying"+i);
-	this.staticSounds.splice(i);
+	this.staticSounds.splice(i,1);
 	}
 	}
 }

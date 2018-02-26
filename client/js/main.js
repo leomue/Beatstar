@@ -40,6 +40,7 @@ var actions=0;
 				if (lang==2) speech.speak("Este pack tiene "+actions+" acciones. Las teclas típicas son espacio, tabulador, enter, bretroceso, y opcionalmente las flechas. Si has reasignado las teclas, puedes usarlas. Para escuchar la acción de parar, pulsa la tecla del punto (a la derecha de la coma).");
 				var event=new KeyboardInput();
 				event.init();
+				so.directory="";
 				while (!event.isDown(KeyEvent.DOM_VK_Q)) {
 				await utils.sleep(10);
 				if (event.isJustPressed(actionKeys[2]))
@@ -62,5 +63,6 @@ var actions=0;
 				pool.playStatic(packdir+"a"+1,0);
 				}
 				pool.destroy();
+				so.directory="./sounds/";
 				st.setState(2);
 }
