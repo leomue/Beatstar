@@ -612,10 +612,10 @@ console.log("decrement from memory times. "+found.onMemory);
 }
 var found=this;
 if (!already) found.onMemory--;
-console.log("got the sound on memory "+found.onMemory+" times. "+found.fileName);
+//console.log("got the sound on memory "+found.onMemory+" times. "+found.fileName);
 if (found.onMemory==0 && found.sound.data!=null) {
 found.sound.unload();
-console.log("unloaded.");
+console.log("unloaded."+this.fileName);
 }
 }	
 	checkProgress() {
@@ -658,6 +658,7 @@ this.sound.on("destroy",function() {
 class SoundObject {
 	constructor() {
 		this.sounds = new Array();
+		this.oneShots=new Array();
 		this.debug=false;
 		this.loadingQueue = false;
 		this.queueCallback = 0;
@@ -833,12 +834,23 @@ class SoundObject {
 	
 	playOnce(file) {
 		this.oneShotSound = so.create(file);
-		this.oneShotSound.stop();
+		this.oneShots.push(this.oneShotSound);
 		this.oneShotSound.play();
+		var toDestroy=new Array();
 		var that = this;
 		this.oneShotSound.on("ended", function() {
-			console.log("one shot destroy");
-		if (that.oneShotSound.playing==false) that.oneShotSound.destroy();
+			for (var i=0;i<that.oneShots.length;i++) {
+				if (that.oneShots[i].playing==false) {
+that.oneShots[i].destroy();
+toDestroy.push(i);
+				}
+			}
+			for (var i=0;i<toDestroy.length;i++) {
+if (that.oneShotSounds[i].playing==false) {
+				that.oneShotSounds.splice(toDestroy[i],1);
+									__WEBPACK_IMPORTED_MODULE_2__tts__["b" /* speech */].speak("destroyed."+toDestroy[i]);
+}
+			}
 		 });
 		
 	}
@@ -859,7 +871,6 @@ class SoundObject {
 	}
 	kill(callback=0) {
 				while (this.sounds.length>0) {
-					console.log("killing "+this.sounds.length);
 															this.sounds[0].sound.destroy();
 					this.sounds.splice(0,1);
 				}
@@ -1248,7 +1259,7 @@ if (browsing==1) browseArray=packs;
 __WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].directory="";
 var toRemove=new Array();
 browseArray.forEach(function(i,v) {
-		if (!fs.existsSync(os.homedir()+"beatpacks/"+i.name+"/bpm.txt")) {
+		if (!fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
 	console.log("discard "+i.name+" at index "+v);
 	toRemove.push(v);
 	}
@@ -1289,13 +1300,8 @@ if (browsePosition>browseArray.length-1) browsePosition=0;
 if (lang==1) __WEBPACK_IMPORTED_MODULE_4__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) __WEBPACK_IMPORTED_MODULE_4__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-snd=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].create(browseArray[browsePosition].preview);
-snd.play();
+__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].playOnce(browseArray[browsePosition].preview);
 },1000);
-snd.on("ended",function() {
-	__WEBPACK_IMPORTED_MODULE_4__tts__["b" /* speech */].speak("kuak");
-	snd.destroy();
-	});
 }
 //up arrow
 if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_7__keycodes__["a" /* KeyEvent */].DOM_VK_UP)) {
@@ -1307,8 +1313,7 @@ if (browsePosition<0) browsePosition=browseArray.length-1;
 if (lang==1) __WEBPACK_IMPORTED_MODULE_4__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) __WEBPACK_IMPORTED_MODULE_4__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-snd=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].create(browseArray[browsePosition].preview);
-snd.play();
+__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].playOnce(browseArray[browsePosition].preview);
 },1000);
 }
 await __WEBPACK_IMPORTED_MODULE_5__utilities__["a" /* utils */].sleep(5);

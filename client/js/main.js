@@ -93,7 +93,7 @@ if (browsing==1) browseArray=packs;
 so.directory="";
 var toRemove=new Array();
 browseArray.forEach(function(i,v) {
-		if (!fs.existsSync(os.homedir()+"beatpacks/"+i.name+"/bpm.txt")) {
+		if (!fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
 	console.log("discard "+i.name+" at index "+v);
 	toRemove.push(v);
 	}
@@ -134,13 +134,8 @@ if (browsePosition>browseArray.length-1) browsePosition=0;
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-snd=so.create(browseArray[browsePosition].preview);
-snd.play();
+so.playOnce(browseArray[browsePosition].preview);
 },1000);
-snd.on("ended",function() {
-	speech.speak("kuak");
-	snd.destroy();
-	});
 }
 //up arrow
 if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
@@ -152,8 +147,7 @@ if (browsePosition<0) browsePosition=browseArray.length-1;
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-snd=so.create(browseArray[browsePosition].preview);
-snd.play();
+so.playOnce(browseArray[browsePosition].preview);
 },1000);
 }
 await utils.sleep(5);
