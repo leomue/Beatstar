@@ -39,15 +39,16 @@ if (this.fromMemory) {
 }
 	}
 	destroySound() {
+		var already=false;
 	if (this.fromMemory) {
 	var found=so.findSound(this.fileName);
 	found.onMemory--;
-console.log("I have been destroyed from memory. "+found.onMemory);
-return;
+	already=true;
+console.log("decrement from memory times. "+found.onMemory);
 }
 var found=this;
-found.onMemory--;
-console.log("got the sound on memory "+found.onMemory+" times.");
+if (!already) found.onMemory--;
+console.log("got the sound on memory "+found.onMemory+" times. "+found.fileName);
 if (found.onMemory==0 && found.sound.data!=null) {
 found.sound.unload();
 console.log("unloaded.");
@@ -177,7 +178,7 @@ class SoundObject {
 			//I want to try this, we don't need to push this to the array if it's from memory.
 								//this.sounds.push(returnObject);
 	found.onMemory++;
-	console.log("on memory "+found.onMemory+" times.");
+	console.log("on memory "+found.onMemory+" times. "+found.fileName);
 														returnObject = returnObject.sound;
 }
 		return returnObject;

@@ -67,7 +67,7 @@ var actions=0;
 				so.directory="./sounds/";
 				st.setState(2);
 }
-export async function browsePacks() {
+export async function browsePacks(browsing=1) {
 var fs=require('fs');
 var os=require('os');
 if (!fs.existsSync(os.homedir()+"/beatpacks/hashes.db")) {
@@ -85,17 +85,31 @@ if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt
 if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato así que ves a por un café o algo...","\n",function() { rebuildHashes() });
 return;
 }
-var browsing=1;
 var timeout=-1;
 var browseArray=[];
 var browsePosition=-1;
-var event=new KeyboardInput();
-var snd;
-if (lang==1) speech.speak("ready. Browsing "+packs.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
-if (lang==2) speech.speak("listo. tienes "+packs.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.");
-event.init();
+
 if (browsing==1) browseArray=packs;
 so.directory="";
+var toRemove=new Array();
+browseArray.forEach(function(i,v) {
+		if (!fs.existsSync(os.homedir()+"beatpacks/"+i.name+"/bpm.txt")) {
+	console.log("discard "+i.name+" at index "+v);
+	toRemove.push(v);
+	}
+});
+toRemove.forEach(function(i) {
+	browseArray.splice(i,1);
+});
+if (browseArray.length<1) {
+	new ScrollingText(strings.get(lang,nopacks),"\n",st.setState(2));
+	return;
+}
+var event=new KeyboardInput();
+event.init();
+var snd;
+if (lang==1) speech.speak("ready. Browsing "+browseArray.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
+if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.");
 while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
 //enter
 if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
@@ -123,6 +137,10 @@ timeout=setTimeout(function() {
 snd=so.create(browseArray[browsePosition].preview);
 snd.play();
 },1000);
+snd.on("ended",function() {
+	speech.speak("kuak");
+	snd.destroy();
+	});
 }
 //up arrow
 if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
@@ -154,7 +172,7 @@ var packs=new Array();
 so.directory="";
 walk.dirsSync(os.homedir()+"/beatpacks",function(pb,pf,stat,next) {
 if (!fs.existsSync(pb+"/"+pf+"/bpm.txt")) {
-corrupts+=pf+"\n";
+corrupts+="\n"+pf;
 return; //discard non packs
 }
 var theFiles=new Array();
@@ -178,6 +196,12 @@ packs.push(temp);
 so.directory="./sounds/";
 var write=JSON.stringify(packs);
 fs.writeFileSync(os.homedir()+"/beatpacks/hashes.db",write);
-var message=0;
+if (corrupts!="") {
+if (lang==1) new ScrollingText("one thing before you go... the following packs are corrupt and should be looked at."+corrupts,"\n",function() {st.setState(2)});
+if (lang==2) new ScrollingText("Antes de que te vayas... los siguientes packs est‡n corruptos y deber’as echar un vistazo a ver quŽ pasa."+corrupts,"\n",function() {
+	st.setState(2)});
+}
+else {
 st.setState(2);
+}
 }
