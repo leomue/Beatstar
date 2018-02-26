@@ -72,8 +72,8 @@ var fs=require('fs');
 var os=require('os');
 if (!fs.existsSync(os.homedir()+"/beatpacks/hashes.db")) {
 var error=0;
-if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...","\n",function() { rebuildHashes() });
-if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato así que ves a por un café o algo...","\n",function() { rebuildHashes() });
+if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take 5 minutes or more, so go get a coffee or something...","\n",function() { rebuildHashes() });
+if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar unos 5 o 10 minutos, así que ves a por un café o algo...","\n",function() { rebuildHashes() });
 return;
 }
 try {
@@ -129,7 +129,7 @@ if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
 if (typeof snd!="undefined") snd.stop();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition--;
-if (browsePosition<0) browsePosition=browsePosition>browseArray.length-1;
+if (browsePosition<0) browsePosition=browseArray.length-1;
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
@@ -151,7 +151,7 @@ var fs=require('fs');
 var newHash="abc";
 var packs=new Array();
 so.directory="";
-walk.dirsSync(os.homedir()+"/beatpack",function(pb,pf,stat,next) {
+walk.dirsSync(os.homedir()+"/beatpacks",function(pb,pf,stat,next) {
 if (!fs.existsSync(pb+"/"+pf+"/bpm.txt")) {
 corrupts+=pf+"\n";
 return; //discard non packs
@@ -178,11 +178,5 @@ so.directory="./sounds/";
 var write=JSON.stringify(packs);
 fs.writeFileSync(os.homedir()+"/beatpacks/hashes.db",write);
 var message=0;
-if (lang==1) message=new ScrollingText("Hashes rebuilt; you have "+packs.length+" packs.","\n",function() {
 st.setState(2);
-});
-if (lang==2) message=new ScrollingText("Reconstruida la carpeta de packs; tienes "+packs.length+" packs.","\n",function() {
-st.setState(2);
-});
-so.directory="./sounds/";
 }

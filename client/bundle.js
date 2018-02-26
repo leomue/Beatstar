@@ -1274,7 +1274,7 @@ var fs=__webpack_require__(88);
 var newHash="abc";
 var packs=new Array();
 __WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].directory="";
-walk.dirsSync(os.homedir()+"/beatpack",function(pb,pf,stat,next) {
+walk.dirsSync(os.homedir()+"/beatpacks",function(pb,pf,stat,next) {
 if (!fs.existsSync(pb+"/"+pf+"/bpm.txt")) {
 corrupts+=pf+"\n";
 return; //discard non packs
