@@ -129,6 +129,7 @@ if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
 if (typeof snd!="undefined") snd.stop();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition--;
+speech.speak(browsePosition);
 if (browsePosition<0) browsePosition=browseArray.length-1;
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");

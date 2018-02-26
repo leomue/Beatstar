@@ -55,8 +55,8 @@ this.fileData=null;
 		if (this.bpms[this.levels]=="") this.levels--;
 				this.level++;
 				so.directory="";
-		so.enqueue(packdir+"fail");
-				so.enqueue(packdir+"nlevel");
+		if (fs.existsSync(packdir+"nlevel.ogg"))  so.enqueue(packdir+"nlevel");
+				if (fs.existsSync(packdir+"fail.ogg"))  so.enqueue(packdir+"fail");
 												for (var i=1;i<=10;i++) {
 				if (fs.existsSync(packdir+"a"+i+".ogg")) {
 		so.enqueue(packdir+"a"+i);

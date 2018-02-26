@@ -34,6 +34,7 @@ clearTimeout(this.timeout);
 	}
 	checkProgress() {
 		if (this.sound.progress == 0) {
+			this.sound.unload();
 			this.sound.destroy();
 			var that=this;
 this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoading(); } });
@@ -59,6 +60,7 @@ this.sound = sono.create({src:this.fileName,onComplete:function() { that.doneLoa
 		this.sound.play();
 	}
 	destroy() {
+	this.sound.unload();
 		this.sound.destroy();
 			}
 	unload() {
@@ -121,6 +123,7 @@ class SoundObject {
 		for (var i=0;i<this.sounds.length;i++) {
 			if (typeof this.sounds[i] != "undefined") {
 				if (this.sounds[i].tag == 1) {
+				this.sounds[i].sound.unload();
 					this.sounds[i].sound.destroy();
 					this.sounds.splice(i, 1);
 				}
@@ -261,7 +264,8 @@ class SoundObject {
 												noMore=true;
 }												
 											else {
-												this.sounds[found].sound.destroy();
+												this.sounds[found].sound.unload();
+																								this.sounds[found].sound.destroy();
 												this.sounds.splice(found,1);
 											}
 				}
@@ -270,6 +274,7 @@ class SoundObject {
 	kill(callback=0) {
 				while (this.sounds.length>0) {
 					console.log("killing "+this.sounds.length);
+										this.sounds[0].sound.unload();
 					this.sounds[0].sound.destroy();
 					this.sounds.splice(0,1);
 				}
