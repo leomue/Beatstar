@@ -94,7 +94,7 @@ so.directory="";
 var toRemove=new Array();
 browseArray.forEach(function(i,v) {
 		if (!fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
-	console.log("discard "+i.name+" at index "+v);
+	console.log("discard "+i.name+" at i0ndex "+v);
 	toRemove.push(v);
 	}
 });
@@ -113,7 +113,7 @@ if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa fle
 while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
 //enter
 if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-if (typeof snd!="undefined") snd.stop();
+if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 if (browsePosition!=-1) {
 pack=browseArray[browsePosition].name;
@@ -127,19 +127,20 @@ return;
 }
 //down arrow
 if (event.isJustPressed(KeyEvent.DOM_VK_DOWN)) {
-if (typeof snd!="undefined") snd.stop();
+if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition++;
 if (browsePosition>browseArray.length-1) browsePosition=0;
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-so.playOnce(browseArray[browsePosition].preview);
+snd=so.create(browseArray[browsePosition].preview);
+snd.play();
 },1000);
 }
 //up arrow
 if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
-if (typeof snd!="undefined") snd.stop();
+if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition--;
 speech.speak(browsePosition);
@@ -147,7 +148,8 @@ if (browsePosition<0) browsePosition=browseArray.length-1;
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-so.playOnce(browseArray[browsePosition].preview);
+snd=so.create(browseArray[browsePosition].preview);
+snd.play();
 },1000);
 }
 await utils.sleep(5);

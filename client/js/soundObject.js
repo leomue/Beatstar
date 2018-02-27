@@ -7,10 +7,11 @@ var playOnceTimer;
 class SoundObjectItem {
 	constructor(file, callback=0, tag=0) {
 		var that = this;
+		this.onMemory=0;
 		if (typeof file=="string") {
 		this.fileName = file;
 this.sound=sono.create(file);
-this.onMemory=1;
+this.onMemory++;
 this.sound.id=file;
 this.fromMemory=false;
 		this.sound.on("loaded",function() { that.doneLoading()
@@ -20,12 +21,18 @@ this.fromMemory=false;
 			});
 		} else {
 			this.fileName = so.memName;
+			var found=so.findSound(this.fileName);
+			if (found==-1) {
+			console.log("fuck! -1 when creating from memory!");
+		}
+		else {
+		found.onMemory++;
+		}
 			this.sound=sono.create(file.data);
 			this.sound.on("destroy",function() {
 	that.destroySound();
 			});
-		
-this.sound.id=so.memName;
+		this.sound.id=so.memName;
 this.fromMemory=true;
 		}
 		this.timeout = setTimeout(function() { that.checkProgress();}, 2000);
@@ -39,17 +46,15 @@ if (this.fromMemory) {
 }
 	}
 	destroySound() {
-		var already=false;
-	if (this.fromMemory) {
-	var found=so.findSound(this.fileName);
+		var found=so.findSound(this.fileName);
+		if(found==-1) {
+		console.log("fuck. -1!"+this.fileName);
+		return;
+		}
 	found.onMemory--;
-	already=true;
-console.log("decrement from memory times. "+found.onMemory);
-}
-var found=this;
-if (!already) found.onMemory--;
 //console.log("got the sound on memory "+found.onMemory+" times. "+found.fileName);
-if (found.onMemory==0 && found.sound.data!=null) {
+console.log("destroy "+found.onMemory);
+if (found.onMemory<=0 && found.sound.data!=null) {
 found.sound.unload();
 console.log("unloaded."+this.fileName);
 }
@@ -177,10 +182,9 @@ class SoundObject {
 			this.memName=found.fileName;
 			returnObject = new SoundObjectItem(found.sound, function() { that.doneLoading(); });
 			//I want to try this, we don't need to push this to the array if it's from memory.
-								//this.sounds.push(returnObject);
-	found.onMemory++;
-	console.log("on memory "+found.onMemory+" times. "+found.fileName);
-														returnObject = returnObject.sound;
+								this.sounds.push(returnObject);
+	//found.onMemory++;
+													returnObject = returnObject.sound;
 }
 		return returnObject;
 	}

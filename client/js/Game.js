@@ -119,12 +119,12 @@ async fail() {
 		while(this.pool.staticSounds[failsound].sound.playing) {
 		await utils.sleep(10);
 		if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
-		this.pool.staticSounds[failsound].sound.stop();
+		speech.speak("meow");
+		this.pool.staticSounds[failsound].sound.destroy();
 		}
 		}
 		so.resetQueue();
 so.resetQueuedInstance();
-this.pool.destroy();
 so.kill(function() {st.setState(2)});
 	}
 	async quit() {
