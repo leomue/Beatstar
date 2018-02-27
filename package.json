@@ -17,6 +17,7 @@
   "author": "Oriol Gomez",
   "license": "ISC",
   "dependencies": {
+    "electron": "^2.0.0-beta.1",
     "express": "^4.16.2",
     "fs-walk": "0.0.2",
     "hash-files": "^1.1.1",

@@ -273,12 +273,14 @@ if (that.oneShotSounds[i].playing==false) {
 				var filename = this.directory + file + this.extension;
 				while (!noMore) {
 							var found = this.findSoundIndex(filename);
-											if (found == -1 || this.sounds[found].sound.data == null) {
+							console.log("found "+found);
+if (found == -1) {
 												noMore=true;
 }												
 											else {
-																																				this.sounds[found].sound.unload();
+											this.sounds[found].sound.unload();
 												this.sounds.splice(found,1);
+												console.log("destroyed "+this.sounds.length);
 											}
 				}
 				if (callback!=0) callback();

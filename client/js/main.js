@@ -21,9 +21,16 @@ document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
 so.debug=true;
 function setup() {
-	st.setState(1);
+	so.enqueue("memtest");
+	so.setQueueCallback(function() { proceed(); });
+	so.loadQueue();
+//	st.setState(1);
 }
 	function proceed() {
+		var sound=so.create("memtest");
+		sound.volume=0.3;
+		sound.play();
+		so.destroy("memtest");
 	}
 //st.setState(1);
 //document.removeEventListener("DOMContentLoaded",setup);
