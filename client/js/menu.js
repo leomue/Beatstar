@@ -95,30 +95,30 @@ class Menu {
 		
 	}
 	destroySounds() {
-		this.sndKeyChar.destroy();
-		this.sndKeyDelete.destroy();
-		this.sndSliderLeft.destroy();
-		this.sndSliderRight.destroy();
-		this.sndBoundary.destroy();
-		this.sndChoose.destroy();
-		this.sndMove.destroy();
-		this.sndOpen.destroy();
-		this.sndSelector.destroy();
-		this.sndWrap.destroy();
-		if (typeof this.music!="undefined") this.music.destroy();
+		this.sndKeyChar.unload();
+		this.sndKeyDelete.unload();
+		this.sndSliderLeft.unload();
+		this.sndSliderRight.unload();
+		this.sndBoundary.unload();
+		this.sndChoose.unload();
+		this.sndMove.unload();
+		this.sndOpen.unload();
+		this.sndSelector.unload();
+		this.sndWrap.unload();
+		if (typeof this.music!="undefined") this.music.unload();
 	}
 	async fade() {
 	for (var i=this.music.volume;i>0;i-=0.06) {
 		this.music.volume=i;
 		await utils.sleep(50);
 		}
-		this.music.destroy();
-		this.destroy();
+		this.music.unload();
+		this.unload();
 			}
-	destroy() {
+	unload() {
 			$(document).off("keydown");
 		$(document).off("keypress");
-		//this.hammer.destroy();
+		//this.hammer.unload();
 		var that = this;
 		setTimeout(function() { that.destroySounds(); }, 500);
 	}
@@ -251,7 +251,7 @@ class Menu {
 		$(document).off("keypress");
 		if (typeof this.music!="undefined") this.fade();
 		var that=this;
-		this.sndChoose.on("ended",function(){
+		this.sndChoose.sound.once("end",function(){
 		that.selectCallback(toReturn);
 		});
 	}

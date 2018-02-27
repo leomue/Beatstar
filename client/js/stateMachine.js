@@ -21,16 +21,16 @@ event=new KeyboardInput();
 	event.init();
 	var intro=so.create("logo");
 	var that=this;
+	intro.volume=0.5;
 	intro.play();
-	intro.on("ended",function() {
-		intro.destroy();
+	intro.sound.once("end",function() {
+		intro.unload();
 	$(document).off("keydown");
 			that.setState(2);
-
 	});
 	$(document).keydown(function(event) {
 		if (event.which==KeyEvent.DOM_VK_SPACE || event.which==KeyEvent.DOM_VK_ESCAPE) {
-						intro.destroy();
+						intro.unload();
 					$(document).off("keydown");
 			that.setState(2);
 		}

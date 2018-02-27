@@ -1,4 +1,4 @@
-import {Howl, Howler} from 'howler';
+import {Howl,Howler} from 'howler';
 import {speech} from './tts';
 
 var isElectron = true;
@@ -6,13 +6,12 @@ var playOnceTimer;
 class SoundObjectItem {
 	constructor(file, callback=0, tag=0) {
 		var that = this;
-		this.onMemory=0;
-		if (typeof file=="string") {
-		this.fileName = file;
-this.sound=newHowl({
-src: file;
-});
-this.sound.once("load",function() { that.doneLoading()
+				this.onMemory=0;
+				this.fileName = file;
+this.sound=new Howl({
+src: file,
+onload: function() { that.doneLoading()
+},
 });
 				this.timeout = setTimeout(function() { that.checkProgress();}, 2000);
 		this.loaded = false;
@@ -21,7 +20,7 @@ this.sound.once("load",function() { that.doneLoading()
 		this.tag = tag;
 	}
 	checkProgress() {
-		if (this.sound.state() == "loaded) {
+			if (this.sound.state() == "loaded") {
 			this.doneLoading();
 		} else {
 			var that = this;
@@ -30,8 +29,11 @@ this.sound.once("load",function() { that.doneLoading()
 		
 	}
 	doneLoading() {
-		clearTimeout(this.timeout);
+			clearTimeout(this.timeout);
 		this.loaded = true;
+		console.log("meow");
+	console.log("meow"+this.sound.state());
+	console.log("l"+so.sounds.length);
 		if (this.callback!=0) {
 			this.callback();
 		}
@@ -46,7 +48,44 @@ this.sound.once("load",function() { that.doneLoading()
 		this.sound.unload();
 		
 	}
+	get volume() {
+	return this.sound.volume();
+	}
+	set volume(v) {
+	return this.sound.volume(v);
+	}
+	set loop(v) {
+	return this.sound.loop(v);
+	}
+get loop() {
+	return this.sound.loop();
+	}
+get playing() {
+	return this.sound.playing();
+	}
 	
+	get playbackRate() {
+	return this.sound.rate();
+	}
+	set playbackRate(v) {
+	return this.sound.rate(v);
+	}
+	get currentTime() {
+	return this.sound.seek();
+	}
+	get duration() {
+	return this.sound.duration;
+	}
+	get position() {
+	return this.sound.seek();
+	}
+	
+	set currentTime(v) {
+	return this.sound.seek(v);
+	}
+	seek(time) {
+	return this.sound.seek(time);
+	}
 }
 class SoundObject {
 	constructor() {
@@ -117,22 +156,11 @@ class SoundObject {
 	
 	create(file) {
 		file = this.directory + file + this.extension;
-		var found = this.findSound(file);
-		var returnObject = null;
-		found=-1;
-		if (found == -1 || found.sound.data == null) {
+				var returnObject = null;
 			var that = this;
 			returnObject = new SoundObjectItem(file, function() { that.doneLoading(); });
 								this.sounds.push(returnObject);
-			returnObject = returnObject.sound;
-		} else {
-			this.memName=found.fileName;
-			returnObject = new SoundObjectItem(found.sound, function() { that.doneLoading(); });
-											this.sounds.push(returnObject);
-	//found.onMemory++;
-													returnObject = returnObject.sound;
-}
-		return returnObject;
+					return returnObject;
 	}
 	
 	enqueue(file) {
@@ -227,7 +255,7 @@ class SoundObject {
 		this.oneShotSound.on("ended", function() {
 			for (var i=0;i<that.oneShots.length;i++) {
 				if (that.oneShots[i].playing==false) {
-that.oneShots[i].destroy();
+that.oneShots[i].unload();
 toDestroy.push(i);
 				}
 			}
@@ -249,7 +277,7 @@ if (that.oneShotSounds[i].playing==false) {
 												noMore=true;
 }												
 											else {
-																																				this.sounds[found].sound.destroy();
+																																				this.sounds[found].sound.unload();
 												this.sounds.splice(found,1);
 											}
 				}
@@ -257,7 +285,7 @@ if (that.oneShotSounds[i].playing==false) {
 	}
 	kill(callback=0) {
 				while (this.sounds.length>0) {
-															this.sounds[0].sound.destroy();
+															this.sounds[0].sound.unload();
 					this.sounds.splice(0,1);
 				}
 				if (callback!=0) callback();

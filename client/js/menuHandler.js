@@ -17,7 +17,7 @@ items.push(new MenuItem(3,strings.get(lang,"mHashes")));
 	mainMenu.music=packdir+"loop";
 	var fs=require('fs');
 	if (fs.existsSync(packdir+"select.ogg")) {
-	mainMenu.sndChoose.destroy();
+	mainMenu.sndChoose.unload();
 	mainMenu.sndChoose=so.create(packdir+"select");
 }
 	mainMenu.run(function(s) {

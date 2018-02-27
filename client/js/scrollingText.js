@@ -65,8 +65,11 @@ class ScrollingText {
 			this.readCurrentLine();
 		} else {
 			this.sndClose.play();
+			this.sndClose.unload();
+			this.sndOpen.unload();
+			this.sndContinue.unload();
 document.removeEventListener("keydown", this.handleKeys);
-//			this.hammer.destroy();
+//			this.hammer.unload();
 			if (this.callback!=0) this.callback();
 		}
 		

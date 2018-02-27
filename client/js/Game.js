@@ -115,12 +115,12 @@ async fail() {
 			snd.playbackRate=i;
 			await utils.sleep(30);
 		}
-		snd.destroy();
+		snd.unload();
 		while(this.pool.staticSounds[failsound].sound.playing) {
 		await utils.sleep(10);
 		if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
 		speech.speak("meow");
-		this.pool.staticSounds[failsound].sound.destroy();
+		this.pool.staticSounds[failsound].sound.unload();
 		}
 		}
 		so.resetQueue();
@@ -134,7 +134,7 @@ so.kill(function() {st.setState(2)});
 			snd.playbackRate=i;
 			await utils.sleep(30);
 		}
-				snd.destroy();
+				snd.unload();
 				so.resetQueue();
 so.resetQueuedInstance();
 		st.setState(2);
@@ -216,7 +216,7 @@ if (!this.playing && this.level>1) {
 	this.currentAction=0;
 	this.numberOfActions=utils.randomInt(6+this.level,this.level*2+6);
 	}
-destroy() {
+unload() {
 }
 async pause() {
 if (!this.canPause) return;
