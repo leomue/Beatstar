@@ -38,6 +38,13 @@ onload: function() { that.doneLoading()
 	play() {
 		this.sound.play();
 	}
+	stop() {
+		this.sound.stop();
+	}
+		pause() {
+		this.sound.pause();
+	}
+
 	destroy() {
 		speech.speak("yay");
 			this.sound.unload();

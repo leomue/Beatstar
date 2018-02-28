@@ -1,6 +1,10 @@
 import $ from 'jquery';
+import 'hash-files';
+import 'fs-walk';
+import fs from 'fs';
+import os from 'os'
 import {ScrollingText} from './scrollingText';
-var os=require('os');
+
 import {strings} from './strings';
 import {SoundHandler} from './soundHandler';
 import {speech} from './tts';
@@ -8,17 +12,14 @@ import {utils} from './utilities';
 import {so} from './soundObject';
 import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
-import sono from 'sono';
 //import test from './test.js'
 export var actionKeys=[0,0,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_BACK_SPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT];
-import { effects } from 'sono/effects';
 import {KeyboardInput} from './input.js'
 export var lang=1;
 export var langs=["","english","spanish"]
 export var pack="default";
 export var packdir=os.homedir()+"/beatpacks/"+pack+"/";
 document.addEventListener("DOMContentLoaded",setup);
-var dummyPan=sono.panner();
 so.debug=true;
 function setup() {
 /*
@@ -38,7 +39,7 @@ function setup() {
 //document.removeEventListener("DOMContentLoaded",setup);
 
 export async function learnPack() {
-const fs=require('fs');
+
 var pool=new SoundHandler();
 var actions=0;
 				for (var i=1;i<=10;i++) {
@@ -77,8 +78,6 @@ var actions=0;
 				st.setState(2);
 }
 export async function browsePacks(browsing=1) {
-var fs=require('fs');
-var os=require('os');
 if (!fs.existsSync(os.homedir()+"/beatpacks/hashes.db")) {
 var error=0;
 if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take 5 minutes or more, so go get a coffee or something...","\n",function() { rebuildHashes() });
@@ -168,10 +167,10 @@ so.directory="./sounds/";
 st.setState(2);
 }
 export function rebuildHashes() {
-var hash=require('hash-files');
+//var hash=require('hash-files');
 var corrupts="";
-var walk=require('fs-walk');
-var fs=require('fs');
+//var walk=require('fs-walk');
+//var fs=require('fs');
 var newHash="abc";
 var packs=new Array();
 so.directory="";

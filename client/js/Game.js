@@ -1,20 +1,21 @@
 'use strict';
+import fs from 'fs';
+import os from 'os'
 import {speech} from './tts';
 import {actionKeys} from './main';
 import {pack,packdir} from './main';
 import {speech} from './tts';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
-var os=require('os');
+//var os=require('os');
 import {SoundHandler} from './soundHandler';
 import {utils} from './utilities';
 import {so} from './soundObject';
 import {st} from './stateMachine';
 import Timer from './timer'
 import {ScrollingText} from './scrollingText';
-var fs=require('fs');
+//var fs=require('fs');
 import { KeyboardInput } from './input.js'
-import panner  from 'sono/effects/panner';
 import { KeyEvent } from './keycodes.js'
 class Game {
 	constructor() {

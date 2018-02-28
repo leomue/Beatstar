@@ -1,15 +1,5 @@
 'use strict';
-import {Effects} from 'sono/effects';
-import {Panner} from 'sono/effects/panner';
-import sono from 'sono'
 import { so } from './soundObject.js'
-
-sono.panner.defaults= {
-    panningModel:'HRTF',
-	maxDistance:2000
-    
-    
-};
 
 class SoundSource {
 	constructor(file, x=0, y=0, z=0, loop = true) {
@@ -18,7 +8,7 @@ class SoundSource {
 		this.z = z;
 		this.loop = loop;
 		this.sound = so.create(file);
-		this.pan = this.sound.effects.add(sono.panner());
+		//this.pan = this.sound.effects.add(sono.panner());
 		this.sound.loop = loop;
 		this.pan.setPosition(this.x, this.y, this.z);
 		this.rate = 1;

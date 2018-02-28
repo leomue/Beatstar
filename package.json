@@ -2,11 +2,12 @@
   "name": "beatstar",
   "version": "1.0.0",
   "description": "Beatstar JS",
-  "main": "./client/index.js",
+  "main": "./client/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile-client": "webpack",
     "watch": "webpack --watch --display-error-details",
+    "build": "parcel build client/main.js -d client/bundle.js --target=electron",
     "start-client": "electron ./client",
     "start": "http-server ./client"
   },
@@ -17,16 +18,15 @@
   "author": "Oriol Gomez",
   "license": "ISC",
   "dependencies": {
-    "electron": "^2.0.0-beta.1",
     "express": "^4.16.2",
     "fs-walk": "0.0.2",
     "hash-files": "^1.1.1",
     "howler": "^2.0.9",
     "http-server": "^0.11.1",
     "jquery": "^3.2.1",
+    "parcel-bundler": "^1.6.2",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
-    "sono": "^2.1.4",
     "webpack": "^3.11.0"
   }
 }
