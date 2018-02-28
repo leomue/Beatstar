@@ -1,6 +1,5 @@
 import { SoundSource } from './soundSource.js'
 import { so } from './soundObject.js'
-import { SoundSource } from './soundSource.js'
 class SoundHandler {
 	constructor(directional=false) {
 		this.staticSounds = []

@@ -1,9 +1,7 @@
 "use strict";
 import {utils} from './utilities';
 import {strings} from './strings';
-import {speech} from './scrollingText'
-import {TTS,useWebTTS} from './tts'
-if (typeof speech == "undefined") var speech = new TTS();
+import {speech,TTS,useWebTTS} from './tts'
 import $ from 'jquery'
 import {so} from './soundObject.js'
 import {MenuTypes,MenuItem} from './menuItem'

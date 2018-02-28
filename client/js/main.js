@@ -134,11 +134,11 @@ if (size!=browseArray[browsePosition].hash){
 browsing=0;
 //todo: remove from unlocked
 speech.speak(strings.get(lang,"tamperWarning"));
-while(!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-await utils.sleep(10);
 setTimeout(function() {
 speech.speak(strings.get(lang,"tamperWarning"));
-},5500);
+},4500);
+while(!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+await utils.sleep(10);
 }
 }
 if (browsing>0) {

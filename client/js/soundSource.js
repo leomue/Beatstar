@@ -76,4 +76,4 @@ class SoundSource {
 	}
 }
 
-export { SoundSource }
+export {SoundSource}

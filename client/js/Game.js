@@ -1,10 +1,9 @@
 'use strict';
 import fs from 'fs';
 import os from 'os'
-import {speech} from './tts';
+import speech from './tts';
 import {actionKeys} from './main';
 import {pack,packdir} from './main';
-import {speech} from './tts';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
 //var os=require('os');
