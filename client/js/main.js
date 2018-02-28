@@ -4,7 +4,6 @@ import 'fs-walk';
 import fs from 'fs';
 import os from 'os'
 import {ScrollingText} from './scrollingText';
-
 import {strings} from './strings';
 import {SoundHandler} from './soundHandler';
 import {speech} from './tts';
