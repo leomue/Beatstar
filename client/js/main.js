@@ -21,10 +21,12 @@ document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=sono.panner();
 so.debug=true;
 function setup() {
+/*
 	so.enqueue("memtest");
 	so.setQueueCallback(function() { proceed(); });
 	so.loadQueue();
-//	st.setState(1);
+	*/
+	st.setState(1);
 }
 	function proceed() {
 		var sound=so.create("memtest");

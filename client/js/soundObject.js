@@ -31,9 +31,6 @@ onload: function() { that.doneLoading()
 	doneLoading() {
 			clearTimeout(this.timeout);
 		this.loaded = true;
-		console.log("meow");
-	console.log("meow"+this.sound.state());
-	console.log("l"+so.sounds.length);
 		if (this.callback!=0) {
 			this.callback();
 		}
@@ -42,11 +39,12 @@ onload: function() { that.doneLoading()
 		this.sound.play();
 	}
 	destroy() {
+		speech.speak("yay");
 			this.sound.unload();
 			}
 	unload() {
 		this.sound.unload();
-		
+		console.log("state "+this.sound.state());
 	}
 	get volume() {
 	return this.sound.volume();
@@ -279,6 +277,7 @@ if (found == -1) {
 }												
 											else {
 											this.sounds[found].sound.unload();
+											console.log("state after destroy"+this.sounds[found].sound.state());
 												this.sounds.splice(found,1);
 												console.log("destroyed "+this.sounds.length);
 											}
@@ -287,9 +286,9 @@ if (found == -1) {
 	}
 	kill(callback=0) {
 				while (this.sounds.length>0) {
-															this.sounds[0].sound.unload();
 					this.sounds.splice(0,1);
 				}
+				Howler.unload();
 				if (callback!=0) callback();
 	}
 

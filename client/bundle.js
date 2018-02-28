@@ -593,9 +593,6 @@ onload: function() { that.doneLoading()
 	doneLoading() {
 			clearTimeout(this.timeout);
 		this.loaded = true;
-		console.log("meow");
-	console.log("meow"+this.sound.state());
-	console.log("l"+so.sounds.length);
 		if (this.callback!=0) {
 			this.callback();
 		}
@@ -604,11 +601,12 @@ onload: function() { that.doneLoading()
 		this.sound.play();
 	}
 	destroy() {
+		__WEBPACK_IMPORTED_MODULE_1__tts__["b" /* speech */].speak("yay");
 			this.sound.unload();
 			}
 	unload() {
 		this.sound.unload();
-		
+		console.log("state "+this.sound.state());
 	}
 	get volume() {
 	return this.sound.volume();
@@ -841,6 +839,7 @@ if (found == -1) {
 }												
 											else {
 											this.sounds[found].sound.unload();
+											console.log("state after destroy"+this.sounds[found].sound.state());
 												this.sounds.splice(found,1);
 												console.log("destroyed "+this.sounds.length);
 											}
@@ -849,9 +848,9 @@ if (found == -1) {
 	}
 	kill(callback=0) {
 				while (this.sounds.length>0) {
-															this.sounds[0].sound.unload();
 					this.sounds.splice(0,1);
 				}
+				__WEBPACK_IMPORTED_MODULE_0_howler__["Howler"].unload();
 				if (callback!=0) callback();
 	}
 
@@ -1164,10 +1163,12 @@ document.addEventListener("DOMContentLoaded",setup);
 var dummyPan=__WEBPACK_IMPORTED_MODULE_9_sono___default.a.panner();
 __WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].debug=true;
 function setup() {
-	__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].enqueue("memtest");
-	__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].setQueueCallback(function() { proceed(); });
-	__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].loadQueue();
-//	st.setState(1);
+/*
+	so.enqueue("memtest");
+	so.setQueueCallback(function() { proceed(); });
+	so.loadQueue();
+	*/
+	__WEBPACK_IMPORTED_MODULE_8__stateMachine__["a" /* st */].setState(1);
 }
 	function proceed() {
 		var sound=__WEBPACK_IMPORTED_MODULE_6__soundObject__["a" /* so */].create("memtest");
