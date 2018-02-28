@@ -29,6 +29,8 @@ return Math.random() * (max - min) + min;
 sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
-
+percent(int1,int2) {
+return int1*100/int2;
+}
 }
 export var utils=new GameUtils();

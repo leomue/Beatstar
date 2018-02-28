@@ -1,6 +1,7 @@
 import $ from 'jquery';
+import Cryptr from 'cryptr';
 import 'hash-files';
-import 'fs-walk';
+import walk from 'fs-walk';
 import fs from 'fs';
 import os from 'os'
 import {ScrollingText} from './scrollingText';
@@ -13,6 +14,7 @@ import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
 //import test from './test.js'
 export var actionKeys=[0,0,KeyEvent.DOM_VK_SPACE,KeyEvent.DOM_VK_TAB,KeyEvent.DOM_VK_RETURN,KeyEvent.DOM_VK_BACK_SPACE,KeyEvent.DOM_VK_UP,KeyEvent.DOM_VK_DOWN,KeyEvent.DOM_VK_RIGHT,KeyEvent.DOM_VK_LEFT];
+export var mangle=new Cryptr("sdf jkl wer uio");
 import {KeyboardInput} from './input.js'
 export var lang=1;
 export var langs=["","english","spanish"]
@@ -79,12 +81,12 @@ var actions=0;
 export async function browsePacks(browsing=1) {
 if (!fs.existsSync(os.homedir()+"/beatpacks/hashes.db")) {
 var error=0;
-if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take 5 minutes or more, so go get a coffee or something...","\n",function() { rebuildHashes() });
-if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar unos 5 o 10 minutos, así que ves a por un café o algo...","\n",function() { rebuildHashes() });
+if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take a few seconds...","\n",function() { rebuildHashes() });
+if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar unos segundos...","\n",function() { rebuildHashes() });
 return;
 }
 try {
-var packs=JSON.parse(fs.readFileSync(os.homedir()+"/beatpacks/hashes.db"));
+var packs=JSON.parse(mangle.decrypt(fs.readFileSync(os.homedir()+"/beatpacks/hashes.db")));
 }
 catch(err) {
 var error=0;
@@ -101,15 +103,15 @@ so.directory="";
 var toRemove=new Array();
 browseArray.forEach(function(i,v) {
 		if (!fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
-	console.log("discard "+i.name+" at i0ndex "+v);
 	toRemove.push(v);
+	return;
 	}
 });
 toRemove.forEach(function(i) {
 	browseArray.splice(i,1);
 });
 if (browseArray.length<1) {
-	new ScrollingText(strings.get(lang,nopacks),"\n",st.setState(2));
+	new ScrollingText(strings.get(lang,"nopacks"),"\n",st.setState(2));
 	return;
 }
 var event=new KeyboardInput();
@@ -117,12 +119,29 @@ event.init();
 var snd;
 if (lang==1) speech.speak("ready. Browsing "+browseArray.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
 if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.");
+var exitNow=0;
 while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
 //enter
 if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 if (browsePosition!=-1) {
+var size=0;
+walk.filesSync(os.homedir()+"/beatpacks/"+browseArray[browsePosition].name,function(pb,pf,stat) {
+size+=stat.size;
+});
+if (size!=browseArray[browsePosition].hash){
+browsing=0;
+//todo: remove from unlocked
+speech.speak(strings.get(lang,"tamperWarning"));
+while(!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+await utils.sleep(10);
+setTimeout(function() {
+speech.speak(strings.get(lang,"tamperWarning"));
+},5500);
+}
+}
+if (browsing>0) {
 pack=browseArray[browsePosition].name;
 packdir=os.homedir()+"/beatpacks/"+pack+"/";
 so.directory="./sounds/";
@@ -130,6 +149,7 @@ so.kill(function() {
 st.setState(2);
 });
 return;
+}
 }
 }
 //down arrow
@@ -163,7 +183,9 @@ await utils.sleep(5);
 }
 if (timeout!=-1) clearTimeout(-1);
 so.directory="./sounds/";
+so.kill(function() {
 st.setState(2);
+});
 }
 export function rebuildHashes() {
 //var hash=require('hash-files');
@@ -178,12 +200,12 @@ if (!fs.existsSync(pb+"/"+pf+"/bpm.txt")) {
 corrupts+="\n"+pf;
 return; //discard non packs
 }
-var theFiles=new Array();
+var theFiles=0;
 var path=pb+"/"+pf+"/";
 walk.filesSync(path,function(pb,pf,stat) {
-theFiles.push(path+pf);
+theFiles+=stat.size;
 });
-newHash=hash.sync({files: theFiles,noGlob:true});
+newHash=theFiles;
 var fileData=fs.readFileSync(path+"bpm.txt","utf8");
 var levelsa=fileData.split(",");
 var levels=levelsa.length-1;
@@ -198,6 +220,7 @@ packs.push(temp);
 });
 so.directory="./sounds/";
 var write=JSON.stringify(packs);
+write=mangle.encrypt(write);
 fs.writeFileSync(os.homedir()+"/beatpacks/hashes.db",write);
 if (corrupts!="") {
 if (lang==1) new ScrollingText("one thing before you go... the following packs are corrupt and should be looked at."+corrupts,"\n",function() {st.setState(2)});

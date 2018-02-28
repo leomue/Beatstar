@@ -5,9 +5,10 @@ this.strings={};
 this.strings[1]={
 "mStart":"Start Game",
 "mLearn":"Learn the pack",
+"tamperWarning":"This pack has been tampered with and is no longer unlocked. Press enter to continue.",
 "mNew":"Get new packs",
 "mBrowse":"Browse downloaded packs",
-"mHashes":"Rebuild packs folder (can take a few minutes)",
+"mHashes":"Rebuild packs folder",
 }
 }
 get(lang,what) {

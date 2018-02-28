@@ -51,8 +51,7 @@ onload: function() { that.doneLoading()
 			}
 	unload() {
 		this.sound.unload();
-		console.log("state "+this.sound.state());
-	}
+			}
 	get volume() {
 	return this.sound.volume();
 	}

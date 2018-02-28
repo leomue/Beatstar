@@ -131,8 +131,7 @@ onload: function() { that.doneLoading()
 			}
 	unload() {
 		this.sound.unload();
-		console.log("state "+this.sound.state());
-	}
+			}
 	get volume() {
 	return this.sound.volume();
 	}
@@ -431,6 +430,7 @@ if (typeof speech == "undefined") var speech = new TTS();
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actionKeys", function() { return actionKeys; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mangle", function() { return mangle; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lang", function() { return lang; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "langs", function() { return langs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pack", function() { return pack; });
@@ -440,23 +440,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["rebuildHashes"] = rebuildHashes;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_hash_files__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_hash_files___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_hash_files__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_fs_walk__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_fs_walk___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_fs_walk__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_fs__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_fs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_fs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_os__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_os___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_os__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__scrollingText__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__strings__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__soundHandler__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__tts__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utilities__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__soundObject__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__keycodes__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__stateMachine__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__input_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_cryptr__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_cryptr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_cryptr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hash_files__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hash_files___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_hash_files__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_fs_walk__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_fs_walk___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_fs_walk__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_fs__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_fs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_fs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_os__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_os___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_os__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scrollingText__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__strings__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__soundHandler__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__tts__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__utilities__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__soundObject__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__keycodes__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__stateMachine__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__input_js__ = __webpack_require__(8);
+
 
 
 
@@ -471,47 +474,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 //import test from './test.js'
-var actionKeys=[0,0,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_SPACE,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_TAB,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_RETURN,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_BACK_SPACE,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_UP,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_DOWN,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_RIGHT,__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_LEFT];
+var actionKeys=[0,0,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_SPACE,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_TAB,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_RETURN,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_BACK_SPACE,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_UP,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_DOWN,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_RIGHT,__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_LEFT];
+var mangle=new __WEBPACK_IMPORTED_MODULE_1_cryptr___default.a("sdf jkl wer uio");
 
 var lang=1;
 var langs=["","english","spanish"]
 var pack="default";
-var packdir=__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks/"+pack+"/";
+var packdir=__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/"+pack+"/";
 document.addEventListener("DOMContentLoaded",setup);
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].debug=true;
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].debug=true;
 function setup() {
 /*
 	so.enqueue("memtest");
 	so.setQueueCallback(function() { proceed(); });
 	so.loadQueue();
 	*/
-	__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(1);
+	__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(1);
 }
 	function proceed() {
-		var sound=__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].create("memtest");
+		var sound=__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].create("memtest");
 		sound.volume=0.3;
 		sound.play();
-		__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].destroy("memtest");
+		__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].destroy("memtest");
 	}
 //st.setState(1);
 //document.removeEventListener("DOMContentLoaded",setup);
 
 async function learnPack() {
 
-var pool=new __WEBPACK_IMPORTED_MODULE_7__soundHandler__["a" /* SoundHandler */]();
+var pool=new __WEBPACK_IMPORTED_MODULE_8__soundHandler__["a" /* SoundHandler */]();
 var actions=0;
 				for (var i=1;i<=10;i++) {
-				if (__WEBPACK_IMPORTED_MODULE_3_fs___default.a.existsSync(packdir+"a"+i+".ogg")) {
+				if (__WEBPACK_IMPORTED_MODULE_4_fs___default.a.existsSync(packdir+"a"+i+".ogg")) {
 				actions=i;
 								}
 				}
-				if (lang==1) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak("This pack has "+actions+" actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).");
-				if (lang==2) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak("Este pack tiene "+actions+" acciones. Las teclas t�picas son espacio, tabulador, enter, bretroceso, y opcionalmente las flechas. Si has reasignado las teclas, puedes usarlas. Para escuchar la acci�n de parar, pulsa la tecla del punto (a la derecha de la coma).");
-				var event=new __WEBPACK_IMPORTED_MODULE_13__input_js__["a" /* KeyboardInput */]();
+				if (lang==1) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak("This pack has "+actions+" actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).");
+				if (lang==2) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak("Este pack tiene "+actions+" acciones. Las teclas t�picas son espacio, tabulador, enter, bretroceso, y opcionalmente las flechas. Si has reasignado las teclas, puedes usarlas. Para escuchar la acci�n de parar, pulsa la tecla del punto (a la derecha de la coma).");
+				var event=new __WEBPACK_IMPORTED_MODULE_14__input_js__["a" /* KeyboardInput */]();
 				event.init();
-				__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="";
-				while (!event.isJustPressed(__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_Q)) {
-				await __WEBPACK_IMPORTED_MODULE_9__utilities__["a" /* utils */].sleep(10);
+				__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="";
+				while (!event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_Q)) {
+				await __WEBPACK_IMPORTED_MODULE_10__utilities__["a" /* utils */].sleep(10);
 				if (event.isJustPressed(actionKeys[2]))
 				pool.playStatic(packdir+"a"+2,0);
 								if (event.isJustPressed(actionKeys[3]))
@@ -528,27 +532,27 @@ var actions=0;
 				pool.playStatic(packdir+"a"+8,0);
 				if (event.isJustPressed(actionKeys[9]))
 				pool.playStatic(packdir+"a"+9,0);
-				if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_PERIOD))
+				if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_PERIOD))
 				pool.playStatic(packdir+"a"+1,0);
 				}
 				pool.destroy();
-				__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="./sounds/";
-				__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2);
+				__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="./sounds/";
+				__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2);
 }
 async function browsePacks(browsing=1) {
-if (!__WEBPACK_IMPORTED_MODULE_3_fs___default.a.existsSync(__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks/hashes.db")) {
+if (!__WEBPACK_IMPORTED_MODULE_4_fs___default.a.existsSync(__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/hashes.db")) {
 var error=0;
-if (lang==1) error=new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */]("The packs folder hashes need to be rebuilt to continue. This can take 5 minutes or more, so go get a coffee or something...","\n",function() { rebuildHashes() });
-if (lang==2) error=new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */]("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar unos 5 o 10 minutos, as� que ves a por un caf� o algo...","\n",function() { rebuildHashes() });
+if (lang==1) error=new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */]("The packs folder hashes need to be rebuilt to continue. This can take a few seconds...","\n",function() { rebuildHashes() });
+if (lang==2) error=new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */]("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar unos segundos...","\n",function() { rebuildHashes() });
 return;
 }
 try {
-var packs=JSON.parse(__WEBPACK_IMPORTED_MODULE_3_fs___default.a.readFileSync(__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks/hashes.db"));
+var packs=JSON.parse(mangle.decrypt(__WEBPACK_IMPORTED_MODULE_4_fs___default.a.readFileSync(__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/hashes.db")));
 }
 catch(err) {
 var error=0;
-if (lang==1) error=new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */]("The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...","\n",function() { rebuildHashes() });
-if (lang==2) error=new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */]("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato as� que ves a por un caf� o algo...","\n",function() { rebuildHashes() });
+if (lang==1) error=new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */]("The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...","\n",function() { rebuildHashes() });
+if (lang==2) error=new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */]("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato as� que ves a por un caf� o algo...","\n",function() { rebuildHashes() });
 return;
 }
 var timeout=-1;
@@ -556,73 +560,93 @@ var browseArray=[];
 var browsePosition=-1;
 
 if (browsing==1) browseArray=packs;
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="";
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="";
 var toRemove=new Array();
 browseArray.forEach(function(i,v) {
-		if (!__WEBPACK_IMPORTED_MODULE_3_fs___default.a.existsSync(__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
-	console.log("discard "+i.name+" at i0ndex "+v);
+		if (!__WEBPACK_IMPORTED_MODULE_4_fs___default.a.existsSync(__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
 	toRemove.push(v);
+	return;
 	}
 });
 toRemove.forEach(function(i) {
 	browseArray.splice(i,1);
 });
 if (browseArray.length<1) {
-	new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */](__WEBPACK_IMPORTED_MODULE_6__strings__["a" /* strings */].get(lang,nopacks),"\n",__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2));
+	new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */](__WEBPACK_IMPORTED_MODULE_7__strings__["a" /* strings */].get(lang,"nopacks"),"\n",__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2));
 	return;
 }
-var event=new __WEBPACK_IMPORTED_MODULE_13__input_js__["a" /* KeyboardInput */]();
+var event=new __WEBPACK_IMPORTED_MODULE_14__input_js__["a" /* KeyboardInput */]();
 event.init();
 var snd;
-if (lang==1) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak("ready. Browsing "+browseArray.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
-if (lang==2) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder p�gina y avanzar p�gina para moverte de 20 en 20.");
-while (!event.isJustPressed(__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_Q) && browsing>0) {
+if (lang==1) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak("ready. Browsing "+browseArray.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
+if (lang==2) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder p�gina y avanzar p�gina para moverte de 20 en 20.");
+var exitNow=0;
+while (!event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_Q) && browsing>0) {
 //enter
-if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_RETURN)) {
+if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_RETURN)) {
 if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 if (browsePosition!=-1) {
+var size=0;
+__WEBPACK_IMPORTED_MODULE_3_fs_walk___default.a.filesSync(__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/"+browseArray[browsePosition].name,function(pb,pf,stat) {
+size+=stat.size;
+});
+if (size!=browseArray[browsePosition].hash){
+browsing=0;
+//todo: remove from unlocked
+__WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(__WEBPACK_IMPORTED_MODULE_7__strings__["a" /* strings */].get(lang,"tamperWarning"));
+while(!event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_RETURN)) {
+await __WEBPACK_IMPORTED_MODULE_10__utilities__["a" /* utils */].sleep(10);
+setTimeout(function() {
+__WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(__WEBPACK_IMPORTED_MODULE_7__strings__["a" /* strings */].get(lang,"tamperWarning"));
+},5500);
+}
+}
+if (browsing>0) {
 pack=browseArray[browsePosition].name;
-packdir=__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks/"+pack+"/";
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="./sounds/";
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].kill(function() {
-__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2);
+packdir=__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/"+pack+"/";
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="./sounds/";
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].kill(function() {
+__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2);
 });
 return;
 }
 }
+}
 //down arrow
-if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_DOWN)) {
+if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_DOWN)) {
 if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition++;
 if (browsePosition>browseArray.length-1) browsePosition=0;
-if (lang==1) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
-if (lang==2) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
+if (lang==1) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
+if (lang==2) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-snd=__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].create(browseArray[browsePosition].preview);
+snd=__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].create(browseArray[browsePosition].preview);
 snd.play();
 },1000);
 }
 //up arrow
-if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_11__keycodes__["a" /* KeyEvent */].DOM_VK_UP)) {
+if (event.isJustPressed(__WEBPACK_IMPORTED_MODULE_12__keycodes__["a" /* KeyEvent */].DOM_VK_UP)) {
 if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition--;
-__WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak(browsePosition);
+__WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(browsePosition);
 if (browsePosition<0) browsePosition=browseArray.length-1;
-if (lang==1) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
-if (lang==2) __WEBPACK_IMPORTED_MODULE_8__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
+if (lang==1) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
+if (lang==2) __WEBPACK_IMPORTED_MODULE_9__tts__["b" /* speech */].speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
-snd=__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].create(browseArray[browsePosition].preview);
+snd=__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].create(browseArray[browsePosition].preview);
 snd.play();
 },1000);
 }
-await __WEBPACK_IMPORTED_MODULE_9__utilities__["a" /* utils */].sleep(5);
+await __WEBPACK_IMPORTED_MODULE_10__utilities__["a" /* utils */].sleep(5);
 }
 if (timeout!=-1) clearTimeout(-1);
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="./sounds/";
-__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2);
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="./sounds/";
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].kill(function() {
+__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2);
+});
 }
 function rebuildHashes() {
 //var hash=require('hash-files');
@@ -631,19 +655,19 @@ var corrupts="";
 //var fs=require('fs');
 var newHash="abc";
 var packs=new Array();
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="";
-walk.dirsSync(__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks",function(pb,pf,stat,next) {
-if (!__WEBPACK_IMPORTED_MODULE_3_fs___default.a.existsSync(pb+"/"+pf+"/bpm.txt")) {
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="";
+__WEBPACK_IMPORTED_MODULE_3_fs_walk___default.a.dirsSync(__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks",function(pb,pf,stat,next) {
+if (!__WEBPACK_IMPORTED_MODULE_4_fs___default.a.existsSync(pb+"/"+pf+"/bpm.txt")) {
 corrupts+="\n"+pf;
 return; //discard non packs
 }
-var theFiles=new Array();
+var theFiles=0;
 var path=pb+"/"+pf+"/";
-walk.filesSync(path,function(pb,pf,stat) {
-theFiles.push(path+pf);
+__WEBPACK_IMPORTED_MODULE_3_fs_walk___default.a.filesSync(path,function(pb,pf,stat) {
+theFiles+=stat.size;
 });
-newHash=hash.sync({files: theFiles,noGlob:true});
-var fileData=__WEBPACK_IMPORTED_MODULE_3_fs___default.a.readFileSync(path+"bpm.txt","utf8");
+newHash=theFiles;
+var fileData=__WEBPACK_IMPORTED_MODULE_4_fs___default.a.readFileSync(path+"bpm.txt","utf8");
 var levelsa=fileData.split(",");
 var levels=levelsa.length-1;
 if (levelsa[levels]=="") levels--;
@@ -655,16 +679,17 @@ var temp={
 }
 packs.push(temp);
 });
-__WEBPACK_IMPORTED_MODULE_10__soundObject__["a" /* so */].directory="./sounds/";
+__WEBPACK_IMPORTED_MODULE_11__soundObject__["a" /* so */].directory="./sounds/";
 var write=JSON.stringify(packs);
-__WEBPACK_IMPORTED_MODULE_3_fs___default.a.writeFileSync(__WEBPACK_IMPORTED_MODULE_4_os___default.a.homedir()+"/beatpacks/hashes.db",write);
+write=mangle.encrypt(write);
+__WEBPACK_IMPORTED_MODULE_4_fs___default.a.writeFileSync(__WEBPACK_IMPORTED_MODULE_5_os___default.a.homedir()+"/beatpacks/hashes.db",write);
 if (corrupts!="") {
-if (lang==1) new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */]("one thing before you go... the following packs are corrupt and should be looked at."+corrupts,"\n",function() {__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2)});
-if (lang==2) new __WEBPACK_IMPORTED_MODULE_5__scrollingText__["a" /* ScrollingText */]("Antes de que te vayas... los siguientes packs est�n corruptos y deber�as echar un vistazo a ver qu� pasa."+corrupts,"\n",function() {
-	__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2)});
+if (lang==1) new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */]("one thing before you go... the following packs are corrupt and should be looked at."+corrupts,"\n",function() {__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2)});
+if (lang==2) new __WEBPACK_IMPORTED_MODULE_6__scrollingText__["a" /* ScrollingText */]("Antes de que te vayas... los siguientes packs est�n corruptos y deber�as echar un vistazo a ver qu� pasa."+corrupts,"\n",function() {
+	__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2)});
 }
 else {
-__WEBPACK_IMPORTED_MODULE_12__stateMachine__["a" /* st */].setState(2);
+__WEBPACK_IMPORTED_MODULE_13__stateMachine__["a" /* st */].setState(2);
 }
 }
 
@@ -12349,9 +12374,10 @@ this.strings={};
 this.strings[1]={
 "mStart":"Start Game",
 "mLearn":"Learn the pack",
+"tamperWarning":"This pack has been tampered with and is no longer unlocked. Press enter to continue.",
 "mNew":"Get new packs",
 "mBrowse":"Browse downloaded packs",
-"mHashes":"Rebuild packs folder (can take a few minutes)",
+"mHashes":"Rebuild packs folder",
 }
 }
 get(lang,what) {
@@ -12397,7 +12423,9 @@ return Math.random() * (max - min) + min;
 sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
-
+percent(int1,int2) {
+return int1*100/int2;
+}
 }
 var utils=new GameUtils();
 
@@ -21801,9 +21829,9 @@ class Menu {
 		__WEBPACK_IMPORTED_MODULE_4_jquery___default()(document).off("keypress");
 		if (typeof this.music!="undefined") this.fade();
 		var that=this;
-		this.sndChoose.sound.once("end",function(){
-		that.selectCallback(toReturn);
-		});
+				setTimeout(function(){
+that.selectCallback(toReturn);
+		},700);
 	}
 }
 
@@ -22082,7 +22110,15 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		this.scoreTimer.resume();
 }
 calculateScore() {
-//speech.speak(this.scoreTimer.elapsed);
+var bpm=this.bpms[this.level-1];
+var score=__WEBPACK_IMPORTED_MODULE_7__utilities__["a" /* utils */].percent(this.scoreTimer.elapsed,bpm/2);
+if (this.scoreTimer.elapsed>bpm/2) score=100;
+if (this.scoreTimer.elapsed>bpm/2-20 && this.scoreTimer.elapsed<bpm/2+20) score=200;
+var good=bpm/2;
+var timev=this.scoreTimer.elapsed-good;
+var remscore=timev/bpm*100;
+this.score=Math.ceil(score-remscore);
+__WEBPACK_IMPORTED_MODULE_2__tts__["b" /* speech */].speak(this.score);
 }
 queueLevels() {
 var levelLimit=this.level+1;
@@ -22197,6 +22233,51 @@ function change(value) {
 }
 
 module.exports = Timer;
+
+
+/***/ }),
+/* 47 */,
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var crypto = __webpack_require__(30);
+
+function Cryptr(secret, algorithm){
+	if(!secret || typeof secret !== 'string'){
+		secret = 'defaultSecret';
+		throw new Error('Cryptr: secret must be a non-0-length string');
+	}
+
+	algorithm = algorithm || 'aes256';
+
+	if(typeof algorithm !== 'string'){
+		throw new Error('Cryptr: algorithm must be a string, see https://nodejs.org/api/crypto.html for details');
+	}
+
+	this.encrypt = function encrypt(value){
+		if(value == null){
+			throw new Error('value must not be null or undefined');
+		}
+
+		value = String(value);
+
+		var cipher = crypto.createCipher(algorithm, secret);
+		return cipher.update(value, 'utf8', 'hex') + cipher.final('hex');
+	};
+
+	this.decrypt = function decrypt(value){
+		if(value == null){
+			throw new Error('value must not be null or undefined');
+		}
+
+		value = String(value);
+
+		var decipher = crypto.createDecipher(algorithm, secret);
+		return decipher.update(value, 'hex', 'utf8') + decipher.final('utf8');
+	};
+}
+
+module.exports = Cryptr;
 
 
 /***/ })

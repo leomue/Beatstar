@@ -251,9 +251,9 @@ class Menu {
 		$(document).off("keypress");
 		if (typeof this.music!="undefined") this.fade();
 		var that=this;
-		this.sndChoose.sound.once("end",function(){
-		that.selectCallback(toReturn);
-		});
+				setTimeout(function(){
+that.selectCallback(toReturn);
+		},700);
 	}
 }
 export {Menu}
