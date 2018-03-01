@@ -211,8 +211,9 @@ if (!this.playing && this.level>1) {
 									this.queueLevels();
 								}
 									this.action=0;
-						this.actionCompleted=false;
+															this.actionCompleted=false;
 	this.currentAction=0;
+	if (!this.playing && this.level>1) this.currentAction++;
 	this.numberOfActions=utils.randomInt(6+this.level,this.level*2+6);
 	}
 unload() {

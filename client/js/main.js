@@ -176,10 +176,12 @@ snd.play();
 var chars=event.getChars();
 if (chars!="") {
 //first letter
+var stop=false;
 browseArray.forEach(function(v,i) {
 var str=v.name.toLowerCase()
 if (str.slice(0,1)==chars[0]) {
-browsePosition=i;
+if (!stop) browsePosition=i;
+stop=true;
 }
 });
 if (typeof snd!="undefined") snd.destroy();
