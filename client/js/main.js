@@ -98,18 +98,25 @@ var timeout=-1;
 var browseArray=[];
 var browsePosition=-1;
 
-if (browsing==1) browseArray=packs;
+if (browsing==1) {
+packs.forEach(function(i,v) {
+		if (fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
+if (browseArray.length==0) {
+browseArray.push(i);
+} else {
+console.log(i.name);
+console.log("last "+browseArray[browseArray.length-1]);
+if (i.name.slice(0,1)<browseArray[browseArray.length-1].name.slice(0.1)) {
+browseArray.splice(browseArray.length-1,0,i);
+} else {
+browseArray.push(i);
+}
+		}
+		}
+});
+
+}
 so.directory="";
-var toRemove=new Array();
-browseArray.forEach(function(i,v) {
-		if (!fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
-	toRemove.push(v);
-	return;
-	}
-});
-toRemove.forEach(function(i) {
-	browseArray.splice(i,1);
-});
 if (browseArray.length<1) {
 	new ScrollingText(strings.get(lang,"nopacks"),"\n",st.setState(2));
 	return;
@@ -121,6 +128,7 @@ if (lang==1) speech.speak("ready. Browsing "+browseArray.length+" packs. Press a
 if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.");
 var exitNow=0;
 while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
+speech.speak(event.getChars());
 //enter
 if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 if (typeof snd!="undefined") snd.destroy();

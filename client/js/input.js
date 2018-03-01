@@ -68,6 +68,17 @@ class KeyboardInput {
 	});
 	return kd;
 	}
+	getChars() {
+	var kd=[];
+	for (var i=0;i<this.justPressed.length;i++) {
+	if (this.justPressed[i] && String.fromCharCode(this.justPressed[i])!="") {
+	kd+=String.fromCharCode(this.justPressed[i]);
+	this.justPressed.splice(i,1);
+			}
+	}
+		return kd;
+	}
+	
 	keysPressed() {
 	var kd=[];
 	this.justPressed.forEach(function(v,i) {
@@ -78,6 +89,7 @@ class KeyboardInput {
 	this.justPressed.splice();
 	return kd;
 	}
+	
 	
 	keysReleased() {
 	var kd=[];

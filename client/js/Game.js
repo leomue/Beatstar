@@ -119,8 +119,7 @@ async fail() {
 		while(this.pool.staticSounds[failsound].sound.playing) {
 		await utils.sleep(10);
 		if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
-		speech.speak("meow");
-		this.pool.staticSounds[failsound].sound.unload();
+				this.pool.staticSounds[failsound].sound.unload();
 		}
 		}
 		so.resetQueue();
