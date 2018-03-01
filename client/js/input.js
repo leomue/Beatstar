@@ -1,9 +1,11 @@
 import $ from "jquery";
+import {speech} from './tts'
 'use strict';
 class KeyboardInput {
 	constructor() {
 		this.keyDown = [];
 		this.justPressed = [];
+		this.chars=[]
 		this.justReleased = [];
 		this.justPressedEventCallback = null;
 	}
@@ -14,6 +16,7 @@ class KeyboardInput {
 // 		$(document).keyup(function(event) { that.handleKeyUp(event); });
 		document.addEventListener("keydown", function(event) { that.handleKeyDown(event); });
 		document.addEventListener("keyup", function(event) { that.handleKeyUp(event); });
+				document.addEventListener("keypress", function(event) { that.handleChar(event); });
 			}
 	
 	handleKeyDown(event) {
@@ -25,7 +28,12 @@ class KeyboardInput {
 			if (typeof this.justPressedEventCallback != "undefined" && this.justPressedEventCallback != null) this.justPressedEventCallback(event.which);
 		}
 	}
-	
+handleChar(char) {
+if (String.fromCharCode(char.which)!="") {
+this.chars+=String.fromCharCode(char.which);
+}
+	}
+		
 	
 	handleKeyUp(event) {
 		
@@ -33,7 +41,9 @@ class KeyboardInput {
 			this.keyDown[event.which] = false;
 			this.justPressed[event.which] = false;
 			this.justReleased[event.which] = true;
+			
 		}
+		this.chars="";
 	}
 	
 	isDown(event) {
@@ -69,13 +79,8 @@ class KeyboardInput {
 	return kd;
 	}
 	getChars() {
-	var kd=[];
-	for (var i=0;i<this.justPressed.length;i++) {
-	if (this.justPressed[i] && String.fromCharCode(this.justPressed[i])!="") {
-	kd+=String.fromCharCode(this.justPressed[i]);
-	this.justPressed.splice(i,1);
-			}
-	}
+	var kd=this.chars;
+	this.chars="";
 		return kd;
 	}
 	

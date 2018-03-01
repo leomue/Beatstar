@@ -128,7 +128,6 @@ if (lang==1) speech.speak("ready. Browsing "+browseArray.length+" packs. Press a
 if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.");
 var exitNow=0;
 while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
-speech.speak(event.getChars());
 //enter
 if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 if (typeof snd!="undefined") snd.destroy();
@@ -173,6 +172,25 @@ timeout=setTimeout(function() {
 snd=so.create(browseArray[browsePosition].preview);
 snd.play();
 },1000);
+}
+var chars=event.getChars();
+if (chars!="") {
+//first letter
+browseArray.forEach(function(v,i) {
+var str=v.name.toLowerCase()
+if (str.slice(0,1)==chars[0]) {
+browsePosition=i;
+}
+});
+if (typeof snd!="undefined") snd.destroy();
+if (timeout!=-1) clearTimeout(timeout);
+if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
+if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
+timeout=setTimeout(function() {
+snd=so.create(browseArray[browsePosition].preview);
+snd.play();
+},1000);
+
 }
 //up arrow
 if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
