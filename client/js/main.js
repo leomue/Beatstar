@@ -158,6 +158,7 @@ if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition++;
 if (browsePosition>browseArray.length-1) browsePosition=0;
+speech.speak(browsePosition);
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {
@@ -170,8 +171,9 @@ if (event.isJustPressed(KeyEvent.DOM_VK_UP)) {
 if (typeof snd!="undefined") snd.destroy();
 if (timeout!=-1) clearTimeout(timeout);
 browsePosition--;
-speech.speak(browsePosition);
+
 if (browsePosition<0) browsePosition=browseArray.length-1;
+//speech.speak(browsePosition);
 if (lang==1) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" levels.");
 if (lang==2) speech.speak(browseArray[browsePosition].name+". "+browseArray[browsePosition].levels+" niveles.");
 timeout=setTimeout(function() {

@@ -6,7 +6,6 @@ var playOnceTimer;
 class SoundObjectItem {
 	constructor(file, callback=0, tag=0) {
 		var that = this;
-				this.onMemory=0;
 				this.fileName = file;
 this.sound=new Howl({
 src: file,

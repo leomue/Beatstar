@@ -1,5 +1,15 @@
 'use strict';
+
+
+import {Howl,Howler} from './howler';
 import { so } from './soundObject.js'
+
+// meow.panner.defaults= {
+//     panningModel:'HRTF',
+// 	maxDistance:2000
+//     
+//     
+// };
 
 class SoundSource {
 	constructor(file, x=0, y=0, z=0, loop = true) {
@@ -8,9 +18,9 @@ class SoundSource {
 		this.z = z;
 		this.loop = loop;
 		this.sound = so.create(file);
-		//this.pan = this.sound.effects.add(sono.panner());
+		
 		this.sound.loop = loop;
-		this.pan.setPosition(this.x, this.y, this.z);
+		this.sound.pos(this.x, this.y, this.z);
 		this.rate = 1;
 		this.speed = 0;
 		this.minRate = 0.8;
@@ -22,7 +32,7 @@ class SoundSource {
 	}
 	
 	play() {
-		this.sound.seek(0);
+		// this.sound.seek(0);
 		this.sound.play();
 	}
 	
@@ -30,7 +40,7 @@ class SoundSource {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.pan.setPosition(this.x, this.y, this.z);
+		this.sound.pos(this.x, this.y, this.z);
 	}
 	
 	update() {
@@ -71,9 +81,9 @@ class SoundSource {
 		this.speed = speed;
 	}
 	destroy() {
-		this.sound.destroy();
+		this.sound.unload();
 		this.toDestroy=true;
 	}
 }
 
-export {SoundSource}
+export { SoundSource }
