@@ -101,26 +101,22 @@ var browsePosition=-1;
 if (browsing==1) {
 packs.forEach(function(i,v) {
 		if (fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
-if (browseArray.length==0) {
-browseArray.push(i);
-} else {
-console.log(i.name);
-console.log("last "+browseArray[browseArray.length-1]);
-if (i.name.slice(0,1)<browseArray[browseArray.length-1].name.slice(0.1)) {
-browseArray.splice(browseArray.length-1,0,i);
-} else {
 browseArray.push(i);
 }
-		}
-		}
-});
-
+		});
 }
 so.directory="";
 if (browseArray.length<1) {
 	new ScrollingText(strings.get(lang,"nopacks"),"\n",st.setState(2));
 	return;
 }
+browseArray.sort(function(a,b) {
+var nameA=a.name.toLowerCase();
+var nameB=b.name.toLowerCase();
+if (nameA<nameB) return -1;
+if (nameA>nameB) return 1;
+return 0;
+});
 var event=new KeyboardInput();
 event.init();
 var snd;

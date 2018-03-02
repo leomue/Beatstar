@@ -94,7 +94,9 @@ this.chars+=String.fromCharCode(char.which);
 	this.justPressed.splice();
 	return kd;
 	}
-	
+	releaseAllKeys() {
+
+	}
 	
 	keysReleased() {
 	var kd=[];

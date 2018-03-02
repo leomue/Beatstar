@@ -245,6 +245,7 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		snd.seek(this.pauseTime);
 		this.timer.start();
 		this.scoreTimer.resume();
+		this.input.keysPressed(); //we need this so that it doesn't fail immediately after unpause if you switch windows.
 }
 calculateScore() {
 var bpm=this.bpms[this.level-1];
