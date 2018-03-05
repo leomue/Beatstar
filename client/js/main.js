@@ -98,7 +98,7 @@ var timeout=-1;
 var browseArray=[];
 var browsePosition=-1;
 
-if (browsing==1) {
+if (browsing>0) {
 packs.forEach(function(i,v) {
 		if (fs.existsSync(os.homedir()+"/beatpacks/"+i.name+"/bpm.txt")) {
 browseArray.push(i);
