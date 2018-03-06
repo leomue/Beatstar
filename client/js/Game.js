@@ -248,7 +248,7 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 		this.input.keysPressed(); //we need this so that it doesn't fail immediately after unpause if you switch windows.
 }
 calculateScore() {
-var bpm=this.bpms[this.level-1];
+var bpm=this.bpms[this.level];
 var time=this.scoreTimer.elapsed;
 var score=Math.ceil(((bpm/2)-Math.abs((bpm/2)-time))/(bpm/2)*100);
 speech.speak(score);
