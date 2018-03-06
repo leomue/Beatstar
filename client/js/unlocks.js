@@ -5,10 +5,7 @@ import {pack,packdir} from './main';
 import {ScrollingText} from './scrollingText';
 class Settings {
 constructor() {
-this.player={
-"_CASH":0,
-"default":3013074,
-}
+this.beatcoins=0,
 }
 }
 export {Settings}
