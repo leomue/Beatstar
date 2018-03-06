@@ -13,7 +13,13 @@ this.strings[1]={
 }
 }
 get(lang,what) {
+if (typeof this.strings[lang][what]!="undefined") {
 return this.strings[lang][what];
+}
+if (typeof this.strings[1][what]!="undefined") {
+return this.strings[1][what];
+}
+return "-1";
 }
 }
 export var strings=new Strings();
