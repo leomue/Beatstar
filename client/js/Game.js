@@ -249,14 +249,9 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 }
 calculateScore() {
 var bpm=this.bpms[this.level-1];
-var score=utils.percent(this.scoreTimer.elapsed,bpm/2);
-if (this.scoreTimer.elapsed>bpm/2) score=100;
-if (this.scoreTimer.elapsed>bpm/2-20 && this.scoreTimer.elapsed<bpm/2+20) score=200;
-var good=bpm/2;
-var timev=this.scoreTimer.elapsed-good;
-var remscore=timev/bpm*100;
-this.score=Math.ceil(score-remscore);
-speech.speak(this.score);
+var time=this.scoreTimer.elapsed;
+var score=((bpm/2)-math.abs((bpm/2)-time))/(bpm/2)*100;
+speech.speak(score);
 }
 queueLevels() {
 var levelLimit=this.level+1;

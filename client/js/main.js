@@ -94,19 +94,6 @@ if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt
 if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato así que ves a por un café o algo...","\n",function() { rebuildHashes() });
 return;
 }
-var escape=false;
-if (packs.length==0) {
-var error=new ScrollingText(strings.get(lang,"nopacks"),"\n",function() {
-//todo
-escape=true;
-});
-}
-if (escape) {
-error.destroy();
-console.log("die!");
-st.setState(2);
-return;
-}
 var timeout=-1;
 var browseArray=[];
 var browsePosition=-1;

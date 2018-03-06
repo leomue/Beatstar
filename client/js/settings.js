@@ -6,6 +6,10 @@ import {ScrollingText} from './scrollingText';
 class Settings {
 constructor() {
 this.beatcoins=0,
+this.pack="default",
+this.unlocks={
+"default":0,
+}
 }
 }
 export {Settings}
