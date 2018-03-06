@@ -250,7 +250,7 @@ for (var i=snd.playbackRate;i<=1;i+=0.05) {
 calculateScore() {
 var bpm=this.bpms[this.level-1];
 var time=this.scoreTimer.elapsed;
-var score=((bpm/2)-math.abs((bpm/2)-time))/(bpm/2)*100;
+var score=Math.ceil(((bpm/2)-Math.abs((bpm/2)-time))/(bpm/2)*100);
 speech.speak(score);
 }
 queueLevels() {
