@@ -7,7 +7,7 @@ this.strings[1]={
 "mLearn":"Learn the pack",
 "tamperWarning":"This pack has been tampered with and is no longer unlocked. Press enter to continue.",
 "mNew":"Get new packs",
-"nofound":"No packs were found, you will now be taken to the pack downloader screen.",
+"nopacks":"No packs were found, you will now be taken to the pack downloader screen.",
 "mBrowse":"Browse downloaded packs",
 "mHashes":"Rebuild packs folder",
 }

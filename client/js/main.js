@@ -96,7 +96,7 @@ return;
 }
 var escape=false;
 if (packs.length==0) {
-var error=new ScrollingText(strings.get(lang,"nofound"),"\n",function() {
+var error=new ScrollingText(strings.get(lang,"nopacks"),"\n",function() {
 //todo
 escape=true;
 });
