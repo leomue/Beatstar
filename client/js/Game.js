@@ -116,9 +116,12 @@ return;
 	//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-
+doScore() {
+console.log("score "+this.score);
+}
 	async fail() {
-	this.timer.stop();
+	this.doScore();
+		this.timer.stop();
 	const snd = this.music;
 	so.directory = '';
 	const failsound = this.pool.playStatic(packdir + 'fail', 0);
@@ -142,6 +145,7 @@ st.setState(2);
 	}
 
 	async quit() {
+	this.doScore();
 		this.timer.stop();
 		const snd = this.music;
 		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
@@ -277,8 +281,9 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
-		const mod=(2300*score)/bpm;
+		const mod = Math.ceil((2200 * score) / bpm);
 speech.speak(mod);
+this.score+=mod;
 	}
 
 	queueLevels() {

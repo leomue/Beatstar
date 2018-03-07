@@ -28,9 +28,9 @@ class Strings {
 			return '-1';
 		}
 	rep.forEach((v, i) => {
-	let i1=Number(i)+1;
-		str=str.replace('%' + i1, v);
-				console.log('%'+i1);
+		const i1 = Number(i) + 1;
+		str = str.replace('%' + i1, v);
+				console.log('%' + i1);
 	});
 	return str;
 	}
