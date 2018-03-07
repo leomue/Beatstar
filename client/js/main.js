@@ -1,9 +1,11 @@
 import $ from 'jquery';
 import Cryptr from 'cryptr';
+import {Player} from './player';
 import 'hash-files';
 import walk from 'fs-walk';
 import fs from 'fs';
 import os from 'os'
+import {mainMenu} from './menuHandler';
 import {ScrollingText} from './scrollingText';
 import {strings} from './strings';
 import {SoundHandler} from './soundHandler';
@@ -19,6 +21,7 @@ import {KeyboardInput} from './input.js'
 export var lang=1;
 export var langs=["","english","spanish"]
 export var pack="default";
+export var data="";
 export var packdir=os.homedir()+"/beatpacks/"+pack+"/";
 document.addEventListener("DOMContentLoaded",setup);
 so.debug=true;
@@ -49,7 +52,7 @@ var actions=0;
 								}
 				}
 				if (lang==1) speech.speak("This pack has "+actions+" actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).");
-				if (lang==2) speech.speak("Este pack tiene "+actions+" acciones. Las teclas tÌpicas son espacio, tabulador, enter, bretroceso, y opcionalmente las flechas. Si has reasignado las teclas, puedes usarlas. Para escuchar la acciÛn de parar, pulsa la tecla del punto (a la derecha de la coma).");
+				if (lang==2) speech.speak("Este pack tiene "+actions+" acciones. Las teclas t√≠picas son espacio, tabulador, enter, bretroceso, y opcionalmente las flechas. Si has reasignado las teclas, puedes usarlas. Para escuchar la acci√≥n de parar, pulsa la tecla del punto (a la derecha de la coma).");
 				var event=new KeyboardInput();
 				event.init();
 				so.directory="";
@@ -91,7 +94,7 @@ var packs=JSON.parse(mangle.decrypt(fs.readFileSync(os.homedir()+"/beatpacks/has
 catch(err) {
 var error=0;
 if (lang==1) error=new ScrollingText("The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...","\n",function() { rebuildHashes() });
-if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato asÌ que ves a por un cafÈ o algo...","\n",function() { rebuildHashes() });
+if (lang==2) error=new ScrollingText("Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar un buen rato as√≠ que ves a por un caf√© o algo...","\n",function() { rebuildHashes() });
 return;
 }
 var timeout=-1;
@@ -120,7 +123,7 @@ var event=new KeyboardInput();
 event.init();
 var snd;
 if (lang==1) speech.speak("ready. Browsing "+browseArray.length+" packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.");
-if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder p·gina y avanzar p·gina para moverte de 20 en 20.");
+if (lang==2) speech.speak("listo. tienes "+browseArray.length+" packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder p√°gina y avanzar p√°gina para moverte de 20 en 20.");
 var exitNow=0;
 while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing>0) {
 //enter
@@ -145,8 +148,10 @@ await utils.sleep(10);
 }
 if (browsing>0) {
 pack=browseArray[browsePosition].name;
+data.pack=pack;
 packdir=os.homedir()+"/beatpacks/"+pack+"/";
 so.directory="./sounds/";
+save();
 so.kill(function() {
 st.setState(2);
 });
@@ -249,10 +254,28 @@ write=mangle.encrypt(write);
 fs.writeFileSync(os.homedir()+"/beatpacks/hashes.db",write);
 if (corrupts!="") {
 if (lang==1) new ScrollingText("one thing before you go... the following packs are corrupt and should be looked at."+corrupts,"\n",function() {st.setState(2)});
-if (lang==2) new ScrollingText("Antes de que te vayas... los siguientes packs están corruptos y deberías echar un vistazo a ver qué pasa."+corrupts,"\n",function() {
+if (lang==2) new ScrollingText("Antes de que te vayas... los siguientes packs est√°n corruptos y deber√≠as echar un vistazo a ver qu√© pasa."+corrupts,"\n",function() {
 	st.setState(2)});
 }
 else {
 st.setState(2);
 }
+}
+export function checkPack() {
+try {
+data=JSON.parse(fs.readFileSync(os.homedir()+"/beatpacks/save.dat"));
+}
+catch(err) {
+data=new Player();
+}
+pack=data.pack;
+packdir=os.homedir()+"/beatpacks/"+pack+"/";
+actionKeys=data.actionKeys;
+save();
+mainMenu();
+}
+export function save() {
+var write=JSON.stringify(data);
+//write=mangle.encrypt(write);
+fs.writeFileSync(os.homedir()+"/beatpacks/save.dat",write);
 }

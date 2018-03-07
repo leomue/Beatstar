@@ -3,7 +3,7 @@
 	
 import {KeyboardInput} from './input';
 import {speech} from './tts';
-import {learnPack,browsePacks} from './main';
+import {checkPack,learnPack,browsePacks} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
@@ -40,7 +40,7 @@ event=new KeyboardInput();
 	}
 	else if (state==2) {
 	event=null;
-	mainMenu();
+checkPack();
 	this.state = state;
 	}
 				else if (state == 3) {
