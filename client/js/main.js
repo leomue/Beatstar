@@ -350,18 +350,31 @@ if (!fs.existsSync(packdir + 'bpm.txt')) {
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
-	new ScrollingText(strings.get(lang, 'packError'), '\n', (() => {
+	let text=new ScrollingText(strings.get(lang, 'packError'), '\n', function() {
 downloadPacks(['default']);
-	}));
+	});
 	return;
 }
 mainMenu();
 }
 async function downloadPacks(arr) {
+speech.speak(arr.length);
+//let request=require('sync-request');
 	if (arr.length > 0) {
 		for (let i = 0; i < arr.length - 1; i++) {
-			const response = request({method: 'GET', qs: arr[i], uri: 'http://www.oriolgomez.com/beatpacks/getpack.php'});
-console.log(response);
+		try {
+			const response = request('GET', 'http://www.oriolgomez.com/beatpacks/index.php',{
+			qs:{
+			p:arr[i],
+			},
+			timeout:10000,
+			});
+let files=response.getBody('utf8');
+console.log(files);
+}
+catch(error) {
+console.log("error!"+error);
+}
 		}
 	}
 }
