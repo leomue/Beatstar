@@ -51,7 +51,7 @@ export async function learnPack() {
 			actions = i;
 		}
 	}
-	speech.speak(strings.get(lang,"mActions,[actions]);
+	speech.speak(strings.get(lang,"mActions",[actions]));
 	const event = new KeyboardInput();
 				event.init();
 				so.directory = '';

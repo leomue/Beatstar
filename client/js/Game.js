@@ -277,7 +277,7 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
-		const mod=(2300*score)/bpm);
+		const mod=(2300*score)/bpm;
 speech.speak(mod);
 	}
 
