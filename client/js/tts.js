@@ -1,33 +1,30 @@
 'use strict';
-var useWebTTS = true;
+const useWebTTS = true;
 
 class TTS {
-	constructor(webTTS=false) {
+	constructor(webTTS = false) {
 		this.synth = window.speechSynthesis;
 		this.webTTS = webTTS;
-		
 	}
-	
+
 	speak(text) {
-		
 		if (this.webTTS) {
-			var utterThis = new SpeechSynthesisUtterance(text);
+			const utterThis = new SpeechSynthesisUtterance(text);
 			this.synth.stop();
 			this.synth.speak(utterThis);
 		} else {
-			document.getElementById("speech").innerHTML = ""
-			var para = document.createElement("p")
-			para.appendChild(document.createTextNode(text))
-			document.getElementById("speech").appendChild(para)
-			return;
+			document.getElementById('speech').innerHTML = '';
+			const para = document.createElement('p');
+			para.appendChild(document.createTextNode(text));
+			document.getElementById('speech').appendChild(para);
 		}
-		
-	} // end speak()
-	
+	} // End speak()
+
 	setWebTTS(tts) {
 		this.webTTS = tts;
 	}
-	
-} // end class
-if (typeof speech == "undefined") var speech = new TTS();
-export {TTS,speech}
+} // End class
+if (typeof speech === 'undefined') {
+	var speech = new TTS();
+}
+export {TTS, speech};

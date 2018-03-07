@@ -1,10 +1,11 @@
-import { SoundSource } from './soundSource.js'
-import { so } from './soundObject.js'
+import {SoundSource} from './soundSource.js';
+import {so} from './soundObject.js';
+
 class SoundHandler {
-	constructor(directional=false) {
-		this.staticSounds = []
-		this.dynamicSounds = []
-		this.currentDynamicSound = 0
+	constructor(directional = false) {
+		this.staticSounds = [];
+		this.dynamicSounds = [];
+		this.currentDynamicSound = 0;
 		this.maxDynamicSounds = 512;
 		this.currentStaticSound = 0;
 		this.maxStaticSounds = 512;
@@ -14,10 +15,7 @@ class SoundHandler {
 		this.z = 0;
 		this.directional = directional;
 	}
-	
-	
-	
-	
+
 	playStatic(file, loop = 1, slot = -1) {
 		if (slot = -1) {
 			slot = this.findFreeStaticSlot();
@@ -27,53 +25,50 @@ class SoundHandler {
 			this.staticSounds[slot].sound.loop = true;
 		}
 		this.staticSounds[slot].sound.play();
-		console.log("slot "+slot);
+		console.log('slot ' + slot);
 		return slot;
 	}
+
 	findFreeStaticSlot() {
-		for (let i = 0;i<this.maxStaticSounds;i++) {
-			if (this.staticSounds[i] == -1 || typeof this.staticSounds[i] == "undefined") {
+		for (let i = 0; i < this.maxStaticSounds; i++) {
+			if (this.staticSounds[i] == -1 || typeof this.staticSounds[i] === 'undefined') {
 				return i;
 			}
 		}
 		if (this.currentStaticSound < this.maxStaticSounds) {
 			this.currentStaticSound++;
 			return this.currentStaticSound;
-		} else {
-			this.currentStaticSound = 0;
-			return this.currentStaticSound;
 		}
+		this.currentStaticSound = 0;
+		return this.currentStaticSound;
 	}
-	
-	
+
 	findFreeDynamicSlot() {
-		for (let i = 0;i<this.maxDynamicSounds;i++) {
-			if (this.dynamicSounds[i] == -1 || typeof this.dynamicSounds[i] == "undefined") {
+		for (let i = 0; i < this.maxDynamicSounds; i++) {
+			if (this.dynamicSounds[i] == -1 || typeof this.dynamicSounds[i] === 'undefined') {
 				return i;
 			}
 		}
 		if (this.currentDynamicSound < this.maxDynamicSounds) {
 			this.currentDynamicSound++;
 			return this.currentDynamicSound;
-		} else {
-			this.currentDynamicSound = 0;
-			return this.currentDynamicSound;
 		}
+		this.currentDynamicSound = 0;
+		return this.currentDynamicSound;
 	}
-	
+
 	findDynamicSound(file) {
-		for (let i=0;i<this.dynamicSounds.length;i++) {
+		for (let i = 0; i < this.dynamicSounds.length; i++) {
 			if (this.dynamicSounds[i].file == file) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
-	
-	
-		play(file) {
-			let slot = 0, reuse = 0;
+
+	play(file) {
+		let slot = 0,
+			reuse = 0;
 		if (this.reuseSounds) {
 			slot = this.findDynamicSound(file);
 			reuse = true;
@@ -82,60 +77,56 @@ class SoundHandler {
 			slot = this.findFreeDynamicSlot();
 			reuse = false;
 		}
-		if (typeof this.dynamicSounds[slot] == "undefined") {
+		if (typeof this.dynamicSounds[slot] === 'undefined') {
 			if (reuse == false) {
 				this.dynamicSounds[slot] = new SoundItem(file, this.directional);
-				console.log("Created sound");
+				console.log('Created sound');
 			}
-		} else {
-			if (reuse == false) {
+		} else if (reuse == false) {
 				this.dynamicSounds[slot].sound.destroy();
 				this.dynamicSounds[slot] = new SoundItem(file, directional);
-				console.log("Destroyed and reloaded");
-			}
-			
+				console.log('Destroyed and reloaded');
 		}
-		console.log("playing sound");
+		console.log('playing sound');
 		this.dynamicSounds[slot].sound.play();
 	}
-		
+
 	update(position) {
 		if (this.directional == true) {
-			for (let i=0;i<this.dynamicSounds.length;i++) {
+			for (let i = 0; i < this.dynamicSounds.length; i++) {
 				this.dynamicSounds[i].sound.pos(position.x, position.y, position.z);
 			}
 		}
 	}
+
 	destroy() {
-	for (var i=0;i<this.dynamicSounds.length;i++) {
-	console.log("destroying"+i);
+		for (var i = 0; i < this.dynamicSounds.length; i++) {
+	console.log('destroying' + i);
 	this.dynamicSounds[i].destroy();
-	this.dynamicSounds.splice(i,1);
-	}
-	
-	for (var i=0;i<this.staticSounds.length;i++) {
+	this.dynamicSounds.splice(i, 1);
+		}
+
+		for (var i = 0; i < this.staticSounds.length; i++) {
 	this.staticSounds[i].destroy();
-	console.log("destroying"+i);
-	this.staticSounds.splice(i,1);
-	}
+	console.log('destroying' + i);
+	this.staticSounds.splice(i, 1);
+		}
 	}
 }
 class SoundItem {
-	constructor(file, threeD=false) {
+	constructor(file, threeD = false) {
 		this.file = file;
 		this.threeD = threeD;
 		if (this.threeD == true) {
 			this.sound = new SoundSource(file, 0, 0, 0);
 		} else {
-		
 			this.sound = so.create(file);
-			
 		}
-		
 	}
+
 	destroy() {
 	this.sound.destroy();
 	}
 }
 
-export { SoundHandler }
+export {SoundHandler};
