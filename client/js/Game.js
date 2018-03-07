@@ -251,6 +251,7 @@ calculateScore() {
 var bpm=this.bpms[this.level];
 var time=this.scoreTimer.elapsed;
 var score=Math.ceil(((bpm/2)-Math.abs((bpm/2)-time))/(bpm/2)*100);
+
 speech.speak(score);
 }
 queueLevels() {

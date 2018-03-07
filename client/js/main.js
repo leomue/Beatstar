@@ -272,9 +272,25 @@ pack=data.pack;
 packdir=os.homedir()+"/beatpacks/"+pack+"/";
 actionKeys=data.actionKeys;
 save();
+if (!fs.existsSync(packdir+"bpm.txt")) {
+pack="default";
+packdir=os.homedir()+"/beatpacks/"+pack+"/";
+}
+if (!fs.existsSync(packdir+"bpm.txt")) {
+new ScrollingText(strings.get(lang,"packError"),"\n",function() {
+downloadPacks(["default"]);
+});
+return;
+}
 mainMenu();
 }
+export function downloadPacks(arr) {
+speech.speak(arr.length);
+}
 export function save() {
+if (!fs.existsSync(os.homedir()+"/beatpacks")) {
+fs.mkdirSync(os.homedir()+"/beatpacks");
+}
 var write=JSON.stringify(data);
 //write=mangle.encrypt(write);
 fs.writeFileSync(os.homedir()+"/beatpacks/save.dat",write);

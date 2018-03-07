@@ -11,7 +11,7 @@ import {Menu} from './menu';
 	items.push(new MenuItem(0,strings.get(lang,"mStart")));
 items.push(new MenuItem(1,strings.get(lang,"mLearn")));
 items.push(new MenuItem(2,strings.get(lang,"mBrowse")));
-items.push(new MenuItem(3,strings.get(lang,"mHashes")));
+//items.push(new MenuItem(3,strings.get(lang,"mHashes")));
 	var mainMenu=new Menu("main menu",items);
 	so.directory="";
 	mainMenu.music=packdir+"loop";
