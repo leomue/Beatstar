@@ -15,18 +15,16 @@
     "url": "http://oriolgomez.com:9900/ogomez92/beatjs"
   },
   "author": "Oriol Gomez",
-  "license": "ISC",
+  "license": "GPL",
   "dependencies": {
     "cryptr": "^3.0.0",
-    "download-file": "^0.1.5",
+    "download-file-sync": "^1.0.4",
     "express": "^4.16.2",
     "fs-walk": "0.0.2",
     "hash-files": "^1.1.1",
     "howler": "^2.0.9",
     "http-server": "^0.11.1",
     "jquery": "^3.3.1",
-    "parcel-bundler": "^1.6.2",
-    "socket.io": "^2.0.4",
-    "socket.io-client": "^2.0.4"
+    "parcel-bundler": "^1.6.2"
   }
 }

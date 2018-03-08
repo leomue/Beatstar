@@ -4,7 +4,7 @@ import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
 import {MenuItem} from './menuItem';
-import {pack, packdir, rebuildHashes} from './main';
+import {pack, packdir, rebuildHashes,downloadPacks} from './main';
 import {Menu} from './menu';
 
 export function mainMenu() {
@@ -12,7 +12,9 @@ export function mainMenu() {
 	items.push(new MenuItem(0, strings.get(lang, 'mStart')));
 items.push(new MenuItem(1, strings.get(lang, 'mLearn')));
 items.push(new MenuItem(2, strings.get(lang, 'mBrowse')));
-// Items.push(new MenuItem(3,strings.get(lang,"mHashes")));
+items.push(new MenuItem(3, strings.get(lang, 'mHashes')));
+items.push(new MenuItem(4, strings.get(lang, 'mDownload')));
+so.directory = './sounds/';
 const mainMenu = new Menu('main menu', items);
 so.directory = '';
 mainMenu.music = packdir + 'loop';
@@ -29,6 +31,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 			case 2:
 		st.setState(5); break;
 			case 3: rebuildHashes(); break;
+			case 4: downloadPacks(); break;
 		}
 	});
 }

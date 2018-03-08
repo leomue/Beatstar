@@ -283,12 +283,12 @@ so.kill(() => {
 st.setState(2);
 });
 }
-export function rebuildHashes() {
+export async function rebuildHashes(silent = false) {
 // Var hash=require('hash-files');
 	let corrupts = '';
 	// Var walk=require('fs-walk');
 	// var fs=require('fs');
-	let newHash = 'abc';
+	let newHash = 0;
 	const packs = new Array();
 	so.directory = '';
 walk.dirsSync(os.homedir() + '/beatpacks', (pb, pf, stat, next) => {
@@ -317,21 +317,33 @@ const temp = {
 packs.push(temp);
 });
 so.directory = './sounds/';
+if (silent) {
+console.log('stopping here');
+return packs;
+}
 let write = JSON.stringify(packs);
 write = mangle.encrypt(write);
 fs.writeFileSync(os.homedir() + '/beatpacks/hashes.db', write);
 if (corrupts != '') {
 	if (lang == 1) {
-		new ScrollingText('one thing before you go... the following packs are corrupt and should be looked at.' + corrupts, '\n', (() => {
+		if (!silent) {
+			new ScrollingText('one thing before you go... the following packs are corrupt and should be looked at.' + corrupts, '\n', (() => {
+				if (!silent) {
 st.setState(2);
-		}));
+				}
+			}));
+		}
 	}
 	if (lang == 2) {
-		new ScrollingText('Antes de que te vayas... los siguientes packs están corruptos y deberías echar un vistazo a ver qué pasa.' + corrupts, '\n', (() => {
-	st.setState(2);
-		}));
+		if (!silent) {
+			new ScrollingText('Antes de que te vayas... los siguientes packs están corruptos y deberías echar un vistazo a ver qué pasa.' + corrupts, '\n', (() => {
+				if (!silent) {
+st.setState(2);
+				}
+			}));
+		}
 	}
-} else {
+} else if (!silent) {
 st.setState(2);
 }
 }
@@ -350,36 +362,103 @@ if (!fs.existsSync(packdir + 'bpm.txt')) {
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
-	let text=new ScrollingText(strings.get(lang, 'packError'), '\n', function() {
+	const text = new ScrollingText(strings.get(lang, 'packError'), '\n', (() => {
 downloadPacks(['default']);
-	});
+	}));
 	return;
 }
 mainMenu();
 }
-async function downloadPacks(arr) {
-speech.speak(arr.length);
-
+export async function downloadPacks(arr = []) {
+	const dl = require('./download');
+	if (arr.length == 0) {
+		const dlList = new Array();
+		let remoteHashes;
+		let localHashes;
+		localHashes = await rebuildHashes(true);
+					await fetch('http://oriolgomez.com/beatpacks/hashes.db')
+						 .then(event => event.text())
+		.then(data => {
+			remoteHashes = JSON.parse(mangle.decrypt(data));
+console.log(remoteHashes.length);
+		});
+		//ok
+		const browseArray = [];
+			let browsePosition = -1;
+			let size=0;
+			remoteHashes.forEach((i, v) => {
+			let ok=false;
+			for (var l=0;l<localHashes.length;l++) {
+												if (i.name==localHashes[l].name && i.hash==localHashes[l].hash) {
+																								} else {
+												browseArray.push(i);
+												size+=i.hash;
+												}
+									}
+									});
+									//create downloader menu here
+									let downloadSelections=new Array();
+									size=size/1024/1024/1024
+									size=size.toFixed(2);
+									console.log(size);
+	}
 	if (arr.length > 0) {
-	let toDownload={}
-		for (let i = 0; i < arr.length ; i++) {
-		var name=arr[i];
-		toDownload[name]=[]
-						 await fetch(' http://oriolgomez.com/beatpacks/index.php?p='+arr[i] )
-.then(event => event.text())
-.then(data => {   
-var datas=data.split("\n");
-datas.forEach(function(i) {
-if (i!="") {
+		so.directory = './sounds/';
+		const prog = so.create('progress');
+		const toDownload = {};
+	speech.speak(strings.get(lang, 'dling', [i + 1, arr.length]));
+	for (let i = 0; i < arr.length; i++) {
+		var name = arr[i];
+		toDownload[name] = [];
+								 await fetch(' http://oriolgomez.com/beatpacks/index.php?p=' + arr[i])
+						 .then(event => event.text())
+			.then(data => {
+speech.speak('data' + data);
+const datas = data.split('\n');
+datas.forEach(i => {
+	if (i != '') {
 toDownload[name].push(i);
-console.log(i);
-}
+	}
 });
+			});
+						 		}// End for loop
+	let dir = os.homedir() + '/beatpacks/';
+	let url = 'http://oriolgomez.com/beatpacks/';
+	for (var i in toDownload) {
+		if (toDownload.hasOwnProperty(i)) {
+			url = 'http://oriolgomez.com/beatpacks/';
+			dir = os.homedir() + '/beatpacks/';
 
-  });
+			url = url + i + '/';
+			if (!fs.existsSync(dir + i)) {
+fs.mkdirSync(dir + i);
+			}
+			dir = dir + i + '/';
+			var len = toDownload[i].length;
+			if (len == 0) {
+				continue;
+			}
+	toDownload[i].forEach((i, index) => {
+	// Dl file here
+		if (fs.existsSync(dir + i)) {
+fs.unlinkSync(dir + i);
+		}
+		const file = dl(url + i);
+		prog.playbackRate = utils.percent(index + 1, len) / 100;
+	prog.play();
+	try {
+	fs.writeFileSync(dir + i, file);
+	} catch (e) {
+	console.log('error!' + e);
+	st.setState(2);
+	}
+	});
 		}
 	}
-	console.log("done!");
+	speech.speak(strings.get(lang, 'dlingdone'));
+	so.directory = '';
+	st.setState(2);
+	}// If length > 1
 }
 export function save() {
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
