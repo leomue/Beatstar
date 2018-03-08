@@ -357,21 +357,29 @@ downloadPacks(['default']);
 }
 mainMenu();
 }
-function downloadPacks(arr) {
+async function downloadPacks(arr) {
 speech.speak(arr.length);
+
 	if (arr.length > 0) {
-		for (let i = 0; i < arr.length - 1; i++) {
-		try {
-		 fetch('http://oriolgomez.com/beatpacks/index.php?p='+arr[i])
- .then(function(data) {   
-  console.log(data);
+	let toDownload={}
+		for (let i = 0; i < arr.length ; i++) {
+		var name=arr[i];
+		toDownload[name]=[]
+						 await fetch(' http://oriolgomez.com/beatpacks/index.php?p='+arr[i] )
+.then(event => event.text())
+.then(data => {   
+var datas=data.split("\n");
+datas.forEach(function(i) {
+if (i!="") {
+toDownload[name].push(i);
+console.log(i);
+}
 });
-}
-catch(error) {
-console.log("error!"+error);
-}
+
+  });
 		}
 	}
+	console.log("done!");
 }
 export function save() {
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
