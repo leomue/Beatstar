@@ -3,16 +3,16 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
-		mReady:"Please wait...",
-		mSelectDownload:"Please select what you want to do",
-		mDownloadAll:"Download all uninstalled packs (size: %1 gb)",
-		mDownloadList:"List all new available packs",
-		mDownloadInstructions:"Press the space bar to select a pack, p to preview its sound, and enter to begin downloading.",
+			mReady: 'Please wait...',
+			mSelectDownload: 'Please select what you want to do',
+			mDownloadAll: 'Download all uninstalled packs (size: %1 gb)',
+			mDownloadList: 'List all new available packs',
+			mDownloadInstructions: 'Press the space bar to select a pack, p to preview its sound, and enter to begin downloading.',
 			mStart: 'Start Game',
 			mLearn: 'Learn the pack',
 			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).',
-dling: "Downloading %2 packs please wait...",
-dlingdone:"Done!",
+			dling: 'Downloading %2 packs please wait...',
+			dlingdone: 'Done!',
 			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
 			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
 			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\n',
@@ -22,7 +22,7 @@ dlingdone:"Done!",
 			nopacks: 'No packs are available here.',
 			mBrowse: 'Browse downloaded packs',
 			mHashes: 'Rebuild packs folder',
-			mDownload:"Download new packs",
+			mDownload: 'Download new packs'
 		};
 	}
 

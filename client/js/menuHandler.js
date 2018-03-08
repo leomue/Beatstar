@@ -4,7 +4,7 @@ import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
 import {MenuItem} from './menuItem';
-import {pack, packdir, rebuildHashes,downloadPacks} from './main';
+import {pack, packdir, rebuildHashes, downloadPacks} from './main';
 import {Menu} from './menu';
 
 export function mainMenu() {

@@ -376,30 +376,36 @@ export async function downloadPacks(arr = []) {
 		let remoteHashes;
 		let localHashes;
 		localHashes = await rebuildHashes(true);
-					await fetch('http://oriolgomez.com/beatpacks/hashes.db')
+		await fetch('http://oriolgomez.com/beatpacks/hashes.db')
 						 .then(event => event.text())
-		.then(data => {
-			remoteHashes = JSON.parse(mangle.decrypt(data));
+			.then(data => {
+				remoteHashes = JSON.parse(mangle.decrypt(data));
 console.log(remoteHashes.length);
-		});
-		//ok
+			});
+		// Ok
 		const browseArray = [];
-			let browsePosition = -1;
-			let size=0;
+		const browsePosition = -1;
+		let size = 0;
 			remoteHashes.forEach((i, v) => {
-			let ok=false;
-			for (var l=0;l<localHashes.length;l++) {
-												if (i.name==localHashes[l].name && i.hash==localHashes[l].hash) {
-																								} else {
-												browseArray.push(i);
-												size+=i.hash;
-												}
-									}
-									});
-									//create downloader menu here
-									let downloadSelections=new Array();
-									size=size/1024/1024/1024
-									size=size.toFixed(2);
+				let shouldPush = false;
+				for (let l = 0; l < localHashes.length; l++) {
+					if (i.name != localHashes[l].name && i.hash != localHashes[l].hash) {
+						shouldPush = true;
+					} else {
+						shouldPush = false;
+						continue;
+					}
+				}
+				if (shouldPush) {
+									browseArray.push(i);
+									console.log(i.name);
+									size += i.hash;
+				}
+			});
+		// Create downloader menu here
+			const downloadSelections = new Array();
+			size = size / 1024 / 1024 / 1024;
+			size = size.toFixed(2);
 									console.log(size);
 	}
 	if (arr.length > 0) {
