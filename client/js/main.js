@@ -393,7 +393,7 @@ console.log(remoteHashes.length);
 						shouldPush = true;
 					} else {
 						shouldPush = false;
-						continue;
+						break;
 					}
 				}
 				if (shouldPush) {
@@ -403,6 +403,10 @@ console.log(remoteHashes.length);
 				}
 			});
 		// Create downloader menu here
+		if (browseArray.length<1) {
+			new ScrollingText(strings.get(lang,"nodown"),"\n",function() {st.setState(2)});
+			return;
+		}
 			const downloadSelections = new Array();
 			size = size / 1024 / 1024 / 1024;
 			size = size.toFixed(2);

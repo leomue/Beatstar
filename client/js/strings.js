@@ -6,6 +6,7 @@ class Strings {
 			mReady: 'Please wait...',
 			mSelectDownload: 'Please select what you want to do',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 gb)',
+			nodown:"No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs',
 			mDownloadInstructions: 'Press the space bar to select a pack, p to preview its sound, and enter to begin downloading.',
 			mStart: 'Start Game',

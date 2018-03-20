@@ -17,6 +17,7 @@
   "author": "Oriol Gomez",
   "license": "GPL",
   "dependencies": {
+    "agk-ui": "0.0.2",
     "cryptr": "^3.0.0",
     "download-file-sync": "^1.0.4",
     "express": "^4.16.2",
