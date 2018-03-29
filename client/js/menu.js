@@ -110,13 +110,13 @@ this.music.unload();
 			await utils.sleep(50);
 		}
 		this.music.unload();
-		this.unload();
+		this.destroy();
 	}
 
-	unload() {
+destroy() {
 			$(document).off('keydown');
 		$(document).off('keypress');
-		// This.hammer.unload();
+		// This.hammer.destroy();
 		const that = this;
 		setTimeout(() => {
  that.destroySounds();

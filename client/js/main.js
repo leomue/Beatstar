@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import Cryptr from 'cryptr';
 import {Player} from './player';
+import {MenuItem} from './menuItem';
+import {Menu} from './menu';
 import 'hash-files';
 import walk from 'fs-walk';
 import fs from 'fs';
@@ -389,17 +391,18 @@ console.log(remoteHashes.length);
 			remoteHashes.forEach((i, v) => {
 				let shouldPush = false;
 				for (let l = 0; l < localHashes.length; l++) {
-					if (i.name != localHashes[l].name && i.hash != localHashes[l].hash) {
-						shouldPush = true;
-					} else {
+	if (i.name == localHashes[l].name && i.hash == localHashes[l].hash) {
 						shouldPush = false;
 						break;
+					} else {
+						shouldPush = true;
 					}
 				}
 				if (shouldPush) {
 									browseArray.push(i);
-									console.log(i.name);
 									size += i.hash;
+				}
+				else {
 				}
 			});
 		// Create downloader menu here
@@ -408,9 +411,47 @@ console.log(remoteHashes.length);
 			return;
 		}
 			const downloadSelections = new Array();
-			size = size / 1024 / 1024 / 1024;
-			size = size.toFixed(2);
-									console.log(size);
+let sizeS;
+			size = size / 1024 / 1024;
+			sizeS="mb"
+		if (size>1024) {
+			size=size/1024
+			sizeS="gb";
+		}
+			size=size.toFixed(2);
+//			console.log("size: "+size+sizeS+" "+browseArray.length+" packs");
+			const items=new Array();
+			items.push(new MenuItem(-1,strings.get(lang,"mFound",[browseArray.length])));
+	items.push(new MenuItem(0,strings.get(lang,"mDownloadAll",[size,sizeS])));
+		items.push(new MenuItem(1,strings.get(lang,"mDownloadList",[browseArray.length])));
+		items.push(new MenuItem(2,strings.get(lang,"mBack")));
+		so.directory = './sounds/';
+			let dm=new Menu("please select",items);
+			so.directory = '';
+			let anotherSelected=false;
+		dm.run(s=>{
+						so.directory = './sounds/';
+						switch(s.selected) {
+							case 0:
+							dm.destroy();
+							anotherSelected=true;
+							let dls=new Array();
+							browseArray.forEach(function(i) {
+								dls.push(i.name);
+							downloadPacks(dls);
+			});
+			break;
+			case 2:
+			dm.destroy();
+			anotherSelected=true;
+mainMenu();
+break;
+case 1:
+dm.destroy();
+break;
+	}
+			});
+	if (anotherSelected) return;
 	}
 	if (arr.length > 0) {
 		so.directory = './sounds/';

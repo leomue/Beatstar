@@ -8,6 +8,7 @@ import {pack, packdir, rebuildHashes, downloadPacks} from './main';
 import {Menu} from './menu';
 
 export function mainMenu() {
+	speech.webTTS=true;
 	const items = new Array();
 	items.push(new MenuItem(0, strings.get(lang, 'mStart')));
 items.push(new MenuItem(1, strings.get(lang, 'mLearn')));
