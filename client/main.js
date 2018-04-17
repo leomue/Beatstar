@@ -1,4 +1,4 @@
-process.env.HMR_PORT=52599;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=50280;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -890,6 +890,10 @@ var utils = exports.utils = new GameUtils();
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.strings = undefined;
+
+var _main = require('./main');
+
 class Strings {
 	constructor() {
 		this.strings = {};
@@ -917,12 +921,36 @@ class Strings {
 			mHashes: 'Rebuild packs folder',
 			mDownload: 'Download new packs'
 		};
+		this.strings[2] = {
+			"mFound": "Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
+			mReady: 'Espera, por favor...',
+			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
+			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
+			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
+			"mBack": "volver",
+			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o q para cancelar',
+			mStart: 'jugar',
+			mLearn: 'aprender el pack',
+			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. To hear the stop action, press the period key (to the right of comma).',
+			dling: 'Descargando %2 packs por favor espera...',
+			dlingdone: '¡Hecho!!',
+			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
+			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
+			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\n',
+			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
+			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
+			mNew: 'Conseguir nuevos packs',
+			nopacks: 'No hay packs disponibles. Si estás seguro de que has instalado packs, ponte en contacto conmigo.',
+			mBrowse: 'Ver packs descargados',
+			mHashes: 'Reconstruir base de datos de packs',
+			mDownload: 'Descargar packs'
+		};
 	}
 
-	get(lang, what, rep = []) {
+	get(what, rep = []) {
 		let str;
-		if (typeof this.strings[lang][what] !== 'undefined') {
-			str = this.strings[lang][what];
+		if (typeof this.strings[_main.lang][what] !== 'undefined') {
+			str = this.strings[_main.lang][what];
 		} else if (typeof this.strings[1][what] !== 'undefined') {
 			str = this.strings[1][what];
 		} else {
@@ -936,7 +964,7 @@ class Strings {
 	}
 }
 var strings = exports.strings = new Strings();
-},{}],3:[function(require,module,exports) {
+},{"./main":1}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1340,7 +1368,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":12,"./strings":9,"./tts":11,"./soundObject.js":13,"./menuItem":5,"./keycodes":14,"./input":3}],21:[function(require,module,exports) {
+},{"./utilities":12,"./strings":9,"./tts":11,"./soundObject.js":13,"./menuItem":5,"./keycodes":14,"./input":3}],36:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1385,7 +1413,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],20:[function(require,module,exports) {
+},{}],35:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -4288,7 +4316,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],18:[function(require,module,exports) {
+},{}],31:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4379,7 +4407,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":20,"./soundObject.js":13}],10:[function(require,module,exports) {
+},{"./howler":35,"./soundObject.js":13}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4520,7 +4548,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":18,"./soundObject.js":13}],22:[function(require,module,exports) {
+},{"./soundSource.js":31,"./soundObject.js":13}],37:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -4572,7 +4600,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],19:[function(require,module,exports) {
+},{}],32:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4911,7 +4939,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":11,"./main":1,"./oldtimer":21,"./soundHandler":10,"./utilities":12,"./soundObject":13,"./stateMachine":15,"./timer":22,"./scrollingText":8,"./input.js":3,"./keycodes.js":14}],15:[function(require,module,exports) {
+},{"./tts":11,"./main":1,"./oldtimer":36,"./soundHandler":10,"./utilities":12,"./soundObject":13,"./stateMachine":15,"./timer":37,"./scrollingText":8,"./input.js":3,"./keycodes.js":14}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4987,7 +5015,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":11,"./main":1,"./menuHandler":7,"./soundObject":13,"./keycodes":14,"./game":19}],7:[function(require,module,exports) {
+},{"./input":3,"./tts":11,"./main":1,"./menuHandler":7,"./soundObject":13,"./keycodes":14,"./game":32}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5010,11 +5038,11 @@ var _menu = require('./menu');
 function mainMenu() {
 	speech.webTTS = true;
 	const items = new Array();
-	items.push(new _menuItem.MenuItem(0, _strings.strings.get(_main.lang, 'mStart')));
-	items.push(new _menuItem.MenuItem(1, _strings.strings.get(_main.lang, 'mLearn')));
-	items.push(new _menuItem.MenuItem(2, _strings.strings.get(_main.lang, 'mBrowse')));
-	items.push(new _menuItem.MenuItem(3, _strings.strings.get(_main.lang, 'mHashes')));
-	items.push(new _menuItem.MenuItem(4, _strings.strings.get(_main.lang, 'mDownload')));
+	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
+	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
+	items.push(new _menuItem.MenuItem(2, _strings.strings.get('mBrowse')));
+	items.push(new _menuItem.MenuItem(3, _strings.strings.get('mHashes')));
+	items.push(new _menuItem.MenuItem(4, _strings.strings.get('mDownload')));
 	_soundObject.so.directory = './sounds/';
 	const mainMenu = new _menu.Menu('main menu', items);
 	_soundObject.so.directory = '';
@@ -5113,7 +5141,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Import test from './test.js'
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
 var mangle = exports.mangle = new _cryptr2.default('sdf jkl wer uio');
-var lang = exports.lang = 1;
+var lang = exports.lang = 2;
 var langs = exports.langs = ['', 'english', 'spanish'];
 var pack = exports.pack = 'default';
 var data = exports.data = '';
@@ -5145,7 +5173,7 @@ async function learnPack() {
 			actions = i;
 		}
 	}
-	_tts.speech.speak(_strings.strings.get(lang, 'mActions', [actions]));
+	_tts.speech.speak(_strings.strings.get('mActions', [actions]));
 	const event = new _input.KeyboardInput();
 	event.init();
 	_soundObject.so.directory = '';
@@ -5226,7 +5254,7 @@ async function browsePacks(browsing = 1) {
 	}
 	_soundObject.so.directory = '';
 	if (browseArray.length === 0) {
-		new _scrollingText.ScrollingText(_strings.strings.get(lang, 'nopacks'), '\n', _stateMachine.st.setState(2));
+		new _scrollingText.ScrollingText(_strings.strings.get('nopacks'), '\n', _stateMachine.st.setState(2));
 		return;
 	}
 	browseArray.sort((a, b) => {
@@ -5267,9 +5295,9 @@ async function browsePacks(browsing = 1) {
 				if (size != browseArray[browsePosition].hash) {
 					browsing = 0;
 					// Todo: remove from unlocked
-					_tts.speech.speak(_strings.strings.get(lang, 'tamperWarning'));
+					_tts.speech.speak(_strings.strings.get('tamperWarning'));
 					setTimeout(() => {
-						_tts.speech.speak(_strings.strings.get(lang, 'tamperWarning'));
+						_tts.speech.speak(_strings.strings.get('tamperWarning'));
 					}, 4500);
 					while (!event.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
 						await _utilities.utils.sleep(10);
@@ -5456,7 +5484,7 @@ function checkPack() {
 		exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 	}
 	if (!_fs2.default.existsSync(packdir + 'bpm.txt')) {
-		const text = new _scrollingText.ScrollingText(_strings.strings.get(lang, 'packError'), '\n', () => {
+		const text = new _scrollingText.ScrollingText(_strings.strings.get('packError'), '\n', () => {
 			downloadPacks(['default']);
 		});
 		return;
@@ -5495,7 +5523,7 @@ async function downloadPacks(arr = []) {
 		});
 		// Create downloader menu here
 		if (browseArray.length < 1) {
-			new _scrollingText.ScrollingText(_strings.strings.get(lang, "nodown"), "\n", function () {
+			new _scrollingText.ScrollingText(_strings.strings.get("nodown"), "\n", function () {
 				_stateMachine.st.setState(2);
 			});
 			return;
@@ -5511,10 +5539,10 @@ async function downloadPacks(arr = []) {
 		size = size.toFixed(2);
 		//			console.log("size: "+size+sizeS+" "+browseArray.length+" packs");
 		const items = new Array();
-		items.push(new _menuItem.MenuItem(-1, _strings.strings.get(lang, "mFound", [browseArray.length])));
-		items.push(new _menuItem.MenuItem(0, _strings.strings.get(lang, "mDownloadAll", [size, sizeS])));
-		items.push(new _menuItem.MenuItem(1, _strings.strings.get(lang, "mDownloadList", [browseArray.length])));
-		items.push(new _menuItem.MenuItem(2, _strings.strings.get(lang, "mBack")));
+		items.push(new _menuItem.MenuItem(-1, _strings.strings.get("mFound", [browseArray.length])));
+		items.push(new _menuItem.MenuItem(0, _strings.strings.get("mDownloadAll", [size, sizeS])));
+		items.push(new _menuItem.MenuItem(1, _strings.strings.get("mDownloadList", [browseArray.length])));
+		items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
 		_soundObject.so.directory = './sounds/';
 		let dm = new _menu.Menu("please select", items);
 		_soundObject.so.directory = '';
@@ -5547,12 +5575,11 @@ async function downloadPacks(arr = []) {
 		_soundObject.so.directory = './sounds/';
 		const prog = _soundObject.so.create('progress');
 		const toDownload = {};
-		_tts.speech.speak(_strings.strings.get(lang, 'dling', [i + 1, arr.length]));
+		_tts.speech.speak(_strings.strings.get('dling', [i + 1, arr.length]));
 		for (let i = 0; i < arr.length; i++) {
 			var name = arr[i];
 			toDownload[name] = [];
 			await fetch(' http://oriolgomez.com/beatpacks/index.php?p=' + arr[i]).then(event => event.text()).then(data => {
-				_tts.speech.speak('data' + data);
 				const datas = data.split('\n');
 				datas.forEach(i => {
 					if (i != '') {
@@ -5580,8 +5607,10 @@ async function downloadPacks(arr = []) {
 				toDownload[i].forEach((i, index) => {
 					// Dl file here
 					if (_fs2.default.existsSync(dir + i)) {
+						console.log("exist");
 						_fs2.default.unlinkSync(dir + i);
 					}
+					console.log("going to start download");
 					const file = dl(url + i);
 					prog.playbackRate = _utilities.utils.percent(index + 1, len) / 100;
 					prog.play();
@@ -5594,7 +5623,7 @@ async function downloadPacks(arr = []) {
 				});
 			}
 		}
-		_tts.speech.speak(_strings.strings.get(lang, 'dlingdone'));
+		_tts.speech.speak(_strings.strings.get('dlingdone'));
 		_soundObject.so.directory = '';
 		_stateMachine.st.setState(2);
 	} // If length > 1
@@ -5607,7 +5636,7 @@ function save() {
 	// Write=mangle.encrypt(write);
 	_fs2.default.writeFileSync(_os2.default.homedir() + '/beatpacks/save.dat', write);
 }
-},{"./player":4,"./menuItem":5,"./menu":6,"./menuHandler":7,"./scrollingText":8,"./strings":9,"./soundHandler":10,"./tts":11,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":15,"./input.js":3,"./download":16}],26:[function(require,module,exports) {
+},{"./player":4,"./menuItem":5,"./menu":6,"./menuHandler":7,"./scrollingText":8,"./strings":9,"./soundHandler":10,"./tts":11,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":15,"./input.js":3,"./download":16}],41:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -5784,5 +5813,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[26,1])
+},{}]},{},[41,1])
 //# sourceMappingURL=/main.map

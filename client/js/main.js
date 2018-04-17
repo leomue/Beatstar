@@ -21,7 +21,7 @@ export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEv
 export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
 
-export var lang = 1;
+export var lang = 2;
 export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
 export var data = '';
@@ -53,7 +53,7 @@ export async function learnPack() {
 			actions = i;
 		}
 	}
-	speech.speak(strings.get(lang, 'mActions', [actions]));
+	speech.speak(strings.get( 'mActions', [actions]));
 	const event = new KeyboardInput();
 				event.init();
 				so.directory = '';
@@ -134,7 +134,7 @@ browseArray.push(i);
 	}
 	so.directory = '';
 	if (browseArray.length === 0) {
-		new ScrollingText(strings.get(lang, 'nopacks'), '\n', st.setState(2));
+		new ScrollingText(strings.get( 'nopacks'), '\n', st.setState(2));
 		return;
 	}
 browseArray.sort((a, b) => {
@@ -175,9 +175,9 @@ walk.filesSync(os.homedir() + '/beatpacks/' + browseArray[browsePosition].name, 
 if (size != browseArray[browsePosition].hash) {
 	browsing = 0;
 // Todo: remove from unlocked
-speech.speak(strings.get(lang, 'tamperWarning'));
+speech.speak(strings.get( 'tamperWarning'));
 setTimeout(() => {
-speech.speak(strings.get(lang, 'tamperWarning'));
+speech.speak(strings.get( 'tamperWarning'));
 }, 4500);
 while (!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 	await utils.sleep(10);
@@ -364,7 +364,7 @@ if (!fs.existsSync(packdir + 'bpm.txt')) {
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
-	const text = new ScrollingText(strings.get(lang, 'packError'), '\n', (() => {
+	const text = new ScrollingText(strings.get( 'packError'), '\n', (() => {
 downloadPacks(['default']);
 	}));
 	return;
@@ -407,7 +407,7 @@ console.log(remoteHashes.length);
 			});
 		// Create downloader menu here
 		if (browseArray.length<1) {
-			new ScrollingText(strings.get(lang,"nodown"),"\n",function() {st.setState(2)});
+			new ScrollingText(strings.get("nodown"),"\n",function() {st.setState(2)});
 			return;
 		}
 			const downloadSelections = new Array();
@@ -421,10 +421,10 @@ let sizeS;
 			size=size.toFixed(2);
 //			console.log("size: "+size+sizeS+" "+browseArray.length+" packs");
 			const items=new Array();
-			items.push(new MenuItem(-1,strings.get(lang,"mFound",[browseArray.length])));
-	items.push(new MenuItem(0,strings.get(lang,"mDownloadAll",[size,sizeS])));
-		items.push(new MenuItem(1,strings.get(lang,"mDownloadList",[browseArray.length])));
-		items.push(new MenuItem(2,strings.get(lang,"mBack")));
+			items.push(new MenuItem(-1,strings.get("mFound",[browseArray.length])));
+	items.push(new MenuItem(0,strings.get("mDownloadAll",[size,sizeS])));
+		items.push(new MenuItem(1,strings.get("mDownloadList",[browseArray.length])));
+		items.push(new MenuItem(2,strings.get("mBack")));
 		so.directory = './sounds/';
 			let dm=new Menu("please select",items);
 			so.directory = '';
@@ -457,14 +457,13 @@ break;
 		so.directory = './sounds/';
 		const prog = so.create('progress');
 		const toDownload = {};
-	speech.speak(strings.get(lang, 'dling', [i + 1, arr.length]));
+	speech.speak(strings.get( 'dling', [i + 1, arr.length]));
 	for (let i = 0; i < arr.length; i++) {
 		var name = arr[i];
 		toDownload[name] = [];
 								 await fetch(' http://oriolgomez.com/beatpacks/index.php?p=' + arr[i])
 						 .then(event => event.text())
 			.then(data => {
-speech.speak('data' + data);
 const datas = data.split('\n');
 datas.forEach(i => {
 	if (i != '') {
@@ -490,10 +489,12 @@ fs.mkdirSync(dir + i);
 				continue;
 			}
 	toDownload[i].forEach((i, index) => {
-	// Dl file here
+		// Dl file here
 		if (fs.existsSync(dir + i)) {
+		console.log("exist");
 fs.unlinkSync(dir + i);
 		}
+		console.log("going to start download");
 		const file = dl(url + i);
 		prog.playbackRate = utils.percent(index + 1, len) / 100;
 	prog.play();
@@ -506,7 +507,7 @@ fs.unlinkSync(dir + i);
 	});
 		}
 	}
-	speech.speak(strings.get(lang, 'dlingdone'));
+	speech.speak(strings.get( 'dlingdone'));
 	so.directory = '';
 	st.setState(2);
 	}// If length > 1

@@ -1,4 +1,5 @@
 'use strict';
+import {lang} from './main';
 class Strings {
 	constructor() {
 		this.strings = {};
@@ -26,9 +27,34 @@ class Strings {
 			mHashes: 'Rebuild packs folder',
 			mDownload: 'Download new packs'
 		};
+		this.strings[2] = {
+			"mFound":"Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
+			mReady: 'Espera, por favor...',
+			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
+			nodown:"No hay descargas disponibles por el momento. prueba pronto!",
+			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
+			"mBack":"volver",
+			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o q para cancelar',
+			mStart: 'jugar',
+			mLearn: 'aprender el pack',
+			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. To hear the stop action, press the period key (to the right of comma).',
+			dling: 'Descargando %2 packs por favor espera...',
+			dlingdone: '¡Hecho!!',
+			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
+			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
+			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\n',
+			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
+			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
+			mNew: 'Conseguir nuevos packs',
+			nopacks: 'No hay packs disponibles. Si estás seguro de que has instalado packs, ponte en contacto conmigo.',
+			mBrowse: 'Ver packs descargados',
+			mHashes: 'Reconstruir base de datos de packs',
+			mDownload: 'Descargar packs'
+		};
+	
 	}
 
-	get(lang, what, rep = []) {
+	get(what, rep = []) {
 		let str;
 		if (typeof this.strings[lang][what] !== 'undefined') {
 			str = this.strings[lang][what];

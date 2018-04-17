@@ -10,11 +10,11 @@ import {Menu} from './menu';
 export function mainMenu() {
 	speech.webTTS=true;
 	const items = new Array();
-	items.push(new MenuItem(0, strings.get(lang, 'mStart')));
-items.push(new MenuItem(1, strings.get(lang, 'mLearn')));
-items.push(new MenuItem(2, strings.get(lang, 'mBrowse')));
-items.push(new MenuItem(3, strings.get(lang, 'mHashes')));
-items.push(new MenuItem(4, strings.get(lang, 'mDownload')));
+	items.push(new MenuItem(0, strings.get( 'mStart')));
+items.push(new MenuItem(1, strings.get( 'mLearn')));
+items.push(new MenuItem(2, strings.get( 'mBrowse')));
+items.push(new MenuItem(3, strings.get( 'mHashes')));
+items.push(new MenuItem(4, strings.get( 'mDownload')));
 so.directory = './sounds/';
 const mainMenu = new Menu('main menu', items);
 so.directory = '';
