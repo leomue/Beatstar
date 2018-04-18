@@ -489,28 +489,58 @@ if (lang == 2) {
 speech.speak('listo. tienes ' + browseArray.length + ' packs disponibles. Pulsa flechas para moverte, p para previsualizar, espacio para seleccionar, q para salir, enter para empezar descarga, o pulsa la primera letra del nombre de un pack para moverte a él.');
 }
 let browsing=1;
-event.justPressedEventCallback=function(event){
+let size=0;
+event.justPressedEventCallback=function(evt){
+//space
+if (evt==KeyEvent.DOM_VK_SPACE) {
+if (browsePosition!=-1) {
+if (browseArray[browsePosition].selected) {
+browseArray[browsePosition].selected=false;
+size-=browseArray[browsePosition].hash;
+}
+else if (browseArray[browsePosition].selected==false) {
+browseArray[browsePosition].selected=true;
+snds.play();
+size+=browseArray[browsePosition].hash;
+}
+let sizeS;
+let dSize;
+if (size<=0) sizeS="bytes";
+			dSize = size / 1024 / 1024;
+			console.log(dSize);
+			sizeS="mb"
+		if (dSize>1024) {
+			dSize=size/1024
+			sizeS="gb";
+		}
+		if (size<=0) sizeS="bytes";
+		dSize=Math.ceil(dSize);
+			speech.speak(dSize+" "+sizeS+" total");
+}
+}
 //Enter
-	if (event==KeyEvent.DOM_VK_RETURN) {
+	if (evt==KeyEvent.DOM_VK_RETURN) {
+	if (browsing==0) return
+		selected.splice();
 	browseArray.forEach((i)=> {
 	if (i.selected) {
 	selected.push(i.name);
-	console.log("selected "+i.name);
-	}
+		}
 	});
 	if (selected.length>0) {
 		if (typeof snd !== 'undefined') {
 snd.destroy();
 		}
-		
-		if (browsePosition != -1) {
-	speech.speak(selected.length);
-	browsing=0;
+						browsing=0;
+						event.justPressedEventCallback=null;
+						event.charEventCallback=null;
+						downloadPacks(selected);
+						
+												return;
 		}
 	}
-	}
 	// Down arrow
-	if (event==KeyEvent.DOM_VK_DOWN) {
+	if (evt==KeyEvent.DOM_VK_DOWN) {
 		if (typeof snd !== 'undefined') {
 snd.destroy();
 		}
@@ -527,7 +557,7 @@ speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePositio
 }
 	}
 	// Up arrow
-	if (event==KeyEvent.DOM_VK_UP) {
+	if (evt==KeyEvent.DOM_VK_UP) {
 		if (typeof snd !== 'undefined') {
 snd.destroy();
 		}
@@ -545,8 +575,8 @@ speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePositio
 			}
 };
 		// First letter
-		event.charEventCallback=function(char) {
-		var stop = false;
+				event.charEventCallback=function(char) {
+						var stop = false;
 browseArray.forEach((v, i) => {
 	let str = v.name.toLowerCase();
 	if (str.slice(0, 1) == char) {
@@ -567,9 +597,8 @@ if (lang == 2) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
 }
 	}
-
 	//browse menu end
-break;
+		return;
 	}
 			});
 	if (anotherSelected) return;
