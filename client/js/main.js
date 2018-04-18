@@ -371,9 +371,19 @@ downloadPacks(['default']);
 }
 mainMenu();
 }
+var download = function(url, dest, cb) {
+const http=require('http');
+  var file = fs.createWriteStream(dest);
+  var request = http.get(url, function(response) {
+    response.pipe(file);
+    file.on('finish', function() {
+      file.close();
+      cb();
+    });
+  });
+}
 export async function downloadPacks(arr = []) {
-	const dl = require('./download');
-	if (arr.length == 0) {
+		if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
 		let localHashes;
@@ -426,7 +436,7 @@ let sizeS;
 		items.push(new MenuItem(1,strings.get("mDownloadList",[browseArray.length])));
 		items.push(new MenuItem(2,strings.get("mBack")));
 		so.directory = './sounds/';
-			let dm=new Menu("please select",items);
+			let dm=new Menu(strings.get("mSelect"),items);
 			so.directory = '';
 			let anotherSelected=false;
 		dm.run(s=>{
@@ -434,12 +444,12 @@ let sizeS;
 						switch(s.selected) {
 							case 0:
 							dm.destroy();
-							anotherSelected=true;
+							//anotherSelected=true;
 							let dls=new Array();
 							browseArray.forEach(function(i) {
 								dls.push(i.name);
-							downloadPacks(dls);
 			});
+										downloadPacks(dls);
 			break;
 			case 2:
 			dm.destroy();
@@ -453,64 +463,86 @@ break;
 			});
 	if (anotherSelected) return;
 	}
-	if (arr.length > 0) {
+	else if (arr.length > 0) {
 		so.directory = './sounds/';
 		const prog = so.create('progress');
-		const toDownload = {};
+var toDownload = [];
 	speech.speak(strings.get( 'dling', [i + 1, arr.length]));
+	var percent=0;
+						var prevPercent=0;
 	for (let i = 0; i < arr.length; i++) {
 		var name = arr[i];
-		toDownload[name] = [];
+		//toDownload[name] = [];
+		percent=Math.ceil(utils.percent(i, arr.length));
+				if (percent>prevPercent+10) {
+		prevPercent=percent;
+		if (arr.length>5) speech.speak(strings.get("retrieving")+percent+"%"); //speak only if getting a few packs, getting 1 or 2 is fast.
+}
+		
 								 await fetch(' http://oriolgomez.com/beatpacks/index.php?p=' + arr[i])
 						 .then(event => event.text())
 			.then(data => {
 const datas = data.split('\n');
 datas.forEach(i => {
 	if (i != '') {
-toDownload[name].push(i);
+toDownload.push(name+"/"+i);
+		
 	}
 });
 			});
 						 		}// End for loop
 	let dir = os.homedir() + '/beatpacks/';
 	let url = 'http://oriolgomez.com/beatpacks/';
+	var dlCounter=0;
+	var dests=[];
 	for (var i in toDownload) {
-		if (toDownload.hasOwnProperty(i)) {
-			url = 'http://oriolgomez.com/beatpacks/';
-			dir = os.homedir() + '/beatpacks/';
-
-			url = url + i + '/';
-			if (!fs.existsSync(dir + i)) {
-fs.mkdirSync(dir + i);
-			}
-			dir = dir + i + '/';
-			var len = toDownload[i].length;
-			if (len == 0) {
-				continue;
-			}
-	toDownload[i].forEach((i, index) => {
-		// Dl file here
-		if (fs.existsSync(dir + i)) {
-		console.log("exist");
-fs.unlinkSync(dir + i);
+	var ii=i;
+			i=toDownload[i];
+			if (i=="") continue;
+						dir = os.homedir() + '/beatpacks/';
+	var dirsplit=i.split("/");
+						if (fs.existsSync(dir + i)) {
+																		console.log("unlink"+dir+i);
+		fs.unlinkSync(dir + i);
 		}
-		console.log("going to start download");
-		const file = dl(url + i);
-		prog.playbackRate = utils.percent(index + 1, len) / 100;
-	prog.play();
-	try {
-	fs.writeFileSync(dir + i, file);
-	} catch (e) {
-	console.log('error!' + e);
-	st.setState(2);
-	}
-	});
+		if (!fs.existsSync(dir+dirsplit[0])) {
+fs.mkdirSync(dir+dirsplit[0]);
+			}
+											dir = os.homedir() + '/beatpacks/'+i;
+			url = 'http://oriolgomez.com/beatpacks/'+i;
+toDownload[ii]=url;
+dests.push(dir);
+			}
+						console.log("going to start download");
+						speech.speak(strings.get("dfiles",[toDownload.length]));
+						var percent=0;
+						var prevPercent=0;
+						var speakCap=10.0;
+						if (toDownload.length>50) speakCap=8.0;
+												if (toDownload.length>100) speakCap=4.0;
+												if (toDownload.length>500) speakCap=1.0;
+																						if (toDownload.length>1500) speakCap=0.2;
+																																																										var threads = 3;
+require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
+		  download(fileUrl, dests[index],next);
+		  console.log(fileUrl);
+		    percent=utils.percent(index, toDownload.length).toFixed(1);
+		    if (speakCap>5) percent=Math.ceil(percent);
+		    var cap=prevPercent+speakCap;
+		    console.log("cap"+cap);
+		if (percent>cap) {
+		prevPercent=percent;
+		speech.speak(percent+"%");
 		}
-	}
-	speech.speak(strings.get( 'dlingdone'));
-	so.directory = '';
+		  		  }, function() {
+		     console.log('finished');
+		     	speech.speak(strings.get( 'dlingdone'));
+	console.log("exiting function");
+	so.directory = './sounds/';
 	st.setState(2);
-	}// If length > 1
+			     })
+			     
+				}// If length > 1
 }
 export function save() {
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {

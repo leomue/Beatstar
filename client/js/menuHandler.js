@@ -16,7 +16,7 @@ items.push(new MenuItem(2, strings.get( 'mBrowse')));
 items.push(new MenuItem(3, strings.get( 'mHashes')));
 items.push(new MenuItem(4, strings.get( 'mDownload')));
 so.directory = './sounds/';
-const mainMenu = new Menu('main menu', items);
+const mainMenu = new Menu(strings.get("mainmenu"), items);
 so.directory = '';
 mainMenu.music = packdir + 'loop';
 const fs = require('fs');

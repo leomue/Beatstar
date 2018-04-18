@@ -899,8 +899,12 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			"mFound": "Found %1 new packs: what do you wish to do?",
+			mainmenu: "main menu",
+			mSelect: "Please select",
 			mReady: 'Please wait...',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
+			dfiles: "Downloading %1 files.",
+			retrieving: "Retrieving data ",
 			nodown: "No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs (%1)',
 			"mBack": "go back",
@@ -909,6 +913,7 @@ class Strings {
 			mLearn: 'Learn the pack',
 			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).',
 			dling: 'Downloading %2 packs please wait...',
+			dlprog: "downloading pack %1 of %2...",
 			dlingdone: 'Done!',
 			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
 			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
@@ -938,11 +943,16 @@ class Strings {
 			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
 			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\n',
 			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
+			dlprog: "descargando pack %1 de %2...",
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si estás seguro de que has instalado packs, ponte en contacto conmigo.',
 			mBrowse: 'Ver packs descargados',
 			mHashes: 'Reconstruir base de datos de packs',
+			mainmenu: "menú principal",
+			mSelect: "Por favor selecciona",
+			dfiles: "Descargando %1 archivos.",
+			retrieving: "Recopilando datos ",
 			mDownload: 'Descargar packs'
 		};
 	}
@@ -5044,7 +5054,7 @@ function mainMenu() {
 	items.push(new _menuItem.MenuItem(3, _strings.strings.get('mHashes')));
 	items.push(new _menuItem.MenuItem(4, _strings.strings.get('mDownload')));
 	_soundObject.so.directory = './sounds/';
-	const mainMenu = new _menu.Menu('main menu', items);
+	const mainMenu = new _menu.Menu(_strings.strings.get("mainmenu"), items);
 	_soundObject.so.directory = '';
 	mainMenu.music = _main.packdir + 'loop';
 	const fs = require('fs');
@@ -5068,13 +5078,7 @@ function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":13,"./main":1,"./stateMachine":15,"./strings":9,"./menuItem":5,"./menu":6}],16:[function(require,module,exports) {
-module.exports = function (url) {
-	return require('child_process')
-		.execFileSync('curl', ['--silent', '-L', url], {});
-};
-
-},{}],1:[function(require,module,exports) {
+},{"./soundObject":13,"./main":1,"./stateMachine":15,"./strings":9,"./menuItem":5,"./menu":6}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5491,8 +5495,18 @@ function checkPack() {
 	}
 	(0, _menuHandler.mainMenu)();
 }
+var download = function (url, dest, cb) {
+	const http = require('http');
+	var file = _fs2.default.createWriteStream(dest);
+	var request = http.get(url, function (response) {
+		response.pipe(file);
+		file.on('finish', function () {
+			file.close();
+			cb();
+		});
+	});
+};
 async function downloadPacks(arr = []) {
-	const dl = require('./download');
 	if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -5544,7 +5558,7 @@ async function downloadPacks(arr = []) {
 		items.push(new _menuItem.MenuItem(1, _strings.strings.get("mDownloadList", [browseArray.length])));
 		items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
 		_soundObject.so.directory = './sounds/';
-		let dm = new _menu.Menu("please select", items);
+		let dm = new _menu.Menu(_strings.strings.get("mSelect"), items);
 		_soundObject.so.directory = '';
 		let anotherSelected = false;
 		dm.run(s => {
@@ -5552,12 +5566,12 @@ async function downloadPacks(arr = []) {
 			switch (s.selected) {
 				case 0:
 					dm.destroy();
-					anotherSelected = true;
+					//anotherSelected=true;
 					let dls = new Array();
 					browseArray.forEach(function (i) {
 						dls.push(i.name);
-						downloadPacks(dls);
 					});
+					downloadPacks(dls);
 					break;
 				case 2:
 					dm.destroy();
@@ -5570,62 +5584,81 @@ async function downloadPacks(arr = []) {
 			}
 		});
 		if (anotherSelected) return;
-	}
-	if (arr.length > 0) {
+	} else if (arr.length > 0) {
 		_soundObject.so.directory = './sounds/';
 		const prog = _soundObject.so.create('progress');
-		const toDownload = {};
+		var toDownload = [];
 		_tts.speech.speak(_strings.strings.get('dling', [i + 1, arr.length]));
+		var percent = 0;
+		var prevPercent = 0;
 		for (let i = 0; i < arr.length; i++) {
 			var name = arr[i];
-			toDownload[name] = [];
+			//toDownload[name] = [];
+			percent = Math.ceil(_utilities.utils.percent(i, arr.length));
+			if (percent > prevPercent + 10) {
+				prevPercent = percent;
+				if (arr.length > 5) _tts.speech.speak(_strings.strings.get("retrieving") + percent + "%"); //speak only if getting a few packs, getting 1 or 2 is fast.
+			}
+
 			await fetch(' http://oriolgomez.com/beatpacks/index.php?p=' + arr[i]).then(event => event.text()).then(data => {
 				const datas = data.split('\n');
 				datas.forEach(i => {
 					if (i != '') {
-						toDownload[name].push(i);
+						toDownload.push(name + "/" + i);
 					}
 				});
 			});
 		} // End for loop
 		let dir = _os2.default.homedir() + '/beatpacks/';
 		let url = 'http://oriolgomez.com/beatpacks/';
+		var dlCounter = 0;
+		var dests = [];
 		for (var i in toDownload) {
-			if (toDownload.hasOwnProperty(i)) {
-				url = 'http://oriolgomez.com/beatpacks/';
-				dir = _os2.default.homedir() + '/beatpacks/';
-
-				url = url + i + '/';
-				if (!_fs2.default.existsSync(dir + i)) {
-					_fs2.default.mkdirSync(dir + i);
-				}
-				dir = dir + i + '/';
-				var len = toDownload[i].length;
-				if (len == 0) {
-					continue;
-				}
-				toDownload[i].forEach((i, index) => {
-					// Dl file here
-					if (_fs2.default.existsSync(dir + i)) {
-						console.log("exist");
-						_fs2.default.unlinkSync(dir + i);
-					}
-					console.log("going to start download");
-					const file = dl(url + i);
-					prog.playbackRate = _utilities.utils.percent(index + 1, len) / 100;
-					prog.play();
-					try {
-						_fs2.default.writeFileSync(dir + i, file);
-					} catch (e) {
-						console.log('error!' + e);
-						_stateMachine.st.setState(2);
-					}
-				});
+			var ii = i;
+			i = toDownload[i];
+			if (i == "") continue;
+			dir = _os2.default.homedir() + '/beatpacks/';
+			var dirsplit = i.split("/");
+			if (_fs2.default.existsSync(dir + i)) {
+				console.log("unlink" + dir + i);
+				_fs2.default.unlinkSync(dir + i);
 			}
+			if (!_fs2.default.existsSync(dir + dirsplit[0])) {
+				_fs2.default.mkdirSync(dir + dirsplit[0]);
+			}
+			dir = _os2.default.homedir() + '/beatpacks/' + i;
+			url = 'http://oriolgomez.com/beatpacks/' + i;
+			toDownload[ii] = url;
+			dests.push(dir);
 		}
-		_tts.speech.speak(_strings.strings.get('dlingdone'));
-		_soundObject.so.directory = '';
-		_stateMachine.st.setState(2);
+		console.log("going to start download");
+		_tts.speech.speak(_strings.strings.get("dfiles", [toDownload.length]));
+		var percent = 0;
+		var prevPercent = 0;
+		var speakCap = 10.0;
+		if (toDownload.length > 50) speakCap = 8.0;
+		if (toDownload.length > 100) speakCap = 4.0;
+		if (toDownload.length > 500) speakCap = 1.0;
+		if (toDownload.length > 1500) speakCap = 0.2;
+		var threads = 3;
+		require('async').eachOfLimit(toDownload, threads, function (fileUrl, index, next) {
+			download(fileUrl, dests[index], next);
+			console.log(fileUrl);
+			percent = _utilities.utils.percent(index, toDownload.length).toFixed(1);
+			if (speakCap > 5) percent = Math.ceil(percent);
+			var cap = prevPercent + speakCap;
+			console.log("cap" + cap);
+			if (percent > cap) {
+				prevPercent = percent;
+				_tts.speech.speak(percent + "%");
+			}
+		}, function () {
+			console.log('finished');
+			_tts.speech.speak(_strings.strings.get('dlingdone'));
+			console.log("exiting function");
+			_soundObject.so.directory = './sounds/';
+			_stateMachine.st.setState(2);
+		});
 	} // If length > 1
 }
 function save() {
@@ -5636,7 +5669,7 @@ function save() {
 	// Write=mangle.encrypt(write);
 	_fs2.default.writeFileSync(_os2.default.homedir() + '/beatpacks/save.dat', write);
 }
-},{"./player":4,"./menuItem":5,"./menu":6,"./menuHandler":7,"./scrollingText":8,"./strings":9,"./soundHandler":10,"./tts":11,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":15,"./input.js":3,"./download":16}],41:[function(require,module,exports) {
+},{"./player":4,"./menuItem":5,"./menu":6,"./menuHandler":7,"./scrollingText":8,"./strings":9,"./soundHandler":10,"./tts":11,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":15,"./input.js":3}],49:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -5813,5 +5846,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[41,1])
+},{}]},{},[49,1])
 //# sourceMappingURL=/main.map

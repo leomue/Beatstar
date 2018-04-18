@@ -5,8 +5,12 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			"mFound":"Found %1 new packs: what do you wish to do?",
+			mainmenu:"main menu",
+			mSelect:"Please select",
 			mReady: 'Please wait...',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
+			dfiles:"Downloading %1 files.",
+			retrieving:"Retrieving data ",
 			nodown:"No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs (%1)',
 			"mBack":"go back",
@@ -15,6 +19,7 @@ class Strings {
 			mLearn: 'Learn the pack',
 			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).',
 			dling: 'Downloading %2 packs please wait...',
+			dlprog:"downloading pack %1 of %2...",
 			dlingdone: 'Done!',
 			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
 			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
@@ -44,11 +49,16 @@ class Strings {
 			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
 			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\n',
 			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
+			dlprog:"descargando pack %1 de %2...",
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si estás seguro de que has instalado packs, ponte en contacto conmigo.',
 			mBrowse: 'Ver packs descargados',
 			mHashes: 'Reconstruir base de datos de packs',
+			mainmenu:"menú principal",
+			mSelect:"Por favor selecciona",
+			dfiles:"Descargando %1 archivos.",
+			retrieving:"Recopilando datos ",
 			mDownload: 'Descargar packs'
 		};
 	
