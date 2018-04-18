@@ -319,13 +319,12 @@ const temp = {
 packs.push(temp);
 });
 so.directory = './sounds/';
-if (silent) {
-console.log('stopping here');
-return packs;
-}
 let write = JSON.stringify(packs);
 write = mangle.encrypt(write);
 fs.writeFileSync(os.homedir() + '/beatpacks/hashes.db', write);
+if (silent) {
+return packs;
+}
 if (corrupts != '') {
 	if (lang == 1) {
 		if (!silent) {
@@ -458,6 +457,118 @@ mainMenu();
 break;
 case 1:
 dm.destroy();
+//browse menu start
+let timeout = -1;
+		let browsePosition = -1;
+		browseArray.forEach((i)=> {
+		i.selected=false;
+		});//forEach
+var selected=[];
+so.directory="./sounds/";
+let snds=so.create("ui/selected");
+so.directory = '';
+browseArray.sort((a, b) => {
+	const nameA = a.name.toLowerCase();
+	const nameB = b.name.toLowerCase();
+	if (nameA < nameB) {
+		return -1;
+	}
+	if (nameA > nameB) {
+		return 1;
+	}
+	return 0;
+});
+let event = new KeyboardInput();
+event.init();
+
+let snd;
+if (lang == 1) {
+speech.speak('ready. Browsing ' + browseArray.length + ' downloadable packs. Press arrows to move, space to select, p to preview, q to exit, enter to start download, or the first letter of a packs name to move to it.');
+}
+if (lang == 2) {
+speech.speak('listo. tienes ' + browseArray.length + ' packs disponibles. Pulsa flechas para moverte, p para previsualizar, espacio para seleccionar, q para salir, enter para empezar descarga, o pulsa la primera letra del nombre de un pack para moverte a él.');
+}
+let browsing=1;
+event.justPressedEventCallback=function(event){
+//Enter
+	if (event==KeyEvent.DOM_VK_RETURN) {
+	browseArray.forEach((i)=> {
+	if (i.selected) {
+	selected.push(i.name);
+	console.log("selected "+i.name);
+	}
+	});
+	if (selected.length>0) {
+		if (typeof snd !== 'undefined') {
+snd.destroy();
+		}
+		
+		if (browsePosition != -1) {
+	speech.speak(selected.length);
+	browsing=0;
+		}
+	}
+	}
+	// Down arrow
+	if (event==KeyEvent.DOM_VK_DOWN) {
+		if (typeof snd !== 'undefined') {
+snd.destroy();
+		}
+		browsePosition++;
+		if (browsePosition > browseArray.length - 1) {
+			browsePosition = 0;
+		}
+		if (browseArray[browsePosition].selected) { snds.stop(); snds.play(); }
+if (lang == 1) {
+speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
+}
+if (lang == 2) {
+speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
+}
+	}
+	// Up arrow
+	if (event==KeyEvent.DOM_VK_UP) {
+		if (typeof snd !== 'undefined') {
+snd.destroy();
+		}
+		browsePosition--;
+		if (browsePosition < 0) {
+			browsePosition = browseArray.length - 1;
+		}
+		if (browseArray[browsePosition].selected) { snds.stop(); snds.play(); }
+				if (lang == 1) {
+speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
+		}
+		if (lang == 2) {
+speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
+		}
+			}
+};
+		// First letter
+		event.charEventCallback=function(char) {
+		var stop = false;
+browseArray.forEach((v, i) => {
+	let str = v.name.toLowerCase();
+	if (str.slice(0, 1) == char) {
+		if (!stop) {
+			browsePosition = i;
+		}
+		stop = true;
+	}
+});
+if (typeof snd !== 'undefined') {
+snd.destroy();
+}
+if (browseArray[browsePosition].selected) { snds.stop(); snds.play(); }
+if (lang == 1) {
+speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
+}
+if (lang == 2) {
+speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
+}
+	}
+
+	//browse menu end
 break;
 	}
 			});
@@ -468,13 +579,13 @@ break;
 		const prog = so.create('progress');
 var toDownload = [];
 	speech.speak(strings.get( 'dling', [i + 1, arr.length]));
-	var percent=0;
-						var prevPercent=0;
+	let percent=0;
+let prevPercent=0;
 	for (let i = 0; i < arr.length; i++) {
 		var name = arr[i];
 		//toDownload[name] = [];
-		percent=Math.ceil(utils.percent(i, arr.length));
-				if (percent>prevPercent+10) {
+		percent=Math.floor(utils.percent(i, arr.length));
+				if (percent>prevPercent+20) {
 		prevPercent=percent;
 		if (arr.length>5) speech.speak(strings.get("retrieving")+percent+"%"); //speak only if getting a few packs, getting 1 or 2 is fast.
 }
@@ -515,29 +626,26 @@ dests.push(dir);
 			}
 						console.log("going to start download");
 						speech.speak(strings.get("dfiles",[toDownload.length]));
-						var percent=0;
-						var prevPercent=0;
-						var speakCap=10.0;
-						if (toDownload.length>50) speakCap=8.0;
-												if (toDownload.length>100) speakCap=4.0;
-												if (toDownload.length>500) speakCap=1.0;
-																						if (toDownload.length>1500) speakCap=0.2;
-																																																										var threads = 3;
+						percent=0;
+prevPercent=0;
+						let currentIndex=0;
+												let event=new KeyboardInput();
+						event.init();
+						event.justPressedEventCallback=function() {
+												percent=utils.percent(currentIndex, toDownload.length).toFixed(1);
+										speech.speak(percent+"%");
+																				console.log(percent+"%");
+										};
+																																																												var threads = 3;
 require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
 		  download(fileUrl, dests[index],next);
-		  console.log(fileUrl);
-		    percent=utils.percent(index, toDownload.length).toFixed(1);
-		    if (speakCap>5) percent=Math.ceil(percent);
-		    var cap=prevPercent+speakCap;
-		    console.log("cap"+cap);
-		if (percent>cap) {
-		prevPercent=percent;
-		speech.speak(percent+"%");
-		}
+		  currentIndex=index;
+		  		    
 		  		  }, function() {
-		     console.log('finished');
-		     	speech.speak(strings.get( 'dlingdone'));
+		     		     	speech.speak(strings.get( 'dlingdone'));
 	console.log("exiting function");
+	rebuildHashes(true);
+	event.justPressedEventCallback=null;
 	so.directory = './sounds/';
 	st.setState(2);
 			     })

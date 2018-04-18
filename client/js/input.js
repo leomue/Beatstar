@@ -9,6 +9,7 @@ class KeyboardInput {
 		this.chars = [];
 		this.justReleased = [];
 		this.justPressedEventCallback = null;
+		this.charEventCallback=null;
 	}
 
 	init() {
@@ -40,6 +41,10 @@ this.justPressedEventCallback(event.which);
 	handleChar(char) {
 		if (String.fromCharCode(char.which) != '') {
 			this.chars += String.fromCharCode(char.which);
+			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
+this.charEventCallback(String.fromCharCode(char.which));
+			}
+
 		}
 	}
 
