@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import Cryptr from 'cryptr';
+let boot=false;
 import {Player} from './player';
 import {MenuItem} from './menuItem';
 import {Menu} from './menu';
 import 'hash-files';
 import walk from 'fs-walk';
-import fs from 'fs';
 import os from 'os';
 import {mainMenu} from './menuHandler';
 import {ScrollingText} from './scrollingText';
@@ -46,6 +46,7 @@ function proceed() {
 // document.removeEventListener("DOMContentLoaded",setup);
 
 export async function learnPack() {
+const fs=require('fs');
 	const pool = new SoundHandler();
 	let actions = 0;
 	for (let i = 1; i <= 10; i++) {
@@ -92,6 +93,7 @@ pool.playStatic(packdir + 'a' + 1, 0);
 				st.setState(2);
 }
 export async function browsePacks(browsing = 1) {
+const fs=require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks/hashes.db')) {
 		var error = 0;
 		if (lang == 1) {
@@ -194,6 +196,7 @@ walk.filesSync(os.homedir() + '/beatpacks/' + browseArray[browsePosition].name, 
 if (size != browseArray[browsePosition].hash) {
 	browsing = 0;
 // Todo: remove from unlocked
+data.unlocks[browsePosition.name]=null;
 speech.speak(strings.get( 'tamperWarning'));
 setTimeout(() => {
 speech.speak(strings.get( 'tamperWarning'));
@@ -204,6 +207,7 @@ while (!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 }
 if (browsing > 0) {
 	pack = browseArray[browsePosition].name;
+		boot=false;
 	data.pack = pack;
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
@@ -214,7 +218,8 @@ if (browsing > 0) {
 			"average":0,
 					};
 					}
-	packdir = os.homedir() + '/beatpacks/' + pack + '/';
+						packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	boot=false;
 	so.directory = './sounds/';
 save();
 so.kill(() => {
@@ -314,11 +319,11 @@ st.setState(2);
 });
 }
 export async function rebuildHashes(silent = false) {
+const fs=require('fs');
 // Var hash=require('hash-files');
 	let corrupts = '';
 	// Var walk=require('fs-walk');
-	// var fs=require('fs');
-	let newHash = 0;
+		let newHash = 0;
 	const packs = new Array();
 	so.directory = '';
 walk.dirsSync(os.homedir() + '/beatpacks', (pb, pf, stat, next) => {
@@ -398,17 +403,20 @@ break;
 });
 }
 export function checkPack() {
+const fs=require('fs');
 	try {
 		data = JSON.parse(fs.readFileSync(os.homedir() + '/beatpacks/save.dat'));
 	} catch (err) {
 		data = new Player();
 	}
 	pack = data.pack;
+	boot=false;
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	actionKeys = data.actionKeys;
 save();
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	pack = 'default';
+	boot=false;
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
@@ -416,8 +424,8 @@ if (!fs.existsSync(packdir + 'bpm.txt')) {
 downloadPacks(['default']);
 	}));
 	return;
-}
-mainMenu();
+	}
+	booter();
 }
 var download = function(url, dest, cb) {
 const http=require('http');
@@ -431,6 +439,7 @@ const http=require('http');
   });
 }
 export async function downloadPacks(arr = []) {
+const fs=require('fs');
 		if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -502,7 +511,7 @@ let sizeS;
 			case 2:
 			dm.destroy();
 			anotherSelected=true;
-mainMenu();
+st.setState(2);
 break;
 case 1:
 dm.destroy();
@@ -731,6 +740,7 @@ require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
 				}// If length > 1
 }
 export function save() {
+const fs=require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
 fs.mkdirSync(os.homedir() + '/beatpacks');
 	}
@@ -739,6 +749,7 @@ fs.mkdirSync(os.homedir() + '/beatpacks');
 fs.writeFileSync(os.homedir() + '/beatpacks/save.dat', write);
 }
 export function listenPack() {
+const fs=require('fs');
 let inp=new KeyboardInput();
 inp.init();
 let pos=0;
@@ -784,7 +795,7 @@ pos++;
 		lock.play();
 		}
 		else {
-		mus=so.create(packdir + pos + 'music');		
+		mus=so.create(packdir + pos + 'music',true);
 		mus.loop=true;
 		mus.play();
 		}
@@ -799,10 +810,37 @@ pos--;
 		lock.play();
 		}
 		else {
-		mus=so.create(packdir + pos + 'music');		
+		mus=so.create(packdir + pos + 'music',true);
 		mus.loop=true;
 		mus.play();
 		}
 		}
 		}//callback
+		}
+		export function booter() {
+		const fs=require('fs');
+		//boot crap
+//const fs=require('fs');
+if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
+boot=true;
+			so.directory = '';
+let bootSound = so.create(packdir + 'boot');
+bootSound.sound.once("end",function() {
+mainMenu();
+});
+			so.directory = './sounds/';
+			let input=new KeyboardInput();
+bootSound.play();
+input.init();
+input.justPressedEventCallback=function(evt) {
+bootSound.sound.off("end");
+bootSound.destroy();
+input.justPressedEventCallback=null;
+mainMenu();
+}
+input.justPressedEventCallback=null;
+		}//if file exists
+		else {
+		mainMenu();
+		}
 		}

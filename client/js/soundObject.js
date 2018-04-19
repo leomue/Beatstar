@@ -4,11 +4,12 @@ import {speech} from './tts';
 const isElectron = true;
 let playOnceTimer;
 class SoundObjectItem {
-	constructor(file, callback = 0, tag = 0) {
+	constructor(file, callback = 0, tag = 0,stream=false) {
 		const that = this;
 		this.fileName = file;
 		this.sound = new Howl({
 			src: file,
+			html5:stream,
 			onload() {
  that.doneLoading();
 			}
@@ -181,14 +182,14 @@ class SoundObject {
 		this.statusCallback = null;
 	}
 
-	create(file) {
+	create(file,stream=false) {
 		file = this.directory + file + this.extension;
 		let returnObject = null;
 		const that = this;
 		returnObject = new SoundObjectItem(file, (() => {
  that.doneLoading();
-		}));
-								this.sounds.push(returnObject);
+		}),0,stream);
+										this.sounds.push(returnObject);
 								return returnObject;
 	}
 

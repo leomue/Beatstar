@@ -7,25 +7,10 @@ import {st} from './stateMachine';
 import {strings} from './strings';
 import {MenuItem} from './menuItem';
 import {pack, packdir, rebuildHashes, downloadPacks} from './main';
-let boot=false;
+
 import {Menu} from './menu';
 export async function mainMenu() {
 const fs=require('fs');
-if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
-boot=true;
-			so.directory = '';
-let bootSound = so.create(packdir + 'boot');
-			so.directory = './sounds/';
-bootSound.play();
-let input=new KeyboardInput();
-				while (bootSound.playing) {
-			await utils.sleep(5);
-			if (input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-		bootSound.stop();
-			}//key
-		}//while
-		}//if file exists
-		
 	speech.webTTS=true;
 	const items = new Array();
 	items.push(new MenuItem(0, strings.get( 'mStart')));

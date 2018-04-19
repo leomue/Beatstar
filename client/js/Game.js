@@ -67,6 +67,8 @@ class Game {
 		so.directory = '';
 		if (fs.existsSync(packdir + 'nlevel.ogg')) {
 so.enqueue(packdir + 'nlevel');
+}
+if (fs.existsSync(packdir + 'win.ogg')) {so.enqueue(packdir + 'win');
 		}
 		if (fs.existsSync(packdir + 'fail.ogg')) {
 so.enqueue(packdir + 'fail');
@@ -209,22 +211,26 @@ st.setState(2);
 	}
 	
 	async setupLevel() {
+	if (this.level>1) {
+	
+	}
 	this.scoreAverage=[];
 	this.levelAverage=[];
 	if (this.level>this.levels) {
-			if (fs.existsSync(packdir + 'win.ogg')) {
-						so.directory = '';
+				if (fs.existsSync(packdir + 'win.ogg')) {
+									so.directory = '';
+						
 			this.winSound = so.create(packdir + 'win');
 			this.winSound.play();
-while (this.winSound.playing) {
+while (this.winSound.playing==true) {
 			await utils.sleep(5);
-			if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+						if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 		this.winSound.stop();
 			}//key
 		}//while
 		}//if file exists
 		data.unlocks[pack]["win"]=true;
-		save();
+				save();
 				this.doScore();
 		so.kill(() => {
 st.setState(2);
@@ -262,7 +268,7 @@ this.playing = true;
 		}
 		so.directory = '';
 		const that = this;
-		this.music = so.create(packdir + this.level + 'music');
+		this.music = so.create(packdir + this.level + 'music',true);
 		this.music.loop = true;
 		so.directory = './sounds/';
 this.music.play();

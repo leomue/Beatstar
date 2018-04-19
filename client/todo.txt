@@ -1,3 +1,4 @@
 add winning to pack variables and when you win play sound etc
 remember to encrypt the fucking savefile
 doScore function calculates average
+should I sacrifice the pitch modification of the music and use html5? maybe make a new git branch

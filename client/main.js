@@ -1,4 +1,4 @@
-process.env.HMR_PORT=61309;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=63112;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({13:[function(require,module,exports) {
+})({15:[function(require,module,exports) {
 
 'use strict';
 
@@ -204,7 +204,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],10:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -240,7 +240,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],12:[function(require,module,exports) {
+},{}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -255,11 +255,12 @@ var _tts = require('./tts');
 const isElectron = true;
 let playOnceTimer;
 class SoundObjectItem {
-	constructor(file, callback = 0, tag = 0) {
+	constructor(file, callback = 0, tag = 0, stream = false) {
 		const that = this;
 		this.fileName = file;
 		this.sound = new _howler.Howl({
 			src: file,
+			html5: stream,
 			onload() {
 				that.doneLoading();
 			}
@@ -432,13 +433,13 @@ class SoundObject {
 		this.statusCallback = null;
 	}
 
-	create(file) {
+	create(file, stream = false) {
 		file = this.directory + file + this.extension;
 		let returnObject = null;
 		const that = this;
 		returnObject = new SoundObjectItem(file, () => {
 			that.doneLoading();
-		});
+		}, 0, stream);
 		this.sounds.push(returnObject);
 		return returnObject;
 	}
@@ -573,7 +574,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./tts":10}],7:[function(require,module,exports) {
+},{"./tts":12}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -673,7 +674,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":13,"./soundObject":12,"./tts":10}],5:[function(require,module,exports) {
+},{"./keycodes":15,"./soundObject":13,"./tts":12}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -711,7 +712,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":13,"./main":1,"./scrollingText":7}],4:[function(require,module,exports) {
+},{"./keycodes":15,"./main":1,"./scrollingText":7}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -849,7 +850,7 @@ class EditItem extends MenuItem {
 }
 exports.MenuItem = MenuItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":10}],11:[function(require,module,exports) {
+},{"./tts":12}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -899,7 +900,7 @@ class GameUtils {
 	}
 }
 var utils = exports.utils = new GameUtils();
-},{}],8:[function(require,module,exports) {
+},{}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1002,7 +1003,7 @@ class Strings {
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1}],2:[function(require,module,exports) {
+},{"./main":1}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1138,7 +1139,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":10}],3:[function(require,module,exports) {
+},{"./tts":12}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1413,7 +1414,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":11,"./strings":8,"./tts":10,"./soundObject.js":12,"./menuItem":4,"./keycodes":13,"./input":2}],18:[function(require,module,exports) {
+},{"./utilities":11,"./strings":9,"./tts":12,"./soundObject.js":13,"./menuItem":6,"./keycodes":15,"./input":5}],19:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1458,7 +1459,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],17:[function(require,module,exports) {
+},{}],18:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -4361,7 +4362,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],15:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4452,7 +4453,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":17,"./soundObject.js":12}],9:[function(require,module,exports) {
+},{"./howler":18,"./soundObject.js":13}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4593,7 +4594,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":15,"./soundObject.js":12}],19:[function(require,module,exports) {
+},{"./soundSource.js":16,"./soundObject.js":13}],20:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -4645,7 +4646,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],16:[function(require,module,exports) {
+},{}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4743,6 +4744,9 @@ class Game {
 		_soundObject.so.directory = '';
 		if (_fs2.default.existsSync(_main.packdir + 'nlevel.ogg')) {
 			_soundObject.so.enqueue(_main.packdir + 'nlevel');
+		}
+		if (_fs2.default.existsSync(_main.packdir + 'win.ogg')) {
+			_soundObject.so.enqueue(_main.packdir + 'win');
 		}
 		if (_fs2.default.existsSync(_main.packdir + 'fail.ogg')) {
 			_soundObject.so.enqueue(_main.packdir + 'fail');
@@ -4884,14 +4888,16 @@ class Game {
 	}
 
 	async setupLevel() {
+		if (this.level > 1) {}
 		this.scoreAverage = [];
 		this.levelAverage = [];
 		if (this.level > this.levels) {
 			if (_fs2.default.existsSync(_main.packdir + 'win.ogg')) {
 				_soundObject.so.directory = '';
+
 				this.winSound = _soundObject.so.create(_main.packdir + 'win');
 				this.winSound.play();
-				while (this.winSound.playing) {
+				while (this.winSound.playing == true) {
 					await _utilities.utils.sleep(5);
 					if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
 						this.winSound.stop();
@@ -4937,7 +4943,7 @@ class Game {
 		}
 		_soundObject.so.directory = '';
 		const that = this;
-		this.music = _soundObject.so.create(_main.packdir + this.level + 'music');
+		this.music = _soundObject.so.create(_main.packdir + this.level + 'music', true);
 		this.music.loop = true;
 		_soundObject.so.directory = './sounds/';
 		this.music.play();
@@ -5021,7 +5027,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":10,"./main":1,"./oldtimer":18,"./soundHandler":9,"./utilities":11,"./soundObject":12,"./stateMachine":14,"./timer":19,"./scrollingText":7,"./input.js":2,"./keycodes.js":13}],14:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":19,"./soundHandler":10,"./utilities":11,"./soundObject":13,"./stateMachine":14,"./timer":20,"./scrollingText":7,"./input.js":5,"./keycodes.js":15}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5105,7 +5111,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":2,"./tts":10,"./main":1,"./menuHandler":6,"./soundObject":12,"./keycodes":13,"./game":16}],6:[function(require,module,exports) {
+},{"./input":5,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":13,"./keycodes":15,"./game":17}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5125,24 +5131,8 @@ var _menuItem = require('./menuItem');
 
 var _menu = require('./menu');
 
-let boot = false;
 async function mainMenu() {
 	const fs = require('fs');
-	if (fs.existsSync(_main.packdir + 'boot.ogg') && !boot) {
-		boot = true;
-		_soundObject.so.directory = '';
-		let bootSound = _soundObject.so.create(_main.packdir + 'boot');
-		_soundObject.so.directory = './sounds/';
-		bootSound.play();
-		let input = new KeyboardInput();
-		while (bootSound.playing) {
-			await utils.sleep(5);
-			if (input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-				bootSound.stop();
-			} //key
-		} //while
-	} //if file exists
-
 	speech.webTTS = true;
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
@@ -5184,7 +5174,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":4,"./menu":3}],1:[function(require,module,exports) {
+},{"./soundObject":13,"./main":1,"./stateMachine":14,"./strings":9,"./menuItem":6,"./menu":3}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5199,6 +5189,7 @@ exports.checkPack = checkPack;
 exports.downloadPacks = downloadPacks;
 exports.save = save;
 exports.listenPack = listenPack;
+exports.booter = booter;
 
 var _jquery = require('jquery');
 
@@ -5219,10 +5210,6 @@ require('hash-files');
 var _fsWalk = require('fs-walk');
 
 var _fsWalk2 = _interopRequireDefault(_fsWalk);
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
 
 var _os = require('os');
 
@@ -5249,6 +5236,8 @@ var _stateMachine = require('./stateMachine');
 var _input = require('./input.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+let boot = false;
 
 // Import test from './test.js'
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
@@ -5278,10 +5267,11 @@ function proceed() {
 // document.removeEventListener("DOMContentLoaded",setup);
 
 async function learnPack() {
+	const fs = require('fs');
 	const pool = new _soundHandler.SoundHandler();
 	let actions = 0;
 	for (let i = 1; i <= 10; i++) {
-		if (_fs2.default.existsSync(packdir + 'a' + i + '.ogg')) {
+		if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
 			actions = i;
 		}
 	}
@@ -5324,7 +5314,8 @@ async function learnPack() {
 	_stateMachine.st.setState(2);
 }
 async function browsePacks(browsing = 1) {
-	if (!_fs2.default.existsSync(_os2.default.homedir() + '/beatpacks/hashes.db')) {
+	const fs = require('fs');
+	if (!fs.existsSync(_os2.default.homedir() + '/beatpacks/hashes.db')) {
 		var error = 0;
 		if (lang == 1) {
 			error = new _scrollingText.ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a few seconds...', '\n', () => {
@@ -5339,7 +5330,7 @@ async function browsePacks(browsing = 1) {
 		return;
 	}
 	try {
-		var packs = JSON.parse(mangle.decrypt(_fs2.default.readFileSync(_os2.default.homedir() + '/beatpacks/hashes.db')));
+		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(_os2.default.homedir() + '/beatpacks/hashes.db')));
 	} catch (err) {
 		var error = 0;
 		if (lang == 1) {
@@ -5359,7 +5350,7 @@ async function browsePacks(browsing = 1) {
 	let browsePosition = -1;
 	if (browsing > 0) {
 		packs.forEach((i, v) => {
-			if (_fs2.default.existsSync(_os2.default.homedir() + '/beatpacks/' + i.name + '/bpm.txt')) {
+			if (fs.existsSync(_os2.default.homedir() + '/beatpacks/' + i.name + '/bpm.txt')) {
 				if (browsing == 1) {
 					if (typeof data.unlocks[i.name] === "undefined") {
 						browseArray.push(i);
@@ -5422,6 +5413,7 @@ async function browsePacks(browsing = 1) {
 				if (size != browseArray[browsePosition].hash) {
 					browsing = 0;
 					// Todo: remove from unlocked
+					data.unlocks[browsePosition.name] = null;
 					_tts.speech.speak(_strings.strings.get('tamperWarning'));
 					setTimeout(() => {
 						_tts.speech.speak(_strings.strings.get('tamperWarning'));
@@ -5432,6 +5424,7 @@ async function browsePacks(browsing = 1) {
 				}
 				if (browsing > 0) {
 					exports.pack = pack = browseArray[browsePosition].name;
+					boot = false;
 					data.pack = pack;
 					if (typeof data.unlocks[pack] === "undefined") {
 						data.unlocks[pack] = {
@@ -5443,6 +5436,7 @@ async function browsePacks(browsing = 1) {
 						};
 					}
 					exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
+					boot = false;
 					_soundObject.so.directory = './sounds/';
 					save();
 					_soundObject.so.kill(() => {
@@ -5542,15 +5536,15 @@ async function browsePacks(browsing = 1) {
 	});
 }
 async function rebuildHashes(silent = false) {
+	const fs = require('fs');
 	// Var hash=require('hash-files');
 	let corrupts = '';
 	// Var walk=require('fs-walk');
-	// var fs=require('fs');
 	let newHash = 0;
 	const packs = new Array();
 	_soundObject.so.directory = '';
 	_fsWalk2.default.dirsSync(_os2.default.homedir() + '/beatpacks', (pb, pf, stat, next) => {
-		if (!_fs2.default.existsSync(pb + '/' + pf + '/bpm.txt')) {
+		if (!fs.existsSync(pb + '/' + pf + '/bpm.txt')) {
 			corrupts += '\n' + pf;
 			return; // Discard non packs
 		}
@@ -5560,7 +5554,7 @@ async function rebuildHashes(silent = false) {
 			theFiles += stat.size;
 		});
 		newHash = theFiles;
-		const fileData = _fs2.default.readFileSync(path + 'bpm.txt', 'utf8');
+		const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		const levelsa = fileData.split(',');
 		let levels = levelsa.length - 1;
 		if (levelsa[levels] == '') {
@@ -5577,7 +5571,7 @@ async function rebuildHashes(silent = false) {
 	_soundObject.so.directory = './sounds/';
 	let write = JSON.stringify(packs);
 	write = mangle.encrypt(write);
-	_fs2.default.writeFileSync(_os2.default.homedir() + '/beatpacks/hashes.db', write);
+	fs.writeFileSync(_os2.default.homedir() + '/beatpacks/hashes.db', write);
 	if (silent) {
 		return packs;
 	}
@@ -5626,30 +5620,33 @@ function question(text, localizedValues = []) {
 	});
 }
 function checkPack() {
+	const fs = require('fs');
 	try {
-		exports.data = data = JSON.parse(_fs2.default.readFileSync(_os2.default.homedir() + '/beatpacks/save.dat'));
+		exports.data = data = JSON.parse(fs.readFileSync(_os2.default.homedir() + '/beatpacks/save.dat'));
 	} catch (err) {
 		exports.data = data = new _player.Player();
 	}
 	exports.pack = pack = data.pack;
+	boot = false;
 	exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 	exports.actionKeys = actionKeys = data.actionKeys;
 	save();
-	if (!_fs2.default.existsSync(packdir + 'bpm.txt')) {
+	if (!fs.existsSync(packdir + 'bpm.txt')) {
 		exports.pack = pack = 'default';
+		boot = false;
 		exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 	}
-	if (!_fs2.default.existsSync(packdir + 'bpm.txt')) {
+	if (!fs.existsSync(packdir + 'bpm.txt')) {
 		const text = new _scrollingText.ScrollingText(_strings.strings.get('packError'), '\n', () => {
 			downloadPacks(['default']);
 		});
 		return;
 	}
-	(0, _menuHandler.mainMenu)();
+	booter();
 }
 var download = function (url, dest, cb) {
 	const http = require('http');
-	var file = _fs2.default.createWriteStream(dest);
+	var file = fs.createWriteStream(dest);
 	var request = http.get(url, function (response) {
 		response.pipe(file);
 		file.on('finish', function () {
@@ -5659,6 +5656,7 @@ var download = function (url, dest, cb) {
 	});
 };
 async function downloadPacks(arr = []) {
+	const fs = require('fs');
 	if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -5728,7 +5726,7 @@ async function downloadPacks(arr = []) {
 				case 2:
 					dm.destroy();
 					anotherSelected = true;
-					(0, _menuHandler.mainMenu)();
+					_stateMachine.st.setState(2);
 					break;
 				case 1:
 					dm.destroy();
@@ -5917,12 +5915,12 @@ async function downloadPacks(arr = []) {
 			if (i == "") continue;
 			dir = _os2.default.homedir() + '/beatpacks/';
 			var dirsplit = i.split("/");
-			if (_fs2.default.existsSync(dir + i)) {
+			if (fs.existsSync(dir + i)) {
 				console.log("unlink" + dir + i);
-				_fs2.default.unlinkSync(dir + i);
+				fs.unlinkSync(dir + i);
 			}
-			if (!_fs2.default.existsSync(dir + dirsplit[0])) {
-				_fs2.default.mkdirSync(dir + dirsplit[0]);
+			if (!fs.existsSync(dir + dirsplit[0])) {
+				fs.mkdirSync(dir + dirsplit[0]);
 			}
 			dir = _os2.default.homedir() + '/beatpacks/' + i;
 			url = 'http://oriolgomez.com/beatpacks/' + i;
@@ -5956,14 +5954,16 @@ async function downloadPacks(arr = []) {
 	} // If length > 1
 }
 function save() {
-	if (!_fs2.default.existsSync(_os2.default.homedir() + '/beatpacks')) {
-		_fs2.default.mkdirSync(_os2.default.homedir() + '/beatpacks');
+	const fs = require('fs');
+	if (!fs.existsSync(_os2.default.homedir() + '/beatpacks')) {
+		fs.mkdirSync(_os2.default.homedir() + '/beatpacks');
 	}
 	const write = JSON.stringify(data);
 	// Write=mangle.encrypt(write);
-	_fs2.default.writeFileSync(_os2.default.homedir() + '/beatpacks/save.dat', write);
+	fs.writeFileSync(_os2.default.homedir() + '/beatpacks/save.dat', write);
 }
 function listenPack() {
+	const fs = require('fs');
 	let inp = new _input.KeyboardInput();
 	inp.init();
 	let pos = 0;
@@ -5976,8 +5976,8 @@ function listenPack() {
 	_soundObject.so.directory = "";
 	let unlocked = data.unlocks[pack]["level"];
 	if (unlocked == 0) unlocked = 1; //first level is always unlocked even if you haven't played it
-	if (_fs2.default.existsSync(packdir + 'bpm.txt')) {
-		fileData = _fs2.default.readFileSync(packdir + 'bpm.txt', 'utf8');
+	if (fs.existsSync(packdir + 'bpm.txt')) {
+		fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 	} else {
 		const error = new _scrollingText.ScrollingText('There was an error loading the pack ' + pack + '.', '\n', () => {
 			_stateMachine.st.setState(2);
@@ -6008,7 +6008,7 @@ function listenPack() {
 				if (pos > unlocked) {
 					lock.play();
 				} else {
-					mus = _soundObject.so.create(packdir + pos + 'music');
+					mus = _soundObject.so.create(packdir + pos + 'music', true);
 					mus.loop = true;
 					mus.play();
 				}
@@ -6022,14 +6022,41 @@ function listenPack() {
 					if (pos > unlocked) {
 						lock.play();
 					} else {
-						mus = _soundObject.so.create(packdir + pos + 'music');
+						mus = _soundObject.so.create(packdir + pos + 'music', true);
 						mus.loop = true;
 						mus.play();
 					}
 				}
 	}; //callback
 }
-},{"./player":5,"./menuItem":4,"./menu":3,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],23:[function(require,module,exports) {
+function booter() {
+	const fs = require('fs');
+	//boot crap
+	//const fs=require('fs');
+	if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
+		boot = true;
+		_soundObject.so.directory = '';
+		let bootSound = _soundObject.so.create(packdir + 'boot');
+		bootSound.sound.once("end", function () {
+			(0, _menuHandler.mainMenu)();
+		});
+		_soundObject.so.directory = './sounds/';
+		let input = new _input.KeyboardInput();
+		bootSound.play();
+		input.init();
+		input.justPressedEventCallback = function (evt) {
+			bootSound.sound.off("end");
+			bootSound.destroy();
+			input.justPressedEventCallback = null;
+			(0, _menuHandler.mainMenu)();
+		};
+		input.justPressedEventCallback = null;
+	} //if file exists
+	else {
+			(0, _menuHandler.mainMenu)();
+		}
+}
+},{"./player":4,"./menuItem":6,"./menu":3,"./menuHandler":8,"./scrollingText":7,"./strings":9,"./soundHandler":10,"./tts":12,"./utilities":11,"./soundObject":13,"./keycodes":15,"./stateMachine":14,"./input.js":5}],23:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
