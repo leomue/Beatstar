@@ -9,15 +9,17 @@ class Strings {
 			mSelect:"Please select",
 			mReady: 'Please wait...',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
+			mUnlocked:"Listen to unlocked music for this pack (%1 levels)",
 			dfiles:"Downloading %1 files. Press any key to obtain percentage",
 			retrieving:"Retrieving data ",
 			nodown:"No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs (%1)',
 			"mBack":"go back",
-			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or q to cancel',
+			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
+			mListen:"Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
 			mStart: 'Start Game',
 			mLearn: 'Learn the pack',
-			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).',
+			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
 			"yes":"Yes",
 			"no":"no",
 			
@@ -32,6 +34,7 @@ class Strings {
 			mNew: 'Get new packs',
 			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
 			mBrowse: 'buy new packs (current beatcoins %1)',
+						mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked:"Change to different unlocked pack",
 			mHashes: 'Rebuild packs folder',
 			mDownload: 'Download new packs'
@@ -43,10 +46,10 @@ class Strings {
 			nodown:"No hay descargas disponibles por el momento. prueba pronto!",
 			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
 			"mBack":"volver",
-			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o q para cancelar',
+			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
 			mStart: 'jugar',
 			mLearn: 'aprender el pack',
-			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. To hear the stop action, press the period key (to the right of comma).',
+			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. Para escuchar la acción de quedarse quieto, pulsa la tecla del punto. Para salir pulsa la q.',
 			dling: 'Descargando %2 packs por favor espera...',
 			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
 			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
@@ -55,6 +58,8 @@ class Strings {
 			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
 			dlprog:"descargando pack %1 de %2...",
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
+			mUnlocked:"Escuchar la música desbloqueada de este pack (%1 niveles)",
+			mBrowseIncompleted: 'Ver packs comprados no completados',
 			"yes":"sí",
 			"no":"no",
 			mNew: 'Conseguir nuevos packs',
@@ -64,6 +69,7 @@ class Strings {
 			mHashes: 'Reconstruir base de datos de packs',
 			mainmenu:"menú principal",
 			mSelect:"Por favor selecciona",
+			mListen:"listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles:"Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
 			retrieving:"Recopilando datos ",
 			mDownload: 'Descargar packs'
@@ -78,7 +84,7 @@ class Strings {
 		} else if (typeof this.strings[1][what] !== 'undefined') {
 			str = this.strings[1][what];
 		} else {
-			return '-1';
+			return 'String error: '+what;
 		}
 	rep.forEach((v, i) => {
 		const i1 = Number(i) + 1;

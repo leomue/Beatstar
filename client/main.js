@@ -1,4 +1,4 @@
-process.env.HMR_PORT=52898;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=61309;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -305,7 +305,6 @@ class SoundObjectItem {
 	}
 
 	destroy() {
-		_tts.speech.speak('yay');
 		this.sound.unload();
 	}
 
@@ -328,16 +327,21 @@ class SoundObjectItem {
 	get loop() {
 		return this.sound.loop();
 	}
-
 	get playing() {
 		return this.sound.playing();
 	}
-
 	get playbackRate() {
 		return this.sound.rate();
 	}
 
 	set playbackRate(v) {
+		return this.sound.rate(v);
+	}
+	get pitch() {
+		return this.sound.rate();
+	}
+
+	set pitch(v) {
 		return this.sound.rate(v);
 	}
 
@@ -669,7 +673,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":13,"./soundObject":12,"./tts":10}],3:[function(require,module,exports) {
+},{"./keycodes":13,"./soundObject":12,"./tts":10}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -701,7 +705,8 @@ class Player {
 			"level": 0,
 			"insurance": 0,
 			"fails": 0,
-			"win": false
+			"win": false,
+			"average": 0
 		};
 	}
 }
@@ -851,6 +856,12 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 class GameUtils {
+	progressPan(current, max) {
+		return (current * 200 / max - 100) / 100;
+	}
+	progressPitch(current, max) {
+		return current * 200 / max / 100;
+	}
 	distance3D(x1, y1, z1, x2, y2, z2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
 	}
@@ -907,15 +918,17 @@ class Strings {
 			mSelect: "Please select",
 			mReady: 'Please wait...',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
+			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
 			dfiles: "Downloading %1 files. Press any key to obtain percentage",
 			retrieving: "Retrieving data ",
 			nodown: "No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs (%1)',
 			"mBack": "go back",
-			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or q to cancel',
+			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
+			mListen: "Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
 			mStart: 'Start Game',
 			mLearn: 'Learn the pack',
-			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma).',
+			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
 			"yes": "Yes",
 			"no": "no",
 
@@ -930,6 +943,7 @@ class Strings {
 			mNew: 'Get new packs',
 			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
 			mBrowse: 'buy new packs (current beatcoins %1)',
+			mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked: "Change to different unlocked pack",
 			mHashes: 'Rebuild packs folder',
 			mDownload: 'Download new packs'
@@ -941,10 +955,10 @@ class Strings {
 			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
 			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
 			"mBack": "volver",
-			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o q para cancelar',
+			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
 			mStart: 'jugar',
 			mLearn: 'aprender el pack',
-			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. To hear the stop action, press the period key (to the right of comma).',
+			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. Para escuchar la acción de quedarse quieto, pulsa la tecla del punto. Para salir pulsa la q.',
 			dling: 'Descargando %2 packs por favor espera...',
 			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
 			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
@@ -953,6 +967,8 @@ class Strings {
 			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
 			dlprog: "descargando pack %1 de %2...",
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
+			mUnlocked: "Escuchar la música desbloqueada de este pack (%1 niveles)",
+			mBrowseIncompleted: 'Ver packs comprados no completados',
 			"yes": "sí",
 			"no": "no",
 			mNew: 'Conseguir nuevos packs',
@@ -962,6 +978,7 @@ class Strings {
 			mHashes: 'Reconstruir base de datos de packs',
 			mainmenu: "menú principal",
 			mSelect: "Por favor selecciona",
+			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
 			retrieving: "Recopilando datos ",
 			mDownload: 'Descargar packs'
@@ -975,7 +992,7 @@ class Strings {
 		} else if (typeof this.strings[1][what] !== 'undefined') {
 			str = this.strings[1][what];
 		} else {
-			return '-1';
+			return 'String error: ' + what;
 		}
 		rep.forEach((v, i) => {
 			const i1 = Number(i) + 1;
@@ -1121,7 +1138,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":10}],5:[function(require,module,exports) {
+},{"./tts":10}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4679,7 +4696,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Var os=require('os');
 class Game {
 	constructor() {
+		this.totalScore = [];
+		this.totalAverage = [];
+		_soundObject.so.directory = "./sounds/", this.scoreAverage = [];
+		this.levelAverage = [];
+		this.scoreCounter = _soundObject.so.create("cling");
+		_soundObject.so.directory = "";
 		this.canPause = true;
+
 		this.actionCompleted = false;
 		this.toDestroy = new Array();
 		this.scoreTimer = new _oldtimer.OldTimer();
@@ -4763,6 +4787,7 @@ class Game {
 			_soundObject.so.destroy(_main.packdir + this.level + 'music');
 			_soundObject.so.destroy(_main.packdir + 'pre' + this.level);
 			_soundObject.so.directory = './sounds/';
+
 			this.level++;
 			this.timer.stop();
 			this.setupLevel();
@@ -4776,12 +4801,10 @@ class Game {
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-
-	doScore() {
-		console.log('score ' + this.score);
-	}
+	doScore() {}
 
 	async fail() {
+		//todo: display results and add beatcoins
 		this.doScore();
 		this.timer.stop();
 		const snd = this.music;
@@ -4817,7 +4840,9 @@ class Game {
 		snd.unload();
 		_soundObject.so.resetQueue();
 		_soundObject.so.resetQueuedInstance();
-		_stateMachine.st.setState(2);
+		_soundObject.so.kill(() => {
+			_stateMachine.st.setState(2);
+		});
 	}
 
 	render() {
@@ -4859,10 +4884,31 @@ class Game {
 	}
 
 	async setupLevel() {
+		this.scoreAverage = [];
+		this.levelAverage = [];
+		if (this.level > this.levels) {
+			if (_fs2.default.existsSync(_main.packdir + 'win.ogg')) {
+				_soundObject.so.directory = '';
+				this.winSound = _soundObject.so.create(_main.packdir + 'win');
+				this.winSound.play();
+				while (this.winSound.playing) {
+					await _utilities.utils.sleep(5);
+					if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+						this.winSound.stop();
+					} //key
+				} //while
+			} //if file exists
+			_main.data.unlocks[_main.pack]["win"] = true;
+			(0, _main.save)();
+			this.doScore();
+			_soundObject.so.kill(() => {
+				_stateMachine.st.setState(2);
+			});
+			return;
+		} //winning
 		this.canPause = true;
 		if (_main.data.unlocks[_main.pack]["level"] < this.level) {
 			_main.data.unlocks[_main.pack]["level"] = this.level;
-			console.log("saving level");
 			(0, _main.save)();
 		}
 		this.playing = false;
@@ -4947,8 +4993,11 @@ class Game {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil((bpm / 2 - Math.abs(bpm / 2 - time)) / (bpm / 2) * 100);
+		this.scoreCounter.pitch = _utilities.utils.progressPitch(score, 100);
+		this.scoreCounter.stop();
+		this.scoreCounter.play();
 		const mod = Math.ceil(2200 * score / bpm);
-		_tts.speech.speak(mod);
+		//speech.speak(mod);
 		this.score += mod;
 	}
 
@@ -5038,6 +5087,8 @@ class StateMachine {
 			this.state = state;
 		} else if (state == 4) {
 			(0, _main.learnPack)();
+		} else if (state == 7) {
+			(0, _main.listenPack)();
 		}
 		// New states
 		else if (state == 5) {
@@ -5045,6 +5096,9 @@ class StateMachine {
 				this.state = state;
 			} else if (state == 6) {
 				(0, _main.browsePacks)(2);
+				this.state = state;
+			} else if (state == 8) {
+				(0, _main.browsePacks)(3);
 				this.state = state;
 			}
 	}
@@ -5071,20 +5125,38 @@ var _menuItem = require('./menuItem');
 
 var _menu = require('./menu');
 
-function mainMenu() {
+let boot = false;
+async function mainMenu() {
+	const fs = require('fs');
+	if (fs.existsSync(_main.packdir + 'boot.ogg') && !boot) {
+		boot = true;
+		_soundObject.so.directory = '';
+		let bootSound = _soundObject.so.create(_main.packdir + 'boot');
+		_soundObject.so.directory = './sounds/';
+		bootSound.play();
+		let input = new KeyboardInput();
+		while (bootSound.playing) {
+			await utils.sleep(5);
+			if (input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+				bootSound.stop();
+			} //key
+		} //while
+	} //if file exists
+
 	speech.webTTS = true;
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
 	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
 	items.push(new _menuItem.MenuItem(2, _strings.strings.get('mBrowse', [_main.data.beatcoins])));
 	items.push(new _menuItem.MenuItem(5, _strings.strings.get('mBrowseUnlocked')));
-	items.push(new _menuItem.MenuItem(3, _strings.strings.get('mHashes')));
+	items.push(new _menuItem.MenuItem(7, _strings.strings.get('mBrowseIncompleted')));
 	items.push(new _menuItem.MenuItem(4, _strings.strings.get('mDownload')));
+	items.push(new _menuItem.MenuItem(6, _strings.strings.get('mUnlocked', [_main.data.unlocks[_main.pack]["level"]])));
+	items.push(new _menuItem.MenuItem(3, _strings.strings.get('mHashes')));
 	_soundObject.so.directory = './sounds/';
 	const mainMenu = new _menu.Menu(_strings.strings.get("mainmenu"), items);
 	_soundObject.so.directory = '';
 	mainMenu.music = _main.packdir + 'loop';
-	const fs = require('fs');
 	if (fs.existsSync(_main.packdir + 'select.ogg')) {
 		mainMenu.sndChoose.unload();
 		mainMenu.sndChoose = _soundObject.so.create(_main.packdir + 'select');
@@ -5104,11 +5176,15 @@ function mainMenu() {
 				(0, _main.downloadPacks)();break;
 			case 5:
 				_stateMachine.st.setState(6);break;
+			case 6:
+				_stateMachine.st.setState(7);break;
+			case 7:
+				_stateMachine.st.setState(8);break;
 
 		}
 	});
 }
-},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":4,"./menu":5}],1:[function(require,module,exports) {
+},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":4,"./menu":3}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5122,6 +5198,7 @@ exports.question = question;
 exports.checkPack = checkPack;
 exports.downloadPacks = downloadPacks;
 exports.save = save;
+exports.listenPack = listenPack;
 
 var _jquery = require('jquery');
 
@@ -5291,6 +5368,10 @@ async function browsePacks(browsing = 1) {
 					if (typeof data.unlocks[i.name] !== "undefined") {
 						browseArray.push(i);
 					}
+				} else if (browsing == 3) {
+					if (typeof data.unlocks[i.name] !== "undefined" && !data.unlocks[i.name]["win"]) {
+						browseArray.push(i);
+					}
 				}
 			}
 		});
@@ -5318,13 +5399,13 @@ async function browsePacks(browsing = 1) {
 	event.init();
 	let snd;
 	if (lang == 1) {
-		_tts.speech.speak('ready. Browsing ' + browseArray.length + ' packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.');
+		_tts.speech.speak('ready. showing ' + browseArray.length + ' packs. Press arrows to move, left arrow to exit, enter to choose a pack, or the first letter of a packs name.');
 	}
 	if (lang == 2) {
-		_tts.speech.speak('listo. tienes ' + browseArray.length + ' packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.');
+		_tts.speech.speak('listo. Mostrando ' + browseArray.length + ' packs. Pulsa flechas para moverte, flecha izquierda para salir, enter para elegir uno, o la primera letra del nombre de un pack.');
 	}
 	const exitNow = 0;
-	while (!event.isJustPressed(_keycodes.KeyEvent.DOM_VK_Q) && browsing > 0) {
+	while (!event.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT) && browsing > 0) {
 		// Enter
 		if (event.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
 			if (typeof snd !== 'undefined') {
@@ -5357,7 +5438,8 @@ async function browsePacks(browsing = 1) {
 							"level": 0,
 							"insurance": 0,
 							"fails": 0,
-							"win": false
+							"win": false,
+							"average": 0
 						};
 					}
 					exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
@@ -5881,7 +5963,73 @@ function save() {
 	// Write=mangle.encrypt(write);
 	_fs2.default.writeFileSync(_os2.default.homedir() + '/beatpacks/save.dat', write);
 }
-},{"./player":3,"./menuItem":4,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],23:[function(require,module,exports) {
+function listenPack() {
+	let inp = new _input.KeyboardInput();
+	inp.init();
+	let pos = 0;
+	let fileData;
+	let bpms;
+	let mus;
+	let levels;
+	_soundObject.so.directory = "./sounds/";
+	let lock = _soundObject.so.create("locked");
+	_soundObject.so.directory = "";
+	let unlocked = data.unlocks[pack]["level"];
+	if (unlocked == 0) unlocked = 1; //first level is always unlocked even if you haven't played it
+	if (_fs2.default.existsSync(packdir + 'bpm.txt')) {
+		fileData = _fs2.default.readFileSync(packdir + 'bpm.txt', 'utf8');
+	} else {
+		const error = new _scrollingText.ScrollingText('There was an error loading the pack ' + pack + '.', '\n', () => {
+			_stateMachine.st.setState(2);
+		});
+		return;
+	}
+	bpms = fileData.split(',');
+	levels = bpms.length - 1;
+	if (bpms[levels] == '') {
+		levels--;
+	}
+	_tts.speech.speak(_strings.strings.get("mListen", [unlocked]));
+	inp.justPressedEventCallback = function (evt) {
+		lock.stop();
+		if (typeof mus !== "undefined") mus.destroy();
+
+		if (evt == _keycodes.KeyEvent.DOM_VK_LEFT) {
+			inp.justPressedEventCallback = null;
+			_stateMachine.st.setState(2);
+			return;
+		}
+		//down
+		else if (evt == _keycodes.KeyEvent.DOM_VK_DOWN) {
+				pos++;
+				if (pos > levels) {
+					pos = 1;
+				}
+				if (pos > unlocked) {
+					lock.play();
+				} else {
+					mus = _soundObject.so.create(packdir + pos + 'music');
+					mus.loop = true;
+					mus.play();
+				}
+			}
+			//up
+			else if (evt == _keycodes.KeyEvent.DOM_VK_UP) {
+					pos--;
+					if (pos <= 0) {
+						pos = levels;
+					}
+					if (pos > unlocked) {
+						lock.play();
+					} else {
+						mus = _soundObject.so.create(packdir + pos + 'music');
+						mus.loop = true;
+						mus.play();
+					}
+				}
+	}; //callback
+}
+},{"./player":5,"./menuItem":4,"./menu":3,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],23:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');

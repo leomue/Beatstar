@@ -19,7 +19,15 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor() {
+	this.totalScore=[];
+	this.totalAverage=[];
+	so.directory="./sounds/",
+	this.scoreAverage=[];
+	this.levelAverage=[];
+	this.scoreCounter=so.create("cling");
+	so.directory="";
 		this.canPause = true;
+		
 		this.actionCompleted = false;
 		this.toDestroy = new Array();
 		this.scoreTimer = new OldTimer();
@@ -103,6 +111,7 @@ so.loadQueue();
 	so.destroy(packdir + this.level + 'music');
 		so.destroy(packdir + 'pre' + this.level);
 		so.directory = './sounds/';
+		
 		this.level++;
 this.timer.stop();
 this.setupLevel();
@@ -116,12 +125,11 @@ return;
 	//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-
 	doScore() {
-console.log('score ' + this.score);
 	}
 
 	async fail() {
+	//todo: display results and add beatcoins
 	this.doScore();
 		this.timer.stop();
 		const snd = this.music;
@@ -157,8 +165,10 @@ st.setState(2);
 				snd.unload();
 				so.resetQueue();
 so.resetQueuedInstance();
-		st.setState(2);
-	}
+so.kill(() => {
+st.setState(2);
+});
+			}
 
 	render() {
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_Q)) {
@@ -197,13 +207,34 @@ so.resetQueuedInstance();
 						this.fail();
 		}
 	}
-
+	
 	async setupLevel() {
+	this.scoreAverage=[];
+	this.levelAverage=[];
+	if (this.level>this.levels) {
+			if (fs.existsSync(packdir + 'win.ogg')) {
+						so.directory = '';
+			this.winSound = so.create(packdir + 'win');
+			this.winSound.play();
+while (this.winSound.playing) {
+			await utils.sleep(5);
+			if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+		this.winSound.stop();
+			}//key
+		}//while
+		}//if file exists
+		data.unlocks[pack]["win"]=true;
+		save();
+				this.doScore();
+		so.kill(() => {
+st.setState(2);
+});
+return;
+	}//winning
 		this.canPause = true;
 		if (data.unlocks[pack]["level"]<this.level) {
 		data.unlocks[pack]["level"]=this.level;
-		console.log("saving level");
-		save();
+				save();
 		}
 		this.playing = false;
 		if (fs.existsSync(packdir + 'pre' + this.level + '.ogg')) {
@@ -288,8 +319,11 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
+				this.scoreCounter.pitch=utils.progressPitch(score,100);
+		this.scoreCounter.stop();
+		this.scoreCounter.play();
 		const mod = Math.ceil((2200 * score) / bpm);
-speech.speak(mod);
+//speech.speak(mod);
 this.score += mod;
 	}
 

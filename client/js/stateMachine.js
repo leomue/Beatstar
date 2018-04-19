@@ -3,7 +3,7 @@ let event = new KeyboardInput();
 
 import {KeyboardInput} from './input';
 import {speech} from './tts';
-import {checkPack, learnPack, browsePacks} from './main';
+import {listenPack,checkPack, learnPack, browsePacks} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
@@ -47,6 +47,7 @@ this.state = state;
 		} else if (state == 4) {
  learnPack();
 		}
+		else if (state==7) { listenPack(); }
 		// New states
 		else if (state == 5) {
 browsePacks();
@@ -54,6 +55,10 @@ this.state = state;
 		}
 		else if (state == 6) {
 browsePacks(2);
+this.state = state;
+		}
+		else if (state == 8) {
+browsePacks(3);
 this.state = state;
 		}
 	}

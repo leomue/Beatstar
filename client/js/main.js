@@ -139,6 +139,12 @@ if (typeof data.unlocks[i.name]!=="undefined") {
 browseArray.push(i);
 }
 }
+else if (browsing==3) {
+if (typeof data.unlocks[i.name]!=="undefined" && !data.unlocks[i.name]["win"]) {
+browseArray.push(i);
+}
+}
+
 	}
 });
 	}
@@ -165,13 +171,13 @@ const event = new KeyboardInput();
 event.init();
 let snd;
 if (lang == 1) {
-speech.speak('ready. Browsing ' + browseArray.length + ' packs. Press arrows to move, q to exit, enter to choose a pack, or page up and page down to move by larger increments.');
+speech.speak('ready. showing ' + browseArray.length + ' packs. Press arrows to move, left arrow to exit, enter to choose a pack, or the first letter of a packs name.');
 }
 if (lang == 2) {
-speech.speak('listo. tienes ' + browseArray.length + ' packs. Pulsa flechas para moverte, q para salir, enter para elegir uno, o pulsa retroceder página y avanzar página para moverte de 20 en 20.');
+speech.speak('listo. Mostrando ' + browseArray.length + ' packs. Pulsa flechas para moverte, flecha izquierda para salir, enter para elegir uno, o la primera letra del nombre de un pack.');
 }
 const exitNow = 0;
-while (!event.isJustPressed(KeyEvent.DOM_VK_Q) && browsing > 0) {
+while (!event.isJustPressed(KeyEvent.DOM_VK_LEFT) && browsing > 0) {
 // Enter
 	if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 		if (typeof snd !== 'undefined') {
@@ -205,6 +211,7 @@ if (browsing > 0) {
 			"insurance":0,
 			"fails":0,
 			"win":false,
+			"average":0,
 					};
 					}
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
@@ -731,3 +738,71 @@ fs.mkdirSync(os.homedir() + '/beatpacks');
 // Write=mangle.encrypt(write);
 fs.writeFileSync(os.homedir() + '/beatpacks/save.dat', write);
 }
+export function listenPack() {
+let inp=new KeyboardInput();
+inp.init();
+let pos=0;
+let fileData;
+let bpms;
+let mus;
+let levels;
+so.directory="./sounds/";
+let lock=so.create("locked");
+so.directory="";
+let unlocked=data.unlocks[pack]["level"]
+if (unlocked==0) unlocked=1; //first level is always unlocked even if you haven't played it
+	if (fs.existsSync(packdir + 'bpm.txt')) {
+			fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
+		} else {
+			const error = new ScrollingText('There was an error loading the pack ' + pack + '.', '\n', (() => {
+				st.setState(2);
+							}));
+							return;
+		}
+		bpms = fileData.split(',');
+		levels = bpms.length - 1;
+				if (bpms[levels] == '') {
+			levels--;
+		}
+		speech.speak(strings.get("mListen",[unlocked]));
+		inp.justPressedEventCallback=function(evt) {
+		lock.stop();
+if (typeof mus!=="undefined") mus.destroy();
+
+		if (evt==KeyEvent.DOM_VK_LEFT) {
+		inp.justPressedEventCallback=null;
+		st.setState(2);
+		return;
+		}
+		//down
+		else if (evt==KeyEvent.DOM_VK_DOWN) {
+pos++;
+		if (pos > levels) {
+		pos = 1;
+		}
+		if (pos>unlocked) {
+		lock.play();
+		}
+		else {
+		mus=so.create(packdir + pos + 'music');		
+		mus.loop=true;
+		mus.play();
+		}
+		}
+				//up
+		else if (evt==KeyEvent.DOM_VK_UP) {
+pos--;
+		if (pos <= 0) {
+		pos=levels;
+		}
+		if (pos>unlocked) {
+		lock.play();
+		}
+		else {
+		mus=so.create(packdir + pos + 'music');		
+		mus.loop=true;
+		mus.play();
+		}
+		}
+		}//callback
+		}

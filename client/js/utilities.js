@@ -1,5 +1,11 @@
 'use strict';
 class GameUtils {
+progressPan(current, max) {
+return ((current*200/max)-100)/100;
+}
+progressPitch(current,max) {
+return ((current*200/max))/100;
+}
 	distance3D(x1, y1, z1, x2, y2, z2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) +
 (y2 - y1) * (y2 - y1) +

@@ -54,8 +54,7 @@ class SoundObjectItem {
 	}
 
 	destroy() {
-		speech.speak('yay');
-			this.sound.unload();
+					this.sound.unload();
 	}
 
 	unload() {
@@ -77,16 +76,21 @@ class SoundObjectItem {
 	get loop() {
 		return this.sound.loop();
 	}
-
 	get playing() {
 		return this.sound.playing();
 	}
-
 	get playbackRate() {
 		return this.sound.rate();
 	}
 
 	set playbackRate(v) {
+		return this.sound.rate(v);
+	}
+get pitch() {
+		return this.sound.rate();
+	}
+
+	set pitch(v) {
 		return this.sound.rate(v);
 	}
 

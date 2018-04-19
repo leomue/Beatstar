@@ -16,6 +16,7 @@ class Player {
 			"insurance":0,
 			"fails":0,
 			"win":false,
+			"average":0,
 					};
 	}
 }

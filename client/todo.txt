@@ -1,2 +1,3 @@
 add winning to pack variables and when you win play sound etc
 remember to encrypt the fucking savefile
+doScore function calculates average
