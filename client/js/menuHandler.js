@@ -1,5 +1,6 @@
 'use strict';
 import {so} from './soundObject';
+import {data} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -12,7 +13,8 @@ export function mainMenu() {
 	const items = new Array();
 	items.push(new MenuItem(0, strings.get( 'mStart')));
 items.push(new MenuItem(1, strings.get( 'mLearn')));
-items.push(new MenuItem(2, strings.get( 'mBrowse')));
+items.push(new MenuItem(2, strings.get( 'mBrowse',[data.beatcoins])));
+items.push(new MenuItem(5, strings.get( 'mBrowseUnlocked')));
 items.push(new MenuItem(3, strings.get( 'mHashes')));
 items.push(new MenuItem(4, strings.get( 'mDownload')));
 so.directory = './sounds/';
@@ -33,6 +35,9 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 		st.setState(5); break;
 			case 3: rebuildHashes(); break;
 			case 4: downloadPacks(); break;
+			case 5:
+		st.setState(6); break;
+			
 		}
 	});
 }

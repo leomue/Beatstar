@@ -2,8 +2,8 @@
 import fs from 'fs';
 import os from 'os';
 import {speech} from './tts';
-import {actionKeys} from './main';
-import {pack, packdir} from './main';
+import {data,actionKeys} from './main';
+import {pack, packdir,save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
 // Var os=require('os');
@@ -200,6 +200,11 @@ so.resetQueuedInstance();
 
 	async setupLevel() {
 		this.canPause = true;
+		if (data.unlocks[pack]["level"]<this.level) {
+		data.unlocks[pack]["level"]=this.level;
+		console.log("saving level");
+		save();
+		}
 		this.playing = false;
 		if (fs.existsSync(packdir + 'pre' + this.level + '.ogg')) {
 			so.directory = '';

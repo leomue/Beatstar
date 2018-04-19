@@ -52,6 +52,10 @@ this.state = state;
 browsePacks();
 this.state = state;
 		}
+		else if (state == 6) {
+browsePacks(2);
+this.state = state;
+		}
 	}
 }
 const st = new StateMachine();

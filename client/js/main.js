@@ -128,13 +128,26 @@ export async function browsePacks(browsing = 1) {
 	if (browsing > 0) {
 packs.forEach((i, v) => {
 	if (fs.existsSync(os.homedir() + '/beatpacks/' + i.name + '/bpm.txt')) {
+if (browsing==1) {
+if (typeof data.unlocks[i.name]==="undefined") {
 browseArray.push(i);
+}
+
+}
+else if (browsing==2) {
+if (typeof data.unlocks[i.name]!=="undefined") {
+browseArray.push(i);
+}
+}
 	}
 });
 	}
 	so.directory = '';
 	if (browseArray.length === 0) {
-		new ScrollingText(strings.get( 'nopacks'), '\n', st.setState(2));
+	so.directory="./sounds/";
+		new ScrollingText(strings.get( 'nopacks'), '\n', function(){
+		st.setState(2);
+		});
 		return;
 	}
 browseArray.sort((a, b) => {
@@ -186,6 +199,14 @@ while (!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 if (browsing > 0) {
 	pack = browseArray[browsePosition].name;
 	data.pack = pack;
+	if (typeof data.unlocks[pack]==="undefined") {
+	data.unlocks[pack]={ 
+			"level":0,
+			"insurance":0,
+			"fails":0,
+			"win":false,
+					};
+					}
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	so.directory = './sounds/';
 save();
@@ -347,6 +368,27 @@ st.setState(2);
 } else if (!silent) {
 st.setState(2);
 }
+}
+export function question(text,localizedValues=[]) {
+const items=new Array();
+			items.push(new MenuItem(-1,strings.get(text,localizedValues)));
+	items.push(new MenuItem(0,strings.get("yes",)));
+	items.push(new MenuItem(0,strings.get("no",)));
+		so.directory = './sounds/';
+			let dm=new Menu(strings.get("mSelect"),items);
+			so.directory = '';
+		dm.run(s=>{
+						so.directory = './sounds/';
+dm.destroy();
+						switch(s.selected) {
+							case 0:
+return true;
+			break;
+			case 1:
+return false;
+break;
+}
+});
 }
 export function checkPack() {
 	try {
