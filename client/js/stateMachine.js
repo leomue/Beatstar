@@ -33,7 +33,7 @@ class StateMachine {
 		if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE) {
 						intro.unload();
 					$(document).off('keydown');
-			that.setState(2);
+			that.setState(20);
 		}
 	});
 	this.state = state;
@@ -44,7 +44,13 @@ this.state = state;
 		} else if (state == 3) {
 			this.currentState = new Game();
 			this.state = state;
-		} else if (state == 4) {
+		} 
+		else if (state == 20) {
+			event = null;
+checkPack(false);
+this.state = state;
+		}
+		else if (state == 4) {
  learnPack();
 		}
 		else if (state==7) { listenPack(); }

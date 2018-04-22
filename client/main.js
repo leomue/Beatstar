@@ -1,4 +1,4 @@
-process.env.HMR_PORT=52650;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=49968;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -898,6 +898,26 @@ class GameUtils {
 	percent(int1, int2) {
 		return int1 * 100 / int2;
 	}
+	average(arr, startIndex = 0) {
+		let len = arr.length - 1;
+		let val = 0;
+		let average = 0;
+		for (let i = startIndex; i < arr.length; i++) {
+			val += arr[i];
+		}
+		average = val / len;
+		return average;
+	}
+	averageInt(arr, startIndex = 0) {
+		let len = arr.length - 1;
+		let val = 0;
+		let average = 0;
+		for (let i = startIndex; i < arr.length; i++) {
+			val += arr[i];
+		}
+		average = val / len;
+		return Math.floor(average);
+	}
 }
 var utils = exports.utils = new GameUtils();
 },{}],8:[function(require,module,exports) {
@@ -943,7 +963,7 @@ class Strings {
 			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
 			mNew: 'Get new packs',
 			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
-			mBrowse: 'buy new packs (current beatcoins %1)',
+			mBrowse: 'buy new packs (You have %1 beatcoins )',
 			mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked: "Change to different unlocked pack",
 			"youwin": "You win %1 coins!",
@@ -4704,6 +4724,7 @@ class Game {
 	constructor() {
 		this.totalScore = [];
 		this.totalAverage = [];
+		this.cash = 0;
 		_soundObject.so.directory = "./sounds/", this.scoreAverage = [];
 		this.levelAverage = [];
 		this.scoreCounter = _soundObject.so.create("cling");
@@ -4810,11 +4831,14 @@ class Game {
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-	doScore() {}
+	doScore() {
+		(0, _main.addCash)(this.cash, 0, function () {
+			_stateMachine.st.setState(2);
+		});
+	}
 
 	async fail() {
 		//todo: display results and add beatcoins
-		this.doScore();
 		this.timer.stop();
 		const snd = this.music;
 		_soundObject.so.directory = '';
@@ -4833,13 +4857,13 @@ class Game {
 		}
 		_soundObject.so.resetQueue();
 		_soundObject.so.resetQueuedInstance();
+		var that = this;
 		_soundObject.so.kill(() => {
-			_stateMachine.st.setState(2);
+			that.doScore();
 		});
 	}
 
 	async quit() {
-		this.doScore();
 		this.timer.stop();
 		const snd = this.music;
 		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
@@ -4849,8 +4873,9 @@ class Game {
 		snd.unload();
 		_soundObject.so.resetQueue();
 		_soundObject.so.resetQueuedInstance();
+		var that = this;
 		_soundObject.so.kill(() => {
-			_stateMachine.st.setState(2);
+			that.doScore();
 		});
 	}
 
@@ -4893,7 +4918,10 @@ class Game {
 	}
 
 	async setupLevel() {
-		if (this.level > 1) {}
+		if (this.level > 1) {
+			//avg
+			this.cash += _utilities.utils.averageInt(this.levelAverage) + 10 * this.numberOfActions;
+		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
 		if (this.level > this.levels) {
@@ -4910,10 +4938,13 @@ class Game {
 				} //while
 			} //if file exists
 			_main.data.unlocks[_main.pack]["win"] = true;
-			(0, _main.save)();
-			this.doScore();
+			let that2 = this;
+			_soundObject.so.resetQueue();
+			_soundObject.so.resetQueuedInstance();
+			//get some kind of reward if you win, but only if the pack has enough levels
+			if (this.levels > 9) this.cash += this.cash * 3;
 			_soundObject.so.kill(() => {
-				_stateMachine.st.setState(2);
+				that2.doScore();
 			});
 			return;
 		} //winning
@@ -5007,9 +5038,11 @@ class Game {
 		this.scoreCounter.pitch = _utilities.utils.progressPitch(score, 100);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
+		this.scoreAverage.push(score);
 		const mod = Math.ceil(2200 * score / bpm);
 		//speech.speak(mod);
 		this.score += mod;
+		this.levelAverage.push(mod);
 	}
 
 	queueLevels() {
@@ -5085,7 +5118,7 @@ class StateMachine {
 				if (event.which == _keycodes.KeyEvent.DOM_VK_SPACE || event.which == _keycodes.KeyEvent.DOM_VK_ESCAPE) {
 					intro.unload();
 					(0, _jquery2.default)(document).off('keydown');
-					that.setState(2);
+					that.setState(20);
 				}
 			});
 			this.state = state;
@@ -5095,6 +5128,10 @@ class StateMachine {
 			this.state = state;
 		} else if (state == 3) {
 			this.currentState = new _game.Game();
+			this.state = state;
+		} else if (state == 20) {
+			event = null;
+			(0, _main.checkPack)(false);
 			this.state = state;
 		} else if (state == 4) {
 			(0, _main.learnPack)();
@@ -5195,6 +5232,7 @@ exports.downloadPacks = downloadPacks;
 exports.save = save;
 exports.listenPack = listenPack;
 exports.booter = booter;
+exports.addCash = addCash;
 
 var _jquery = require('jquery');
 
@@ -5247,7 +5285,7 @@ let boot = false;
 // Import test from './test.js'
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
 var mangle = exports.mangle = new _cryptr2.default('sdf jkl wer uio');
-var lang = exports.lang = 2;
+var lang = exports.lang = 1;
 var langs = exports.langs = ['', 'english', 'spanish'];
 var pack = exports.pack = 'default';
 var data = exports.data = '';
@@ -5255,10 +5293,6 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 function setup() {
-	cash(2000, 0, function () {
-		_stateMachine.st.setState(2);
-	});
-	return;
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -5444,7 +5478,7 @@ async function browsePacks(browsing = 1) {
 					_soundObject.so.directory = './sounds/';
 					save();
 					_soundObject.so.kill(() => {
-						_stateMachine.st.setState(2);
+						_stateMachine.st.setState(20);
 					});
 					return;
 				}
@@ -5606,7 +5640,7 @@ function question(text, localizedValues = []) {
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(-1, _strings.strings.get(text, localizedValues)));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("yes")));
-	items.push(new _menuItem.MenuItem(0, _strings.strings.get("no")));
+	items.push(new _menuItem.MenuItem(1, _strings.strings.get("no")));
 	_soundObject.so.directory = './sounds/';
 	let dm = new _menu.Menu(_strings.strings.get("mSelect"), items);
 	_soundObject.so.directory = '';
@@ -5623,7 +5657,7 @@ function question(text, localizedValues = []) {
 		}
 	});
 }
-function checkPack() {
+function checkPack(changeBoot = true) {
 	const fs = require('fs');
 	try {
 		exports.data = data = JSON.parse(fs.readFileSync(_os2.default.homedir() + '/beatpacks/save.dat'));
@@ -5631,7 +5665,8 @@ function checkPack() {
 		exports.data = data = new _player.Player();
 	}
 	exports.pack = pack = data.pack;
-	boot = false;
+	if (!changeBoot) boot = false;
+	if (changeBoot) boot = true;
 	exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 	exports.actionKeys = actionKeys = data.actionKeys;
 	save();
@@ -5650,6 +5685,7 @@ function checkPack() {
 }
 var download = function (url, dest, cb) {
 	const http = require('http');
+	const fs=require('fs');
 	var file = fs.createWriteStream(dest);
 	var request = http.get(url, function (response) {
 		response.pipe(file);
@@ -5660,7 +5696,7 @@ var download = function (url, dest, cb) {
 	});
 };
 async function downloadPacks(arr = []) {
-	const fs = require('fs');
+	var fs = require('fs');
 	if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -6035,73 +6071,96 @@ function listenPack() {
 }
 function booter() {
 	const fs = require('fs');
-	//boot crap
-	//const fs=require('fs');
 	if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 		boot = true;
+		let input = new _input.KeyboardInput();
+		input.init();
 		_soundObject.so.directory = '';
 		let bootSound = _soundObject.so.create(packdir + 'boot');
+		bootSound.play();
 		bootSound.sound.once("end", function () {
+			input.justPressedEventCallback = null;
 			(0, _menuHandler.mainMenu)();
 		});
 		_soundObject.so.directory = './sounds/';
-		let input = new _input.KeyboardInput();
-		bootSound.play();
-		input.init();
+
 		input.justPressedEventCallback = function (evt) {
 			bootSound.sound.off("end");
+			bootSound.stop();
 			bootSound.destroy();
 			input.justPressedEventCallback = null;
 			(0, _menuHandler.mainMenu)();
 		};
-		input.justPressedEventCallback = null;
 	} //if file exists
 	else {
 			(0, _menuHandler.mainMenu)();
 		}
 }
-async function cash(c1, c2, callback) {
-	//data.beatcoins+=cash;
-	let positive = true;
+async function addCash(c1, c2 = 0, callback) {
+	let coinCap = -1;
 	let cash = c1 - c2;
+	data.beatcoins += cash;
+	save();
+	let positive = true;
 	let time = 370;
-	if (cash <= 0) positive = false;
+	if (cash < 0) positive = false;
 	cash = Math.abs(cash);
 	_soundObject.so.directory = "./sounds/";
 	let snd;
-	if (positive) {
-		snd = _soundObject.so.create("morecash");
-		_tts.speech.speak(_strings.strings.get("youwin", [cash]));
-	} else if (!positive) {
-		snd = _soundObject.so.create("lesscash");
-		_tts.speech.speak(_strings.strings.get("youlose", [cash]));
+	if (cash > 100000) {
+		coinCap = 100000;
+	} else if (cash <= 100000 && cash > 35001) {
+		coinCap = 1000;
+	} else if (cash <= 35000 && cash > 10001) {
+		coinCap = 500;
+	} else if (cash <= 10000 && cash > 501) {
+		coinCap = 500;
+	} else if (cash <= 500 && cash > 101) {
+		coinCap = 100;
+	} else if (cash <= 100 && cash > 11) {
+		coinCap = 10;
+	} else if (cash <= 10 && cash > 0) {
+		coinCap = 1;
 	}
-	console.log(cash);
-	await _utilities.utils.sleep(400);
-	if (cash >= 1000) {
-		snd.play();
-		cash -= 1000;
-		let count = 0;
-		if (cash > 30000) cash = 29000; //play 30 sounds max.
-		for (let i = cash; i >= 1000; i -= 1000) {
-			time -= 15;
-			if (time < 80) time = 80;
-		}
-		for (let i = cash; i >= 1000; i -= 1000) {
-			count++;
-			setTimeout(function () {
-				snd.play();
-			}, time * count);
-		}
-		_soundObject.so.directory = "";
-		if (typeof callback !== "undefined") {
-			setTimeout(function () {
+	if (coinCap != -1) {
+		if (positive) {
+			snd = _soundObject.so.create("morecash" + coinCap);
+			_tts.speech.speak(_strings.strings.get("youwin", [cash]));
+		} //positive
+		else if (!positive) {
+				snd = _soundObject.so.create("lesscash");
+				_tts.speech.speak(_strings.strings.get("youlose", [cash]));
+			} //negative
+		await _utilities.utils.sleep(400);
+		if (cash >= coinCap) {
+			snd.play();
+			cash -= coinCap;
+			let count = 0;
+			for (let i = cash; i >= coinCap; i -= coinCap) {
+				time -= 15;
+				if (time < 80) time = 80;
+			} //for
+			for (let i = cash; i >= coinCap; i -= coinCap) {
+				count++;
+				setTimeout(function () {
+					snd.play();
+				}, time * count);
+			} //for
+			_soundObject.so.directory = "";
+			if (typeof callback !== "undefined") {
+				setTimeout(function () {
+					callback();
+				}, time * (count + 2));
+			} //if callback undefined
+		} //if greater than coin cap
+	} //coinCap -1
+	else {
+			if (typeof callback !== "undefined") {
 				callback();
-			}, time * (count + 1));
-		}
-	}
-}
-},{"./player":3,"./menuItem":4,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],24:[function(require,module,exports) {
+			} //callback undefined
+		} //else
+} //function
+},{"./player":3,"./menuItem":4,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],25:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -6278,5 +6337,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[24,1])
+},{}]},{},[25,1])
 //# sourceMappingURL=/main.map

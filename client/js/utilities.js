@@ -43,5 +43,25 @@ return ((current*200/max))/100;
 	percent(int1, int2) {
 		return int1 * 100 / int2;
 	}
+	average(arr,startIndex=0) {
+	let len=arr.length-1;
+	let val=0;
+	let average=0;
+	for (let i=startIndex;i<arr.length;i++) {
+	val+=arr[i];
+	}
+		average=val/len;
+	return average;
+}
+averageInt(arr,startIndex=0) {
+	let len=arr.length-1;
+	let val=0;
+	let average=0;
+	for (let i=startIndex;i<arr.length;i++) {
+	val+=arr[i];
+	}
+		average=val/len;
+	return Math.floor(average);
+}
 }
 export var utils = new GameUtils();

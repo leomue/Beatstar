@@ -21,7 +21,7 @@ export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEv
 export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
 
-export var lang = 2;
+export var lang = 1;
 export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
 export var data = '';
@@ -29,10 +29,6 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 function setup() {
-cash(2000,0,function() {
-st.setState(2);
-});
-return;
 	st.setState(1);
 }
 function proceed() {
@@ -222,7 +218,7 @@ if (browsing > 0) {
 	so.directory = './sounds/';
 save();
 so.kill(() => {
-st.setState(2);
+st.setState(20);
 });
 return;
 }
@@ -384,7 +380,7 @@ export function question(text,localizedValues=[]) {
 const items=new Array();
 			items.push(new MenuItem(-1,strings.get(text,localizedValues)));
 	items.push(new MenuItem(0,strings.get("yes",)));
-	items.push(new MenuItem(0,strings.get("no",)));
+	items.push(new MenuItem(1,strings.get("no",)));
 		so.directory = './sounds/';
 			let dm=new Menu(strings.get("mSelect"),items);
 			so.directory = '';
@@ -401,7 +397,7 @@ break;
 }
 });
 }
-export function checkPack() {
+export function checkPack(changeBoot=true) {
 const fs=require('fs');
 	try {
 		data = JSON.parse(fs.readFileSync(os.homedir() + '/beatpacks/save.dat'));
@@ -409,7 +405,8 @@ const fs=require('fs');
 		data = new Player();
 	}
 	pack = data.pack;
-	boot=false;
+	if (!changeBoot) boot=false;
+		if (changeBoot) boot=true;
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	actionKeys = data.actionKeys;
 save();
@@ -438,7 +435,7 @@ const http=require('http');
   });
 }
 export async function downloadPacks(arr = []) {
-const fs=require('fs');
+var fs=require('fs');
 		if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -818,70 +815,86 @@ pos--;
 		}
 		export function booter() {
 		const fs=require('fs');
-		//boot crap
-//const fs=require('fs');
-if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
+		if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 boot=true;
+let input=new KeyboardInput();
+input.init();
 			so.directory = '';
 let bootSound = so.create(packdir + 'boot');
+bootSound.play();
 bootSound.sound.once("end",function() {
+input.justPressedEventCallback=null;
 mainMenu();
 });
 			so.directory = './sounds/';
-			let input=new KeyboardInput();
-bootSound.play();
-input.init();
+			
 input.justPressedEventCallback=function(evt) {
 bootSound.sound.off("end");
+bootSound.stop();
 bootSound.destroy();
 input.justPressedEventCallback=null;
 mainMenu();
 }
-input.justPressedEventCallback=null;
 		}//if file exists
 		else {
 		mainMenu();
 		}
 		}
-		async function cash(c1,c2,callback) {
-			//data.beatcoins+=cash;
+		export async function addCash(c1,c2=0,callback) {
+		let coinCap=-1;
+		let cash=c1-c2;
+					data.beatcoins+=cash;
+					save();
 let positive=true;
-let cash=c1-c2;
 let time=370;
-if (cash<=0) positive=false;
+if (cash<0) positive=false;
 cash=Math.abs(cash);
 so.directory="./sounds/";
 let snd;
-if (positive) {
-snd=so.create("morecash");
-speech.speak(strings.get("youwin",[cash]));
+if (cash>100000) { coinCap=100000; }
+else if (cash<=100000 && cash>35001) { coinCap=1000; }
+else if (cash<=35000 && cash>10001) { coinCap=500; }
+else if (cash<=10000 && cash>501) { coinCap=500; }
+else if (cash<=500 && cash>101) { coinCap=100; }
+else if (cash<=100 && cash>11) { coinCap=10; }
+else if (cash<=10 && cash>0) { 
+coinCap=1;
 }
+if (coinCap!=-1) {
+if (positive) {
+snd=so.create("morecash"+coinCap);
+speech.speak(strings.get("youwin",[cash]));
+}//positive
 else if (!positive) {
 snd=so.create("lesscash");
 speech.speak(strings.get("youlose",[cash]));
-}
-console.log(cash);
+}//negative
 await utils.sleep(400);
-if (cash>=1000) {
+if (cash>=coinCap) {
 snd.play();
-cash-=1000;
+cash-=coinCap;
 let count=0;
-if (cash>30000) cash=29000; //play 30 sounds max.
-for (let i=cash;i>=1000; i-=1000) {
+for (let i=cash;i>=coinCap; i-=coinCap) {
 time-=15;
 if (time<80) time=80;
-}
-for (let i=cash;i>=1000; i-=1000) {
+}//for
+for (let i=cash;i>=coinCap; i-=coinCap) {
 count++;
 setTimeout(function() {
 snd.play();
 },time*count);
-}
+}//for
 so.directory="";
 if (typeof callback!=="undefined") {
 setTimeout(function() {
 callback();
-},time*(count+1));
-}
-}
-		}
+},time*(count+2));
+}//if callback undefined
+}//if greater than coin cap
+		}//coinCap -1
+		else {
+if (typeof callback!=="undefined") {
+callback();
+}//callback undefined
+		}//else
+				}//function

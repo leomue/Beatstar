@@ -33,7 +33,7 @@ class Strings {
 			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
 			mNew: 'Get new packs',
 			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
-			mBrowse: 'buy new packs (current beatcoins %1)',
+			mBrowse: 'buy new packs (You have %1 beatcoins )',
 						mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked:"Change to different unlocked pack",
 			"youwin":"You win %1 coins!",

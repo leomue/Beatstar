@@ -2,7 +2,7 @@
 import fs from 'fs';
 import os from 'os';
 import {speech} from './tts';
-import {data,actionKeys} from './main';
+import {addCash,data,actionKeys} from './main';
 import {pack, packdir,save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
@@ -21,6 +21,7 @@ class Game {
 	constructor() {
 	this.totalScore=[];
 	this.totalAverage=[];
+	this.cash=0;
 	so.directory="./sounds/",
 	this.scoreAverage=[];
 	this.levelAverage=[];
@@ -128,12 +129,14 @@ return;
 		this.scoreTimer.reset();
 	}
 	doScore() {
+	addCash(this.cash,0,function() {
+	st.setState(2);
+	});
 	}
 
 	async fail() {
 	//todo: display results and add beatcoins
-	this.doScore();
-		this.timer.stop();
+			this.timer.stop();
 		const snd = this.music;
 		so.directory = '';
 		const failsound = this.pool.playStatic(packdir + 'fail', 0);
@@ -151,14 +154,14 @@ return;
 		}
 		so.resetQueue();
 so.resetQueuedInstance();
+var that=this;
 so.kill(() => {
-st.setState(2);
+that.doScore();
 });
 	}
 
 	async quit() {
-	this.doScore();
-		this.timer.stop();
+			this.timer.stop();
 		const snd = this.music;
 		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
 			snd.playbackRate = i;
@@ -167,8 +170,9 @@ st.setState(2);
 				snd.unload();
 				so.resetQueue();
 so.resetQueuedInstance();
+var that=this;
 so.kill(() => {
-st.setState(2);
+that.doScore();
 });
 			}
 
@@ -212,7 +216,8 @@ st.setState(2);
 	
 	async setupLevel() {
 	if (this.level>1) {
-	
+	//avg
+this.cash+=(utils.averageInt(this.levelAverage)+(10*this.numberOfActions));
 	}
 	this.scoreAverage=[];
 	this.levelAverage=[];
@@ -230,10 +235,13 @@ while (this.winSound.playing==true) {
 		}//while
 		}//if file exists
 		data.unlocks[pack]["win"]=true;
-				save();
-				this.doScore();
-		so.kill(() => {
-st.setState(2);
+										let that2=this;
+				so.resetQueue();
+so.resetQueuedInstance();
+//get some kind of reward if you win, but only if the pack has enough levels
+if (this.levels>9) this.cash+=(this.cash*3);
+						so.kill(() => {
+				that2.doScore();
 });
 return;
 	}//winning
@@ -328,9 +336,11 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 				this.scoreCounter.pitch=utils.progressPitch(score,100);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
+		this.scoreAverage.push(score);
 		const mod = Math.ceil((2200 * score) / bpm);
 //speech.speak(mod);
 this.score += mod;
+this.levelAverage.push(mod);
 	}
 
 	queueLevels() {
