@@ -1,4 +1,4 @@
-process.env.HMR_PORT=63112;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=52650;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({15:[function(require,module,exports) {
+})({13:[function(require,module,exports) {
 
 'use strict';
 
@@ -204,7 +204,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],12:[function(require,module,exports) {
+},{}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -240,7 +240,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],13:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -574,7 +574,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./tts":12}],7:[function(require,module,exports) {
+},{"./tts":10}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -674,7 +674,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":15,"./soundObject":13,"./tts":12}],4:[function(require,module,exports) {
+},{"./keycodes":13,"./soundObject":12,"./tts":10}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -712,7 +712,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":7}],6:[function(require,module,exports) {
+},{"./keycodes":13,"./main":1,"./scrollingText":7}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -850,7 +850,7 @@ class EditItem extends MenuItem {
 }
 exports.MenuItem = MenuItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":12}],11:[function(require,module,exports) {
+},{"./tts":10}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -900,7 +900,7 @@ class GameUtils {
 	}
 }
 var utils = exports.utils = new GameUtils();
-},{}],9:[function(require,module,exports) {
+},{}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -946,6 +946,9 @@ class Strings {
 			mBrowse: 'buy new packs (current beatcoins %1)',
 			mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked: "Change to different unlocked pack",
+			"youwin": "You win %1 coins!",
+			"youlose": "You lose %1 coins.",
+
 			mHashes: 'Rebuild packs folder',
 			mDownload: 'Download new packs'
 		};
@@ -971,6 +974,8 @@ class Strings {
 			mUnlocked: "Escuchar la música desbloqueada de este pack (%1 niveles)",
 			mBrowseIncompleted: 'Ver packs comprados no completados',
 			"yes": "sí",
+			"youwin": "Ganas %1 monedas!",
+			"youlose": "Pierdes %1 monedas!",
 			"no": "no",
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
@@ -1003,7 +1008,7 @@ class Strings {
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1}],5:[function(require,module,exports) {
+},{"./main":1}],2:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1139,7 +1144,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":12}],3:[function(require,module,exports) {
+},{"./tts":10}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1414,7 +1419,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":11,"./strings":9,"./tts":12,"./soundObject.js":13,"./menuItem":6,"./keycodes":15,"./input":5}],19:[function(require,module,exports) {
+},{"./utilities":11,"./strings":8,"./tts":10,"./soundObject.js":12,"./menuItem":4,"./keycodes":13,"./input":2}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1459,7 +1464,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],18:[function(require,module,exports) {
+},{}],17:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -4362,7 +4367,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],16:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4453,7 +4458,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":18,"./soundObject.js":13}],10:[function(require,module,exports) {
+},{"./howler":17,"./soundObject.js":12}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4594,7 +4599,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":16,"./soundObject.js":13}],20:[function(require,module,exports) {
+},{"./soundSource.js":15,"./soundObject.js":12}],19:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -4646,7 +4651,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],17:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4943,7 +4948,7 @@ class Game {
 		}
 		_soundObject.so.directory = '';
 		const that = this;
-		this.music = _soundObject.so.create(_main.packdir + this.level + 'music', true);
+		this.music = _soundObject.so.create(_main.packdir + this.level + 'music', false);
 		this.music.loop = true;
 		_soundObject.so.directory = './sounds/';
 		this.music.play();
@@ -5027,7 +5032,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":19,"./soundHandler":10,"./utilities":11,"./soundObject":13,"./stateMachine":14,"./timer":20,"./scrollingText":7,"./input.js":5,"./keycodes.js":15}],14:[function(require,module,exports) {
+},{"./tts":10,"./main":1,"./oldtimer":18,"./soundHandler":9,"./utilities":11,"./soundObject":12,"./stateMachine":14,"./timer":19,"./scrollingText":7,"./input.js":2,"./keycodes.js":13}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5111,7 +5116,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":5,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":13,"./keycodes":15,"./game":17}],8:[function(require,module,exports) {
+},{"./input":2,"./tts":10,"./main":1,"./menuHandler":6,"./soundObject":12,"./keycodes":13,"./game":16}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5174,7 +5179,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":13,"./main":1,"./stateMachine":14,"./strings":9,"./menuItem":6,"./menu":3}],1:[function(require,module,exports) {
+},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":4,"./menu":5}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5250,11 +5255,10 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 function setup() {
-	/*
- 	So.enqueue("memtest");
- 	so.setQueueCallback(function() { proceed(); });
- 	so.loadQueue();
- 	*/
+	cash(2000, 0, function () {
+		_stateMachine.st.setState(2);
+	});
+	return;
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -6056,7 +6060,48 @@ function booter() {
 			(0, _menuHandler.mainMenu)();
 		}
 }
-},{"./player":4,"./menuItem":6,"./menu":3,"./menuHandler":8,"./scrollingText":7,"./strings":9,"./soundHandler":10,"./tts":12,"./utilities":11,"./soundObject":13,"./keycodes":15,"./stateMachine":14,"./input.js":5}],23:[function(require,module,exports) {
+async function cash(c1, c2, callback) {
+	//data.beatcoins+=cash;
+	let positive = true;
+	let cash = c1 - c2;
+	let time = 370;
+	if (cash <= 0) positive = false;
+	cash = Math.abs(cash);
+	_soundObject.so.directory = "./sounds/";
+	let snd;
+	if (positive) {
+		snd = _soundObject.so.create("morecash");
+		_tts.speech.speak(_strings.strings.get("youwin", [cash]));
+	} else if (!positive) {
+		snd = _soundObject.so.create("lesscash");
+		_tts.speech.speak(_strings.strings.get("youlose", [cash]));
+	}
+	console.log(cash);
+	await _utilities.utils.sleep(400);
+	if (cash >= 1000) {
+		snd.play();
+		cash -= 1000;
+		let count = 0;
+		if (cash > 30000) cash = 29000; //play 30 sounds max.
+		for (let i = cash; i >= 1000; i -= 1000) {
+			time -= 15;
+			if (time < 80) time = 80;
+		}
+		for (let i = cash; i >= 1000; i -= 1000) {
+			count++;
+			setTimeout(function () {
+				snd.play();
+			}, time * count);
+		}
+		_soundObject.so.directory = "";
+		if (typeof callback !== "undefined") {
+			setTimeout(function () {
+				callback();
+			}, time * (count + 1));
+		}
+	}
+}
+},{"./player":3,"./menuItem":4,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],24:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -6233,5 +6278,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[23,1])
+},{}]},{},[24,1])
 //# sourceMappingURL=/main.map

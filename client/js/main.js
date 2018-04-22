@@ -29,11 +29,10 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 function setup() {
-/*
-	So.enqueue("memtest");
-	so.setQueueCallback(function() { proceed(); });
-	so.loadQueue();
-	*/
+cash(2000,0,function() {
+st.setState(2);
+});
+return;
 	st.setState(1);
 }
 function proceed() {
@@ -843,4 +842,46 @@ input.justPressedEventCallback=null;
 		else {
 		mainMenu();
 		}
+		}
+		async function cash(c1,c2,callback) {
+			//data.beatcoins+=cash;
+let positive=true;
+let cash=c1-c2;
+let time=370;
+if (cash<=0) positive=false;
+cash=Math.abs(cash);
+so.directory="./sounds/";
+let snd;
+if (positive) {
+snd=so.create("morecash");
+speech.speak(strings.get("youwin",[cash]));
+}
+else if (!positive) {
+snd=so.create("lesscash");
+speech.speak(strings.get("youlose",[cash]));
+}
+console.log(cash);
+await utils.sleep(400);
+if (cash>=1000) {
+snd.play();
+cash-=1000;
+let count=0;
+if (cash>30000) cash=29000; //play 30 sounds max.
+for (let i=cash;i>=1000; i-=1000) {
+time-=15;
+if (time<80) time=80;
+}
+for (let i=cash;i>=1000; i-=1000) {
+count++;
+setTimeout(function() {
+snd.play();
+},time*count);
+}
+so.directory="";
+if (typeof callback!=="undefined") {
+setTimeout(function() {
+callback();
+},time*(count+1));
+}
+}
 		}

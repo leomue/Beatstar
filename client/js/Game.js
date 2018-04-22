@@ -268,7 +268,7 @@ this.playing = true;
 		}
 		so.directory = '';
 		const that = this;
-		this.music = so.create(packdir + this.level + 'music',true);
+		this.music = so.create(packdir + this.level + 'music',false);
 		this.music.loop = true;
 		so.directory = './sounds/';
 this.music.play();

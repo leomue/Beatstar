@@ -36,6 +36,9 @@ class Strings {
 			mBrowse: 'buy new packs (current beatcoins %1)',
 						mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked:"Change to different unlocked pack",
+			"youwin":"You win %1 coins!",
+						"youlose":"You lose %1 coins.",
+			
 			mHashes: 'Rebuild packs folder',
 			mDownload: 'Download new packs'
 		};
@@ -61,6 +64,8 @@ class Strings {
 			mUnlocked:"Escuchar la música desbloqueada de este pack (%1 niveles)",
 			mBrowseIncompleted: 'Ver packs comprados no completados',
 			"yes":"sí",
+			"youwin":"Ganas %1 monedas!",
+						"youlose":"Pierdes %1 monedas!",
 			"no":"no",
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
