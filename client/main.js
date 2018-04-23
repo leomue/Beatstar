@@ -901,7 +901,7 @@ class GameUtils {
 		return int1 * 100 / int2;
 	}
 	average(arr, startIndex = 0) {
-		let len = arr.length - 1;
+		let len = arr.length;
 		let val = 0;
 		let average = 0;
 		for (let i = startIndex; i < arr.length; i++) {
@@ -911,7 +911,7 @@ class GameUtils {
 		return average;
 	}
 	averageInt(arr, startIndex = 0) {
-		let len = arr.length - 1;
+		let len = arr.length;
 		let val = 0;
 		let average = 0;
 		for (let i = startIndex; i < arr.length; i++) {
@@ -939,11 +939,14 @@ class Strings {
 			"mFound": "Found %1 new packs: what do you wish to do?",
 			mainmenu: "main menu",
 			mSelect: "Please select",
+			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
+			packprice: "This pack costs %1 beatcoins, please confirm",
 			mReady: 'Please wait...',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
 			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
 			mSafeguards: "Buy safeguards (now %1)",
 			dfiles: "Downloading %1 files. Press any key to obtain percentage",
+			packno: "Not enough beatcoins to get this pack, it costs %1.",
 			retrieving: "Retrieving data ",
 			nodown: "No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs (%1)',
@@ -963,7 +966,7 @@ class Strings {
 			dlingdone: 'Done! Rebuilding database...',
 			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
 			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
-			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\n',
+			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!',
 			keymapStart: 'We will now remap your keyboard. You will hear the sounds for the different actions, and you will be prompted to press the key you want to associate to the new actions.',
 			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
 			mNew: 'Get new packs',
@@ -994,7 +997,7 @@ class Strings {
 			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
 			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
 			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
-			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\n',
+			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!',
 			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
 			dlprog: "descargando pack %1 de %2...",
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
@@ -1012,7 +1015,10 @@ class Strings {
 			mHashes: 'Reconstruir base de datos de packs',
 			mainmenu: "menú principal",
 			mSelect: "Por favor selecciona",
+			mSafeSelect: "Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
 			mSafeguards: "Comprar antifallos (ahora %1)",
+			packprice: "Este pack cuesta %1 monedas, confirma que quieres comprarlo.",
+			packno: "No tienes monedas suficientes para este pack, cuesta %1.",
 			safequestion: "Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
 			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
@@ -4954,8 +4960,9 @@ class Game {
 	async setupLevel() {
 		if (this.level > 1) {
 			//avg
-			this.actionPercentage = Math.ceil(_utilities.utils.percent(this.numberOfActions * 5, _utilities.utils.averageInt(this.levelAverage)));
+			this.actionPercentage = Math.ceil(_utilities.utils.percent(this.numberOfActions * this.level, _utilities.utils.averageInt(this.levelAverage)));
 			this.cash += _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
+			//speech.speak(utils.averageInt(this.levelAverage));
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
@@ -5018,7 +5025,9 @@ class Game {
 		this.music.loop = true;
 		_soundObject.so.directory = './sounds/';
 		this.music.play();
-		this.timer.change(that.bpms[that.level] / 1000.0);
+		this.music.sound.once("play", () => {
+			this.timer.change(that.bpms[that.level] / 1000.0);
+		});
 		if (!this.playing && this.level > 1) {
 			this.queueLevels();
 		}
@@ -5074,7 +5083,7 @@ class Game {
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
-		const mod = Math.ceil(2200 * score / bpm);
+		const mod = Math.ceil(3500 * score / bpm);
 		//speech.speak(mod);
 		this.score += mod;
 		this.levelAverage.push(mod);
@@ -5476,30 +5485,60 @@ async function browsePacks(browsing = 1) {
 	while (!event.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT) && browsing > 0) {
 		// Enter
 		if (event.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+			if (browsePosition == -1) {
+				_stateMachine.st.setState(2);
+				return;
+			}
 			if (typeof snd !== 'undefined') {
 				snd.destroy();
 			}
 			if (timeout != -1) {
 				clearTimeout(timeout);
 			}
-			if (browsePosition != -1) {
-				var size = 0;
-				_fsWalk2.default.filesSync(_os2.default.homedir() + '/beatpacks/' + browseArray[browsePosition].name, (pb, pf, stat) => {
-					size += stat.size;
-				});
-				if (size != browseArray[browsePosition].hash) {
-					browsing = 0;
-					// Todo: remove from unlocked
-					data.unlocks[browsePosition.name] = null;
-					_tts.speech.speak(_strings.strings.get('tamperWarning'));
-					setTimeout(() => {
-						_tts.speech.speak(_strings.strings.get('tamperWarning'));
-					}, 4500);
-					while (!event.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
-						await _utilities.utils.sleep(10);
-					}
-				}
-				if (browsing > 0) {
+			if (browsing > 0) {
+				if (browsing == 1) {
+					let price = browseArray[browsePosition].levels * 500;
+					if (data.beatcoins < price) {
+						new _scrollingText.ScrollingText(_strings.strings.get("packno", [price]), "\n", function () {
+							_stateMachine.st.setState(2);
+						});
+					} else {
+						question("packprice", [price], function (answer) {
+							if (!answer) {
+								_stateMachine.st.setState(2);
+								return;
+							} else if (answer) {
+								_soundObject.so.directory = "./sounds/";
+								let snd = _soundObject.so.create("buypack");
+								snd.play();
+								snd.sound.once("end", function () {
+									addCash(0, price, function () {
+										exports.pack = pack = browseArray[browsePosition].name;
+										boot = false;
+										data.pack = pack;
+										if (typeof data.unlocks[pack] === "undefined") {
+											data.unlocks[pack] = {
+												"level": 0,
+												"insurance": 0,
+												"fails": 0,
+												"win": false,
+												"average": 0
+											}; //object
+										} //unlocks undefined
+										exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
+										boot = false;
+										_soundObject.so.directory = './sounds/';
+										save();
+										_soundObject.so.kill(() => {
+											_stateMachine.st.setState(20);
+										}); //kill
+									}); //cash
+								}); //sound callback
+							} //answer
+						}); //question callback);
+					} //we have enough
+					return;
+				} else {
 					exports.pack = pack = browseArray[browsePosition].name;
 					boot = false;
 					data.pack = pack;
@@ -5510,18 +5549,19 @@ async function browsePacks(browsing = 1) {
 							"fails": 0,
 							"win": false,
 							"average": 0
-						};
-					}
+						}; //object
+					} //unlocks undefined
 					exports.packdir = packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 					boot = false;
 					_soundObject.so.directory = './sounds/';
 					save();
 					_soundObject.so.kill(() => {
 						_stateMachine.st.setState(20);
-					});
-					return;
-				}
-			}
+					}); //kill
+				} //if browsing more than 1
+			} //if browsing more than 0
+			return;
+			//}
 		}
 		// Down arrow
 		if (event.isJustPressed(_keycodes.KeyEvent.DOM_VK_DOWN)) {
@@ -5675,33 +5715,47 @@ async function rebuildHashes(silent = false) {
 		_stateMachine.st.setState(2);
 	}
 }
-function question(text, localizedValues = []) {
-	const items = new Array();
+function question(text, localizedValues = [], callback = null) {
+	let answer = false;
+	let items = new Array();
 	items.push(new _menuItem.MenuItem(-1, _strings.strings.get(text, localizedValues)));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("yes")));
 	items.push(new _menuItem.MenuItem(1, _strings.strings.get("no")));
 	_soundObject.so.directory = './sounds/';
-	let dm = new _menu.Menu(_strings.strings.get("mSelect"), items);
+	let dm = new _menu.Menu(_strings.strings.get(text, localizedValues), items);
 	_soundObject.so.directory = '';
 	dm.run(s => {
+		console.log("ok");
 		_soundObject.so.directory = './sounds/';
-		dm.destroy();
+		console.log("meow" + s.selected);
 		switch (s.selected) {
 			case 0:
-				return true;
+				dm.destroy();
+				answer = true;
 				break;
 			case 1:
-				return false;
+				dm.destroy();
+				answer = false;
 				break;
+		}
+		if (typeof callback !== "undefined") {
+			callback(answer);
 		}
 	});
 }
-function checkPack(changeBoot = true) {
+async function checkPack(changeBoot = true) {
 	const fs = require('fs');
 	try {
 		exports.data = data = JSON.parse(fs.readFileSync(_os2.default.homedir() + '/beatpacks/save.dat'));
 	} catch (err) {
 		exports.data = data = new _player.Player();
+		let introing = true;
+		new _scrollingText.ScrollingText(_strings.strings.get("intro"), "\n", function () {
+			introing = false;
+		});
+		while (introing) {
+			await _utilities.utils.sleep(10);
+		}
 	}
 	exports.pack = pack = data.pack;
 	if (!changeBoot) boot = false;
@@ -6147,11 +6201,11 @@ async function addCash(c1, c2 = 0, callback) {
 	cash = Math.abs(cash);
 	_soundObject.so.directory = "./sounds/";
 	let snd;
-	if (cash > 100000) {
+	if (cash > 500000) {
 		coinCap = 100000;
-	} else if (cash <= 100000 && cash > 35001) {
+	} else if (cash <= 500000 && cash > 100001) {
 		coinCap = 1000;
-	} else if (cash <= 35000 && cash > 10001) {
+	} else if (cash <= 100000 && cash > 10001) {
 		coinCap = 500;
 	} else if (cash <= 10000 && cash > 501) {
 		coinCap = 500;
@@ -6163,7 +6217,7 @@ async function addCash(c1, c2 = 0, callback) {
 		coinCap = 1;
 	}
 	if (coinCap != -1) {
-		if (!positive) coinCap = 1000; //yeah, you hear lose sound every 1k.
+		if (!positive && cash >= 1000) coinCap = 1000; //yeah, you hear lose sound every 1k.
 		if (positive) {
 			snd = _soundObject.so.create("morecash" + coinCap);
 			_tts.speech.speak(_strings.strings.get("youwin", [cash]));
@@ -6205,7 +6259,7 @@ function buySafeguards() {
 	if (typeof data.safeguards === "undefined") data.safeguards = 0;
 	let cash = data.beatcoins;
 	if (cash > 100000) cash = 100000;
-	let price = 900;
+	let price = 700;
 	let max = 0;
 	let buying = 0;
 	if (cash < price) {
@@ -6225,28 +6279,25 @@ function buySafeguards() {
 			items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
 
 			_soundObject.so.directory = './sounds/';
-			let dm = new _menu.Menu(_strings.strings.get("mSelect"), items);
+			let dm = new _menu.Menu(_strings.strings.get("mSafeSelect"), items);
 			_soundObject.so.directory = '';
 			dm.run(s => {
 				//console.log(s.items);
 				_soundObject.so.directory = './sounds/';
 				buying = s.items[0].value;
 				dm.destroy();
-				switch (s.selected) {
-					case 2:
-
+				if (s.selected == 2) {
+					_stateMachine.st.setState(2);
+				} else {
+					data.safeguards += buying;
+					save();
+					let snd = _soundObject.so.create("safebuy");
+					snd.sound.once("end", function () {
 						_stateMachine.st.setState(2);
-						break;
-					case 1:
-						data.safeguards += buying;
-						save();
-						let snd = _soundObject.so.create("safebuy");
-						snd.sound.once("end", function () {
-							_stateMachine.st.setState(2);
-						});
-						addCash(0, buying * price, function () {
-							snd.play();
-						});
+					});
+					addCash(0, buying * price, function () {
+						snd.play();
+					});
 				}
 			});
 		} else {

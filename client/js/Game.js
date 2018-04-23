@@ -244,8 +244,9 @@ that.doScore();
 	async setupLevel() {
 	if (this.level>1) {
 	//avg
-	this.actionPercentage=Math.ceil(utils.percent(this.numberOfActions*5,utils.averageInt(this.levelAverage)));
+	this.actionPercentage=Math.ceil(utils.percent(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
 	this.cash+=(utils.averageInt(this.levelAverage)+this.actionPercentage);
+	//speech.speak(utils.averageInt(this.levelAverage));
 	}
 	this.scoreAverage=[];
 	this.levelAverage=[];
@@ -308,7 +309,9 @@ this.playing = true;
 		this.music.loop = true;
 		so.directory = './sounds/';
 this.music.play();
+	this.music.sound.once("play",()=> {
 	this.timer.change(that.bpms[that.level] / 1000.0);
+	});
 	if (!this.playing && this.level > 1) {
 									this.queueLevels();
 	}
@@ -365,7 +368,7 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
-		const mod = Math.ceil((2200 * score) / bpm);
+		const mod = Math.ceil((3500 * score) / bpm);
 //speech.speak(mod);
 this.score += mod;
 this.levelAverage.push(mod);

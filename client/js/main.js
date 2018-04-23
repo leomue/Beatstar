@@ -177,30 +177,62 @@ const exitNow = 0;
 while (!event.isJustPressed(KeyEvent.DOM_VK_LEFT) && browsing > 0) {
 // Enter
 	if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+	if (browsePosition==-1) {
+	st.setState(2);
+	return;
+	}
 		if (typeof snd !== 'undefined') {
 snd.destroy();
 		}
 		if (timeout != -1) {
 clearTimeout(timeout);
 		}
-		if (browsePosition != -1) {
-			var size = 0;
-walk.filesSync(os.homedir() + '/beatpacks/' + browseArray[browsePosition].name, (pb, pf, stat) => {
-	size += stat.size;
-});
-if (size != browseArray[browsePosition].hash) {
-	browsing = 0;
-// Todo: remove from unlocked
-data.unlocks[browsePosition.name]=null;
-speech.speak(strings.get( 'tamperWarning'));
-setTimeout(() => {
-speech.speak(strings.get( 'tamperWarning'));
-}, 4500);
-while (!event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-	await utils.sleep(10);
-}
-}
 if (browsing > 0) {
+if (browsing==1) {
+let price=browseArray[browsePosition].levels*500;
+if (data.beatcoins<price) {
+new ScrollingText(strings.get("packno",[price]),"\n",function() { st.setState(2); });
+}
+else {
+question("packprice",[price],function(answer) {
+if (!answer) {
+st.setState(2);
+return;
+}
+else if (answer) {
+so.directory="./sounds/";
+let snd=so.create("buypack");
+snd.play();
+snd.sound.once("end",function() {
+addCash(0,price,function() {
+pack = browseArray[browsePosition].name;
+		boot=false;
+	data.pack = pack;
+	if (typeof data.unlocks[pack]==="undefined") {
+	data.unlocks[pack]={ 
+			"level":0,
+			"insurance":0,
+			"fails":0,
+			"win":false,
+			"average":0,
+					};//object
+					}//unlocks undefined
+						packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	boot=false;
+	so.directory = './sounds/';
+save();
+so.kill(() => {
+st.setState(20);
+});//kill
+});//cash
+});//sound callback
+}//answer
+
+});//question callback);
+}//we have enough
+return;
+}
+else {
 	pack = browseArray[browsePosition].name;
 		boot=false;
 	data.pack = pack;
@@ -211,18 +243,19 @@ if (browsing > 0) {
 			"fails":0,
 			"win":false,
 			"average":0,
-					};
-					}
+					};//object
+					}//unlocks undefined
 						packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	boot=false;
 	so.directory = './sounds/';
 save();
 so.kill(() => {
 st.setState(20);
-});
+});//kill
+}//if browsing more than 1
+}//if browsing more than 0
 return;
-}
-		}
+			//}
 	}
 	// Down arrow
 	if (event.isJustPressed(KeyEvent.DOM_VK_DOWN)) {
@@ -376,33 +409,47 @@ st.setState(2);
 st.setState(2);
 }
 }
-export function question(text,localizedValues=[]) {
-const items=new Array();
+export function question(text,localizedValues=[],callback=null) {
+let answer=false;
+let items=new Array();
 			items.push(new MenuItem(-1,strings.get(text,localizedValues)));
 	items.push(new MenuItem(0,strings.get("yes",)));
 	items.push(new MenuItem(1,strings.get("no",)));
 		so.directory = './sounds/';
-			let dm=new Menu(strings.get("mSelect"),items);
+			let dm=new Menu(strings.get(text,localizedValues),items);
 			so.directory = '';
-		dm.run(s=>{
+					dm.run(s=>{
+		console.log("ok");
 						so.directory = './sounds/';
-dm.destroy();
+						console.log("meow"+s.selected);
 						switch(s.selected) {
 							case 0:
-return true;
+							dm.destroy();
+answer=true;
 			break;
 			case 1:
-return false;
+			dm.destroy();
+answer=false;
 break;
+}
+if (typeof callback!=="undefined") {
+callback(answer);
 }
 });
 }
-export function checkPack(changeBoot=true) {
+export async function checkPack(changeBoot=true) {
 const fs=require('fs');
 	try {
 		data = JSON.parse(fs.readFileSync(os.homedir() + '/beatpacks/save.dat'));
 	} catch (err) {
 		data = new Player();
+		let introing=true;
+				new ScrollingText(strings.get("intro"),"\n",function() {
+		introing=false;
+		});
+		while (introing) {
+		await utils.sleep(10);
+		}
 	}
 	pack = data.pack;
 	if (!changeBoot) boot=false;
@@ -853,9 +900,9 @@ if (cash<0) positive=false;
 cash=Math.abs(cash);
 so.directory="./sounds/";
 let snd;
-if (cash>100000) { coinCap=100000; }
-else if (cash<=100000 && cash>35001) { coinCap=1000; }
-else if (cash<=35000 && cash>10001) { coinCap=500; }
+if (cash>500000) { coinCap=100000; }
+else if (cash<=500000 && cash>100001) { coinCap=1000; }
+else if (cash<=100000 && cash>10001) { coinCap=500; }
 else if (cash<=10000 && cash>501) { coinCap=500; }
 else if (cash<=500 && cash>101) { coinCap=100; }
 else if (cash<=100 && cash>11) { coinCap=10; }
@@ -863,7 +910,7 @@ else if (cash<=10 && cash>0) {
 coinCap=1;
 }
 if (coinCap!=-1) {
-if (!positive) coinCap=1000; //yeah, you hear lose sound every 1k.
+if (!positive && cash>=1000) coinCap=1000; //yeah, you hear lose sound every 1k.
 if (positive) {
 snd=so.create("morecash"+coinCap);
 speech.speak(strings.get("youwin",[cash]));
@@ -905,7 +952,7 @@ callback();
 				if (typeof data.safeguards==="undefined") data.safeguards=0;
 				let cash=data.beatcoins;
 				if (cash>100000) cash=100000;
-				let price=900;
+				let price=700;
 				let max=0;
 				let buying=0;
 				if (cash<price) {
@@ -926,19 +973,17 @@ items.push(slider);
 		items.push(new MenuItem(2,strings.get("mBack",)));
 				
 		so.directory = './sounds/';
-			let dm=new Menu(strings.get("mSelect"),items);
+			let dm=new Menu(strings.get("mSafeSelect"),items);
 						so.directory = '';
 		dm.run(s=>{
 		//console.log(s.items);
 								so.directory = './sounds/';
 															buying=s.items[0].value;
 																																													dm.destroy();
-						switch(s.selected) {
-							case 2:
-							
+if (s.selected==2) {
 							st.setState(2);
-               break;
-							case 1:
+               }
+																					else {
 																					data.safeguards+=buying;
 							save();
 let snd=so.create("safebuy")
