@@ -1,7 +1,7 @@
 'use strict';
 
 import {so} from './soundObject';
-import {data} from './main';
+import {buySafeguards,data} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -14,6 +14,7 @@ const fs=require('fs');
 	speech.webTTS=true;
 	const items = new Array();
 	items.push(new MenuItem(0, strings.get( 'mStart')));
+	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
 items.push(new MenuItem(1, strings.get( 'mLearn')));
 items.push(new MenuItem(2, strings.get( 'mBrowse',[data.beatcoins])));
 items.push(new MenuItem(5, strings.get( 'mBrowseUnlocked')));
@@ -44,7 +45,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 		st.setState(7); break;
 		case 7:
 		st.setState(8); break;
-		
+		case 8: buySafeguards(); break;
 			
 		}
 	});

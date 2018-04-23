@@ -127,4 +127,4 @@ class EditItem extends MenuItem {
 		return this.text;
 	}
 }
-export {MenuItem, MenuTypes};
+export {MenuItem,SliderItem,SelectorItem,MenuTypes};

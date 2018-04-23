@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49968;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=53056;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -674,7 +674,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":13,"./soundObject":12,"./tts":10}],3:[function(require,module,exports) {
+},{"./keycodes":13,"./soundObject":12,"./tts":10}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -712,13 +712,13 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":13,"./main":1,"./scrollingText":7}],4:[function(require,module,exports) {
+},{"./keycodes":13,"./main":1,"./scrollingText":7}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.MenuTypes = exports.MenuItem = undefined;
+exports.MenuTypes = exports.SelectorItem = exports.SliderItem = exports.MenuItem = undefined;
 
 var _tts = require('./tts');
 
@@ -849,6 +849,8 @@ class EditItem extends MenuItem {
 	}
 }
 exports.MenuItem = MenuItem;
+exports.SliderItem = SliderItem;
+exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
 },{"./tts":10}],11:[function(require,module,exports) {
 'use strict';
@@ -940,11 +942,14 @@ class Strings {
 			mReady: 'Please wait...',
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
 			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
+			mSafeguards: "Buy safeguards (now %1)",
 			dfiles: "Downloading %1 files. Press any key to obtain percentage",
 			retrieving: "Retrieving data ",
 			nodown: "No downloads are available. So sorry! Check back soon",
 			mDownloadList: 'List all new available packs (%1)',
+			buy: "buy",
 			"mBack": "go back",
+			safequestion: "How many safeguards would you like? They cost %1 each. You have %2 beatcoins. You can get a maximum of %3. Remember, you can get a maximum of 100. If you want more, run me again.",
 			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
 			mListen: "Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
 			mStart: 'Start Game',
@@ -963,6 +968,7 @@ class Strings {
 			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
 			mNew: 'Get new packs',
 			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
+			noGuardCash: "You need %1 beatcoins to buy one safeguard. You have %2.",
 			mBrowse: 'buy new packs (You have %1 beatcoins )',
 			mBrowseIncompleted: 'Browse uncompleted packs',
 			mBrowseUnlocked: "Change to different unlocked pack",
@@ -978,6 +984,7 @@ class Strings {
 			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
 			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
 			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
+			buy: "comprar",
 			"mBack": "volver",
 			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
 			mStart: 'jugar',
@@ -995,6 +1002,7 @@ class Strings {
 			mBrowseIncompleted: 'Ver packs comprados no completados',
 			"yes": "sí",
 			"youwin": "Ganas %1 monedas!",
+			noGuardCash: "No tienes suficientes monedas. Cada antifallo cuesta %1 y tienes %2.",
 			"youlose": "Pierdes %1 monedas!",
 			"no": "no",
 			mNew: 'Conseguir nuevos packs',
@@ -1004,6 +1012,8 @@ class Strings {
 			mHashes: 'Reconstruir base de datos de packs',
 			mainmenu: "menú principal",
 			mSelect: "Por favor selecciona",
+			mSafeguards: "Comprar antifallos (ahora %1)",
+			safequestion: "Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
 			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
 			retrieving: "Recopilando datos ",
@@ -1348,7 +1358,7 @@ class Menu {
 			this.music.loop = true;
 			this.music.play();
 		} else if (typeof this.music === 'string') {
-			this.music = _soundObject.so.create(this.music);
+			this.music = _soundObject.so.create(this.music, true);
 			this.music.volume = 0.5;
 			this.music.loop = true;
 			this.music.play();
@@ -1400,8 +1410,8 @@ class Menu {
 			if (this.menuData[i].type == _menuItem.MenuTypes.SLIDER) {
 				addItem = {
 					id: this.menuData[i].id,
-					value: this.menuData[i].currentValue,
-					name: this.menuData[i].options[this.menuData[i].currentValue]
+					value: this.menuData[i].currentValue
+					//name: this.menuData[i].options[this.menuData[i].currentValue]
 				};
 			}
 			if (this.menuData[i].type == _menuItem.MenuTypes.EDIT) {
@@ -1435,11 +1445,11 @@ class Menu {
 		const that = this;
 		setTimeout(() => {
 			that.selectCallback(toReturn);
-		}, 700);
+		}, 900);
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":11,"./strings":8,"./tts":10,"./soundObject.js":12,"./menuItem":4,"./keycodes":13,"./input":2}],18:[function(require,module,exports) {
+},{"./utilities":11,"./strings":8,"./tts":10,"./soundObject.js":12,"./menuItem":3,"./keycodes":13,"./input":2}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4762,11 +4772,16 @@ class Game {
 			});
 		}
 		this.bpms = this.fileData.split(',');
+		_soundObject.so.directory = "./sounds/";
+		this.safe = _soundObject.so.create("safe");
+		_soundObject.so.directory = "";
 		this.levels = this.bpms.length - 1;
 		if (this.bpms[this.levels] == '') {
 			this.levels--;
 		}
 		this.level++;
+		_soundObject.so.directory = "./sounds/";
+		_soundObject.so.enqueue("safe");
 		_soundObject.so.directory = '';
 		if (_fs2.default.existsSync(_main.packdir + 'nlevel.ogg')) {
 			_soundObject.so.enqueue(_main.packdir + 'nlevel');
@@ -4807,8 +4822,18 @@ class Game {
 			return;
 		}
 		if (!this.actionCompleted && this.action > 1) {
-			this.fail();
-			return;
+			if (_main.data.safeguards <= 0) {
+				this.fail(true);
+				return;
+			} else {
+				_main.data.safeguards--;
+				this.currentAction--;
+				(0, _main.save)();
+				this.actionCompleted = true;
+				if (_main.data.safeguards > 3) this.safe.pitch = 1;
+				if (_main.data.safeguards <= 3) this.safe.pitch = 1.4;
+				this.safe.play();
+			}
 		}
 		this.currentAction++;
 		// Action and level checks go here
@@ -4837,8 +4862,17 @@ class Game {
 		});
 	}
 
-	async fail() {
-		//todo: display results and add beatcoins
+	async fail(skipGuards = false) {
+		if (_main.data.safeguards >= 1 && !skipGuards) {
+			_main.data.safeguards--;
+			(0, _main.save)();
+			this.actionCompleted = true;
+			this.currentAction--;
+			if (_main.data.safeguards > 3) this.safe.pitch = 1;
+			if (_main.data.safeguards <= 3) this.safe.pitch = 1.4;
+			this.safe.play();
+			return;
+		}
 		this.timer.stop();
 		const snd = this.music;
 		_soundObject.so.directory = '';
@@ -4920,7 +4954,8 @@ class Game {
 	async setupLevel() {
 		if (this.level > 1) {
 			//avg
-			this.cash += _utilities.utils.averageInt(this.levelAverage) + 10 * this.numberOfActions;
+			this.actionPercentage = Math.ceil(_utilities.utils.percent(this.numberOfActions * 5, _utilities.utils.averageInt(this.levelAverage)));
+			this.cash += _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
@@ -5178,6 +5213,7 @@ async function mainMenu() {
 	speech.webTTS = true;
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
+	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
 	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
 	items.push(new _menuItem.MenuItem(2, _strings.strings.get('mBrowse', [_main.data.beatcoins])));
 	items.push(new _menuItem.MenuItem(5, _strings.strings.get('mBrowseUnlocked')));
@@ -5212,11 +5248,13 @@ async function mainMenu() {
 				_stateMachine.st.setState(7);break;
 			case 7:
 				_stateMachine.st.setState(8);break;
+			case 8:
+				(0, _main.buySafeguards)();break;
 
 		}
 	});
 }
-},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":4,"./menu":5}],1:[function(require,module,exports) {
+},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":3,"./menu":5}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5233,6 +5271,7 @@ exports.save = save;
 exports.listenPack = listenPack;
 exports.booter = booter;
 exports.addCash = addCash;
+exports.buySafeguards = buySafeguards;
 
 var _jquery = require('jquery');
 
@@ -5685,7 +5724,6 @@ function checkPack(changeBoot = true) {
 }
 var download = function (url, dest, cb) {
 	const http = require('http');
-	const fs=require('fs');
 	var file = fs.createWriteStream(dest);
 	var request = http.get(url, function (response) {
 		response.pipe(file);
@@ -6070,6 +6108,8 @@ function listenPack() {
 	}; //callback
 }
 function booter() {
+	if (!data.safeguards) data.safeguards = 0;
+	save();
 	const fs = require('fs');
 	if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 		boot = true;
@@ -6123,6 +6163,7 @@ async function addCash(c1, c2 = 0, callback) {
 		coinCap = 1;
 	}
 	if (coinCap != -1) {
+		if (!positive) coinCap = 1000; //yeah, you hear lose sound every 1k.
 		if (positive) {
 			snd = _soundObject.so.create("morecash" + coinCap);
 			_tts.speech.speak(_strings.strings.get("youwin", [cash]));
@@ -6160,7 +6201,60 @@ async function addCash(c1, c2 = 0, callback) {
 			} //callback undefined
 		} //else
 } //function
-},{"./player":3,"./menuItem":4,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],25:[function(require,module,exports) {
+function buySafeguards() {
+	if (typeof data.safeguards === "undefined") data.safeguards = 0;
+	let cash = data.beatcoins;
+	if (cash > 100000) cash = 100000;
+	let price = 900;
+	let max = 0;
+	let buying = 0;
+	if (cash < price) {
+		let error = new _scrollingText.ScrollingText(_strings.strings.get("noGuardCash", [price, data.beatcoins]), "\n", function () {
+			_stateMachine.st.setState(2);
+		});
+	} else {
+		for (let i = cash; i >= price; i -= price) {
+			max++;
+		}
+		if (max > 0) {
+			//menu
+			const items = new Array();
+			let slider = new _menuItem.SliderItem(0, _strings.strings.get("safequestion", [price, data.beatcoins, max]), 1, max, Math.floor(max / 2));
+			items.push(slider);
+			items.push(new _menuItem.MenuItem(1, _strings.strings.get("buy")));
+			items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
+
+			_soundObject.so.directory = './sounds/';
+			let dm = new _menu.Menu(_strings.strings.get("mSelect"), items);
+			_soundObject.so.directory = '';
+			dm.run(s => {
+				//console.log(s.items);
+				_soundObject.so.directory = './sounds/';
+				buying = s.items[0].value;
+				dm.destroy();
+				switch (s.selected) {
+					case 2:
+
+						_stateMachine.st.setState(2);
+						break;
+					case 1:
+						data.safeguards += buying;
+						save();
+						let snd = _soundObject.so.create("safebuy");
+						snd.sound.once("end", function () {
+							_stateMachine.st.setState(2);
+						});
+						addCash(0, buying * price, function () {
+							snd.play();
+						});
+				}
+			});
+		} else {
+			_stateMachine.st.setState(2);
+		}
+	}
+}
+},{"./player":4,"./menuItem":3,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],24:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -6337,5 +6431,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[25,1])
+},{}]},{},[24,1])
 //# sourceMappingURL=/main.map

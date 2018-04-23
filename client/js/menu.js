@@ -164,7 +164,7 @@ destroy() {
 			this.music.loop = true;
 	this.music.play();
 		} else if (typeof this.music === 'string') {
-			this.music = so.create(this.music);
+			this.music = so.create(this.music,true);
 			this.music.volume = 0.5;
 			this.music.loop = true;
 	this.music.play();
@@ -215,10 +215,10 @@ destroy() {
 		for (let i = 0; i < this.menuData.length; i++) {
 			let addItem = null;
 			if (this.menuData[i].type == MenuTypes.SLIDER) {
-				addItem = {
+										addItem = {
 					id: this.menuData[i].id,
 					value: this.menuData[i].currentValue,
-					name: this.menuData[i].options[this.menuData[i].currentValue]
+					//name: this.menuData[i].options[this.menuData[i].currentValue]
 				};
 			}
 			if (this.menuData[i].type == MenuTypes.EDIT) {
@@ -252,7 +252,7 @@ this.fade();
 		const that = this;
 				setTimeout(() => {
 that.selectCallback(toReturn);
-				}, 700);
+				}, 900);
 	}
 }
 export {Menu};

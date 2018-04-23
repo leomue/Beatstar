@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Cryptr from 'cryptr';
 let boot=false;
 import {Player} from './player';
-import {MenuItem} from './menuItem';
+import {SliderItem,MenuItem} from './menuItem';
 import {Menu} from './menu';
 import 'hash-files';
 import walk from 'fs-walk';
@@ -814,6 +814,8 @@ pos--;
 		}//callback
 		}
 		export function booter() {
+		if (!data.safeguards) data.safeguards=0;
+		save();
 		const fs=require('fs');
 		if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 boot=true;
@@ -861,6 +863,7 @@ else if (cash<=10 && cash>0) {
 coinCap=1;
 }
 if (coinCap!=-1) {
+if (!positive) coinCap=1000; //yeah, you hear lose sound every 1k.
 if (positive) {
 snd=so.create("morecash"+coinCap);
 speech.speak(strings.get("youwin",[cash]));
@@ -898,3 +901,58 @@ callback();
 }//callback undefined
 		}//else
 				}//function
+				export function buySafeguards() {
+				if (typeof data.safeguards==="undefined") data.safeguards=0;
+				let cash=data.beatcoins;
+				if (cash>100000) cash=100000;
+				let price=900;
+				let max=0;
+				let buying=0;
+				if (cash<price) {
+let error=new ScrollingText(strings.get("noGuardCash",[price,data.beatcoins]),"\n",function() {
+				st.setState(2);
+				});
+				}
+				else {
+				for (let i=cash;i>=price;i-=price) {
+				max++;
+				}
+				if (max>0) {
+				//menu
+				const items=new Array();
+let slider=new SliderItem(0,strings.get("safequestion",[price,data.beatcoins,max]),1,max,Math.floor(max/2));
+items.push(slider);
+			items.push(new MenuItem(1,strings.get("buy",)));
+		items.push(new MenuItem(2,strings.get("mBack",)));
+				
+		so.directory = './sounds/';
+			let dm=new Menu(strings.get("mSelect"),items);
+						so.directory = '';
+		dm.run(s=>{
+		//console.log(s.items);
+								so.directory = './sounds/';
+															buying=s.items[0].value;
+																																													dm.destroy();
+						switch(s.selected) {
+							case 2:
+							
+							st.setState(2);
+               break;
+							case 1:
+																					data.safeguards+=buying;
+							save();
+let snd=so.create("safebuy")
+snd.sound.once("end",function() {
+st.setState(2);
+});
+							addCash(0,buying*price,function(){
+							snd.play();
+							});
+}							
+});
+}
+else {
+st.setState(2);
+}
+				}
+				}

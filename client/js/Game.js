@@ -29,6 +29,7 @@ class Game {
 	so.directory="";
 		this.canPause = true;
 		
+		
 		this.actionCompleted = false;
 		this.toDestroy = new Array();
 		this.scoreTimer = new OldTimer();
@@ -60,11 +61,16 @@ class Game {
 			}));
 		}
 		this.bpms = this.fileData.split(',');
+		so.directory="./sounds/";
+		this.safe=so.create("safe");
+		so.directory="";
 		this.levels = this.bpms.length - 1;
 		if (this.bpms[this.levels] == '') {
 			this.levels--;
 		}
 		this.level++;
+		so.directory="./sounds/";
+		so.enqueue("safe");
 		so.directory = '';
 		if (fs.existsSync(packdir + 'nlevel.ogg')) {
 so.enqueue(packdir + 'nlevel');
@@ -104,8 +110,20 @@ so.loadQueue();
 			return;
 		}
 		if (!this.actionCompleted && this.action > 1) {
-				this.fail();
-				return;
+if (data.safeguards<=0) {
+this.fail(true);
+return;
+}
+else {
+data.safeguards--;
+this.currentAction--;
+save();
+	this.actionCompleted=true;
+if (data.safeguards>3) this.safe.pitch=1;
+if (data.safeguards<=3) this.safe.pitch=1.4;
+  this.safe.play();
+  	}
+				
 		}
 		this.currentAction++;
 		// Action and level checks go here
@@ -134,9 +152,18 @@ return;
 	});
 	}
 
-	async fail() {
-	//todo: display results and add beatcoins
-			this.timer.stop();
+	async fail(skipGuards=false) {
+	if (data.safeguards>=1 && !skipGuards) {
+	data.safeguards--;
+	save();
+	this.actionCompleted=true;
+	this.currentAction--;
+if (data.safeguards>3) this.safe.pitch=1;
+if (data.safeguards<=3) this.safe.pitch=1.4;
+  this.safe.play();
+	return;
+	}
+				this.timer.stop();
 		const snd = this.music;
 		so.directory = '';
 		const failsound = this.pool.playStatic(packdir + 'fail', 0);
@@ -217,7 +244,8 @@ that.doScore();
 	async setupLevel() {
 	if (this.level>1) {
 	//avg
-this.cash+=(utils.averageInt(this.levelAverage)+(10*this.numberOfActions));
+	this.actionPercentage=Math.ceil(utils.percent(this.numberOfActions*5,utils.averageInt(this.levelAverage)));
+	this.cash+=(utils.averageInt(this.levelAverage)+this.actionPercentage);
 	}
 	this.scoreAverage=[];
 	this.levelAverage=[];
