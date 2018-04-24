@@ -73,8 +73,8 @@ class SoundObjectItem {
 		return this.sound.loop(v);
 	}
 get active() {
-if (this.sound.state()=="unloaded) return false;
-if (this.sound.state()=="loaded) return true;
+if (this.sound.state()=="unloaded") return false;
+if (this.sound.state()=="loaded") return true;
 if (this.sound.state()=="loading") return true;
 }
 	get loop() {

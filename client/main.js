@@ -77,134 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({13:[function(require,module,exports) {
-
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-if (typeof KeyEvent === 'undefined') {
-	var KeyEvent = {
-		DOM_VK_CANCEL: 3,
-		DOM_VK_HELP: 6,
-		DOM_VK_BACK_SPACE: 8,
-		DOM_VK_TAB: 9,
-		DOM_VK_CLEAR: 12,
-		DOM_VK_RETURN: 13,
-		DOM_VK_ENTER: 14,
-		DOM_VK_SHIFT: 16,
-		DOM_VK_CONTROL: 17,
-		DOM_VK_ALT: 18,
-		DOM_VK_PAUSE: 19,
-		DOM_VK_CAPS_LOCK: 20,
-		DOM_VK_ESCAPE: 27,
-		DOM_VK_SPACE: 32,
-		DOM_VK_PAGE_UP: 33,
-		DOM_VK_PAGE_DOWN: 34,
-		DOM_VK_END: 35,
-		DOM_VK_HOME: 36,
-		DOM_VK_LEFT: 37,
-		DOM_VK_UP: 38,
-		DOM_VK_RIGHT: 39,
-		DOM_VK_DOWN: 40,
-		DOM_VK_PRINTSCREEN: 44,
-		DOM_VK_INSERT: 45,
-		DOM_VK_DELETE: 46,
-		DOM_VK_0: 48,
-		DOM_VK_1: 49,
-		DOM_VK_2: 50,
-		DOM_VK_3: 51,
-		DOM_VK_4: 52,
-		DOM_VK_5: 53,
-		DOM_VK_6: 54,
-		DOM_VK_7: 55,
-		DOM_VK_8: 56,
-		DOM_VK_9: 57,
-		DOM_VK_SEMICOLON: 59,
-		DOM_VK_EQUALS: 61,
-		DOM_VK_A: 65,
-		DOM_VK_B: 66,
-		DOM_VK_C: 67,
-		DOM_VK_D: 68,
-		DOM_VK_E: 69,
-		DOM_VK_F: 70,
-		DOM_VK_G: 71,
-		DOM_VK_H: 72,
-		DOM_VK_I: 73,
-		DOM_VK_J: 74,
-		DOM_VK_K: 75,
-		DOM_VK_L: 76,
-		DOM_VK_M: 77,
-		DOM_VK_N: 78,
-		DOM_VK_O: 79,
-		DOM_VK_P: 80,
-		DOM_VK_Q: 81,
-		DOM_VK_R: 82,
-		DOM_VK_S: 83,
-		DOM_VK_T: 84,
-		DOM_VK_U: 85,
-		DOM_VK_V: 86,
-		DOM_VK_W: 87,
-		DOM_VK_X: 88,
-		DOM_VK_Y: 89,
-		DOM_VK_Z: 90,
-		DOM_VK_CONTEXT_MENU: 93,
-		DOM_VK_NUMPAD0: 96,
-		DOM_VK_NUMPAD1: 97,
-		DOM_VK_NUMPAD2: 98,
-		DOM_VK_NUMPAD3: 99,
-		DOM_VK_NUMPAD4: 100,
-		DOM_VK_NUMPAD5: 101,
-		DOM_VK_NUMPAD6: 102,
-		DOM_VK_NUMPAD7: 103,
-		DOM_VK_NUMPAD8: 104,
-		DOM_VK_NUMPAD9: 105,
-		DOM_VK_MULTIPLY: 106,
-		DOM_VK_ADD: 107,
-		DOM_VK_SEPARATOR: 108,
-		DOM_VK_SUBTRACT: 109,
-		DOM_VK_DECIMAL: 110,
-		DOM_VK_DIVIDE: 111,
-		DOM_VK_F1: 112,
-		DOM_VK_F2: 113,
-		DOM_VK_F3: 114,
-		DOM_VK_F4: 115,
-		DOM_VK_F5: 116,
-		DOM_VK_F6: 117,
-		DOM_VK_F7: 118,
-		DOM_VK_F8: 119,
-		DOM_VK_F9: 120,
-		DOM_VK_F10: 121,
-		DOM_VK_F11: 122,
-		DOM_VK_F12: 123,
-		DOM_VK_F13: 124,
-		DOM_VK_F14: 125,
-		DOM_VK_F15: 126,
-		DOM_VK_F16: 127,
-		DOM_VK_F17: 128,
-		DOM_VK_F18: 129,
-		DOM_VK_F19: 130,
-		DOM_VK_F20: 131,
-		DOM_VK_F21: 132,
-		DOM_VK_F22: 133,
-		DOM_VK_F23: 134,
-		DOM_VK_F24: 135,
-		DOM_VK_NUM_LOCK: 144,
-		DOM_VK_SCROLL_LOCK: 145,
-		DOM_VK_COMMA: 188,
-		DOM_VK_PERIOD: 190,
-		DOM_VK_SLASH: 191,
-		DOM_VK_BACK_QUOTE: 192,
-		DOM_VK_OPEN_BRACKET: 219,
-		DOM_VK_BACK_SLASH: 220,
-		DOM_VK_CLOSE_BRACKET: 221,
-		DOM_VK_QUOTE: 222,
-		DOM_VK_META: 224
-	};
-}
-exports.KeyEvent = KeyEvent;
-},{}],10:[function(require,module,exports) {
+})({10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -324,7 +197,11 @@ class SoundObjectItem {
 	set loop(v) {
 		return this.sound.loop(v);
 	}
-
+	get active() {
+		if (this.sound.state() == "unloaded") return false;
+		if (this.sound.state() == "loaded") return true;
+		if (this.sound.state() == "loading") return true;
+	}
 	get loop() {
 		return this.sound.loop();
 	}
@@ -570,7 +447,769 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./tts":10}],7:[function(require,module,exports) {
+},{"./tts":10}],29:[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SoundPool = undefined;
+
+var _soundObject = require("./soundObject.js");
+
+class SoundPoolItem {
+  constructor(filename) {
+    this.reset(filename);
+  }
+  reset(filename) {
+    this.filename = filename;
+    if (typeof handle !== "undefined") handle.destroy();
+    this.handle = _soundObject.so.create(filename);
+    this.x = 0;
+    this.y = 0;
+    this.looping = false;
+    this.pan_step = 0;
+    this.volume_step = 0;
+    this.behind_pitch_decrease = 0;
+    this.start_pan = 0;
+    this.start_volume = 100;
+    this.start_pitch = 100;
+    this.left_range = 0;
+    this.right_range = 0;
+    this.backward_range = 0;
+    this.forward_range = 0;
+    this.max_distance = 0;
+    this.is_3d = false;
+    this.paused = false;
+    this.stationary = false;
+    this.start_offset = 0;
+    this.persistent = false;
+  }
+
+  position1d(lx, sx, ps, vs, start_pan = 0, start_volume = 100) {
+    let delta = 0;
+    let finalPan = start_pan;
+    let finalVolume = start_volume;
+    if (sx < lx) {
+      delta = lx - sx;
+      finalPan -= delta * ps;
+      finalVolume -= delta * vs;
+    }
+    if (sx > lx) {
+      delta = sx - lx;
+      finalPan += delta * ps;
+      finalVolume -= delta * vs;
+    }
+    if (finalPan < -100) {
+      finalPan = -100;
+    }
+    if (finalPan > 100) {
+      finalPan = 100;
+    }
+    if (finalVolume < 0) {
+      finalVolume = 0;
+    }
+    if (this.pan != finalPan / 100) this.pan = finalPan / 100;
+    if (this.volume != finalVolume / 100) this.volume = finalVolume / 100;
+  }
+
+  position2d(listener_x, listener_y, source_x, source_y, pan_step, volume_step, behind_pitch_decrease, start_pan = 0, start_volume = 100, start_pitch = 100) {
+    let delta_x = 0;
+    let delta_y = 0;
+    let final_pan = start_pan;
+    let final_volume = start_volume;
+    let final_pitch = start_pitch;
+
+    // First, we calculate the delta between the listener && the source.
+    if (source_x < listener_x) {
+      delta_x = listener_x - source_x;
+      final_pan -= delta_x * pan_step;
+      final_volume -= delta_x * volume_step;
+    }
+    if (source_x > listener_x) {
+      delta_x = source_x - listener_x;
+      final_pan += delta_x * pan_step;
+      final_volume -= delta_x * volume_step;
+    }
+    if (source_y < listener_y) {
+      final_pitch -= Math.abs(behind_pitch_decrease);
+      delta_y = listener_y - source_y;
+      final_volume -= delta_y * volume_step;
+    }
+    if (source_y > listener_y) {
+      delta_y = source_y - listener_y;
+      final_volume -= delta_y * volume_step;
+    }
+
+    // Then we check if the calculated values are out of range, && fix them if that's the case.
+    if (final_pan < -100) {
+      final_pan = -100;
+    }
+    if (final_pan > 100) {
+      final_pan = 100;
+    }
+    if (final_volume < -100) {
+      final_volume = -100;
+    }
+    if (this.pan != final_pan / 100) this.pan = final_pan / 100;
+    if (this.volume != final_volume / 100) this.volume = final_volume / 100;
+    if (this.pitch != final_pitch / 100) this.pitch = final_pitch / 100;
+  }
+  update(listener_x, listener_y) {
+    if (typeof this.handle === "undefined") {
+      return;
+    }
+    if (this.max_distance > 0 && this.looping == true) {
+      let total_distance = this.get_total_distance(listener_x, listener_y);
+      if (total_distance > this.max_distance && this.handle.active == true) {
+        this.handle.destroy();
+        return;
+      }
+      if (total_distance <= this.max_distance && this.handle.active == false) {
+        this.handle = _soundObject.so.create(filename);
+        if (this.handle.active == true) {
+          if (this.start_offset > 0) {
+            this.handle.seek(start_offset);
+          }
+          this.update_listener_position(listener_x, listener_y);
+          if (this.paused == false) {
+            this.handle.play();
+            this.handle.loop = true;
+          }
+        }
+        return;
+      }
+    }
+    this.update_listener_position(listener_x, listener_y);
+  }
+  update_listener_position(listener_x, listener_y) {
+    if (this.handle.active == false) {
+      return;
+    }
+    if (this.stationary == true) {
+      return;
+    }
+    let delta_left = this.x - this.left_range;
+    let delta_right = this.x + this.right_range;
+    let delta_backward = this.y - this.backward_range;
+    let delta_forward = this.y + this.forward_range;
+    let true_x = listener_x;
+    let true_y = listener_y;
+    if (this.is_3d == false) {
+      if (listener_x >= delta_left && listener_x <= delta_right) {
+        this.position1d(listener_x, listener_x, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
+        return;
+      }
+      if (listener_x < delta_left) this.position1d(listener_x, delta_left, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
+      if (listener_x > delta_right) this.position1d(listener_x, delta_right, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
+      return;
+    }
+    if (listener_x < delta_left) true_x = delta_left;else if (listener_x > delta_right) true_x = delta_right;
+    if (listener_y < delta_backward) true_y = delta_backward;else if (listener_y > delta_forward) true_y = delta_forward;
+    this.position2d(listener_x, listener_y, true_x, true_y, this.pan_step, this.volume_step, this.behind_pitch_decrease, this.start_pan, this.start_volume, this.start_pitch);
+  }
+
+  /*
+  This method returns the total distance between the current sound && the listener in space. This is used to calculate in && out of earshot conditions.
+  */
+  get_total_distance(listener_x, listener_y) {
+    if (this.stationary == true) {
+      return 0;
+    }
+    let delta_left = this.x - this.left_range;
+    let delta_right = this.x + this.right_range;
+    let delta_backward = this.y - this.backward_range;
+    let delta_forward = this.y + this.forward_range;
+    let true_x = listener_x;
+    let true_y = listener_y;
+    let distance = 0;
+    if (this.is_3d == false) {
+      if (listener_x >= delta_left && listener_x <= delta_right) {
+        return distance;
+      }
+      if (listener_x < delta_left) distance = delta_left - listener_x;
+      if (listener_x > delta_right) distance = listener_x - delta_right;
+      return distance;
+    }
+    if (listener_x < delta_left) true_x = delta_left;else if (listener_x > delta_right) true_x = delta_right;
+    if (listener_y < delta_backward) true_y = delta_backward;else if (listener_y > delta_forward) true_y = delta_forward;
+    if (listener_x < true_x) distance = true_x - listener_x;
+    if (listener_x > true_x) distance = listener_x - true_x;
+    if (listener_y < true_y) distance += true_y - listener_y;
+    if (listener_y > true_y) distance += listener_y - true_y;
+    return distance;
+  }
+
+}
+
+class SoundPool {
+  // Default constructor, where we give the user 100 sounds.
+  constructor() {
+    this.items = [];
+    this.items.splice();
+    this.max_distance = 0;
+    this.pan_step = 1.0;
+    this.volume_step = 1.0;
+    this.behind_pitch_decrease = 0.25;
+    this.last_listener_x = x;
+    this.last_listener_y = 0;
+    this.highest_slot = 0;
+    this.clean_frequency = 3;
+  }
+
+  // In this constructor the user can specify how many sounds they want.
+
+  playStationary(filename, looping, persistent = false) {
+    return playStationaryExtended(filename, looping, 0, 0, 100, 100, persistent);
+  }
+
+  play_stationary_extended(filename, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
+    let slot = this.reserve_slot();
+    if (slot == -1) {
+      return -1;
+    }
+    this.items.splice(slot, 0, new SoundPoolItem(filename));
+    this.items[slot].looping = looping;
+    this.items[slot].stationary = true;
+    this.items[slot].start_offset = offset;
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].persistent = persistent;
+    if (this.items[slot].start_offset > 0) {
+      this.items[slot].handle.seek(this.items[slot].start_offset);
+    }
+    if (this.start_pan != 0.0) {
+      this.items[slot].handle.pan = start_pan;
+    }
+    if (this.start_volume < 100.0) {
+      this.items[slot].handle.volume = start_volume;
+    }
+    this.items[slot].handle.pitch = this.start_pitch;
+    if (this.looping == true) {
+      this.items[slot].handle.play();
+      this.items[slot].handle.loop = true;
+    } else {
+      this.items[slot].handle.play();
+    }
+    if (slot > this.highest_slot) this.highest_slot = slot;
+    return items[slot].handle;
+  }
+  reserve_slot() {
+    // This finds the first available sound slot && prepares it for use.
+    this.clean_frequency -= 1;
+    if (this.clean_frequency == 0) {
+      this.clean_frequency = 3;
+      this.clean_unused();
+    }
+    let slot = -1;
+    let current_length = this.items.length;
+    for (let i = 0; i < current_length; i++) {
+      if (this.items[i].persistent == true) {
+        continue;
+      }
+      if (this.items[i].looping == true) {
+        continue;
+      }
+      if (typeof this.items[i].handle === "undefined") {
+        slot = i;
+        this.items.splice(slot, 1);
+        break;
+      }
+      if (this.items[i].handle.active == false) {
+        slot = i;
+        this.items.splice(slot, 1);
+        break;
+      }
+      if (this.items[i].handle.playing == false) {
+        slot = i;
+        this.items.splice(slot, 1);
+        break;
+      }
+    }
+    if (slot == -1) {
+      slot = current_length;
+      return slot;
+    }
+  }
+  play1d(filename, listener_x, sound_x, looping, persistent = false) {
+    return play_extended_1d(filename, listener_x, sound_x, 0, 0, looping, 0, 0, 100, 100, persistent);
+  }
+
+  playExtended1d(filename, listener_x, sound_x, left_range, right_range, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
+    let slot = this.reserve_slot();
+    if (slot == -1) {
+      return -1;
+    }
+    this.items.splice(slot, 0, new SoundPoolItem(filename));
+    this.items[slot].x = sound_x;
+    this.items[slot].y = 0;
+    this.items[slot].looping = looping;
+    this.items[slot].pan_step = this.pan_step;
+    this.items[slot].volume_step = this.volume_step;
+    this.items[slot].behind_pitch_decrease = 0.0;
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].left_range = left_range;
+    this.items[slot].right_range = right_range;
+    this.items[slot].backward_range = 0;
+    this.items[slot].forward_range = 0;
+    this.items[slot].max_distance = this.max_distance;
+    this.items[slot].is_3d = false;
+    this.items[slot].start_offset = offset;
+    this.items[slot].persistent = persistent;
+    if (this.max_distance > 0 && this.items[slot].get_total_distance(listener_x, 0) > this.max_distance) {
+      // We are out of earshot, so we cancel.
+      if (looping == false) {
+        this.items[slot].destroy();
+        this.items.splice(slot, 1);
+        return -2;
+      } else {
+        this.last_listener_x = listener_x;
+        this.items[slot].handle.pitch = start_pitch;
+        this.items[slot].update(listener_x, 0);
+        if (slot > this.highest_slot) this.highest_slot = slot;
+        return items[slot].handle;
+      }
+    }
+    this.items[slot].handle.load(this.items[slot].filename);
+    if (this.items[slot].handle.active == false) {
+      this.items[slot].reset();
+      return -1;
+    }
+    if (this.items[slot].start_offset > 0) {
+      this.items[slot].handle.seek(this.items[slot].start_offset);
+    }
+    this.items[slot].handle.pitch = start_pitch;
+    this.last_listener_x = listener_x;
+    this.items[slot].update(listener_x, 0);
+    if (looping == true) {
+      this.items[slot].handle.play();
+      this.items[slot].handle.loop = true;
+    } else {
+      this.items[slot].handle.play();
+    }
+    if (slot > this.highest_slot) this.highest_slot = slot;
+    return items[slot].handle;
+  }
+  play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent = false) {
+    return playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
+  }
+  play_extended_2d(filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
+    slot = reserve_slot();
+    if (slot == -1) {
+      return -1;
+    }
+    this.items.splice(slot, 0, new SoundPoolItem(filename));
+    this.items[slot].x = sound_x;
+    this.items[slot].y = sound_y;
+    this.items[slot].looping = looping;
+    this.items[slot].pan_step = this.pan_step;
+    this.items[slot].volume_step = this.volume_step;
+    this.items[slot].behind_pitch_decrease = this.behind_pitch_decrease;
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].left_range = left_range;
+    this.items[slot].right_range = right_range;
+    this.items[slot].backward_range = backward_range;
+    this.items[slot].forward_range = forward_range;
+    this.items[slot].max_distance = this.max_distance;
+    this.items[slot].is_3d = true;
+    this.items[slot].start_offset = offset;
+    this.items[slot].persistent = persistent;
+    if (this.max_distance > 0 && this.items[slot].get_total_distance(listener_x, listener_y) > this.max_distance) {
+      // We are out of earshot, so we cancel.
+      if (looping == false) {
+        this.items[slot].destroy();
+        this.items.splice(slot, 1);
+        return -2;
+      } else {
+        this.last_listener_x = listener_x;
+        this.last_listener_y = listener_y;
+        this.items[slot].update(listener_x, listener_y);
+        if (slot > this.highest_slot) this.highest_slot = slot;
+        return slot;
+      }
+    }
+    if (this.items[slot].handle.active == false) {
+      this.items[slot].destroy();
+      this.items.splice(slot, 1);
+      return -1;
+    }
+    if (this.items[slot].start_offset > 0) {
+      this.items[slot].handle.seek(this.items[slot].start_offset);
+    }
+    this.last_listener_x = listener_x;
+    this.last_listener_y = listener_y;
+    this.items[slot].update(listener_x, listener_y);
+    if (looping == true) {
+      this.items[slot].handle.play();
+      this.items[slot].handle.loop = true;
+    } else {
+      this.items[slot].handle.play();
+    }
+    if (slot > this.highest_slot) this.highest_slot = slot;
+    return slot;
+  }
+
+  soundActive(slot) {
+    /*
+    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
+    */
+    if (this.verify_slot(slot) == false) {
+      return false;
+    }
+    if (this.items[slot].looping == false && typeof this.items[slot].handle === "undefined") {
+      return false;
+    }
+    if (this.items[slot].looping == false && this.items[slot].handle.playing == false) {
+      return false;
+    }
+    return true;
+  }
+  soundPlaying(slot) {
+    if (sound_is_active(slot) == false) {
+      return false;
+    }
+    return this.items[slot].handle.playing;
+  }
+
+  pause_sound(slot) {
+    if (sound_is_active(slot) == false) {
+      return false;
+    }
+    if (this.items[slot].paused == true) {
+      return false;
+    }
+    this.items[slot].paused = true;
+    if (this.items[slot].handle.playing == true) this.items[slot].handle.pause();
+    return true;
+  }
+
+  resume_sound(slot) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    if (this.items[slot].paused == false) {
+      return false;
+    }
+    this.items[slot].paused = false;
+    if (this.items[slot].max_distance > 0 && this.items[slot].get_total_distance(this.last_listener_x, this.last_listener_y) > this.items[slot].max_distance) {
+      if (this.items[slot].handle.active == true) this.items[slot].handle.close();
+      return true;
+    }
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    if (this.items[slot].handle.active == true && this.items[slot].handle.playing == false) {
+      if (this.items[slot].looping == true) {
+        this.items[slot].handle.play();
+        this.items[slot].handle.loop = true;
+      } else {
+        this.items[slot].handle.play();
+      }
+    }
+    return true;
+  }
+
+  pause_all() {
+    let currently_playing = 0;
+    let current_length = this.items.length;
+    for (let i = 0; i < current_length; i++) {
+      if (sound_is_playing(i)) currently_playing += 1;
+      this.pause_sound(i);
+    }
+  }
+
+  resume_all() {
+    let currently_playing = 0;
+    let current_length = this.items.length;
+    for (let i = 0; i < current_length; i++) {
+      resume_sound(i);
+      if (sound_is_playing(i)) currently_playing += 1;
+    }
+  }
+
+  destroy_all() {
+    for (let i = 0; i < this.items.length; i++) {
+      this.items[i].destroy();
+    }
+    this.highest_slot = 0;
+    this.items.splice();
+  }
+
+  update_listener_1d(listener_x) {
+    this.update_listener_2d(listener_x, 0);
+  }
+
+  update_listener_2d(listener_x, listener_y) {
+    if (this.items.length() == 0) return;
+    this.last_listener_x = listener_x;
+    this.last_listener_y = listener_y;
+    for (let i = 0; i <= this.highest_slot; i++) {
+      this.items[i].update(listener_x, listener_y);
+    }
+  }
+
+  update_sound_1d(slot, x) {
+    return this.update_sound_2d(slot, x, 0);
+  }
+
+  update_sound_2d(slot, x, y) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    this.items[slot].x = x;
+    this.items[slot].y = y;
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    return true;
+  }
+
+  update_sound_start_values(slot, start_pan, start_volume, start_pitch) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    if (this.items[slot].stationary == true && typeof this.items[slot].handle !== "undefined") {
+      this.items[slot].handle.pan = start_pan;
+      this.items[slot].handle.volume = start_volume;
+      this.items[slot].handle.pitch = start_pitch;
+      return true;
+    }
+    if (this.items[slot].is_3d == false && this.items[slot].handle.pitch != start_pitch) {
+      this.items[slot].handle.pitch = start_pitch;
+    }
+    return true;
+  }
+
+  update_sound_range_1d(slot, left_range, right_range) {
+    return update_sound_range_2d(slot, left_range, right_range, 0, 0);
+  }
+
+  update_sound_range_2d(slot, left_range, right_range, backward_range, forward_range) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    this.items[slot].left_range = left_range;
+    this.items[slot].right_range = right_range;
+    this.items[slot].backward_range = backward_range;
+    this.items[slot].forward_range = forward_range;
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    return true;
+  }
+
+  destroy_sound(slot) {
+    if (verify_slot(slot) == true) {
+      this.items[slot].destroy();
+      if (slot == this.highest_slot) find_highest_slot(this.highest_slot);
+      return true;
+    }
+    return false;
+  }
+
+  // Internal properties.
+
+
+  // Internal methods.
+
+  find_highest_slot(limit) {
+    /*
+    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
+    */
+    highest_slot = 0;
+    for (let i = 0; i < limit; i++) {
+      if (this.items[i].looping == false && typeof this.items[i].handle === "undefined") {
+        continue;
+      }
+      if (this.items[i].looping == false && this.items[i].handle.playing == false) {
+        continue;
+      }
+      highest_slot = i;
+    }
+  }
+
+  clean_unused() {
+    /*
+    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up if it is not set to be persistent.
+    */
+    if (this.items.length() == 0) return;
+    let limit = this.highest_slot;
+    let killed_highest_slot = false;
+    for (let i = 0; i <= limit; i++) {
+      if (this.items[i].persistent == true) {
+        continue;
+      }
+      if (this.items[i].looping == true) {
+        continue;
+      }
+      if (typeof this.items[i].handle === "undefined") {
+        continue;
+      }
+      if (this.items[i].handle.active == false) {
+        continue;
+      }
+      if (this.items[i].handle.playing == false && this.items[i].paused == false) {
+        if (i == this.highest_slot) killed_highest_slot = true;
+        this.items[i].destroy();
+        this.items.splice(i, 1);
+      }
+    }
+    if (killed_highest_slot == true) find_highest_slot(this.highest_slot);
+  }
+
+  verify_slot(slot) {
+    // This is a security function to perform basic sanity checks.
+    if (slot < 0) {
+      return false;
+    }
+    if (slot >= this.items.length()) {
+      return false;
+    }
+    if (this.items[slot].persistent == true) {
+      return true;
+    }
+    if (this.items[slot].looping == true) {
+      return true;
+    }
+    if (typeof this.items[slot].handle !== "undefined") {
+      return true;
+    }
+    return false;
+  }
+
+}
+exports.SoundPool = SoundPool;
+},{"./soundObject.js":12}],13:[function(require,module,exports) {
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+if (typeof KeyEvent === 'undefined') {
+	var KeyEvent = {
+		DOM_VK_CANCEL: 3,
+		DOM_VK_HELP: 6,
+		DOM_VK_BACK_SPACE: 8,
+		DOM_VK_TAB: 9,
+		DOM_VK_CLEAR: 12,
+		DOM_VK_RETURN: 13,
+		DOM_VK_ENTER: 14,
+		DOM_VK_SHIFT: 16,
+		DOM_VK_CONTROL: 17,
+		DOM_VK_ALT: 18,
+		DOM_VK_PAUSE: 19,
+		DOM_VK_CAPS_LOCK: 20,
+		DOM_VK_ESCAPE: 27,
+		DOM_VK_SPACE: 32,
+		DOM_VK_PAGE_UP: 33,
+		DOM_VK_PAGE_DOWN: 34,
+		DOM_VK_END: 35,
+		DOM_VK_HOME: 36,
+		DOM_VK_LEFT: 37,
+		DOM_VK_UP: 38,
+		DOM_VK_RIGHT: 39,
+		DOM_VK_DOWN: 40,
+		DOM_VK_PRINTSCREEN: 44,
+		DOM_VK_INSERT: 45,
+		DOM_VK_DELETE: 46,
+		DOM_VK_0: 48,
+		DOM_VK_1: 49,
+		DOM_VK_2: 50,
+		DOM_VK_3: 51,
+		DOM_VK_4: 52,
+		DOM_VK_5: 53,
+		DOM_VK_6: 54,
+		DOM_VK_7: 55,
+		DOM_VK_8: 56,
+		DOM_VK_9: 57,
+		DOM_VK_SEMICOLON: 59,
+		DOM_VK_EQUALS: 61,
+		DOM_VK_A: 65,
+		DOM_VK_B: 66,
+		DOM_VK_C: 67,
+		DOM_VK_D: 68,
+		DOM_VK_E: 69,
+		DOM_VK_F: 70,
+		DOM_VK_G: 71,
+		DOM_VK_H: 72,
+		DOM_VK_I: 73,
+		DOM_VK_J: 74,
+		DOM_VK_K: 75,
+		DOM_VK_L: 76,
+		DOM_VK_M: 77,
+		DOM_VK_N: 78,
+		DOM_VK_O: 79,
+		DOM_VK_P: 80,
+		DOM_VK_Q: 81,
+		DOM_VK_R: 82,
+		DOM_VK_S: 83,
+		DOM_VK_T: 84,
+		DOM_VK_U: 85,
+		DOM_VK_V: 86,
+		DOM_VK_W: 87,
+		DOM_VK_X: 88,
+		DOM_VK_Y: 89,
+		DOM_VK_Z: 90,
+		DOM_VK_CONTEXT_MENU: 93,
+		DOM_VK_NUMPAD0: 96,
+		DOM_VK_NUMPAD1: 97,
+		DOM_VK_NUMPAD2: 98,
+		DOM_VK_NUMPAD3: 99,
+		DOM_VK_NUMPAD4: 100,
+		DOM_VK_NUMPAD5: 101,
+		DOM_VK_NUMPAD6: 102,
+		DOM_VK_NUMPAD7: 103,
+		DOM_VK_NUMPAD8: 104,
+		DOM_VK_NUMPAD9: 105,
+		DOM_VK_MULTIPLY: 106,
+		DOM_VK_ADD: 107,
+		DOM_VK_SEPARATOR: 108,
+		DOM_VK_SUBTRACT: 109,
+		DOM_VK_DECIMAL: 110,
+		DOM_VK_DIVIDE: 111,
+		DOM_VK_F1: 112,
+		DOM_VK_F2: 113,
+		DOM_VK_F3: 114,
+		DOM_VK_F4: 115,
+		DOM_VK_F5: 116,
+		DOM_VK_F6: 117,
+		DOM_VK_F7: 118,
+		DOM_VK_F8: 119,
+		DOM_VK_F9: 120,
+		DOM_VK_F10: 121,
+		DOM_VK_F11: 122,
+		DOM_VK_F12: 123,
+		DOM_VK_F13: 124,
+		DOM_VK_F14: 125,
+		DOM_VK_F15: 126,
+		DOM_VK_F16: 127,
+		DOM_VK_F17: 128,
+		DOM_VK_F18: 129,
+		DOM_VK_F19: 130,
+		DOM_VK_F20: 131,
+		DOM_VK_F21: 132,
+		DOM_VK_F22: 133,
+		DOM_VK_F23: 134,
+		DOM_VK_F24: 135,
+		DOM_VK_NUM_LOCK: 144,
+		DOM_VK_SCROLL_LOCK: 145,
+		DOM_VK_COMMA: 188,
+		DOM_VK_PERIOD: 190,
+		DOM_VK_SLASH: 191,
+		DOM_VK_BACK_QUOTE: 192,
+		DOM_VK_OPEN_BRACKET: 219,
+		DOM_VK_BACK_SLASH: 220,
+		DOM_VK_CLOSE_BRACKET: 221,
+		DOM_VK_QUOTE: 222,
+		DOM_VK_META: 224
+	};
+}
+exports.KeyEvent = KeyEvent;
+},{}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5329,6 +5968,8 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _soundPool = require('./soundPool');
+
 var _cryptr = require('cryptr');
 
 var _cryptr2 = _interopRequireDefault(_cryptr);
@@ -5387,7 +6028,9 @@ var data = exports.data = '';
 var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
-function setup() {
+async function setup() {
+
+	return;
 	let snd = _soundObject.so.create("minimusic");
 	snd.sound.stereo(1);
 	snd.play();
@@ -6425,7 +7068,7 @@ function runGame(name) {
 			_stateMachine.st.setState(2);
 	}
 }
-},{"./player":4,"./menuItem":3,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],27:[function(require,module,exports) {
+},{"./soundPool":29,"./player":4,"./menuItem":3,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],28:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -6602,5 +7245,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[27,1])
+},{}]},{},[28,1])
 //# sourceMappingURL=/main.map

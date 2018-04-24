@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
 export let credits=false;
@@ -32,7 +33,9 @@ export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
-function setup() {
+async function setup() {
+
+return;
 let snd=so.create("minimusic");
 snd.sound.stereo(1);
 snd.play();

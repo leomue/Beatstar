@@ -241,7 +241,7 @@ this.max_distance=0;
 this.pan_step=1.0;
 this.volume_step=1.0;
 this.behind_pitch_decrease=0.25;
-this.last_listener_x=0;
+this.last_listener_x=x;
 this.last_listener_y=0;
 this.highest_slot=0;
 this.clean_frequency=3;
@@ -249,7 +249,7 @@ this.clean_frequency=3;
 
 // In this constructor the user can specify how many sounds they want.
 
-playStationary(string filename, looping, persistent=false)
+playStationary(filename, looping, persistent=false)
 {
 return playStationaryExtended(filename, looping, 0, 0, 100, 100, persistent);
 }
@@ -420,7 +420,7 @@ play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent=
 {
 return playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
 }
-play_extended_2d(string filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
+play_extended_2d(filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
 {
 slot=reserve_slot();
 if(slot==-1)
@@ -494,7 +494,7 @@ return slot;
 soundActive(slot)
 {
 /*
-If the looping parameter is set to true and the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, and will be cleaned up.
+If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
 */
 if(this.verify_slot(slot)==false)
 {
@@ -546,14 +546,14 @@ if(this.items[slot].paused==false)
 return false;
 }
 this.items[slot].paused=false;
-if(this.items[slot].max_distance>0 and this.items[slot].get_total_distance(this.last_listener_x, this.last_listener_y)>this.items[slot].max_distance)
+if(this.items[slot].max_distance>0 && this.items[slot].get_total_distance(this.last_listener_x, this.last_listener_y)>this.items[slot].max_distance)
 {
 if(this.items[slot].handle.active==true)
 this.items[slot].handle.close();
 return true;
 }
 this.items[slot].update(this.last_listener_x, this.last_listener_y);
-if(this.items[slot].handle.active==true and this.items[slot].handle.playing==false)
+if(this.items[slot].handle.active==true && this.items[slot].handle.playing==false)
 {
 if(this.items[slot].looping==true)
 {
@@ -570,8 +570,8 @@ return true;
 
 pause_all()
 {
-int currently_playing=0;
-int current_length=this.items.length;
+let currently_playing=0;
+let current_length=this.items.length;
 for(let i=0;i<current_length;i++)
 {
 if(sound_is_playing(i))
@@ -582,8 +582,8 @@ this.pause_sound(i);
 
 resume_all()
 {
-int currently_playing=0;
-int current_length=this.items.length;
+let currently_playing=0;
+let current_length=this.items.length;
 for(let i=0;i<current_length;i++)
 {
 resume_sound(i);
@@ -646,14 +646,14 @@ this.items[slot].start_pan=start_pan;
 this.items[slot].start_volume=start_volume;
 this.items[slot].start_pitch=start_pitch;
 this.items[slot].update(this.last_listener_x, this.last_listener_y);
-if(this.items[slot].stationary==true and typeof this.items[slot].handle!=="undefined")
+if(this.items[slot].stationary==true && typeof this.items[slot].handle!=="undefined")
 {
 this.items[slot].handle.pan=start_pan;
 this.items[slot].handle.volume=start_volume;
 this.items[slot].handle.pitch=start_pitch;
 return true;
 }
-if(this.items[slot].is_3d==false and this.items[slot].handle.pitch!=start_pitch)
+if(this.items[slot].is_3d==false && this.items[slot].handle.pitch!=start_pitch)
 {
 this.items[slot].handle.pitch=start_pitch;
 }
@@ -679,7 +679,7 @@ this.items[slot].update(this.last_listener_x, this.last_listener_y);
 return true;
 }
 
-destroy_sound(int slot)
+destroy_sound(slot)
 {
 if(verify_slot(slot)==true)
 {
@@ -693,18 +693,13 @@ return false;
 
 // Internal properties.
 
-let last_listener_x;
-let last_listener_y;
-
-let highest_slot;
-let clean_frequency;
 
 // Internal methods.
 
 find_highest_slot(limit)
 {
 /*
-If the looping parameter is set to true and the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, and will be cleaned up.
+If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
 */
 highest_slot=0;
 for(let i=0;i<limit;i++)
@@ -713,7 +708,7 @@ if(this.items[i].looping==false && typeof this.items[i].handle==="undefined")
 {
 continue;
 }
-if(this.items[i].looping==false and this.items[i].handle.playing==false)
+if(this.items[i].looping==false && this.items[i].handle.playing==false)
 {
 continue;
 }
@@ -724,7 +719,7 @@ highest_slot=i;
 clean_unused()
 {
 /*
-If the looping parameter is set to true and the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, and will be cleaned up if it is not set to be persistent.
+If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up if it is not set to be persistent.
 */
 if(this.items.length()==0)
 return;
@@ -748,7 +743,7 @@ if(this.items[i].handle.active==false)
 {
 continue;
 }
-if(this.items[i].handle.playing==false and this.items[i].paused==false)
+if(this.items[i].handle.playing==false && this.items[i].paused==false)
 {
 if(i==this.highest_slot)
 killed_highest_slot=true;
@@ -760,7 +755,7 @@ if(killed_highest_slot==true)
 find_highest_slot(this.highest_slot);
 }
 
-verify_slot(int slot)
+verify_slot(slot)
 {
 // This is a security function to perform basic sanity checks.
 if(slot<0)
@@ -788,3 +783,4 @@ return false;
 
 
 }
+export {SoundPool}
