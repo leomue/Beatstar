@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Cryptr from 'cryptr';
 let boot=false;
+export let credits=false;
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
 import {Menu} from './menu';
@@ -864,8 +865,9 @@ pos--;
 		if (!data.safeguards) data.safeguards=0;
 		save();
 		const fs=require('fs');
-		if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
+				if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 boot=true;
+credits=true;
 let input=new KeyboardInput();
 input.init();
 			so.directory = '';
@@ -886,6 +888,7 @@ mainMenu();
 }
 		}//if file exists
 		else {
+		credits=false;
 		mainMenu();
 		}
 		}

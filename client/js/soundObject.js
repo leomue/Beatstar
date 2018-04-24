@@ -230,8 +230,7 @@ class SoundObject {
 			this.queue.splice(0, 1);
 		} else {
 			this.loadingQueue = false;
-				console.log('finished with queue.');
-				if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
+								if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
 					this.queueCallback();
 				}
 		}
@@ -296,15 +295,12 @@ toDestroy.push(i);
 		const filename = this.directory + file + this.extension;
 		while (!noMore) {
 			const found = this.findSoundIndex(filename);
-							console.log('found ' + found);
-							if (found == -1) {
+														if (found == -1) {
 								noMore = true;
 							} else {
 											this.sounds[found].sound.unload();
-											console.log('state after destroy' + this.sounds[found].sound.state());
-												this.sounds.splice(found, 1);
-												console.log('destroyed ' + this.sounds.length);
-							}
+																							this.sounds.splice(found, 1);
+																			}
 		}
 		if (callback != 0) {
 callback();

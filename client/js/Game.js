@@ -2,7 +2,7 @@
 import fs from 'fs';
 import os from 'os';
 import {speech} from './tts';
-import {addCash,data,actionKeys} from './main';
+import {credits,addCash,data,actionKeys} from './main';
 import {pack, packdir,save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
@@ -120,7 +120,7 @@ this.currentAction--;
 save();
 	this.actionCompleted=true;
 if (data.safeguards>3) this.safe.pitch=1;
-if (data.safeguards<=3) this.safe.pitch=1.4;
+if (data.safeguards<=3) this.safe.pitch=1.5;
   this.safe.play();
   	}
 				
@@ -183,7 +183,31 @@ if (data.safeguards<=3) this.safe.pitch=1.4;
 so.resetQueuedInstance();
 var that=this;
 so.kill(() => {
+if (fs.existsSync(packdir + 'credits.ogg') && credits) {
+//credits=false;
+let input=new KeyboardInput();
+input.init();
+			so.directory = '';
+let bootSound = so.create(packdir + 'credits');
+bootSound.play();
+bootSound.sound.once("end",function() {
+input.justPressedEventCallback=null;
 that.doScore();
+});
+			so.directory = './sounds/';
+			
+input.justPressedEventCallback=function(evt) {
+bootSound.sound.off("end");
+bootSound.stop();
+bootSound.destroy();
+input.justPressedEventCallback=null;
+that.doScore();
+}
+		}//if file exists
+		else {
+		that.doScore();
+		}
+		
 });
 	}
 
@@ -245,8 +269,8 @@ that.doScore();
 	if (this.level>1) {
 	//avg
 	this.actionPercentage=Math.ceil(utils.percent(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
-	this.cash+=(utils.averageInt(this.levelAverage)+this.actionPercentage);
-	//speech.speak(utils.averageInt(this.levelAverage));
+	this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
+		//speech.speak(utils.averageInt(this.levelAverage));
 	}
 	this.scoreAverage=[];
 	this.levelAverage=[];

@@ -481,7 +481,6 @@ class SoundObject {
 			this.queue.splice(0, 1);
 		} else {
 			this.loadingQueue = false;
-			console.log('finished with queue.');
 			if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
 				this.queueCallback();
 			}
@@ -547,14 +546,11 @@ class SoundObject {
 		const filename = this.directory + file + this.extension;
 		while (!noMore) {
 			const found = this.findSoundIndex(filename);
-			console.log('found ' + found);
 			if (found == -1) {
 				noMore = true;
 			} else {
 				this.sounds[found].sound.unload();
-				console.log('state after destroy' + this.sounds[found].sound.state());
 				this.sounds.splice(found, 1);
-				console.log('destroyed ' + this.sounds.length);
 			}
 		}
 		if (callback != 0) {
@@ -4530,7 +4526,6 @@ class SoundHandler {
 			this.staticSounds[slot].sound.loop = true;
 		}
 		this.staticSounds[slot].sound.play();
-		console.log('slot ' + slot);
 		return slot;
 	}
 
@@ -4585,14 +4580,11 @@ class SoundHandler {
 		if (typeof this.dynamicSounds[slot] === 'undefined') {
 			if (reuse == false) {
 				this.dynamicSounds[slot] = new SoundItem(file, this.directional);
-				console.log('Created sound');
 			}
 		} else if (reuse == false) {
 			this.dynamicSounds[slot].sound.destroy();
 			this.dynamicSounds[slot] = new SoundItem(file, directional);
-			console.log('Destroyed and reloaded');
 		}
-		console.log('playing sound');
 		this.dynamicSounds[slot].sound.play();
 	}
 
@@ -4606,14 +4598,12 @@ class SoundHandler {
 
 	destroy() {
 		for (var i = 0; i < this.dynamicSounds.length; i++) {
-			console.log('destroying' + i);
 			this.dynamicSounds[i].destroy();
 			this.dynamicSounds.splice(i, 1);
 		}
 
 		for (var i = 0; i < this.staticSounds.length; i++) {
 			this.staticSounds[i].destroy();
-			console.log('destroying' + i);
 			this.staticSounds.splice(i, 1);
 		}
 	}
@@ -4837,7 +4827,7 @@ class Game {
 				(0, _main.save)();
 				this.actionCompleted = true;
 				if (_main.data.safeguards > 3) this.safe.pitch = 1;
-				if (_main.data.safeguards <= 3) this.safe.pitch = 1.4;
+				if (_main.data.safeguards <= 3) this.safe.pitch = 1.5;
 				this.safe.play();
 			}
 		}
@@ -4899,7 +4889,30 @@ class Game {
 		_soundObject.so.resetQueuedInstance();
 		var that = this;
 		_soundObject.so.kill(() => {
-			that.doScore();
+			if (_fs2.default.existsSync(_main.packdir + 'credits.ogg') && _main.credits) {
+				//credits=false;
+				let input = new _input.KeyboardInput();
+				input.init();
+				_soundObject.so.directory = '';
+				let bootSound = _soundObject.so.create(_main.packdir + 'credits');
+				bootSound.play();
+				bootSound.sound.once("end", function () {
+					input.justPressedEventCallback = null;
+					that.doScore();
+				});
+				_soundObject.so.directory = './sounds/';
+
+				input.justPressedEventCallback = function (evt) {
+					bootSound.sound.off("end");
+					bootSound.stop();
+					bootSound.destroy();
+					input.justPressedEventCallback = null;
+					that.doScore();
+				};
+			} //if file exists
+			else {
+					that.doScore();
+				}
 		});
 	}
 
@@ -4961,7 +4974,7 @@ class Game {
 		if (this.level > 1) {
 			//avg
 			this.actionPercentage = Math.ceil(_utilities.utils.percent(this.numberOfActions * this.level, _utilities.utils.averageInt(this.levelAverage)));
-			this.cash += _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
+			this.cash += _utilities.utils.averageInt(this.scoreAverage) + _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
 			//speech.speak(utils.averageInt(this.levelAverage));
 		}
 		this.scoreAverage = [];
@@ -5159,7 +5172,7 @@ class StateMachine {
 				that.setState(2);
 			});
 			(0, _jquery2.default)(document).keydown(event => {
-				if (event.which == _keycodes.KeyEvent.DOM_VK_SPACE || event.which == _keycodes.KeyEvent.DOM_VK_ESCAPE) {
+				if (event.which == _keycodes.KeyEvent.DOM_VK_SPACE || event.which == _keycodes.KeyEvent.DOM_VK_ESCAPE || event.which == _keycodes.KeyEvent.DOM_VK_RETURN) {
 					intro.unload();
 					(0, _jquery2.default)(document).off('keydown');
 					that.setState(20);
@@ -5269,7 +5282,7 @@ async function mainMenu() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.packdir = exports.data = exports.pack = exports.langs = exports.lang = exports.mangle = exports.actionKeys = undefined;
+exports.packdir = exports.data = exports.pack = exports.langs = exports.lang = exports.mangle = exports.actionKeys = exports.credits = undefined;
 exports.learnPack = learnPack;
 exports.browsePacks = browsePacks;
 exports.rebuildHashes = rebuildHashes;
@@ -5329,6 +5342,7 @@ var _input = require('./input.js');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 let boot = false;
+let credits = exports.credits = false;
 
 // Import test from './test.js'
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
@@ -6167,6 +6181,7 @@ function booter() {
 	const fs = require('fs');
 	if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 		boot = true;
+		exports.credits = credits = true;
 		let input = new _input.KeyboardInput();
 		input.init();
 		_soundObject.so.directory = '';
@@ -6187,6 +6202,7 @@ function booter() {
 		};
 	} //if file exists
 	else {
+			exports.credits = credits = false;
 			(0, _menuHandler.mainMenu)();
 		}
 }

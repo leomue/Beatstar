@@ -30,7 +30,7 @@ class StateMachine {
 			that.setState(2);
 	});
 	$(document).keydown(event => {
-		if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE) {
+		if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which==KeyEvent.DOM_VK_RETURN) {
 						intro.unload();
 					$(document).off('keydown');
 			that.setState(20);

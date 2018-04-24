@@ -25,8 +25,7 @@ class SoundHandler {
 			this.staticSounds[slot].sound.loop = true;
 		}
 		this.staticSounds[slot].sound.play();
-		console.log('slot ' + slot);
-		return slot;
+				return slot;
 	}
 
 	findFreeStaticSlot() {
@@ -80,15 +79,12 @@ class SoundHandler {
 		if (typeof this.dynamicSounds[slot] === 'undefined') {
 			if (reuse == false) {
 				this.dynamicSounds[slot] = new SoundItem(file, this.directional);
-				console.log('Created sound');
-			}
+							}
 		} else if (reuse == false) {
 				this.dynamicSounds[slot].sound.destroy();
 				this.dynamicSounds[slot] = new SoundItem(file, directional);
-				console.log('Destroyed and reloaded');
-		}
-		console.log('playing sound');
-		this.dynamicSounds[slot].sound.play();
+						}
+				this.dynamicSounds[slot].sound.play();
 	}
 
 	update(position) {
@@ -101,15 +97,13 @@ class SoundHandler {
 
 	destroy() {
 		for (var i = 0; i < this.dynamicSounds.length; i++) {
-	console.log('destroying' + i);
-	this.dynamicSounds[i].destroy();
+		this.dynamicSounds[i].destroy();
 	this.dynamicSounds.splice(i, 1);
 		}
 
 		for (var i = 0; i < this.staticSounds.length; i++) {
 	this.staticSounds[i].destroy();
-	console.log('destroying' + i);
-	this.staticSounds.splice(i, 1);
+		this.staticSounds.splice(i, 1);
 		}
 	}
 }
