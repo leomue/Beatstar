@@ -11,6 +11,7 @@ import {KeyboardInput} from './input';
 class Menu {
 	constructor(name, menuData, music) {
 		this.menuData = menuData;
+		this.first=true;
 		this.cursor = 0;
 		this.name = name;
 		this.sndKeyChar = so.create('ui/keyChar');
@@ -33,14 +34,19 @@ class Menu {
 
 	nextItem() {
 		if (this.cursor < this.menuData.length - 1) {
-			this.cursor++;
+		if (!this.first) {
+					this.cursor++;
+					}
+					else {
+					this.first=false;
+					}
 		}
 		this.sndMove.play();
-
 		this.menuData[this.cursor].speak();
 	}
 
 	previousItem() {
+	if (this.first) this.first=false;
 		if (this.cursor > 0) {
 			this.cursor--;
 		}
@@ -164,7 +170,7 @@ destroy() {
 			this.music.loop = true;
 	this.music.play();
 		} else if (typeof this.music === 'string') {
-			this.music = so.create(this.music,true);
+					this.music = so.create(this.music,true);
 			this.music.volume = 0.5;
 			this.music.loop = true;
 	this.music.play();
@@ -246,13 +252,17 @@ destroy() {
 		this.sndChoose.play();
 		$(document).off('keydown');
 		$(document).off('keypress');
-		if (typeof this.music !== 'undefined') {
+		this.musicDuration=0;
+		this.musicDuration=this.sndChoose.duration
+		
+		if (this.musicDuration>3000) this.musicDuration=3000;
+						if (typeof this.music !== 'undefined') {
 this.fade();
 		}
 		const that = this;
 				setTimeout(() => {
 that.selectCallback(toReturn);
-				}, 900);
+				}, this.musicDuration);
 	}
 }
 export {Menu};

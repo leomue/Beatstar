@@ -2,6 +2,9 @@ import $ from 'jquery';
 import Cryptr from 'cryptr';
 let boot=false;
 export let credits=false;
+export let minis={
+slot:5000,
+}
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
 import {Menu} from './menu';
@@ -30,6 +33,12 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 function setup() {
+let snd=so.create("minimusic");
+snd.sound.stereo(1);
+snd.play();
+snd.loop=true;
+
+return;
 	st.setState(1);
 }
 function proceed() {
@@ -1004,3 +1013,71 @@ st.setState(2);
 }
 				}
 				}
+				export function minigames() {
+				if (typeof data.minis==="undefined") {
+				data.minis={}
+				save();
+				}
+				let items=[];
+				let str="";
+				let counter=-1;
+				let name="";
+				for (var i in minis) {
+				if (minis.hasOwnProperty(i)) {
+								str="";
+				counter++;
+				str+=strings.get(i)+", ";
+				if (typeof data.minis[i]==="undefined") {
+				str+=strings.get("cost")+": "+minis[i];
+				}//type undefined
+				else {
+				str+=strings.get("unlocked");
+				}
+				items.push(new MenuItem(i,str));
+				console.log(str);
+				}//own property
+				}//for
+				items.push(new MenuItem("-1",strings.get("mBack")));
+				so.directory="./sounds/";
+				let mm=new Menu(strings.get("sGames"),items,so.create("minimusic"));
+				mm.run(function(s) {
+				mm.destroy();
+				if (s.selected=="-1") {
+				st.setState(2);
+				return;
+								}
+								else {
+								name=s.selected;
+								if (typeof data.minis[name]==="undefined") {
+								if (data.beatcoins>=minis[name]) {
+								question("buygame",[strings.get(name),minis[name]],function(answer) {
+								if (!answer) {
+								st.setState(2);
+								return;
+								}
+								else {
+								addCash(0,minis[name],function() {
+								data.minis[name]=true;
+								save();
+								runGame(name);
+																});
+								}
+								});
+								}
+								else {
+								new ScrollingText(strings.get("nogame",[minis[name],data.beatcoins]),"\n",function() {
+								st.setState(2);
+								});
+								}
+								}
+								else {
+								runGame(name);
+								}//it is unlocked
+								}//else
+				});
+				}//function
+				export function runGame(name) {
+												switch(name) {
+								default: st.setState(2);
+								}
+}

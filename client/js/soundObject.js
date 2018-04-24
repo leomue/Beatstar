@@ -1,6 +1,5 @@
 import {Howl, Howler} from 'howler';
 import {speech} from './tts';
-
 const isElectron = true;
 let playOnceTimer;
 class SoundObjectItem {
@@ -100,7 +99,7 @@ get pitch() {
 	}
 
 	get duration() {
-		return this.sound.duration;
+		return this.sound.duration()*1000;
 	}
 
 	get position() {

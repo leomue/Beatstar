@@ -5,6 +5,13 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			"mFound":"Found %1 new packs: what do you wish to do?",
+			mGames:"minigames",
+			sGames:"Select a minigame to play",
+			cost:"Price",
+			slot:"Beat slots",
+			unlocked:"Already bought",
+			buygame:"Do  you want to buy %1 for %2 beatcoins?",
+			nogame:"You don't have the required %1 beatcoins for this game, you only have %2.",
 			mainmenu:"main menu",
 			mSelect:"Please select",
 			mSafeSelect:"Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
@@ -78,6 +85,7 @@ class Strings {
 			"no":"no",
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
+			unlocked:"Ya lo has comprado",
 			mBrowse: 'comprar un pack (tienes %1 monedas)',
 			mBrowseUnlocked: 'Cambiar a otro pack comprado',
 			mHashes: 'Reconstruir base de datos de packs',
@@ -91,7 +99,15 @@ class Strings {
 			mListen:"listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles:"Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
 			retrieving:"Recopilando datos ",
-			mDownload: 'Descargar packs'
+			mDownload: 'Descargar packs',
+			mGames:"minijuegos",
+			buygame:"Quieres comprar %1 por %2 monedas?",
+			nogame:"No tienes las %1 monedas que necesitas para este juego, solo tienes %2",
+			
+			sGames:"Selecciona un minijuego:",
+			cost:"Precio",
+			slot:"Beat slots",
+			
 		};
 	
 	}

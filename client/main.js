@@ -351,7 +351,7 @@ class SoundObjectItem {
 	}
 
 	get duration() {
-		return this.sound.duration;
+		return this.sound.duration() * 1000;
 	}
 
 	get position() {
@@ -933,6 +933,13 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			"mFound": "Found %1 new packs: what do you wish to do?",
+			mGames: "minigames",
+			sGames: "Select a minigame to play",
+			cost: "Price",
+			slot: "Beat slots",
+			unlocked: "Already bought",
+			buygame: "Do  you want to buy %1 for %2 beatcoins?",
+			nogame: "You don't have the required %1 beatcoins for this game, you only have %2.",
 			mainmenu: "main menu",
 			mSelect: "Please select",
 			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
@@ -1006,6 +1013,7 @@ class Strings {
 			"no": "no",
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
+			unlocked: "Ya lo has comprado",
 			mBrowse: 'comprar un pack (tienes %1 monedas)',
 			mBrowseUnlocked: 'Cambiar a otro pack comprado',
 			mHashes: 'Reconstruir base de datos de packs',
@@ -1019,7 +1027,15 @@ class Strings {
 			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
 			retrieving: "Recopilando datos ",
-			mDownload: 'Descargar packs'
+			mDownload: 'Descargar packs',
+			mGames: "minijuegos",
+			buygame: "Quieres comprar %1 por %2 monedas?",
+			nogame: "No tienes las %1 monedas que necesitas para este juego, solo tienes %2",
+
+			sGames: "Selecciona un minijuego:",
+			cost: "Precio",
+			slot: "Beat slots"
+
 		};
 	}
 
@@ -1207,6 +1223,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class Menu {
 	constructor(name, menuData, music) {
 		this.menuData = menuData;
+		this.first = true;
 		this.cursor = 0;
 		this.name = name;
 		this.sndKeyChar = _soundObject.so.create('ui/keyChar');
@@ -1229,14 +1246,18 @@ class Menu {
 
 	nextItem() {
 		if (this.cursor < this.menuData.length - 1) {
-			this.cursor++;
+			if (!this.first) {
+				this.cursor++;
+			} else {
+				this.first = false;
+			}
 		}
 		this.sndMove.play();
-
 		this.menuData[this.cursor].speak();
 	}
 
 	previousItem() {
+		if (this.first) this.first = false;
 		if (this.cursor > 0) {
 			this.cursor--;
 		}
@@ -1441,13 +1462,17 @@ class Menu {
 		this.sndChoose.play();
 		(0, _jquery2.default)(document).off('keydown');
 		(0, _jquery2.default)(document).off('keypress');
+		this.musicDuration = 0;
+		this.musicDuration = this.sndChoose.duration;
+
+		if (this.musicDuration > 3000) this.musicDuration = 3000;
 		if (typeof this.music !== 'undefined') {
 			this.fade();
 		}
 		const that = this;
 		setTimeout(() => {
 			that.selectCallback(toReturn);
-		}, 900);
+		}, this.musicDuration);
 	}
 }
 exports.Menu = Menu;
@@ -5236,7 +5261,9 @@ async function mainMenu() {
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
 	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
+
 	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
+	items.push(new _menuItem.MenuItem(9, _strings.strings.get('mGames')));
 	items.push(new _menuItem.MenuItem(2, _strings.strings.get('mBrowse', [_main.data.beatcoins])));
 	items.push(new _menuItem.MenuItem(5, _strings.strings.get('mBrowseUnlocked')));
 	items.push(new _menuItem.MenuItem(7, _strings.strings.get('mBrowseIncompleted')));
@@ -5272,7 +5299,8 @@ async function mainMenu() {
 				_stateMachine.st.setState(8);break;
 			case 8:
 				(0, _main.buySafeguards)();break;
-
+			case 9:
+				(0, _main.minigames)();break;
 		}
 	});
 }
@@ -5282,7 +5310,7 @@ async function mainMenu() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.packdir = exports.data = exports.pack = exports.langs = exports.lang = exports.mangle = exports.actionKeys = exports.credits = undefined;
+exports.packdir = exports.data = exports.pack = exports.langs = exports.lang = exports.mangle = exports.actionKeys = exports.minis = exports.credits = undefined;
 exports.learnPack = learnPack;
 exports.browsePacks = browsePacks;
 exports.rebuildHashes = rebuildHashes;
@@ -5294,6 +5322,8 @@ exports.listenPack = listenPack;
 exports.booter = booter;
 exports.addCash = addCash;
 exports.buySafeguards = buySafeguards;
+exports.minigames = minigames;
+exports.runGame = runGame;
 
 var _jquery = require('jquery');
 
@@ -5343,6 +5373,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 let boot = false;
 let credits = exports.credits = false;
+let minis = exports.minis = {
+	slot: 5000
+};
 
 // Import test from './test.js'
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
@@ -5355,6 +5388,12 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 function setup() {
+	let snd = _soundObject.so.create("minimusic");
+	snd.sound.stereo(1);
+	snd.play();
+	snd.loop = true;
+
+	return;
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -6321,7 +6360,72 @@ function buySafeguards() {
 		}
 	}
 }
-},{"./player":4,"./menuItem":3,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],24:[function(require,module,exports) {
+function minigames() {
+	if (typeof data.minis === "undefined") {
+		data.minis = {};
+		save();
+	}
+	let items = [];
+	let str = "";
+	let counter = -1;
+	let name = "";
+	for (var i in minis) {
+		if (minis.hasOwnProperty(i)) {
+			str = "";
+			counter++;
+			str += _strings.strings.get(i) + ", ";
+			if (typeof data.minis[i] === "undefined") {
+				str += _strings.strings.get("cost") + ": " + minis[i];
+			} //type undefined
+			else {
+					str += _strings.strings.get("unlocked");
+				}
+			items.push(new _menuItem.MenuItem(i, str));
+			console.log(str);
+		} //own property
+	} //for
+	items.push(new _menuItem.MenuItem("-1", _strings.strings.get("mBack")));
+	_soundObject.so.directory = "./sounds/";
+	let mm = new _menu.Menu(_strings.strings.get("sGames"), items, _soundObject.so.create("minimusic"));
+	mm.run(function (s) {
+		mm.destroy();
+		if (s.selected == "-1") {
+			_stateMachine.st.setState(2);
+			return;
+		} else {
+			name = s.selected;
+			if (typeof data.minis[name] === "undefined") {
+				if (data.beatcoins >= minis[name]) {
+					question("buygame", [_strings.strings.get(name), minis[name]], function (answer) {
+						if (!answer) {
+							_stateMachine.st.setState(2);
+							return;
+						} else {
+							addCash(0, minis[name], function () {
+								data.minis[name] = true;
+								save();
+								runGame(name);
+							});
+						}
+					});
+				} else {
+					new _scrollingText.ScrollingText(_strings.strings.get("nogame", [minis[name], data.beatcoins]), "\n", function () {
+						_stateMachine.st.setState(2);
+					});
+				}
+			} else {
+				runGame(name);
+			} //it is unlocked
+		} //else
+	});
+} //function
+function runGame(name) {
+	switch (name) {
+		default:
+			_stateMachine.st.setState(2);
+	}
+}
+},{"./player":4,"./menuItem":3,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],27:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -6498,5 +6602,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[24,1])
+},{}]},{},[27,1])
 //# sourceMappingURL=/main.map
