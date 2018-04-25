@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import {SoundPool} from './soundPool';
+import {playSlots} from './minis.js';
+//import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
 export let credits=false;
@@ -34,10 +35,8 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-	let pool=new SoundPool();
-	pool.playStationary("safe");
 	document.getElementById("touchArea").focus();
-	st.setState(1);
+		st.setState(1);
 }
 function proceed() {
 	const sound = so.create('memtest');
@@ -901,7 +900,7 @@ mainMenu();
 		}
 		export async function addCash(c1,c2=0,callback) {
 		let coinCap=-1;
-		let cash=c1-c2;
+		let cash=Math.ceil(c1-c2);
 					data.beatcoins+=cash;
 					save();
 let positive=true;
@@ -948,7 +947,7 @@ so.directory="";
 if (typeof callback!=="undefined") {
 setTimeout(function() {
 callback();
-},time*(count+2));
+},time*(count+4));
 }//if callback undefined
 }//if greater than coin cap
 		}//coinCap -1
@@ -1075,7 +1074,49 @@ st.setState(2);
 				});
 				}//function
 				export function runGame(name) {
-												switch(name) {
-								default: st.setState(2);
+				if (name=="slot") {
+				playSlots();
+				}
+				else {
+				st.setState(2);
+				}
+																				}
+																				
+																				//tutorials
+																				export function minituts() {
+				if (typeof data.minis==="undefined") {
+				data.minis={}
+				save();
+				}
+				let items=[];
+				let str="";
+				let counter=-1;
+				let name="";
+				for (var i in minis) {
+				if (minis.hasOwnProperty(i)) {
+								str="";
+				counter++;
+				str+=strings.get(i)+", ";
+				items.push(new MenuItem(i,str));
+				console.log(str);
+				}//own property
+				}//for
+				items.push(new MenuItem("-1",strings.get("mBack")));
+				so.directory="./sounds/";
+				let mm=new Menu(strings.get("sTuts"),items,so.create("minitut",true));
+				mm.run(function(s) {
+				mm.destroy();
+				if (s.selected=="-1") {
+				st.setState(2);
+				return;
 								}
-}
+								else {
+								runTut(name);
+								}
+				});
+				
+				}
+				function runTut(name) {
+				
+			speech.speak(name);
+			}

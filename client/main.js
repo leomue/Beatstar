@@ -1,4 +1,4 @@
-process.env.HMR_PORT=50560;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=49741;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({19:[function(require,module,exports) {
+})({21:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -2980,7 +2980,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],11:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3016,7 +3016,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],13:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3357,7 +3357,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":19,"./tts":11}],3:[function(require,module,exports) {
+},{"./howler":21,"./tts":16}],29:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3419,8 +3419,8 @@ class SoundPoolItem {
     if (finalVolume < 0) {
       finalVolume = 0;
     }
-    if (this.pan != finalPan / 100) this.pan = finalPan / 100;
-    if (this.volume != finalVolume / 100) this.volume = finalVolume / 100;
+    if (this.handle.pan * 100 != finalPan) this.handle.pan = finalPan / 100;
+    if (this.handle.volume * 100 != finalVolume) this.handle.volume = finalVolume / 100;
   }
 
   position2d(listener_x, listener_y, source_x, source_y, pan_step, volume_step, behind_pitch_decrease, start_pan = 0, start_volume = 100, start_pitch = 100) {
@@ -3458,12 +3458,12 @@ class SoundPoolItem {
     if (final_pan > 100) {
       final_pan = 100;
     }
-    if (final_volume < -100) {
-      final_volume = -100;
+    if (final_volume < 0) {
+      final_volume = 0;
     }
-    if (this.pan != final_pan / 100) this.pan = final_pan / 100;
-    if (this.volume != final_volume / 100) this.volume = final_volume / 100;
-    if (this.pitch != final_pitch / 100) this.pitch = final_pitch / 100;
+    if (this.handle.pan * 100 != final_pan) this.handle.pan = final_pan / 100;
+    if (this.handle.volume * 100 != final_volume) this.handle.volume = final_volume / 100;
+    if (this.handle.pitch * 100 != final_pitch) this.handle.pitch = final_pitch / 100;
   }
   update(listener_x, listener_y) {
     if (typeof this.handle === "undefined") {
@@ -3481,7 +3481,7 @@ class SoundPoolItem {
           if (this.start_offset > 0) {
             this.handle.seek(start_offset);
           }
-          this.update_listener_position(listener_x, listener_y);
+          this.updateListenerPosition(listener_x, listener_y);
           if (this.paused == false) {
             this.handle.play();
             this.handle.loop = true;
@@ -3490,9 +3490,9 @@ class SoundPoolItem {
         return;
       }
     }
-    this.update_listener_position(listener_x, listener_y);
+    this.updateListenerPosition(listener_x, listener_y);
   }
-  update_listener_position(listener_x, listener_y) {
+  updateListenerPosition(listener_x, listener_y) {
     if (this.handle.active == false) {
       return;
     }
@@ -3590,21 +3590,21 @@ class SoundPool {
     if (this.items[slot].start_offset > 0) {
       this.items[slot].handle.seek(this.items[slot].start_offset);
     }
-    if (this.start_pan != 0.0) {
+    if (start_pan != 0.0) {
       this.items[slot].handle.pan = start_pan / 100;
     }
-    if (this.start_volume < 100.0) {
+    if (start_volume < 100.0) {
       this.items[slot].handle.volume = start_volume / 100;
     }
-    this.items[slot].handle.pitch = this.start_pitch / 100;
-    if (this.looping == true) {
+    this.items[slot].handle.pitch = start_pitch / 100;
+    if (looping == true) {
       this.items[slot].handle.play();
       this.items[slot].handle.loop = true;
     } else {
       this.items[slot].handle.play();
     }
     if (slot > this.highest_slot) this.highest_slot = slot;
-    return items[slot].handle;
+    return slot;
   }
 
   reserve_slot() {
@@ -3679,10 +3679,10 @@ class SoundPool {
         return -2;
       } else {
         this.last_listener_x = listener_x;
-        this.items[slot].handle.pitch = start_pitch;
+        this.items[slot].handle.pitch = start_pitch / 100;
         this.items[slot].update(listener_x, 0);
         if (slot > this.highest_slot) this.highest_slot = slot;
-        return items[slot].handle;
+        return this.items[slot].handle;
       }
     }
     this.items[slot].handle.load(this.items[slot].filename);
@@ -3693,7 +3693,7 @@ class SoundPool {
     if (this.items[slot].start_offset > 0) {
       this.items[slot].handle.seek(this.items[slot].start_offset);
     }
-    this.items[slot].handle.pitch = start_pitch;
+    this.items[slot].handle.pitch = start_pitch / 100;
     this.last_listener_x = listener_x;
     this.items[slot].update(listener_x, 0);
     if (looping == true) {
@@ -3703,7 +3703,7 @@ class SoundPool {
       this.items[slot].handle.play();
     }
     if (slot > this.highest_slot) this.highest_slot = slot;
-    return items[slot].handle;
+    return this.items[slot].handle;
   }
   play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent = false) {
     return this.playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
@@ -3801,7 +3801,7 @@ class SoundPool {
   }
 
   resume_sound(slot) {
-    if (verify_slot(slot) == false) {
+    if (this.verify_slot(slot) == false) {
       return false;
     }
     if (this.items[slot].paused == false) {
@@ -3850,11 +3850,11 @@ class SoundPool {
     this.items.splice();
   }
 
-  update_listener_1d(listener_x) {
-    this.update_listener_2d(listener_x, 0);
+  updateListener1d(listener_x) {
+    this.updateListener2d(listener_x, 0);
   }
 
-  update_listener_2d(listener_x, listener_y) {
+  updateListener2d(listener_x, listener_y) {
     if (this.items.length() == 0) return;
     this.last_listener_x = listener_x;
     this.last_listener_y = listener_y;
@@ -3868,7 +3868,7 @@ class SoundPool {
   }
 
   update_sound_2d(slot, x, y) {
-    if (verify_slot(slot) == false) {
+    if (this.verify_slot(slot) == false) {
       return false;
     }
     this.items[slot].x = x;
@@ -3878,7 +3878,7 @@ class SoundPool {
   }
 
   update_sound_start_values(slot, start_pan, start_volume, start_pitch) {
-    if (verify_slot(slot) == false) {
+    if (this.verify_slot(slot) == false) {
       return false;
     }
     this.items[slot].start_pan = start_pan;
@@ -3886,13 +3886,13 @@ class SoundPool {
     this.items[slot].start_pitch = start_pitch;
     this.items[slot].update(this.last_listener_x, this.last_listener_y);
     if (this.items[slot].stationary == true && typeof this.items[slot].handle !== "undefined") {
-      this.items[slot].handle.pan = start_pan;
-      this.items[slot].handle.volume = start_volume;
-      this.items[slot].handle.pitch = start_pitch;
+      this.items[slot].handle.pan = start_pan / 100;
+      this.items[slot].handle.volume = start_volume / 100;
+      this.items[slot].handle.pitch = start_pitch / 100;
       return true;
     }
-    if (this.items[slot].is_3d == false && this.items[slot].handle.pitch != start_pitch) {
-      this.items[slot].handle.pitch = start_pitch;
+    if (this.items[slot].is_3d == false && this.items[slot].handle.pitch * 100 != start_pitch) {
+      this.items[slot].handle.pitch = start_pitch / 100;
     }
     return true;
   }
@@ -3902,7 +3902,7 @@ class SoundPool {
   }
 
   update_sound_range_2d(slot, left_range, right_range, backward_range, forward_range) {
-    if (verify_slot(slot) == false) {
+    if (this.verify_slot(slot) == false) {
       return false;
     }
     this.items[slot].left_range = left_range;
@@ -3914,7 +3914,7 @@ class SoundPool {
   }
 
   destroy_sound(slot) {
-    if (verify_slot(slot) == true) {
+    if (this.verify_slot(slot) == true) {
       this.items[slot].destroy();
       if (slot == this.highest_slot) find_highest_slot(this.highest_slot);
       return true;
@@ -3994,7 +3994,386 @@ class SoundPool {
 
 }
 exports.SoundPool = SoundPool;
-},{"./soundObject.js":13}],14:[function(require,module,exports) {
+},{"./soundObject.js":12}],6:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.MenuTypes = exports.SelectorItem = exports.SliderItem = exports.MenuItem = undefined;
+
+var _tts = require('./tts');
+
+if (typeof speech === 'undefined') {
+	var speech = new _tts.TTS();
+}
+const MenuTypes = {
+	NORMAL: 0,
+	SELECTOR: 1,
+	SLIDER: 2,
+	EDIT: 3
+};
+class MenuItem {
+	constructor(id, name) {
+		this.name = name;
+		this.id = id;
+		this.type = MenuTypes.NORMAL;
+	}
+
+	speak() {
+		speech.speak(this.name);
+	}
+
+	select() {
+		return this.id;
+	}
+}
+
+class SelectorItem extends MenuItem {
+	constructor(id, name, options, defaultOption = 0, selectCallback) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.options = options;
+		this.type = MenuTypes.SELECTOR;
+		this.currentOption = defaultOption;
+		this.selectCallback = selectCallback;
+	}
+
+	speak() {
+		speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
+	}
+
+	increase() {
+		if (this.currentOption < this.options.length - 1) {
+			this.currentOption++;
+		}
+		speech.speak(this.options[this.currentOption]);
+		if (typeof this.selectCallback !== 'undefined') {
+			this.selectCallback(this.options[this.currentOption]);
+		}
+	}
+
+	decrease() {
+		if (this.currentOption > 0) {
+			this.currentOption--;
+		}
+		speech.speak(this.options[this.currentOption]);
+		if (typeof this.selectCallback !== 'undefined') {
+			this.selectCallback(this.options[this.currentOption]);
+		}
+	}
+
+	select() {
+		return this.id;
+	}
+}
+
+class SliderItem extends MenuItem {
+	constructor(id, name, from, to, currentValue = 0, increaseBy = 1) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.minValue = from;
+		this.maxValue = to;
+		this.currentValue = currentValue;
+		this.increaseBy = increaseBy;
+		this.type = MenuTypes.SLIDER;
+	}
+
+	speak() {
+		speech.speak(this.name + '. Slider. Set to ' + this.currentValue);
+	}
+
+	increase() {
+		if (this.currentValue < this.maxValue) {
+			this.currentValue += this.increaseBy;
+		}
+		if (this.currentValue > this.maxValue) this.currentValue = this.maxValue;
+		speech.speak(this.currentValue);
+	}
+
+	decrease() {
+		if (this.currentValue > this.minValue) {
+			this.currentValue -= this.increaseBy;
+		}
+		if (this.currentValue < this.minValue) this.currentValue = this.minValue;
+		speech.speak(this.currentValue);
+	}
+
+	select() {
+		return this.id;
+	}
+}
+
+class EditItem extends MenuItem {
+	constructor(id, name, defaultText = '') {
+		super();
+		this.id = id;
+		this.name = name;
+		this.text = defaultText;
+		this.type = MenuTypes.EDIT;
+	}
+
+	speak() {
+		speech.speak(this.name + '. Editable. ' + (this.text == '' ? 'Nothing entered.' : 'Set to ' + this.text));
+	}
+
+	addChar(char) {
+		this.text += char;
+		speech.speak(char);
+	}
+
+	removeChar() {
+		this.text = this.text.substring(0, this.text.length - 1);
+		speech.speak(this.text);
+	}
+
+	select() {
+		return this.text;
+	}
+}
+exports.MenuItem = MenuItem;
+exports.SliderItem = SliderItem;
+exports.SelectorItem = SelectorItem;
+exports.MenuTypes = MenuTypes;
+},{"./tts":16}],13:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+class GameUtils {
+	progressPan(current, max) {
+		return (current * 200 / max - 100) / 100;
+	}
+	progressPitch(current, max) {
+		return current * 200 / max / 100;
+	}
+	distance3D(x1, y1, z1, x2, y2, z2) {
+		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
+	}
+
+	distance(jx, jy, kx, ky) {
+		// Return Math.hypot(jx-kx, jy-ky)
+		return Math.sqrt((jx - kx) * (jx - kx) + (jy - ky) * (jy - ky));
+	}
+
+	calculateAngle(x1, y1, x2, y2) {
+		let angle = Math.atan2(y2 - y1, x2 - x1);
+		angle = angle >= 0 ? 0 : 2 * Math.PI + angle;
+		return angle;
+		// Return Math.atan2((y2 - y1),(x2 - x1));
+	}
+
+	isCollide3D(a, b) {
+		return a.x <= b.x + b.width && a.x + a.width >= b.x && a.y <= b.y + b.height && a.y + a.height >= b.y && a.z <= b.z + b.depth && a.z + a.depth >= b.z;
+	}
+
+	randomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	getRandomArbitrary(min, max) {
+		return Math.random() * (max - min) + min;
+	}
+
+	sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	percent(int1, int2) {
+		return int1 * 100 / int2;
+	}
+	percentOf(int1, int2) {
+		return int2 * int1 / 100;
+	}
+
+	average(arr, startIndex = 0) {
+		let len = arr.length;
+		let val = 0;
+		let average = 0;
+		for (let i = startIndex; i < arr.length; i++) {
+			val += arr[i];
+		}
+		average = val / len;
+		return average;
+	}
+	averageInt(arr, startIndex = 0) {
+		let len = arr.length;
+		let val = 0;
+		let average = 0;
+		for (let i = startIndex; i < arr.length; i++) {
+			val += arr[i];
+		}
+		average = val / len;
+		return Math.floor(average);
+	}
+	neg(num) {
+		return num >= 0 ? num == 0 ? 0 : 1 : -1;
+	}
+
+	numericSort(a, b) {
+		return a < b ? -1 : a == b ? 0 : 1;
+	}
+	shuffle(a) {
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
+	}
+}
+var utils = exports.utils = new GameUtils();
+},{}],9:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.strings = undefined;
+
+var _main = require('./main');
+
+class Strings {
+	constructor() {
+		this.strings = {};
+		this.strings[1] = {
+			"mFound": "Found %1 new packs: what do you wish to do?",
+			mGames: "minigames",
+			mGameTuts: "Minigame tutorials",
+			sGames: "Select a minigame to play",
+			sTuts: "Select a minigame to view help",
+			cost: "Price",
+			slot: "Evil slots",
+			unlocked: "Already bought",
+			buygame: "Do  you want to buy %1 for %2 beatcoins?",
+			bet: "Please place your bet with the left and right arrow keys and press enter when you have decided.",
+			nogame: "You don't have the required %1 beatcoins for this game, you only have %2.",
+			mainmenu: "main menu",
+			mSelect: "Please select",
+			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
+			packprice: "This pack costs %1 beatcoins, please confirm",
+			mReady: 'Please wait...',
+			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
+			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
+			mSafeguards: "Buy safeguards (now %1)",
+			dfiles: "Downloading %1 files. Press any key to obtain percentage",
+			packno: "Not enough beatcoins to get this pack, it costs %1.",
+			retrieving: "Retrieving data ",
+			nodown: "No downloads are available. So sorry! Check back soon",
+			mDownloadList: 'List all new available packs (%1)',
+			buy: "buy",
+			"mBack": "go back",
+			safequestion: "How many safeguards would you like? They cost %1 each. You have %2 beatcoins. You can get a maximum of %3. Remember, you can get a maximum of 100. If you want more, run me again.",
+			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
+			mListen: "Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
+			mStart: 'Start Game',
+			mLearn: 'Learn the pack',
+			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
+			"yes": "Yes",
+			noGameCash: "The minimum bet is %1 beatcoins, you don't have enough right now. Go play!",
+			"no": "no",
+			ok: "ok",
+
+			dling: 'Downloading %2 packs please wait...',
+			dlprog: "downloading pack %1 of %2...",
+			dlingdone: 'Done! Rebuilding database...',
+			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
+			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
+			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!',
+			keymapStart: 'We will now remap your keyboard. You will hear the sounds for the different actions, and you will be prompted to press the key you want to associate to the new actions.',
+			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
+			mNew: 'Get new packs',
+			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
+			noGuardCash: "You need %1 beatcoins to buy one safeguard. You have %2.",
+			mBrowse: 'buy new packs (You have %1 beatcoins )',
+			mBrowseIncompleted: 'Browse uncompleted packs',
+			mBrowseUnlocked: "Change to different unlocked pack",
+			"youwin": "You win %1 coins!",
+			"youlose": "You lose %1 coins.",
+
+			mHashes: 'Rebuild packs folder',
+			mDownload: 'Download new packs'
+		};
+		this.strings[2] = {
+			"mFound": "Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
+			mReady: 'Espera, por favor...',
+			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
+			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
+			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
+			buy: "comprar",
+			"mBack": "volver",
+			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
+			mStart: 'jugar',
+			mLearn: 'aprender el pack',
+			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. Para escuchar la acción de quedarse quieto, pulsa la tecla del punto. Para salir pulsa la q.',
+			dling: 'Descargando %2 packs por favor espera...',
+			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
+			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
+			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
+			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!',
+			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
+			dlprog: "descargando pack %1 de %2...",
+			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
+			mUnlocked: "Escuchar la música desbloqueada de este pack (%1 niveles)",
+			mBrowseIncompleted: 'Ver packs comprados no completados',
+			"yes": "sí",
+			"youwin": "Ganas %1 monedas!",
+			noGuardCash: "No tienes suficientes monedas. Cada antifallo cuesta %1 y tienes %2.",
+			"youlose": "Pierdes %1 monedas!",
+			"no": "no",
+			mNew: 'Conseguir nuevos packs',
+			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
+			unlocked: "Ya lo has comprado",
+			mBrowse: 'comprar un pack (tienes %1 monedas)',
+			mBrowseUnlocked: 'Cambiar a otro pack comprado',
+			mHashes: 'Reconstruir base de datos de packs',
+			mainmenu: "menú principal",
+			mSelect: "Por favor selecciona",
+			mSafeSelect: "Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
+			mSafeguards: "Comprar antifallos (ahora %1)",
+			noGameCash: "Oooh, lo siento. La apuesta mínima es de %1 monedas, no tienes suficiente. Vete a jugar!",
+			bet: "selecciona tu apuesta con las flechas izquierda y derecha. Cuando te hayas decidido, pulsa enter.",
+			packprice: "Este pack cuesta %1 monedas, confirma que quieres comprarlo.",
+			packno: "No tienes monedas suficientes para este pack, cuesta %1.",
+			safequestion: "Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
+			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
+			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
+			retrieving: "Recopilando datos ",
+			mDownload: 'Descargar packs',
+			ok: "ok",
+			mGames: "minijuegos",
+			buygame: "Quieres comprar %1 por %2 monedas?",
+			nogame: "No tienes las %1 monedas que necesitas para este juego, solo tienes %2",
+			mGameTuts: "tutoriales de minijuegos",
+
+			sGames: "Selecciona un minijuego:",
+			sTuts: "Selecciona un minijuego para ver la ayuda",
+			cost: "Precio",
+			slot: "tragamonedas de las tinieblas"
+
+		};
+	}
+
+	get(what, rep = []) {
+		let str;
+		if (typeof this.strings[_main.lang][what] !== 'undefined') {
+			str = this.strings[_main.lang][what];
+		} else if (typeof this.strings[1][what] !== 'undefined') {
+			str = this.strings[1][what];
+		} else {
+			return 'String error: ' + what;
+		}
+		rep.forEach((v, i) => {
+			const i1 = Number(i) + 1;
+			str = str.replace('%' + i1, v);
+		});
+		return str;
+	}
+}
+var strings = exports.strings = new Strings();
+},{"./main":1}],14:[function(require,module,exports) {
 
 'use strict';
 
@@ -4121,501 +4500,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],8:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.speech = exports.ScrollingText = undefined;
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _keycodes = require('./keycodes');
-
-var _soundObject = require('./soundObject');
-
-var _tts = require('./tts');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-if (typeof speech === 'undefined') {
-	var speech = new _tts.TTS();
-}
-if (runningText == undefined) {
-	var runningText = 0;
-}
-class ScrollingText {
-	constructor(text, delimiter = '\n', callback = 0) {
-		this.text = text;
-		this.delimiter = delimiter;
-		this.splitText = this.text.split(delimiter);
-		this.currentLine = 0;
-		this.sndOpen = _soundObject.so.create('UI/textOpen');
-		this.sndContinue = _soundObject.so.create('UI/textScroll');
-		this.sndClose = _soundObject.so.create('UI/textClose');
-		this.callback = callback;
-		const id = document.getElementById('touchArea');
-		// This.hammer = new Hammer(id);
-		this.init();
-	}
-
-	init() {
-		const that = this;
-		runningText = this;
-		document.addEventListener('keydown', this.handleKeys);
-		// This.hammer.on("swipeleft swiperight", function() { that.handleTap(0); });
-		// this.hammer.on("tap", function() { that.handleTap(1); });
-		this.sndOpen.play();
-		this.currentLine = 0;
-		this.readCurrentLine();
-	}
-
-	handleKeys(event) {
-		switch (event.which) {
-			case _keycodes.KeyEvent.DOM_VK_UP:
-			case _keycodes.KeyEvent.DOM_VK_DOWN:
-			case _keycodes.KeyEvent.DOM_VK_LEFT:
-			case _keycodes.KeyEvent.DOM_VK_RIGHT:
-				runningText.readCurrentLine();
-				break;
-			case _keycodes.KeyEvent.DOM_VK_RETURN:
-				runningText.advance();
-				break;
-		}
-	}
-
-	handleTap(action) {
-		if (action == 0) {
-			this.readCurrentLine();
-		}
-
-		if (action == 1) {
-			this.advance();
-		}
-	}
-
-	readCurrentLine() {
-		speech.speak(this.splitText[this.currentLine]);
-	}
-
-	advance() {
-		if (this.currentLine < this.splitText.length - 1) {
-			this.currentLine++;
-			this.sndContinue.play();
-			this.readCurrentLine();
-		} else {
-			this.sndClose.play();
-			this.sndClose.unload();
-			this.sndOpen.unload();
-			this.sndContinue.unload();
-			document.removeEventListener('keydown', this.handleKeys);
-			//			This.hammer.unload();
-			if (this.callback != 0) {
-				this.callback();
-			}
-		}
-	}
-}
-exports.ScrollingText = ScrollingText;
-exports.speech = speech;
-},{"./keycodes":14,"./soundObject":13,"./tts":11}],4:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Player = undefined;
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _os = require('os');
-
-var _os2 = _interopRequireDefault(_os);
-
-var _keycodes = require('./keycodes');
-
-var _main = require('./main');
-
-var _scrollingText = require('./scrollingText');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Player {
-	constructor() {
-		this.beatcoins = 0, this.pack = 'default', this.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
-		this.unlocks = {};
-		this.unlocks["default"] = {
-			"level": 0,
-			"insurance": 0,
-			"fails": 0,
-			"win": false,
-			"average": 0
-		};
-	}
-}
-exports.Player = Player;
-},{"./keycodes":14,"./main":1,"./scrollingText":8}],5:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.MenuTypes = exports.SelectorItem = exports.SliderItem = exports.MenuItem = undefined;
-
-var _tts = require('./tts');
-
-if (typeof speech === 'undefined') {
-	var speech = new _tts.TTS();
-}
-const MenuTypes = {
-	NORMAL: 0,
-	SELECTOR: 1,
-	SLIDER: 2,
-	EDIT: 3
-};
-class MenuItem {
-	constructor(id, name) {
-		this.name = name;
-		this.id = id;
-		this.type = MenuTypes.NORMAL;
-	}
-
-	speak() {
-		speech.speak(this.name);
-	}
-
-	select() {
-		return this.id;
-	}
-}
-
-class SelectorItem extends MenuItem {
-	constructor(id, name, options, defaultOption = 0, selectCallback) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.options = options;
-		this.type = MenuTypes.SELECTOR;
-		this.currentOption = defaultOption;
-		this.selectCallback = selectCallback;
-	}
-
-	speak() {
-		speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
-	}
-
-	increase() {
-		if (this.currentOption < this.options.length - 1) {
-			this.currentOption++;
-		}
-		speech.speak(this.options[this.currentOption]);
-		if (typeof this.selectCallback !== 'undefined') {
-			this.selectCallback(this.options[this.currentOption]);
-		}
-	}
-
-	decrease() {
-		if (this.currentOption > 0) {
-			this.currentOption--;
-		}
-		speech.speak(this.options[this.currentOption]);
-		if (typeof this.selectCallback !== 'undefined') {
-			this.selectCallback(this.options[this.currentOption]);
-		}
-	}
-
-	select() {
-		return this.id;
-	}
-}
-
-class SliderItem extends MenuItem {
-	constructor(id, name, from, to, currentValue = 0) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.minValue = from;
-		this.maxValue = to;
-		this.currentValue = currentValue;
-		this.type = MenuTypes.SLIDER;
-	}
-
-	speak() {
-		speech.speak(this.name + '. Slider. Set to ' + this.currentValue);
-	}
-
-	increase() {
-		if (this.currentValue < this.maxValue) {
-			this.currentValue++;
-		}
-		speech.speak(this.currentValue);
-	}
-
-	decrease() {
-		if (this.currentValue > this.minValue) {
-			this.currentValue--;
-		}
-		speech.speak(this.currentValue);
-	}
-
-	select() {
-		return this.id;
-	}
-}
-
-class EditItem extends MenuItem {
-	constructor(id, name, defaultText = '') {
-		super();
-		this.id = id;
-		this.name = name;
-		this.text = defaultText;
-		this.type = MenuTypes.EDIT;
-	}
-
-	speak() {
-		speech.speak(this.name + '. Editable. ' + (this.text == '' ? 'Nothing entered.' : 'Set to ' + this.text));
-	}
-
-	addChar(char) {
-		this.text += char;
-		speech.speak(char);
-	}
-
-	removeChar() {
-		this.text = this.text.substring(0, this.text.length - 1);
-		speech.speak(this.text);
-	}
-
-	select() {
-		return this.text;
-	}
-}
-exports.MenuItem = MenuItem;
-exports.SliderItem = SliderItem;
-exports.SelectorItem = SelectorItem;
-exports.MenuTypes = MenuTypes;
-},{"./tts":11}],12:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-class GameUtils {
-	progressPan(current, max) {
-		return (current * 200 / max - 100) / 100;
-	}
-	progressPitch(current, max) {
-		return current * 200 / max / 100;
-	}
-	distance3D(x1, y1, z1, x2, y2, z2) {
-		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
-	}
-
-	distance(jx, jy, kx, ky) {
-		// Return Math.hypot(jx-kx, jy-ky)
-		return Math.sqrt((jx - kx) * (jx - kx) + (jy - ky) * (jy - ky));
-	}
-
-	calculateAngle(x1, y1, x2, y2) {
-		let angle = Math.atan2(y2 - y1, x2 - x1);
-		angle = angle >= 0 ? 0 : 2 * Math.PI + angle;
-		return angle;
-		// Return Math.atan2((y2 - y1),(x2 - x1));
-	}
-
-	isCollide3D(a, b) {
-		return a.x <= b.x + b.width && a.x + a.width >= b.x && a.y <= b.y + b.height && a.y + a.height >= b.y && a.z <= b.z + b.depth && a.z + a.depth >= b.z;
-	}
-
-	randomInt(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-
-	getRandomArbitrary(min, max) {
-		return Math.random() * (max - min) + min;
-	}
-
-	sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	percent(int1, int2) {
-		return int1 * 100 / int2;
-	}
-	average(arr, startIndex = 0) {
-		let len = arr.length;
-		let val = 0;
-		let average = 0;
-		for (let i = startIndex; i < arr.length; i++) {
-			val += arr[i];
-		}
-		average = val / len;
-		return average;
-	}
-	averageInt(arr, startIndex = 0) {
-		let len = arr.length;
-		let val = 0;
-		let average = 0;
-		for (let i = startIndex; i < arr.length; i++) {
-			val += arr[i];
-		}
-		average = val / len;
-		return Math.floor(average);
-	}
-	neg(num) {
-		return num >= 0 ? num == 0 ? 0 : 1 : -1;
-	}
-
-	numericSort(a, b) {
-		return a < b ? -1 : a == b ? 0 : 1;
-	}
-
-}
-var utils = exports.utils = new GameUtils();
-},{}],9:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.strings = undefined;
-
-var _main = require('./main');
-
-class Strings {
-	constructor() {
-		this.strings = {};
-		this.strings[1] = {
-			"mFound": "Found %1 new packs: what do you wish to do?",
-			mGames: "minigames",
-			sGames: "Select a minigame to play",
-			cost: "Price",
-			slot: "Beat slots",
-			unlocked: "Already bought",
-			buygame: "Do  you want to buy %1 for %2 beatcoins?",
-			nogame: "You don't have the required %1 beatcoins for this game, you only have %2.",
-			mainmenu: "main menu",
-			mSelect: "Please select",
-			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
-			packprice: "This pack costs %1 beatcoins, please confirm",
-			mReady: 'Please wait...',
-			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
-			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
-			mSafeguards: "Buy safeguards (now %1)",
-			dfiles: "Downloading %1 files. Press any key to obtain percentage",
-			packno: "Not enough beatcoins to get this pack, it costs %1.",
-			retrieving: "Retrieving data ",
-			nodown: "No downloads are available. So sorry! Check back soon",
-			mDownloadList: 'List all new available packs (%1)',
-			buy: "buy",
-			"mBack": "go back",
-			safequestion: "How many safeguards would you like? They cost %1 each. You have %2 beatcoins. You can get a maximum of %3. Remember, you can get a maximum of 100. If you want more, run me again.",
-			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
-			mListen: "Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
-			mStart: 'Start Game',
-			mLearn: 'Learn the pack',
-			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
-			"yes": "Yes",
-			"no": "no",
-
-			dling: 'Downloading %2 packs please wait...',
-			dlprog: "downloading pack %1 of %2...",
-			dlingdone: 'Done! Rebuilding database...',
-			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
-			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
-			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!',
-			keymapStart: 'We will now remap your keyboard. You will hear the sounds for the different actions, and you will be prompted to press the key you want to associate to the new actions.',
-			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
-			mNew: 'Get new packs',
-			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
-			noGuardCash: "You need %1 beatcoins to buy one safeguard. You have %2.",
-			mBrowse: 'buy new packs (You have %1 beatcoins )',
-			mBrowseIncompleted: 'Browse uncompleted packs',
-			mBrowseUnlocked: "Change to different unlocked pack",
-			"youwin": "You win %1 coins!",
-			"youlose": "You lose %1 coins.",
-
-			mHashes: 'Rebuild packs folder',
-			mDownload: 'Download new packs'
-		};
-		this.strings[2] = {
-			"mFound": "Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
-			mReady: 'Espera, por favor...',
-			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
-			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
-			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
-			buy: "comprar",
-			"mBack": "volver",
-			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
-			mStart: 'jugar',
-			mLearn: 'aprender el pack',
-			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. Para escuchar la acción de quedarse quieto, pulsa la tecla del punto. Para salir pulsa la q.',
-			dling: 'Descargando %2 packs por favor espera...',
-			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
-			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
-			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
-			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!',
-			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
-			dlprog: "descargando pack %1 de %2...",
-			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
-			mUnlocked: "Escuchar la música desbloqueada de este pack (%1 niveles)",
-			mBrowseIncompleted: 'Ver packs comprados no completados',
-			"yes": "sí",
-			"youwin": "Ganas %1 monedas!",
-			noGuardCash: "No tienes suficientes monedas. Cada antifallo cuesta %1 y tienes %2.",
-			"youlose": "Pierdes %1 monedas!",
-			"no": "no",
-			mNew: 'Conseguir nuevos packs',
-			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
-			unlocked: "Ya lo has comprado",
-			mBrowse: 'comprar un pack (tienes %1 monedas)',
-			mBrowseUnlocked: 'Cambiar a otro pack comprado',
-			mHashes: 'Reconstruir base de datos de packs',
-			mainmenu: "menú principal",
-			mSelect: "Por favor selecciona",
-			mSafeSelect: "Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
-			mSafeguards: "Comprar antifallos (ahora %1)",
-			packprice: "Este pack cuesta %1 monedas, confirma que quieres comprarlo.",
-			packno: "No tienes monedas suficientes para este pack, cuesta %1.",
-			safequestion: "Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
-			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
-			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
-			retrieving: "Recopilando datos ",
-			mDownload: 'Descargar packs',
-			mGames: "minijuegos",
-			buygame: "Quieres comprar %1 por %2 monedas?",
-			nogame: "No tienes las %1 monedas que necesitas para este juego, solo tienes %2",
-
-			sGames: "Selecciona un minijuego:",
-			cost: "Precio",
-			slot: "Beat slots"
-
-		};
-	}
-
-	get(what, rep = []) {
-		let str;
-		if (typeof this.strings[_main.lang][what] !== 'undefined') {
-			str = this.strings[_main.lang][what];
-		} else if (typeof this.strings[1][what] !== 'undefined') {
-			str = this.strings[1][what];
-		} else {
-			return 'String error: ' + what;
-		}
-		rep.forEach((v, i) => {
-			const i1 = Number(i) + 1;
-			str = str.replace('%' + i1, v);
-		});
-		return str;
-	}
-}
-var strings = exports.strings = new Strings();
-},{"./main":1}],2:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4751,7 +4636,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":11}],6:[function(require,module,exports) {
+},{"./tts":16}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5035,7 +4920,180 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":12,"./strings":9,"./tts":11,"./soundObject.js":13,"./menuItem":5,"./keycodes":14,"./input":2}],18:[function(require,module,exports) {
+},{"./utilities":13,"./strings":9,"./tts":16,"./soundObject.js":12,"./menuItem":6,"./keycodes":14,"./input":4}],10:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.speech = exports.ScrollingText = undefined;
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _keycodes = require('./keycodes');
+
+var _soundObject = require('./soundObject');
+
+var _tts = require('./tts');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+if (typeof speech === 'undefined') {
+	var speech = new _tts.TTS();
+}
+if (runningText == undefined) {
+	var runningText = 0;
+}
+class ScrollingText {
+	constructor(text, delimiter = '\n', callback = 0) {
+		this.text = text;
+		this.delimiter = delimiter;
+		this.splitText = this.text.split(delimiter);
+		this.currentLine = 0;
+		this.sndOpen = _soundObject.so.create('UI/textOpen');
+		this.sndContinue = _soundObject.so.create('UI/textScroll');
+		this.sndClose = _soundObject.so.create('UI/textClose');
+		this.callback = callback;
+		const id = document.getElementById('touchArea');
+		// This.hammer = new Hammer(id);
+		this.init();
+	}
+
+	init() {
+		const that = this;
+		runningText = this;
+		document.addEventListener('keydown', this.handleKeys);
+		// This.hammer.on("swipeleft swiperight", function() { that.handleTap(0); });
+		// this.hammer.on("tap", function() { that.handleTap(1); });
+		this.sndOpen.play();
+		this.currentLine = 0;
+		this.readCurrentLine();
+	}
+
+	handleKeys(event) {
+		switch (event.which) {
+			case _keycodes.KeyEvent.DOM_VK_UP:
+			case _keycodes.KeyEvent.DOM_VK_DOWN:
+			case _keycodes.KeyEvent.DOM_VK_LEFT:
+			case _keycodes.KeyEvent.DOM_VK_RIGHT:
+				runningText.readCurrentLine();
+				break;
+			case _keycodes.KeyEvent.DOM_VK_RETURN:
+				runningText.advance();
+				break;
+		}
+	}
+
+	handleTap(action) {
+		if (action == 0) {
+			this.readCurrentLine();
+		}
+
+		if (action == 1) {
+			this.advance();
+		}
+	}
+
+	readCurrentLine() {
+		speech.speak(this.splitText[this.currentLine]);
+	}
+
+	advance() {
+		if (this.currentLine < this.splitText.length - 1) {
+			this.currentLine++;
+			this.sndContinue.play();
+			this.readCurrentLine();
+		} else {
+			this.sndClose.play();
+			this.sndClose.unload();
+			this.sndOpen.unload();
+			this.sndContinue.unload();
+			document.removeEventListener('keydown', this.handleKeys);
+			//			This.hammer.unload();
+			if (this.callback != 0) {
+				this.callback();
+			}
+		}
+	}
+}
+exports.ScrollingText = ScrollingText;
+exports.speech = speech;
+},{"./keycodes":14,"./soundObject":12,"./tts":16}],7:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.mainMenu = mainMenu;
+
+var _soundObject = require('./soundObject');
+
+var _main = require('./main');
+
+var _stateMachine = require('./stateMachine');
+
+var _strings = require('./strings');
+
+var _menuItem = require('./menuItem');
+
+var _menu = require('./menu');
+
+async function mainMenu() {
+	const fs = require('fs');
+	speech.webTTS = true;
+	const items = new Array();
+	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
+	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
+
+	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
+	items.push(new _menuItem.MenuItem(9, _strings.strings.get('mGames')));
+
+	items.push(new _menuItem.MenuItem(2, _strings.strings.get('mBrowse', [_main.data.beatcoins])));
+	items.push(new _menuItem.MenuItem(5, _strings.strings.get('mBrowseUnlocked')));
+	items.push(new _menuItem.MenuItem(7, _strings.strings.get('mBrowseIncompleted')));
+	items.push(new _menuItem.MenuItem(4, _strings.strings.get('mDownload')));
+	items.push(new _menuItem.MenuItem(6, _strings.strings.get('mUnlocked', [_main.data.unlocks[_main.pack]["level"]])));
+	items.push(new _menuItem.MenuItem(10, _strings.strings.get('mGameTuts')));
+	items.push(new _menuItem.MenuItem(3, _strings.strings.get('mHashes')));
+	_soundObject.so.directory = './sounds/';
+	const mainMenu = new _menu.Menu(_strings.strings.get("mainmenu"), items);
+	_soundObject.so.directory = '';
+	mainMenu.music = _main.packdir + 'loop';
+	if (fs.existsSync(_main.packdir + 'select.ogg')) {
+		mainMenu.sndChoose.unload();
+		mainMenu.sndChoose = _soundObject.so.create(_main.packdir + 'select');
+	}
+	mainMenu.run(s => {
+		_soundObject.so.directory = './sounds/';
+		switch (s.selected) {
+			case 0:
+				_stateMachine.st.setState(3);break;
+			case 1:
+				_stateMachine.st.setState(4);break;
+			case 2:
+				_stateMachine.st.setState(5);break;
+			case 3:
+				(0, _main.rebuildHashes)();break;
+			case 4:
+				(0, _main.downloadPacks)();break;
+			case 5:
+				_stateMachine.st.setState(6);break;
+			case 6:
+				_stateMachine.st.setState(7);break;
+			case 7:
+				_stateMachine.st.setState(8);break;
+			case 8:
+				(0, _main.buySafeguards)();break;
+			case 9:
+				(0, _main.minigames)();break;
+			case 10:
+				(0, _main.minituts)();break;
+		}
+	});
+}
+},{"./soundObject":12,"./main":1,"./stateMachine":15,"./strings":9,"./menuItem":6,"./menu":8}],22:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5080,7 +5138,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],16:[function(require,module,exports) {
+},{}],19:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5171,7 +5229,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":19,"./soundObject.js":13}],10:[function(require,module,exports) {
+},{"./howler":21,"./soundObject.js":12}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5306,7 +5364,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":16,"./soundObject.js":13}],20:[function(require,module,exports) {
+},{"./soundSource.js":19,"./soundObject.js":12}],23:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5358,7 +5416,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],17:[function(require,module,exports) {
+},{}],20:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5654,9 +5712,8 @@ class Game {
 	async setupLevel() {
 		if (this.level > 1) {
 			//avg
-			this.actionPercentage = Math.ceil(_utilities.utils.percent(this.numberOfActions * this.level, _utilities.utils.averageInt(this.levelAverage)));
+			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.levelAverage)));
 			this.cash += _utilities.utils.averageInt(this.scoreAverage) + _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
-			//speech.speak(utils.averageInt(this.levelAverage));
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
@@ -5778,7 +5835,6 @@ class Game {
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
 		const mod = Math.ceil(3500 * score / bpm);
-		//speech.speak(mod);
 		this.score += mod;
 		this.levelAverage.push(mod);
 	}
@@ -5803,7 +5859,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":11,"./main":1,"./oldtimer":18,"./soundHandler":10,"./utilities":12,"./soundObject":13,"./stateMachine":15,"./timer":20,"./scrollingText":8,"./input.js":2,"./keycodes.js":14}],15:[function(require,module,exports) {
+},{"./tts":16,"./main":1,"./oldtimer":22,"./soundHandler":11,"./utilities":13,"./soundObject":12,"./stateMachine":15,"./timer":23,"./scrollingText":10,"./input.js":4,"./keycodes.js":14}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5891,76 +5947,213 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":2,"./tts":11,"./main":1,"./menuHandler":7,"./soundObject":13,"./keycodes":14,"./game":17}],7:[function(require,module,exports) {
+},{"./input":4,"./tts":16,"./main":1,"./menuHandler":7,"./soundObject":12,"./keycodes":14,"./game":20}],25:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+				value: true
 });
-exports.mainMenu = mainMenu;
-
-var _soundObject = require('./soundObject');
+exports.minibet = minibet;
+exports.playSlots = playSlots;
 
 var _main = require('./main');
 
-var _stateMachine = require('./stateMachine');
-
-var _strings = require('./strings');
+var _soundPool = require('./soundPool');
 
 var _menuItem = require('./menuItem');
 
 var _menu = require('./menu');
 
-async function mainMenu() {
-	const fs = require('fs');
-	speech.webTTS = true;
-	const items = new Array();
-	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
-	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
+var _os = require('os');
 
-	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
-	items.push(new _menuItem.MenuItem(9, _strings.strings.get('mGames')));
-	items.push(new _menuItem.MenuItem(2, _strings.strings.get('mBrowse', [_main.data.beatcoins])));
-	items.push(new _menuItem.MenuItem(5, _strings.strings.get('mBrowseUnlocked')));
-	items.push(new _menuItem.MenuItem(7, _strings.strings.get('mBrowseIncompleted')));
-	items.push(new _menuItem.MenuItem(4, _strings.strings.get('mDownload')));
-	items.push(new _menuItem.MenuItem(6, _strings.strings.get('mUnlocked', [_main.data.unlocks[_main.pack]["level"]])));
-	items.push(new _menuItem.MenuItem(3, _strings.strings.get('mHashes')));
-	_soundObject.so.directory = './sounds/';
-	const mainMenu = new _menu.Menu(_strings.strings.get("mainmenu"), items);
-	_soundObject.so.directory = '';
-	mainMenu.music = _main.packdir + 'loop';
-	if (fs.existsSync(_main.packdir + 'select.ogg')) {
-		mainMenu.sndChoose.unload();
-		mainMenu.sndChoose = _soundObject.so.create(_main.packdir + 'select');
-	}
-	mainMenu.run(s => {
-		_soundObject.so.directory = './sounds/';
-		switch (s.selected) {
-			case 0:
-				_stateMachine.st.setState(3);break;
-			case 1:
-				_stateMachine.st.setState(4);break;
-			case 2:
-				_stateMachine.st.setState(5);break;
-			case 3:
-				(0, _main.rebuildHashes)();break;
-			case 4:
-				(0, _main.downloadPacks)();break;
-			case 5:
-				_stateMachine.st.setState(6);break;
-			case 6:
-				_stateMachine.st.setState(7);break;
-			case 7:
-				_stateMachine.st.setState(8);break;
-			case 8:
-				(0, _main.buySafeguards)();break;
-			case 9:
-				(0, _main.minigames)();break;
-		}
-	});
+var _os2 = _interopRequireDefault(_os);
+
+var _scrollingText = require('./scrollingText');
+
+var _strings = require('./strings');
+
+var _tts = require('./tts');
+
+var _utilities = require('./utilities');
+
+var _soundObject = require('./soundObject');
+
+var _keycodes = require('./keycodes');
+
+var _stateMachine = require('./stateMachine');
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function minibet(callbet = null, minBet = 5000, slideBy = 500) {
+				if (_main.data.beatcoins < minBet) {
+								let error = new _scrollingText.ScrollingText(_strings.strings.get("noGameCash", [minBet, _main.data.beatcoins]), "\n", function () {
+												if (typeof callbet !== "undefined") callbet(-1);
+												return;
+								}); //scroll
+				} //if not cash
+				else {
+												//bet start
+												const items = new Array();
+												let slider = new _menuItem.SliderItem(0, _strings.strings.get("bet", []), minBet, _main.data.beatcoins, minBet, slideBy);
+												items.push(slider);
+												items.push(new _menuItem.MenuItem(1, _strings.strings.get("ok")));
+												items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
+												_soundObject.so.directory = './sounds/';
+												let dm = new _menu.Menu(_strings.strings.get("bet"), items);
+												let myBet = 0;
+												dm.run(s => {
+																_soundObject.so.directory = './sounds/';
+																myBet = s.items[0].value;
+																dm.destroy();
+																if (s.selected == 2) {
+																				if (typeof callbet !== "undefined") callbet(myBet);
+																} //option 2
+																else {
+																								(0, _main.addCash)(0, myBet, function () {
+																												if (typeof callbet !== "undefined") callbet(myBet);
+																								});
+																				} //not option 2
+												}); //menu callback
+												//bet end
+								} //enough cash
+} //function
+function playSlots() {
+				let myBet;
+				minibet(function (bet) {
+								if (bet <= 0) {
+												_stateMachine.st.setState(2);
+												return;
+								}
+								myBet = bet;
+								//slots
+								_soundObject.so.directory = "./sounds/";
+								let loop = _soundObject.so.create("slot_wheel", true);
+								let wheel;
+								let counter = 0;
+								loop.play();
+								let wheels = [];
+								let myInt = setInterval(() => {
+												if (counter < 3) {
+																_soundObject.so.directory = "";
+																wheels[counter] = _utilities.utils.randomInt(2, 5);
+																if (counter == 2 && wheels[0] == wheels[1]) {
+																				let void_random;
+																				void_random = _utilities.utils.randomInt(1, 10);
+																				if (void_random == 1) wheels[2] = 1;
+																}
+																wheel = _soundObject.so.create(_main.packdir + "a" + wheels[counter]);
+																wheel.play();
+																counter++;
+												} else {
+																clearInterval(myInt);
+																loop.stop();
+																_soundObject.so.directory = "./sounds/";
+																if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
+																				let win = _soundObject.so.create("slot_win_" + _utilities.utils.randomInt(1, 4));
+																				win.play();
+																				win.sound.once("end", () => {
+																								let capcash = myBet;
+																								console.log(capcash);
+																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(80, 100), capcash) + myBet);
+																								console.log("perc" + perc);
+																								(0, _main.addCash)(perc, 0, function () {
+																												_soundObject.so.kill(function () {
+																																_stateMachine.st.setState(2);
+																												});
+																								});
+																				});
+																} else if (wheels[2] == 1) {
+																				let lose = _soundObject.so.create("slot_lose_3");
+																				lose.play();
+																				lose.sound.once("end", function () {
+																								let capcash = myBet;
+																								console.log(capcash);
+																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
+																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(25, 30), capcash));
+																								console.log("perc" + perc);
+																								(0, _main.addCash)(0, perc, function () {
+																												_soundObject.so.kill(function () {
+																																_stateMachine.st.setState(2);
+																												});
+																								});
+																				});
+																} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
+																				let lose = _soundObject.so.create("slot_lose_1");
+																				lose.play();
+																				lose.sound.once("end", function () {
+																								let capcash = myBet;
+																								console.log(capcash);
+																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(40, 69), capcash));
+																								console.log("perc" + perc);
+																								(0, _main.addCash)(perc, 0, function () {
+																												_soundObject.so.kill(function () {
+																																_stateMachine.st.setState(2);
+																												});
+																								});
+																				});
+																} else {
+																				let lose = _soundObject.so.create("slot_lose_2");
+																				lose.play();
+																				lose.sound.once("end", function () {
+																								let capcash = myBet;
+																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
+																								console.log(capcash);
+																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(20, 60), capcash));
+																								console.log("perc" + perc);
+																								(0, _main.addCash)(0, perc, function () {
+																												_soundObject.so.kill(function () {
+																																_stateMachine.st.setState(2);
+																												});
+																								});
+																				});
+																}
+												} //counter
+								}, _utilities.utils.randomInt(2500, 3100));
+				}, 2500, 500);
 }
-},{"./soundObject":13,"./main":1,"./stateMachine":15,"./strings":9,"./menuItem":5,"./menu":6}],1:[function(require,module,exports) {
+},{"./main":1,"./soundPool":29,"./menuItem":6,"./menu":8,"./scrollingText":10,"./strings":9,"./tts":16,"./utilities":13,"./soundObject":12,"./keycodes":14,"./stateMachine":15}],5:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.Player = undefined;
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _os = require('os');
+
+var _os2 = _interopRequireDefault(_os);
+
+var _keycodes = require('./keycodes');
+
+var _main = require('./main');
+
+var _scrollingText = require('./scrollingText');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class Player {
+	constructor() {
+		this.beatcoins = 0, this.pack = 'default', this.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
+		this.unlocks = {};
+		this.unlocks["default"] = {
+			"level": 0,
+			"insurance": 0,
+			"fails": 0,
+			"win": false,
+			"average": 0
+		};
+	}
+}
+exports.Player = Player;
+},{"./keycodes":14,"./main":1,"./scrollingText":10}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5980,12 +6173,13 @@ exports.addCash = addCash;
 exports.buySafeguards = buySafeguards;
 exports.minigames = minigames;
 exports.runGame = runGame;
+exports.minituts = minituts;
 
 var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _soundPool = require('./soundPool');
+var _minis = require('./minis.js');
 
 var _cryptr = require('cryptr');
 
@@ -6030,6 +6224,7 @@ var _input = require('./input.js');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 let boot = false;
+//import {SoundPool} from './soundPool';
 let credits = exports.credits = false;
 let minis = exports.minis = {
 	slot: 5000
@@ -6046,8 +6241,6 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
-	let pool = new _soundPool.SoundPool();
-	pool.playStationary("safe");
 	document.getElementById("touchArea").focus();
 	_stateMachine.st.setState(1);
 }
@@ -6902,7 +7095,7 @@ function booter() {
 }
 async function addCash(c1, c2 = 0, callback) {
 	let coinCap = -1;
-	let cash = c1 - c2;
+	let cash = Math.ceil(c1 - c2);
 	data.beatcoins += cash;
 	save();
 	let positive = true;
@@ -6955,7 +7148,7 @@ async function addCash(c1, c2 = 0, callback) {
 			if (typeof callback !== "undefined") {
 				setTimeout(function () {
 					callback();
-				}, time * (count + 2));
+				}, time * (count + 4));
 			} //if callback undefined
 		} //if greater than coin cap
 	} //coinCap -1
@@ -7075,12 +7268,50 @@ function minigames() {
 	});
 } //function
 function runGame(name) {
-	switch (name) {
-		default:
-			_stateMachine.st.setState(2);
+	if (name == "slot") {
+		(0, _minis.playSlots)();
+	} else {
+		_stateMachine.st.setState(2);
 	}
 }
-},{"./soundPool":3,"./player":4,"./menuItem":5,"./menu":6,"./menuHandler":7,"./scrollingText":8,"./strings":9,"./soundHandler":10,"./tts":11,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":15,"./input.js":2}],34:[function(require,module,exports) {
+
+//tutorials
+function minituts() {
+	if (typeof data.minis === "undefined") {
+		data.minis = {};
+		save();
+	}
+	let items = [];
+	let str = "";
+	let counter = -1;
+	let name = "";
+	for (var i in minis) {
+		if (minis.hasOwnProperty(i)) {
+			str = "";
+			counter++;
+			str += _strings.strings.get(i) + ", ";
+			items.push(new _menuItem.MenuItem(i, str));
+			console.log(str);
+		} //own property
+	} //for
+	items.push(new _menuItem.MenuItem("-1", _strings.strings.get("mBack")));
+	_soundObject.so.directory = "./sounds/";
+	let mm = new _menu.Menu(_strings.strings.get("sTuts"), items, _soundObject.so.create("minitut", true));
+	mm.run(function (s) {
+		mm.destroy();
+		if (s.selected == "-1") {
+			_stateMachine.st.setState(2);
+			return;
+		} else {
+			runTut(name);
+		}
+	});
+}
+function runTut(name) {
+
+	_tts.speech.speak(name);
+}
+},{"./minis.js":25,"./player":5,"./menuItem":6,"./menu":8,"./menuHandler":7,"./scrollingText":10,"./strings":9,"./soundHandler":11,"./tts":16,"./utilities":13,"./soundObject":12,"./keycodes":14,"./stateMachine":15,"./input.js":4}],31:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7257,5 +7488,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[34,1])
+},{}]},{},[31,1])
 //# sourceMappingURL=/main.map

@@ -54,8 +54,8 @@ if(finalVolume<0)
 {
 finalVolume=0;
 }
-if (this.pan!=finalPan/100) this.pan=finalPan/100;
-if (this.volume!=finalVolume/100) this.volume=finalVolume/100;
+if (this.handle.pan*100!=finalPan) this.handle.pan=finalPan/100;
+if (this.handle.volume*100!=finalVolume) this.handle.volume=finalVolume/100;
 }
 
 position2d(listener_x,listener_y,source_x,source_y,pan_step,volume_step,behind_pitch_decrease,start_pan=0,start_volume=100,start_pitch=100) {
@@ -99,13 +99,13 @@ if(final_pan>100)
 {
 final_pan=100;
 }
-if(final_volume<-100)
+if(final_volume<0)
 {
-final_volume=-100;
+final_volume=0;
 }
-if (this.pan!=final_pan/100) this.pan=final_pan/100;
-if (this.volume!=final_volume/100) this.volume=final_volume/100;
-if (this.pitch!=final_pitch/100) this.pitch=final_pitch/100;
+if (this.handle.pan*100!=final_pan) this.handle.pan=final_pan/100;
+if (this.handle.volume*100!=final_volume) this.handle.volume=final_volume/100;
+if (this.handle.pitch*100!=final_pitch) this.handle.pitch=final_pitch/100;
 }
 update(listener_x, listener_y)
 {
@@ -130,7 +130,7 @@ if(this.start_offset>0)
 {
 this.handle.seek(start_offset);
 }
-this.update_listener_position(listener_x, listener_y);
+this.updateListenerPosition(listener_x, listener_y);
 if(this.paused==false)
 {
 this.handle.play();
@@ -140,9 +140,9 @@ this.handle.loop=true;
 return;
 }
 }
-this.update_listener_position(listener_x, listener_y);
+this.updateListenerPosition(listener_x, listener_y);
 }
-update_listener_position(listener_x, listener_y)
+updateListenerPosition(listener_x, listener_y)
 {
 if(this.handle.active==false)
 {
@@ -274,16 +274,16 @@ if(this.items[slot].start_offset>0)
 {
 this.items[slot].handle.seek(this.items[slot].start_offset);
 }
-if(this.start_pan!=0.0)
+if(start_pan!=0.0)
 {
 this.items[slot].handle.pan=start_pan/100;
 }
-if(this.start_volume<100.0)
+if(start_volume<100.0)
 {
 this.items[slot].handle.volume=start_volume/100;
 }
-this.items[slot].handle.pitch=this.start_pitch/100;
-if(this.looping==true)
+this.items[slot].handle.pitch=start_pitch/100;
+if(looping==true)
 {
 this.items[slot].handle.play();
 this.items[slot].handle.loop=true;
@@ -294,7 +294,7 @@ this.items[slot].handle.play();
 }
 if(slot>this.highest_slot)
 this.highest_slot=slot;
-return items[slot].handle;
+return slot;
 }
 
 reserve_slot()
@@ -385,11 +385,11 @@ return -2;
 else
 {
 this.last_listener_x=listener_x;
-this.items[slot].handle.pitch=start_pitch;
+this.items[slot].handle.pitch=start_pitch/100;
 this.items[slot].update(listener_x, 0);
 if(slot>this.highest_slot)
 this.highest_slot=slot;
-return items[slot].handle;
+return this.items[slot].handle;
 }
 }
 this.items[slot].handle.load(this.items[slot].filename);
@@ -402,7 +402,7 @@ if(this.items[slot].start_offset>0)
 {
 this.items[slot].handle.seek(this.items[slot].start_offset);
 }
-this.items[slot].handle.pitch=start_pitch;
+this.items[slot].handle.pitch=start_pitch/100;
 this.last_listener_x=listener_x;
 this.items[slot].update(listener_x, 0);
 if(looping==true)
@@ -416,7 +416,7 @@ this.items[slot].handle.play();
 }
 if(slot>this.highest_slot)
 this.highest_slot=slot;
-return items[slot].handle;
+return this.items[slot].handle;
 }
 play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent=false)
 {
@@ -539,7 +539,7 @@ return true;
 
 resume_sound(slot)
 {
-if(verify_slot(slot)==false)
+if(this.verify_slot(slot)==false)
 {
 return false;
 }
@@ -604,12 +604,12 @@ this.highest_slot=0;
 this.items.splice();
 }
 
-update_listener_1d(listener_x)
+updateListener1d(listener_x)
 {
-this.update_listener_2d(listener_x, 0);
+this.updateListener2d(listener_x, 0);
 }
 
-update_listener_2d(listener_x, listener_y)
+updateListener2d(listener_x, listener_y)
 {
 if(this.items.length()==0)
 return;
@@ -628,7 +628,7 @@ return this.update_sound_2d(slot, x, 0);
 
 update_sound_2d(slot, x, y)
 {
-if(verify_slot(slot)==false)
+if(this.verify_slot(slot)==false)
 {
 return false;
 }
@@ -640,7 +640,7 @@ return true;
 
 update_sound_start_values(slot, start_pan, start_volume, start_pitch)
 {
-if(verify_slot(slot)==false)
+if(this.verify_slot(slot)==false)
 {
 return false;
 }
@@ -655,9 +655,9 @@ this.items[slot].handle.volume=start_volume/100;
 this.items[slot].handle.pitch=start_pitch/100;
 return true;
 }
-if(this.items[slot].is_3d==false && this.items[slot].handle.pitch!=start_pitch)
+if(this.items[slot].is_3d==false && this.items[slot].handle.pitch*100!=start_pitch)
 {
-this.items[slot].handle.pitch=start_pitch;
+this.items[slot].handle.pitch=start_pitch/100;
 }
 return true;
 }
@@ -669,7 +669,7 @@ return update_sound_range_2d(slot, left_range, right_range, 0, 0);
 
 update_sound_range_2d(slot,left_range,right_range,backward_range,forward_range)
 {
-if(verify_slot(slot)==false)
+if(this.verify_slot(slot)==false)
 {
 return false;
 }
@@ -683,7 +683,7 @@ return true;
 
 destroy_sound(slot)
 {
-if(verify_slot(slot)==true)
+if(this.verify_slot(slot)==true)
 {
 this.items[slot].destroy();
 if(slot==this.highest_slot)

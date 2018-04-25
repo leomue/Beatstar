@@ -1,0 +1,1837 @@
+sound sp;
+bool g_pong;
+bool sorting;
+int capcash;
+double nt;
+int[] maxsort;
+double oldavg;
+double newavg;
+bool g_deal;
+bool g_keep;
+int sort_cases(string[]@ shuffled,int prize,int prizet) {
+sorting=true;
+string bc;
+string sg;
+if (lang==1) sg="safeguards";
+if (lang==2) sg="antifallos";
+if (lang==1) bc="beatcoins";
+if (lang==2) bc="monedas";
+int[] sorted;
+for (uint i=0;i<shuffled.length();i++) {
+if (string_contains(shuffled[i],"b",1)>-1) {
+sorted.insert_last(gcn(shuffled[i]));
+}//if
+}//for
+rd.say(bc);
+if (prizet==1) sorted.insert_last(prize);
+sorted.sort_ascending();
+for (uint i=0;i<sorted.length();i++) {
+rd.say(sorted[i]+", ");
+}//for
+//safeguards
+sorted.resize(0);
+for (uint i=0;i<shuffled.length();i++) {
+if (string_contains(shuffled[i],"s",1)>-1) {
+sorted.insert_last(gcn(shuffled[i]));
+}//if
+}//for
+rd.say(sg);
+if (prizet==2) sorted.insert_last(prize);
+sorted.sort_ascending();
+for (uint i=0;i<sorted.length();i++) {
+rd.say(sorted[i]+", ");
+}//for
+return 0;
+}
+int gcn(string test) {
+return string_to_number(string_right(test,test.length()-1));
+}
+void case_avg(string[]@ cases,int turn_number,int prize,int prizet) {
+if (cases.length()<1) return;
+double avg=0;
+double avgt=0;
+for (uint i=0;i<cases.length();i++) {
+if (cases[i]=="") continue;
+avgt++;
+if (string_contains(cases[i],"s",1)>-1) {
+avg+=gcn(cases[i])*1000;
+}
+else {
+avg+=gcn(cases[i]);
+}
+}
+if (prizet==1) avg+=prize;
+if (prizet==2) avg+=prize*1000;
+avgt++;
+int navg=avg;
+double bank;
+switch(turn_number) {
+case 5: bank=navg/115; break;
+case 8: bank=navg/75; break;
+case 11: bank=navg/52; break;
+case 14: bank=navg/29; break;
+case 17: bank=navg/19; break;
+case 20: bank=navg/11; break;
+case 21: bank=navg/6; break;
+case 22: bank=navg/3; break;
+default: bank=newavg; break;
+}
+newavg=floor(bank);
+}
+sound loc;
+string[] cases;
+sound dalarm;
+bool danger1,danger2;
+sound minihelp;
+int level;
+int score;
+sound mychar,hischar;
+sound swing;
+double iSpeed=1050;
+double speed;
+int iBlockchance=20;
+int blockchance;
+timer swinger,hit,hisblock;
+sound block;
+sound punch;
+int hisdirection;
+int hisheight;
+int lastpunch=0,lastpunch2=0;
+timer mypunches;
+sound himno,bg2;
+sound kick;
+int st1,st2;
+string[] shuffle(string[] arr) {
+int currentIndex=arr.length();
+string temporaryValue;
+int randomIndex;
+while (currentIndex>0) {
+// Pick a remaining element...
+randomIndex=random(0,currentIndex-1);
+    currentIndex-=1;
+    // And swap it with the current element.
+temporaryValue=arr[currentIndex];
+    arr[currentIndex] = arr[randomIndex];
+    arr[randomIndex] = temporaryValue;
+      }
+  return arr;
+}
+int[] shuffle_int(int[] arr) {
+int currentIndex=arr.length();
+int temporaryValue;
+int randomIndex;
+while (currentIndex>0) {
+// Pick a remaining element...
+randomIndex=random(0,currentIndex-1);
+    currentIndex-=1;
+    // And swap it with the current element.
+temporaryValue=arr[currentIndex];
+    arr[currentIndex] = arr[randomIndex];
+    arr[randomIndex] = temporaryValue;
+      }
+  return arr;
+}
+
+void slots() {
+sound sp;
+if (!g_slots) {
+if (cash<=10000) {
+sp.load("mini_nocash");
+sp.play_wait();
+mainmenu();
+return;
+}
+sp.load("mini_buy");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_slots=true;
+lesscash(10000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//g_slots
+if (cash<100) {
+sp.load("mini_100");
+sp.play_wait();
+mainmenu();
+return;
+}
+sound snd;
+sound slotitem;
+timer stimer;
+sound wheel;
+wheel.load("slot_wheel");
+int counter=0;
+wheel.play_looped();
+int[] wheels(3);
+int wrandom=random(2500,3100);
+while (counter<3) {
+if (stimer.elapsed>=wrandom) {
+wrandom=random(2500,3100);
+wheels[counter]=random(2,5);
+if (counter==2 && (wheels[0]==wheels[1])) {
+int void_random;
+void_random=random(1,10);
+if (void_random==1) wheels[2]=1;
+}
+stimer.restart();
+yespack();
+slotitem.load("a"+wheels[counter]);
+nopack();
+slotitem.play_wait();
+counter++;
+}
+}
+//winning
+wheel.stop();
+if (wheels[0]==wheels[1] && wheels[1]==wheels[2]) {
+snd.load("slot_win_"+random(1,4));
+snd.play_wait();
+get_ach("slotswin");
+nopack();
+snd.load("mini_won");
+snd.play_wait();
+capcash=cash;
+if (capcash>10000) capcash=10000;
+int perc=1000+get_percentage(capcash,random(40,60));
+morecash(perc);
+vo.speak_wait(perc);
+snd.load("beatcoins");
+snd.play_wait();
+int srd=random(3,7);
+safeguards+=srd;
+vo.speak_wait(srd);
+snd.load("safeguards");
+snd.play_wait();
+ser();
+}
+else if (wheels[2]==1) {
+snd.load("slot_lose_3");
+snd.play_wait();
+nopack();
+snd.load("mini_lost");
+snd.play_wait();
+capcash=cash;
+if (capcash>10000) capcash=10000;
+int perc=get_percentage(capcash,random(20,29));
+lesscash(perc);
+vo.speak_wait(perc);
+snd.load("beatcoins");
+snd.play_wait();
+}
+else if (wheels[0]==wheels[1] || wheels[1]==wheels[2] || wheels[0]==wheels[2]) {
+snd.load("slot_lose_1");
+snd.play_wait();
+nopack();
+snd.load("mini_won");
+snd.play_wait();
+capcash=cash;
+if (capcash>10000) capcash=10000;
+int perc=get_percentage(capcash,random(20,29));
+morecash(perc);
+vo.speak_wait(perc);
+snd.load("beatcoins");
+snd.play_wait();
+}
+else {
+snd.load("slot_lose_2");
+snd.play_wait();
+get_ach("catslots");
+nopack();
+snd.load("mini_lost");
+snd.play_wait();
+capcash=cash;
+if (capcash>10000) capcash=10000;
+int perc=get_percentage(capcash,random(41,60));
+lesscash(perc);
+vo.speak_wait(perc);
+snd.load("beatcoins");
+snd.play_wait();
+}
+mainmenu();
+}
+void minigames() {
+playboot=false;
+nopack();
+music.load("minimusic");
+music.volume=-3;
+music.play_looped();
+oldcash=cash;
+dynamic_menu mini;
+int minipos;
+mini.allow_escape=true;
+mini.wrap=true;
+mini.add_item("mini_slots");
+mini.add_item("mini_football");
+mini.add_item("mini_bb");
+mini.add_item("mini_chance");
+mini.add_item("mini_upbeat");
+mini.add_item("mini_pong");
+mini.add_item("mini_doub");
+mini.add_item("mini_beatcode");
+mini.add_item("mini_dice");
+mini.add_item("mini_goback");
+mini.set_callback(mini_help, "");
+int position=mini.run_extended("mini_choose",false,mini.get_item_count(),true);
+while (music.volume>-40) {
+music.volume=music.volume-1;
+wait(10);
+}
+music.stop();
+switch(position) {
+case 1: slots(); break;
+case 2: football(); break;
+case 3: beatbox(); break;
+case 4: deal(); break;
+case 5: upbeat(); break;
+case 6: beatpong(); break;
+case 7: doub();break;
+case 8: code();break;
+case 9: highlow();break;
+default: mainmenu(); break;
+}
+}
+void football() {
+st1=0;
+st2=0;
+sound sp;
+if (!g_foot) {
+if (cash<=12000) {
+sp.load("mini_nocash");
+sp.play_wait();
+mainmenu();
+return;
+}
+sp.load("mini_buy15");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_foot=true;
+lesscash(12000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//owns game
+if (cash<1000) {
+sp.load("mini_1000");
+sp.play_wait();
+mainmenu();
+return;
+}
+sound bg;
+bg.stream("bw_background");
+bg.play_looped();
+int team1=random(1,10);
+int team2;
+team2=random(1,10);
+while (team2==team1) {
+team2=random(1,10);
+}
+bg.volume=-5;
+sp.stream("bw_intro"+random(1,3));
+sp.play();
+while (sp.playing) {
+if (key_pressed(KEY_RETURN)) sp.stop();
+wait(5);
+}
+sp.stream("bw_team_"+team1+"_1");
+sp.play_wait();
+sp.stream("bw_vs");
+sp.play_wait();
+sp.stream("bw_team_"+team2+"_2");
+sp.play_wait();
+int turn=team1;
+while (st1<5 && st2<5) {
+int counter=2;
+sp.stream("bw_turn");
+sp.play_wait();
+sp.stream("bw_team_"+turn+"_2");
+sp.play_wait();
+if (turn==team1) {
+sp.stream("bw_where");
+sp.play_wait();
+while (!key_pressed(KEY_RETURN)) {
+if (key_pressed(KEY_LEFT)) {
+counter-=1;
+if (counter<1) counter=1;
+if (counter==1) {
+loc.load("bw_left");
+loc.pan=-80;
+loc.play();
+}
+if (counter==2) {
+loc.load("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+
+loc.load("bw_right");
+loc.pan=80;
+loc.play();
+}
+}
+if (key_pressed(KEY_RIGHT)) {
+counter+=1;
+if (counter>3) counter=3;
+if (counter==1) {
+loc.load("bw_left");
+loc.pan=-80;
+loc.play();
+}
+if (counter==2) {
+
+loc.load("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc.load("bw_right");
+loc.pan=80;
+loc.play();
+}
+}
+wait(5);
+}
+int saving=random(1,3);
+bg.volume=-10;
+kick.load("bw_chuta"+random(1,4));
+if (counter==1) kick.pan=-80;
+if (counter==2) kick.pan=0;
+if (counter==3) kick.pan=80;
+kick.play();
+wait(220);
+sound save;
+if (counter==saving) {
+save.load("bw_parar"+random(1,3));
+if (saving==1) save.pan=-80;
+if (saving==2) save.pan=0;
+if (saving==3) save.pan=80;
+save.play();
+wait(300);
+}
+else {
+save.load("bw_portero"+random(1,2));
+if (saving==1) save.pan=-80;
+if (saving==2) save.pan=0;
+if (saving==3) save.pan=80;
+save.play();
+wait(200);
+}
+if (counter==saving) {
+sp.load("bw_paradon"+random(1,3));
+sp.play();
+sound crowd;
+crowd.load("bw_mal"+random(1,3));
+crowd.play_wait();
+while (sp.playing) { wait(5); }
+bg.volume=-5;
+wait(700);
+}//counter saving
+else {
+cash+=250;
+int falta=random(1,4);
+if (falta==1) {
+sound falta;
+falta.load("bw_falta"+random(1,7));
+if (counter==1) falta.pan=-80;
+if (counter==3) falta.pan=80;
+if (counter==2) falta.pan=0;
+falta.play();
+wait(400);
+sp.load("bw_falton"+random(1,4));
+sp.play();
+sound crowd;
+crowd.load("bw_cfalta"+random(1,3));
+crowd.play_wait();
+while (sp.playing) { wait(5); }
+wait(400);
+}
+else {
+st1+=1;
+sp.load("bw_sgol"+random(1,7));
+sp.play();
+sound crowd;
+crowd.load("bw_gol"+random(1,6));
+crowd.play_wait();
+while (sp.playing) { wait(5); }
+bg.volume=-5;
+sp.load("bw_marc"+random(1,3));
+sp.play_wait();
+sp.load("bw_team_"+team1+"_2");
+sp.play_wait();
+sp.load("bw_"+st1+"_1");
+sp.play_wait();
+sp.load("bw_team_"+team2+"_1");
+sp.play_wait();
+sp.load("bw_"+st2+"_2");
+sp.play_wait();
+}//falta
+}//counter not saving
+turn=team2;
+}//my turn
+else {
+//second turn
+sp.stream("bw_dwhere");
+sp.play_wait();
+while (!key_pressed(KEY_RETURN)) {
+if (key_pressed(KEY_LEFT)) {
+counter-=1;
+if (counter<1) counter=1;
+if (counter==1) {
+loc.load("bw_left");
+loc.pan=-80;
+loc.play();
+}
+if (counter==2) {
+loc.load("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc.load("bw_right");
+loc.pan=80;
+loc.play();
+}
+}
+if (key_pressed(KEY_RIGHT)) {
+counter+=1;
+if (counter>3) counter=3;
+if (counter==1) {
+loc.load("bw_left");
+loc.pan=-80;
+loc.play();
+}
+if (counter==2) {
+
+loc.load("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc.load("bw_right");
+loc.pan=80;
+loc.play();
+}
+}
+wait(5);
+}
+sp.stream("bw_prepara"+random(1,4));
+sp.play_wait();
+wait(random(2000,3500));
+int saving=random(1,3);
+bg.volume=-10;
+kick.load("bw_chuta"+random(1,4));
+if (saving==1) kick.pan=-80;
+if (saving==2) kick.pan=0;
+if (saving==3) kick.pan=80;
+kick.play();
+wait(220);
+sound save;
+if (counter==saving) {
+save.load("bw_parar"+random(1,3));
+if (saving==1) save.pan=-80;
+if (saving==2) save.pan=0;
+if (saving==3) save.pan=80;
+save.play();
+wait(300);
+}
+else {
+save.load("bw_portero"+random(1,2));
+if (counter==1) save.pan=-80;
+if (counter==2) save.pan=0;
+if (counter==3) save.pan=80;
+save.play();
+wait(200);
+}
+if (counter==saving) {
+safeguards+=1;
+ser();
+sp.load("bw_paradon"+random(1,3));
+sp.play();
+sound crowd;
+crowd.load("bw_mal"+random(1,3));
+crowd.play_wait();
+while (sp.playing) { wait(5); }
+bg.volume=-5;
+wait(700);
+}//counter saving
+else {
+int falta=random(1,4);
+if (falta==1) {
+sound falta;
+falta.load("bw_falta"+random(1,7));
+if (counter==1) falta.pan=-80;
+if (counter==3) falta.pan=80;
+if (counter==2) falta.pan=0;
+falta.play();
+wait(400);
+sp.load("bw_falton"+random(1,4));
+sp.play();
+sound crowd;
+crowd.load("bw_cfalta"+random(1,3));
+crowd.play_wait();
+while (sp.playing) { wait(5); }
+wait(400);
+}
+else {
+st2+=1;
+sp.load("bw_sgol"+random(1,7));
+sp.play();
+sound crowd;
+crowd.load("bw_gol"+random(1,6));
+crowd.play_wait();
+while (sp.playing) { wait(5); }
+bg.volume=-5;
+sp.load("bw_marc"+random(1,3));
+sp.play_wait();
+sp.load("bw_team_"+team1+"_2");
+sp.play_wait();
+sp.load("bw_"+st1+"_1");
+sp.play_wait();
+sp.load("bw_team_"+team2+"_1");
+sp.play_wait();
+sp.load("bw_"+st2+"_2");
+sp.play_wait();
+}//falta
+}//counter not saving
+turn=team1;
+
+}//second turn
+if (key_pressed(KEY_ESCAPE)) {
+bg.stop();
+mainmenu();
+return;
+}
+wait(5);
+}
+//winning
+bg.volume=-10;
+sp.stream("bw_ganador");
+sp.play_wait();
+wait(random(500,1200));
+if (st1==5) sp.load("bw_team_"+team1+"_2");
+if (st2==5) sp.load("bw_team_"+team2+"_2");
+sp.play_wait();
+bg2.load("bw_ganar");
+bg2.volume=-8;
+bg.stop();
+bg2.play_looped();
+if (st1==5) himno.load("bw_himno"+team1);
+if (st2==5) himno.load("bw_himno"+team2);
+if (st1==5) { morecash(5000+random(1000,2000)); safeguards+=random(2,5); ser(); }
+himno.play();
+while (himno.playing) {
+if (key_pressed(KEY_RETURN)) {
+break;
+}
+wait(5);
+}
+bg.stop();
+bg2.stop();
+sp.stop();
+himno.stop();
+if (st2==5) get_ach("floser");
+if (st1==5) get_ach("fwinner");
+mainmenu();
+return;
+}
+void beatbox() {
+danger1=false;danger2=false;
+sound sp;
+if (!g_box) {
+if (cash<=15000) {
+sp.load("mini_nocash");
+sp.play_wait();
+mainmenu();
+return;
+}
+sp.load("mini_buy15000");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_box=true;
+lesscash(15000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//owns game
+oldcash=cash;
+score=0;
+int musicv=-6;
+int totalwins=0;
+sound music;
+bool started=false;
+int round;
+int hp1;
+int hp2;
+int mstate=0;
+int mywins,hiswins;
+bool alive=true;
+while (alive) {
+if (totalwins==0) {
+round=1;
+music.load("box_start");
+music.play();
+level=1;
+mywins=0;hiswins=0;
+hp1=100;
+hp2=90+(level*12);
+wait(3000);
+sp.load("box_level");
+sp.play_wait();
+vo.speak_wait(level);
+}
+while (mywins<2 && hiswins<2) {
+started=false;
+sp.load("box_round"+round);
+
+while (music.playing) { wait(5); }
+while (hp1>0 && hp2>0) {
+blockchance=iBlockchance;
+if (hp1>40) {
+if (hp2<40) {
+if (mstate!=3) {
+music.load("box_music3");
+music.volume=musicv;
+music.play_looped();
+mstate=3;
+}//mstate
+}//he is losing
+else {
+if (mstate!=1) {
+music.load("box_music1");
+music.volume=musicv;
+music.play_looped();
+mstate=1;
+}//mstate
+}//he isn't losing
+}//I am winning
+if (hp2>40) {
+if (hp1<40) {
+if (mstate!=2) {
+music.load("box_music2");
+music.volume=musicv;
+music.play_looped();
+mstate=2;
+}//mstate
+}//I am losing
+else {
+if (mstate!=1) {
+music.load("box_music1");
+music.volume=musicv;
+music.play_looped();
+mstate=1;
+}//mstate
+}//I am not losing
+}//he is winning
+if (!started) {
+started=true;
+sp.play_wait();
+sp.load("box_fight"+random(1,3));
+sp.play_wait();
+danger1=false;danger2=false;
+iBlockchance=30+(level*5);
+if (iBlockchance>90) iBlockchance=90;
+iSpeed=1100-(level*60);
+if (iSpeed<=200) iSpeed=200;
+hit.restart();
+hit.pause();
+hisblock.restart();
+hisblock.pause();
+speed=random(iSpeed-250,iSpeed+250);
+swinger.restart();
+}//started
+//code here
+if (key_pressed(KEY_W)) fightkey(1,1);
+if (key_pressed(KEY_S)) fightkey(1,2);
+if (key_pressed(KEY_T)) fightkey(2,1);
+if (key_pressed(KEY_G)) fightkey(2,2);
+if (key_pressed(KEY_U)) fightkey(3,1);
+if (key_pressed(KEY_J)) fightkey(3,2);
+if (hisblock.elapsed>=100) {
+//code2
+int chance=random(1,100);
+if (chance<=blockchance) {
+block.load("box_block"+random(1,5));
+block.play();
+hischar.load("box_block2"+random(1,4));
+hischar.play();
+}//he blocks
+else {
+spool.play_stationary("box_punch_"+lastpunch+"_"+random(1,4),false);
+score+=5;
+hp2-=10;
+if (hp2<=30 && !danger2) {
+danger2=true;
+dalarm.load("box_danger");
+dalarm.pan=50;
+dalarm.play();
+}
+hischar.load("box_grunt2"+random(1,4));
+hischar.play();
+}//he did not block
+hisblock.restart();
+hisblock.pause();
+}//blocking timer
+if (swinger.elapsed>=speed) {
+hisdirection=random(1,3);
+hisheight=random(1,2);
+swing.load("box_s"+hisheight+hisdirection);
+if (hisdirection==1) swing.pan=-80;
+if (hisdirection==2) swing.pan=0;
+if (hisdirection==3) swing.pan=80;
+swing.play();
+swinger.restart();
+swinger.pause();
+hit.restart();
+}//timer
+if (hit.elapsed>=iSpeed) {
+spool.play_stationary("box_punch_"+hisdirection+"_"+random(1,4),false);
+hp1-=10;
+if (hp1<=30 && !danger1) {
+danger1=true;
+dalarm.load("box_danger");
+dalarm.pan=-50;
+dalarm.play();
+}
+mychar.load("box_grunt1"+random(1,4));
+mychar.play();
+speed=random(iSpeed-250,iSpeed+250);
+hit.restart();
+hit.pause();
+swinger.resume();
+hisdirection=0;hisheight=0;
+}//timer
+wait(5);
+}//fighting loop
+if (hp1<=0) hiswins+=1;
+if (hp2<=0) mywins+=1;
+round+=1;
+lastpunch=0;
+hisblock.restart();
+hisblock.pause();
+lastpunch2=0;
+mstate=0;
+if (hp1<=0) {
+music.volume=-12;
+mychar.load("box_death");
+mychar.play_wait();
+music.load("box_musiclose");
+sp.load("box_knock"+random(1,11));
+sp.play();
+music.play();
+while (music.playing) { wait(5); }
+if (hiswins>=2) alive=false;
+} //I lost
+if (hp2<=0) {
+music.volume=-12;
+hisdirection=0;
+hisheight=0;
+hischar.load("box_death"+random(1,4));
+hischar.play_wait();
+music.load("box_musicwin2");
+music.play();
+sp.load("box_knock"+random(1,11));
+sp.play();
+morecash(score);
+while (music.playing) { wait(5); }
+}//he lost
+hp1=100;
+hp2=90+(level*10);
+started=false;
+lastpunch=0;
+wait(5);
+}//rounds loop
+level+=1;
+morecash(level*100);
+safeguards+=1;
+hp2=90+(level*10);
+round=1;
+totalwins+=1;
+if (hiswins<2) {
+mywins=0;
+hiswins=0;
+music.load("box_musicwin");
+music.volume=-6;
+music.play();
+hisdirection=0;
+hisheight=0;
+sound speech;
+speech.load("box_level");
+speech.play_wait();
+swinger.restart();
+hit.restart();
+swinger.pause();
+hit.pause();
+vo.speak_wait(level);
+while (music.playing) { wait(5); }
+}
+else {
+alive=false;
+totalwins--;
+}
+wait(5);
+}//alive
+sound lost;
+lost.load("box_lost");
+lost.play_wait();
+if (totalwins==0) get_ach("pittyful");
+if (totalwins>=5) get_ach("boxlev5");
+if (totalwins>=7) get_ach("boxlev7");
+if (totalwins>=10) get_ach("boxlev10");
+speak("yfs",true);
+vo.speak(score);
+while (vo.speak_next()==1) {
+wait(5);
+}
+speak("points",true);
+speak("yourlevel",true);
+vo.speak(level-1);
+while (vo.speak_next()==1) {
+wait(5);
+}
+sound sendq;
+sendq.load(sl+"sendq");
+bool question=true;
+sendq.play();
+while (question) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+question=false;
+sendq.stop();
+}
+else if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+question=false;
+sendq.stop();
+}
+wait(5);
+}
+checkplaycash();
+mainmenu();
+return;
+}
+void fightkey(int direction,int height) {
+if (mypunches.elapsed>=200-(level*10)) {
+lastpunch=direction;
+lastpunch2=height;
+if (hisdirection==direction && hisheight==height) {
+block.load("box_block"+random(1,5));
+score+=2;
+mychar.load("box_block1"+random(1,4));
+mychar.play();
+block.play();
+swinger.restart();
+swinger.resume();
+hit.restart();
+hit.pause();
+hisdirection=0;
+hisheight=0;
+}//his direction is equal to mine
+else {
+if (lastpunch==direction && lastpunch2==height) {
+blockchance=iBlockchance+25;
+}
+else {
+blockchance=iBlockchance;
+} //block chance calculations
+hisblock.restart();
+}//his direction is not equal to mine
+mypunches.restart();
+}//my punches timer
+}//function
+int mini_help(dynamic_menu@ game_menu, string data) {
+if (key_pressed(KEY_F1)) {
+if (minihelp.playing) { minihelp.stop(); return 0; }
+music.volume=-9;
+minihelp.load("minihelp_"+game_menu.get_position());
+minihelp.play();
+}
+if (!minihelp.playing) music.volume=-3;
+return 0;
+}
+void deal() {
+bool didbad=false;
+int max=100000;
+oldavg=0;
+newavg=0;
+sound sp;
+if (!g_deal) {
+if (cash<=25000) {
+sp.load("mini_nodeal");
+sp.play_wait();
+mainmenu();
+return;
+}
+sp.load("mini_buydeal");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_deal=true;
+lesscash(25000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//g_deal
+if (cash<10000) {
+sp.load("mini_dealno");
+sp.play_wait();
+mainmenu();
+return;
+}
+
+int newstart;
+sound tens;
+double av=0;
+int turnNumber=0;
+sound cmus;
+sound crd;
+nopack();
+int sacc;
+int sacs;
+if (!testing) {
+if (cash<=10000) {
+sacc=cash;
+}
+else if (cash>10000) {
+sacc=10000;
+}
+if (safeguards<=25) {
+sacs=safeguards;
+}
+else if (safeguards>25) {
+sacs=25;
+}
+sp.stream("sac");
+sp.play_wait();
+vo.speak_wait(sacc);
+sp.load("sacs");
+sp.play_wait();
+vo.speak_wait(sacs);
+sp.load("safeguards");
+sp.play_wait();
+sp.load("casecontinue");
+sp.play();
+while(true) {
+wait(5);
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+mainmenu();
+return;
+}
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cash-=sacc;
+safeguards-=sacs;
+ser();
+break;
+}
+}
+}
+cases.resize(0);
+cases.insert_last("b1");
+cases.insert_last("b10");
+cases.insert_last("b15000");
+cases.insert_last("b40000");
+cases.insert_last("b100");
+cases.insert_last("b25");
+cases.insert_last("b1000");
+cases.insert_last("b500");
+cases.insert_last("s1");
+cases.insert_last("s5");
+cases.insert_last("s50");
+cases.insert_last("b100000");
+cases.insert_last("b25000");
+cases.insert_last("b75000");
+cases.insert_last("b50000");
+cases.insert_last("b50");
+cases.insert_last("b69");
+cases.insert_last("s3");
+cases.insert_last("s2");
+cases.insert_last("s10");
+cases.insert_last("b7");
+cases.insert_last("b9");
+cases.insert_last("s69");
+cases.insert_last("b7000");
+cases.insert_last("b13");
+//shuffle
+string[] shuffled=shuffle(cases);
+sp.load("case_intro"+lang);
+if (!testing) sp.play_wait();
+enhanced_menu cm;
+cm.allow_escape=false;
+cm.reset(false);
+for (uint i=0;i<shuffled.length();i++) {
+if (shuffled[i]=="") {
+}
+else {
+cm.add("case"+i,i);
+}
+}
+string position=cm.run_extended("case_choose"+lang,false,"0",true);
+int prizet;
+int prize;
+string prizec;
+int nn=string_to_number(position);
+int prizen=string_to_number(position);
+position=shuffled[nn];
+prizec=position;
+if (string_contains(position,"s",1)>-1) {
+prizet=2;
+prize=gcn(position);
+}
+else if (string_contains(position,"b",1)>-1) {
+prizet=1;
+prize=gcn(position);
+}
+shuffled[nn]="";
+if (!testing) {
+sp.load("case_give"+lang);
+sp.play_wait();
+vo.speak_wait(sacc);
+sp.load("case_thank"+lang);
+sp.play_wait();
+sp.load("case_begin"+lang);
+if (!testing) sp.play_wait();
+}
+sp.load("casec"+nn+"_"+lang);
+sp.play();
+wait(random(450,850));
+crd.stream("case_cintro");
+crd.play();
+wait(2000);
+cmus.stream("case_play"+lang);
+if (!testing) cmus.play_wait();
+cmus.stream("case_music");
+cmus.play_looped();
+while (turnNumber<23) {
+cm.reset(false);
+cm.add("case_check","check");
+for (uint i=0;i<shuffled.length();i++) {
+if (shuffled[i]=="") {
+}
+else {
+cm.add("casec"+i+"_"+lang,i);
+}
+}
+string position;
+if (!sorting) position=cm.run_extended("case_open"+random(1,5),false,"check",true);
+if (sorting) position=cm.run_extended("",false,"check",false);
+sorting=false;
+if (position=="check") {
+sort_cases(shuffled,prize,prizet);
+}
+else {
+cmus.volume=-10;
+cmus.pitch=cmus.pitch+0.5;
+sp.stream("open"+random(1,3));
+sp.play();
+wait(3000);
+string ten;
+if (turnNumber<=20) ten="case_tension1";
+if (turnNumber>20) ten="case_tension2";
+tens.stream(ten);
+if (!testing) tens.play();
+if (!testing && ten=="case_tension1") wait(8000);
+if (!testing && ten=="case_tension2") wait(8300);
+sp.stream("case"+position);
+sp.play_wait();
+int nn=string_to_number(position);
+position=shuffled[nn];
+shuffled[nn]="";
+turnNumber++;
+sp.stream("ca"+position);
+sp.play();
+wait(random(300,700));
+double value;
+case_avg(shuffled,turnNumber,prize,prizet);
+if (!testing) {
+if (string_contains(position,"s",1)>-1) {
+value=gcn(position)*1000;
+}
+else {
+value=gcn(position);
+}
+if (value<=25000) {
+crd.stream("case_cr3");
+crd.play_wait();
+}
+else if (value>25000 && value<=100000) {
+crd.stream("case_cr1");
+crd.play_wait();
+}
+else if (value>=100000 || didbad) {
+crd.stream("case_cr2");
+crd.play_wait();
+}
+}
+if (testing) wait(1000);
+//offering
+if (string_contains(position,"b",1)>-1) {
+if (gcn(position)>=max) {
+maxsort.resize(0);
+didbad=true;
+for (uint i=0;i<shuffled.length();i++) {
+if (string_contains(shuffled[i],"b",1)>-1) {
+maxsort.insert_last(gcn(shuffled[i]));
+}//if
+}//for
+if (prizet==1) maxsort.insert_last(prize);
+maxsort.sort_ascending();
+if (maxsort.length()>1) max=maxsort[maxsort.length()-1];
+if (maxsort.length()<=1) max=maxsort[maxsort.length()];
+if (max>=15000) {
+sp.stream("case_still"+lang);
+sp.play_wait();
+vo.speak_wait(max);
+}
+}
+else {
+didbad=false;
+}
+}
+if (turnNumber>4 && newavg!=oldavg) {
+crd.stream("case_offer");
+crd.play();
+wait(900);
+sp.stream("case_offer"+lang);
+sp.play_wait();
+vo.speak_wait(newavg);
+enhanced_menu dem;
+dem.allow_escape=true;
+dem.add("case_yes","y");
+dem.add("case_no","esc");
+string dch=dem.run_extended("case_deal"+lang,false,"esc",true);
+if (dch=="y") {
+cash+=newavg;
+cmus.stop();
+cmus.stream("case_coward"+lang);
+cmus.play();
+wait(5000);
+vo.speak_wait(newavg);
+sp.load("beatcoins");
+sp.play_wait();
+mainmenu();
+return;
+}
+oldavg=newavg;
+}
+cmus.volume=0;
+}//checking
+}//while
+cmus.stop();
+sp.stream("case_winning");
+sp.play();
+wait(6500);
+tens.stream("case_tension3");
+tens.play();
+wait(5000);
+sp.stream("case"+prizen);
+sp.play_wait();
+sp.stream("ca"+prizec);
+sp.play();
+wait(random(300,700));
+double value;
+value=prize;
+if (prizet==2) prize*=1000;
+if (value<=25000) {
+cmus.stream("case_loser");
+crd.stream("case_cr2");
+crd.play();
+cmus.play_wait();
+}
+else if (value>25000 && value<=100000) {
+cmus.stream("case_winner");
+crd.stream("case_cr3");
+crd.play();
+cmus.play_wait();
+}
+else if (value>=100000) {
+cmus.stream("case_winner100");
+crd.stream("bw_gol6");
+crd.play();
+cmus.play_wait();
+}
+if (prizet==1) cash+=prize;
+if (prizet==2) safeguards+=prize/1000;
+mainmenu();
+return;
+}
+double bpm2ms(double bpm) {
+return 1000*(60/bpm);
+}
+void upbeat() {
+sound sp;
+int sc=0;
+int level=1;
+nopack();
+if (!g_keep) {
+if (cash<=7000) {
+sp.load("mini_nobeat");
+sp.play_wait();
+mainmenu();
+return;
+}
+sp.load("mini_buybeat");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_keep=true;
+lesscash(7000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//g_keep
+sound next;
+next.load("up_next");
+sound die;
+die.load("up_die");
+sound ok;
+ok.load("up_ok");
+ok.volume=-4;
+string stempo;
+double tempo=180;
+sound test;
+string ch1="a0r5l8@2o5q3C<B->D+ECp8<G>Cp8<G>D+ECp8p8p16<q8B-32B32q3>C<B->D+ECp8<B-Gp2p2>[CDE-DC<AGFp1>]2";
+string ch2="@1a0r2q2o2Cp4Gp4Cp4p8<B-4B-8>Cp4Gp4Cp4G8<q7G4.q2Fp4>Cp4<Fp4>Cp4<Fp4>Cp4<Fp4>C8<q8r0B4p8";
+int times=1;
+string ch3="a0@1q2r2o3[p4G&>E<]3p8B-&>F8.<B-&>F8.<q8r0G8&>E8<F48E48E-48D48D-48C48q2r2G&>E<p4G&>E<p4G8&>E8<q8r0G24A24B24r2q2>C8q8r0<B-4&>E4p8C8&F8<B-48A48A-48G48G-48F48q2r2A&>F<[p4A&>F<]5p4A&>FC8&F8<q8r0B4&>D+4<p8";
+double value;
+test.load("test");
+string chp="@0o2l8[C&F+F+D&F+F+]16";
+bool alive=true;
+bool hitting=false;
+tempo=60;
+if (testing) tempo=100;
+while (alive) {
+tempo+=10;
+soundtrack s;
+stempo="t"+tempo;
+s.add_channel(stempo+ch1);
+s.add_channel(stempo+ch2);
+s.add_channel(stempo+ch3);
+s.add_channel(stempo+chp);
+sound@ output=s.synth.write_wave_sound();
+times=1;
+value=floor(output.length/64);
+if (tempo>30000) {
+sound win;
+win.load("up_win");
+win.play_wait();
+get_ach("up_win");
+mainmenu();
+return;
+}
+timer upbeat;
+timer hit;
+while (times<=69) {
+if (hit.elapsed>=value*2+80) {
+hit.restart();
+}
+if (key_pressed(KEY_RETURN)) {
+if (times>4) {
+if (hit.elapsed<value-80) {
+output.stop();
+die.play_wait();
+updie(sc);
+mainmenu();
+return;
+}//elapsed
+else if (hit.elapsed>=value+80) {
+output.stop();
+die.play_wait();
+updie(sc);
+mainmenu();
+return;
+}//elapsed
+else {
+sc++;
+ok.stop();
+ok.play();
+hitting=true;
+}//elapsed
+}//times key
+}//keypress
+if (hit.elapsed>=value+80 && times>6 && !hitting && !testing) {
+output.stop();
+die.play_wait();
+updie(sc);
+mainmenu();
+return;
+}
+if (upbeat.elapsed>=value) {
+test.stop();
+test.volume=-8;
+if (testing) test.play();
+if (times%2==0) {
+test.pitch=125;
+}
+else {
+test.pitch=100;
+hit.restart();
+hitting=false;
+}
+if (times<5) test.play();
+upbeat.restart();
+if (times>4) {
+output.play();
+}
+else {
+}
+times++;
+}
+}
+next.play();
+level++;
+}
+garbage_collect();
+mainmenu();
+}
+void code() {
+nopack();
+if (!g_code) {
+if (cash<=10000) {
+sp.load("mini_notenough");
+sp.play_wait();
+vo.speak_wait(cash);
+mainmenu();
+return;
+}
+sp.load("mini_buygeneric");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_code=true;
+lesscash(10000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//g_keep
+int actions=4;
+yespack();
+timer time;
+int allowed=42000;
+sound ticker;
+sound music;
+nopack();
+ticker.load("codetick");
+music.load("codemusic");
+yespack();
+pak.open(path+"packs/"+pack+".pack");
+if (pak.file_exists("a6")) actions=5;
+if (pak.file_exists("a7")) actions=6;
+if (pak.file_exists("a8")) actions=7;
+if (pak.file_exists("a9")) actions=8;
+actions++;
+bool playing=true;
+int level=0;
+int crackedcodes=0;
+string[] acode;
+string[] actionsa;
+int[] curkeys();
+for (uint i=2;i<=actions;i++) {
+actionsa.insert_at(0,"a"+i);
+}
+sound go;
+nopack();
+go.load("codego");
+while(playing) {
+level++;
+allowed=30000+(level*500);
+//rd.say(allowed);
+acode.resize(0);
+acode=actionsa;
+if (level+actions-1>actions) {
+int more=level-1;
+for (uint i=1;i<=more;i++) {
+acode.insert_at(0,"a"+random(2,actions-1));
+}
+}
+acode=shuffle(acode);
+int counter=0;
+//for (uint i=0;i<acode.length();i++) {
+//spool.play_stationary(acode[i],false);
+//wait(500);
+//}
+nopack();
+speak("level",true);
+vo.speak_wait(level);
+speak("codenumber",true);
+vo.speak_wait(acode.length());
+go.play();
+yespack();
+time.restart();
+while (time.elapsed<allowed and playing) {
+wait(5);
+if (time.elapsed%1000<=100) {
+double formula=(allowed-time.elapsed)/1000;
+ticker.pitch=120-formula;
+ticker.play();
+}//ticker sound
+curkeys=keys_pressed();
+if(curkeys.length()==1) {
+if (curkeys[0]==KEY_X) playing=false;
+if (is_in_table(curkeys[0],keys)) {
+if (curkeys[0]==keys[string_to_number(string_trim_left(acode[counter],1))-1]) {
+spool.play_stationary(acode[counter],false);
+nopack();
+spool.play_stationary("code_ok",false);
+yespack();
+counter++;
+}
+else {
+counter=0;
+nopack();
+spool.play_stationary("code_wrong",false);
+yespack();
+}
+}//is in table
+}//current keys length
+if (counter==acode.length()) {
+nopack();
+spool.play_stationary("code_complete",false);
+yespack();
+wait(500);
+ticker.stop();
+crackedcodes++;
+time.restart();
+acode.resize(0);
+break;
+}//code cracked
+}//while allowed
+if (time.elapsed>=allowed) {
+string msg;
+if (lang==1) msg+="I played beat the code with ";
+if (lang==2) msg+="Acabo de jugar a beat the code en el beatstar con ";
+msg+=level-1+actions-1+" ";
+if (lang==1) msg+=" actions, using the pack "+pack+" and I managed to beat "+crackedcodes+" codes!";
+if (lang==2) msg+=" acciones, utilicé el pack "+pack+" y conseguí romper "+crackedcodes+" códigos!";
+clipboard_copy_text(msg);
+nopack();
+sound fumble;
+fumble.load("fumble");
+fumble.play();
+wait(400);
+speak("codescracked",true);
+vo.speak_wait(crackedcodes);
+playing=false;
+if(crackedcodes==0) get_ach("nocodes");
+if(crackedcodes>=5) get_ach("robber");
+}//allowed
+}//while playing
+mainmenu();
+}//function
+void doub() {
+sound ok;
+nopack();
+if (cash<5000) {
+ok.stream("mini_nodoub");
+ok.play_wait();
+mainmenu();
+return;
+}
+ok.stream("doub_intro");
+if (!testing) {
+ok.play_wait();
+vo.speak_wait(cash);
+speak("beatcoins",true);
+vo.speak_wait(safeguards);
+speak("safeguards",true);
+}
+int what=random(1,2);
+if (what==1) {
+ok.stream("doub_loser");
+ok.play_wait();
+cash=0;
+safeguards=0;
+get_ach("dloser");
+ser();
+}
+else {
+ok.stream("doub_winner");
+ok.play_wait();
+get_ach("dwinner");
+cash=cash*2;
+safeguards=safeguards*2;
+ser();
+}
+mainmenu();
+}
+void beatpong() {
+sound sp;
+nopack();
+if (!g_pong) {
+if (cash<=8000) {
+sp.load("mini_notenough");
+sp.play_wait();
+vo.speak_wait(cash);
+mainmenu();
+return;
+}
+sp.load("mini_buygeneric");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_pong=true;
+lesscash(8000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//g_keep
+timer pong;
+int pongtime=750;
+int score=0;
+nopack();
+bool playing=true;
+int position=1;
+pong.restart();
+while(playing){
+if (pong.elapsed>=pongtime) {
+
+if(position==1) {
+pong.restart();
+spool.play_stationary("pong"+position,false);
+position++;
+}
+else if(position==2) {
+pong.restart();
+spool.play_stationary("pong"+position,false);
+position++;
+}
+else if(position==4) {
+pong.restart();
+spool.play_stationary("pong2",false);
+position=1;
+}
+}
+if(position==3 and pong.elapsed>=pongtime+100) {
+spool.play_stationary("pong4",false);
+playing=false;
+}
+if (key_pressed(KEY_RETURN) and position==3) {
+score++;
+if (score<=9) pongtime-=40;
+if (score>=10) pongtime-=15;
+if (score>=30) pongtime-=5;
+pong.restart();
+spool.play_stationary("pong3",false);
+position=4;
+}
+wait(5);
+}
+wait(690);
+vo.speak_wait(score);
+speak("points",true);
+if(score>=30) {
+get_ach("pongfire");
+}
+if(score<=10) {
+get_ach("pongfail");
+}
+
+mainmenu();
+return;
+}
+void highlow() {
+sound dicer;
+nopack();
+if (!g_dice) {
+if (cash<=15000) {
+sp.load("mini_notenough");
+sp.play_wait();
+vo.speak_wait(cash);
+mainmenu();
+return;
+}
+sp.load("mini_buygeneric");
+sp.play();
+bool cont=false;
+while (!cont) {
+if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+cont=true;
+g_dice=true;
+lesscash(15000);
+sp.load("gamecash");
+sp.play_wait();
+}//key s
+if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+sp.stop();
+cont=true;
+mainmenu();
+return;
+} //key
+wait(5);
+}//loop
+}//g_keep
+dicer.load("d_roll");
+bool tutorialed=false;
+int dice;
+int curcash=get_percentage(cash,40);
+int startcash=curcash;
+cash-=curcash;
+playintro(sl+"d_intro");
+int curdice=6;
+bool playing=true;
+bool high=true;
+while(playing) {
+speak("d_playwith",true);
+vo.speak_wait(curcash);
+speak("beatcoins",true);
+speak("d_current",true);
+vo.speak_wait(curdice);
+speak("d_question",false);
+timer tutorial;
+while(true) {
+if (!tutorialed and tutorial.elapsed>=5000) {
+tutorialed=true;
+speak("d_tut",true);
+}
+if(key_pressed(KEY_H) or key_pressed(KEY_A)) {
+vos.stop();
+high=true;
+break;
+}
+if(key_pressed(KEY_L) or key_pressed(KEY_B)) {
+vos.stop();
+high=false;
+break;
+}
+if (key_pressed(KEY_ESCAPE)) {
+playing=false;
+break;
+}
+}
+wait(5);
+if(playing) {
+int newdice=random(2,12);
+dicer.play_wait();
+sound table;
+table.load("d_dice"+random(1,3));
+table.play_wait();
+vo.speak(newdice);
+wait(random(140,300));
+if(newdice!=12 and newdice!=2) {
+if(newdice>curdice and high) {
+speak("d_win",true);
+curcash*=2;
+}
+if(newdice>curdice and !high) {
+speak("d_lose",true);
+curcash=0;
+playing=false;
+}
+if(newdice<curdice and !high) {
+speak("d_win",true);
+curcash*=2;
+}
+if(newdice<curdice and high) {
+speak("d_lose",true);
+curcash=0;
+playing=false;
+}
+if(newdice==curdice) {
+speak("d_same",true);
+curcash=startcash;
+}
+}
+if(newdice==12) {
+speak("d_kill",true);
+curcash=0;
+playing=false;
+}
+if(newdice==2) {
+speak("d_win",true);
+curcash*=2;
+playing=false;
+}
+curdice=newdice;
+}
+}
+speak("d_over",true);
+vo.speak_wait(curcash);
+speak("beatcoins",true);
+cash+=curcash;
+mainmenu();
+return;
+}
+void playintro(string file) {
+sound intro;
+intro.load(file);
+intro.play();
+while(intro.playing) {
+if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)||key_pressed(KEY_ESCAPE)) {
+intro.stop();
+intro.load("skip_intro");
+intro.play_wait();
+}
+wait(5);
+}
+}

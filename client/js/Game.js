@@ -268,10 +268,9 @@ that.doScore();
 	async setupLevel() {
 	if (this.level>1) {
 	//avg
-	this.actionPercentage=Math.ceil(utils.percent(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
-	this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
-		//speech.speak(utils.averageInt(this.levelAverage));
-	}
+	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
+		this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
+			}
 	this.scoreAverage=[];
 	this.levelAverage=[];
 	if (this.level>this.levels) {
@@ -393,7 +392,6 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
 		const mod = Math.ceil((3500 * score) / bpm);
-//speech.speak(mod);
 this.score += mod;
 this.levelAverage.push(mod);
 	}

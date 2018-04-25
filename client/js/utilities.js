@@ -43,6 +43,10 @@ return ((current*200/max))/100;
 	percent(int1, int2) {
 		return int1 * 100 / int2;
 	}
+	percentOf(int1, int2) {
+		return int2 * int1 / 100;
+	}
+	
 	average(arr,startIndex=0) {
 	let len=arr.length;
 	let val=0;
@@ -70,6 +74,12 @@ neg(num) {
 numericSort(a, b) {
 	return (a<b?-1:(a==b?0:1))
 }
-
+shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
 }
 export var utils = new GameUtils();

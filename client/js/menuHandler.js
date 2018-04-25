@@ -1,7 +1,7 @@
 'use strict';
 
 import {so} from './soundObject';
-import {minigames,buySafeguards,data} from './main';
+import {minituts,minigames,buySafeguards,data} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -18,11 +18,13 @@ const fs=require('fs');
 	
 items.push(new MenuItem(1, strings.get( 'mLearn')));
 	items.push(new MenuItem(9, strings.get( 'mGames',)));
+		
 items.push(new MenuItem(2, strings.get( 'mBrowse',[data.beatcoins])));
 items.push(new MenuItem(5, strings.get( 'mBrowseUnlocked')));
 items.push(new MenuItem(7, strings.get( 'mBrowseIncompleted')));
 items.push(new MenuItem(4, strings.get( 'mDownload')));
 items.push(new MenuItem(6, strings.get( 'mUnlocked',[data.unlocks[pack]["level"]])));
+items.push(new MenuItem(10, strings.get( 'mGameTuts',)));
 items.push(new MenuItem(3, strings.get( 'mHashes')));
 so.directory = './sounds/';
 const mainMenu = new Menu(strings.get("mainmenu"), items);
@@ -49,6 +51,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 		st.setState(8); break;
 		case 8: buySafeguards(); break;
 			case 9: minigames(); break;
+			case 10: minituts(); break;
 		}
 	});
 }

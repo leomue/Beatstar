@@ -67,13 +67,14 @@ class SelectorItem extends MenuItem {
 }
 
 class SliderItem extends MenuItem {
-	constructor(id, name, from, to, currentValue = 0) {
+	constructor(id, name, from, to, currentValue = 0,increaseBy=1) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.minValue = from;
 		this.maxValue = to;
 		this.currentValue = currentValue;
+		this.increaseBy=increaseBy;
 		this.type = MenuTypes.SLIDER;
 	}
 
@@ -83,15 +84,17 @@ class SliderItem extends MenuItem {
 
 	increase() {
 		if (this.currentValue < this.maxValue) {
-			this.currentValue++;
+			this.currentValue+=this.increaseBy;
 		}
+		if (this.currentValue>this.maxValue) this.currentValue=this.maxValue;
 		speech.speak(this.currentValue);
 	}
 
 	decrease() {
 		if (this.currentValue > this.minValue) {
-			this.currentValue--;
+			this.currentValue-=this.increaseBy;
 		}
+		if (this.currentValue<this.minValue) this.currentValue=this.minValue;
 		speech.speak(this.currentValue);
 	}
 
