@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49493;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=50560;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,2105 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({12:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-const useWebTTS = true;
-
-class TTS {
-	constructor(webTTS = false) {
-		this.synth = window.speechSynthesis;
-		this.webTTS = webTTS;
-	}
-
-	speak(text) {
-		if (this.webTTS) {
-			const utterThis = new SpeechSynthesisUtterance(text);
-			this.synth.stop();
-			this.synth.speak(utterThis);
-		} else {
-			document.getElementById('speech').innerHTML = '';
-			const para = document.createElement('p');
-			para.appendChild(document.createTextNode(text));
-			document.getElementById('speech').appendChild(para);
-		}
-	} // End speak()
-
-	setWebTTS(tts) {
-		this.webTTS = tts;
-	}
-} // End class
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
-exports.TTS = TTS;
-exports.speech = speech;
-},{}],14:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.so = undefined;
-
-var _howler = require('howler');
-
-var _tts = require('./tts');
-
-const isElectron = true;
-let playOnceTimer;
-class SoundObjectItem {
-	constructor(file, callback = 0, tag = 0, stream = false) {
-		const that = this;
-		this.fileName = file;
-		this.sound = new _howler.Howl({
-			src: file,
-			html5: stream,
-			onload() {
-				that.doneLoading();
-			}
-		});
-		this.timeout = setTimeout(() => {
-			that.checkProgress();
-		}, 2000);
-		this.loaded = false;
-		this.callback = callback;
-		this.timeToLoad = performance.now();
-		this.tag = tag;
-	}
-
-	checkProgress() {
-		if (this.sound.state() == 'loaded') {
-			this.doneLoading();
-		} else {
-			const that = this;
-			this.timeout = setTimeout(() => {
-				that.checkProgress();
-			}, 500);
-		}
-	}
-
-	doneLoading() {
-		clearTimeout(this.timeout);
-		this.loaded = true;
-		if (this.callback != 0) {
-			this.callback();
-		}
-	}
-
-	play() {
-		this.sound.play();
-	}
-
-	stop() {
-		this.sound.stop();
-	}
-
-	pause() {
-		this.sound.pause();
-	}
-
-	destroy() {
-		this.sound.unload();
-	}
-
-	unload() {
-		this.sound.unload();
-	}
-
-	get volume() {
-		return this.sound.volume();
-	}
-
-	set volume(v) {
-		return this.sound.volume(v);
-	}
-	get pan() {
-		return this.sound.stereo();
-	}
-
-	set pan(v) {
-		return this.sound.stereo(v);
-	}
-
-	set loop(v) {
-		return this.sound.loop(v);
-	}
-	get active() {
-		if (this.sound.state() == "unloaded") return false;
-		if (this.sound.state() == "loaded") return true;
-		if (this.sound.state() == "loading") return true;
-	}
-	get loop() {
-		return this.sound.loop();
-	}
-	get playing() {
-		return this.sound.playing();
-	}
-	get playbackRate() {
-		return this.sound.rate();
-	}
-
-	set playbackRate(v) {
-		return this.sound.rate(v);
-	}
-	get pitch() {
-		return this.sound.rate();
-	}
-
-	set pitch(v) {
-		return this.sound.rate(v);
-	}
-
-	get currentTime() {
-		return this.sound.seek();
-	}
-
-	get duration() {
-		return this.sound.duration() * 1000;
-	}
-
-	get position() {
-		return this.sound.seek();
-	}
-
-	set currentTime(v) {
-		return this.sound.seek(v);
-	}
-
-	seek(time) {
-		return this.sound.seek(time);
-	}
-}
-class SoundObject {
-	constructor() {
-		this.sounds = new Array();
-		this.oneShots = new Array();
-		this.debug = false;
-		this.loadingQueue = false;
-		this.queueCallback = 0;
-		this.loadedSounds = 0;
-		this.loadingSounds = 0;
-		this.loadedCallback = 0;
-		this.queue = new Array();
-		this.queueLength = 0;
-		this.statusCallback = null;
-
-		this.extension = '.ogg';
-		if (isElectron == true) {
-			this.directory = './sounds/';
-		} else {
-			this.directory = '../soundsopus/';
-			this.extension = '.opus';
-		}
-
-		this.oneShotSound = null;
-	}
-
-	setStatusCallback(callback) {
-		this.statusCallback = callback;
-	}
-
-	findSound(file) {
-		for (const i in this.sounds) {
-			if (this.sounds[i].fileName == file) {
-				return this.sounds[i];
-			}
-		}
-		return -1;
-	}
-
-	findSoundIndex(file) {
-		for (const i in this.sounds) {
-			if (this.sounds[i].fileName == file) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	resetQueuedInstance() {
-		for (let i = 0; i < this.sounds.length; i++) {
-			if (typeof this.sounds[i] !== 'undefined') {
-				if (this.sounds[i].tag == 1) {
-					this.sounds[i].sound.unload();
-					this.sounds.splice(i, 1);
-				}
-			}
-		}
-
-		this.loadingQueue = false;
-		this.queueCallback = 0;
-		this.loadedSounds = 0;
-		this.loadingSounds = 0;
-		this.loadedCallback = 0;
-		this.queue = new Array();
-		this.queueLength = 0;
-		this.statusCallback = null;
-	}
-
-	create(file, stream = false) {
-		file = this.directory + file + this.extension;
-		let returnObject = null;
-		const that = this;
-		returnObject = new SoundObjectItem(file, () => {
-			that.doneLoading();
-		}, 0, stream);
-		this.sounds.push(returnObject);
-		return returnObject;
-	}
-
-	enqueue(file) {
-		file = this.directory + file + this.extension;
-		this.queue.push(file);
-		this.queueLength = this.queue.length;
-	}
-
-	loadQueue() {
-		this.handleQueue();
-		this.loadingQueue = true;
-	}
-
-	setQueueCallback(callback) {
-		this.queueCallback = callback;
-	}
-
-	resetQueue() {
-		this.queue = new Array();
-		this.loadingQueue = false;
-	}
-
-	handleQueue() {
-		if (this.queue.length > 0) {
-			const that = this;
-			if (typeof this.statusCallback !== 'undefined' && this.statusCallback != null) {
-				this.statusCallback(1 - this.queue.length / this.queueLength);
-			}
-			if (this.findSound(this.queue[0]) != -1) {
-				this.queue.splice(0, 1);
-				this.handleQueue();
-				return;
-			}
-			this.sounds.push(new SoundObjectItem(this.queue[0], () => {
-				that.handleQueue();
-			}, 1));
-			this.queue.splice(0, 1);
-		} else {
-			this.loadingQueue = false;
-			if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
-				this.queueCallback();
-			}
-		}
-	}
-
-	setCallback(callback) {
-		this.loadedCallback = callback;
-	}
-
-	doneLoading() {
-		const result = this.isLoading();
-
-		if (result == 1) {
-			if (typeof this.loadedCallback !== 'undefined' && this.loadedCallback != 0 && this.loadedCallback != null) {
-				this.loadedCallback();
-			}
-		}
-	}
-
-	isLoading() {
-		const loading = 0;
-		this.loadedSounds = 0;
-		this.loadingSounds = 0;
-		const stillLoading = new Array();
-		for (let i = 0; i < this.sounds.length; i++) {
-			if (typeof this.sounds[i] !== 'undefined') {
-				if (this.sounds[i].loaded == false) {
-					this.loadingSounds++;
-				} else {
-					this.loadedSounds++;
-				}
-			}
-		}
-
-		return this.loadedSounds / this.sounds.length;
-	}
-
-	playOnce(file) {
-		this.oneShotSound = so.create(file);
-		this.oneShots.push(this.oneShotSound);
-		this.oneShotSound.play();
-		const toDestroy = new Array();
-		const that = this;
-		this.oneShotSound.on('ended', () => {
-			for (var i = 0; i < that.oneShots.length; i++) {
-				if (that.oneShots[i].playing == false) {
-					that.oneShots[i].unload();
-					toDestroy.push(i);
-				}
-			}
-			for (var i = 0; i < toDestroy.length; i++) {
-				if (that.oneShotSounds[i].playing == false) {
-					that.oneShotSounds.splice(toDestroy[i], 1);
-					_tts.speech.speak('destroyed.' + toDestroy[i]);
-				}
-			}
-		});
-	}
-
-	destroy(file, callback = 0) {
-		let noMore = false;
-		const filename = this.directory + file + this.extension;
-		while (!noMore) {
-			const found = this.findSoundIndex(filename);
-			if (found == -1) {
-				noMore = true;
-			} else {
-				this.sounds[found].sound.unload();
-				this.sounds.splice(found, 1);
-			}
-		}
-		if (callback != 0) {
-			callback();
-		}
-	}
-
-	kill(callback = 0) {
-		while (this.sounds.length > 0) {
-			this.sounds.splice(0, 1);
-		}
-		_howler.Howler.unload();
-		if (callback != 0) {
-			callback();
-		}
-	}
-}
-const so = new SoundObject();
-exports.so = so;
-},{"./tts":12}],4:[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SoundPool = undefined;
-
-var _soundObject = require("./soundObject.js");
-
-class SoundPoolItem {
-  constructor(filename) {
-    this.reset(filename);
-  }
-  reset(filename) {
-    this.filename = filename;
-    if (typeof handle !== "undefined") handle.destroy();
-    this.handle = _soundObject.so.create(filename);
-    this.x = 0;
-    this.y = 0;
-    this.looping = false;
-    this.pan_step = 0;
-    this.volume_step = 0;
-    this.behind_pitch_decrease = 0;
-    this.start_pan = 0;
-    this.start_volume = 100;
-    this.start_pitch = 100;
-    this.left_range = 0;
-    this.right_range = 0;
-    this.backward_range = 0;
-    this.forward_range = 0;
-    this.max_distance = 0;
-    this.is_3d = false;
-    this.paused = false;
-    this.stationary = false;
-    this.start_offset = 0;
-    this.persistent = false;
-  }
-
-  position1d(lx, sx, ps, vs, start_pan = 0, start_volume = 100) {
-    let delta = 0;
-    let finalPan = start_pan;
-    let finalVolume = start_volume;
-    if (sx < lx) {
-      delta = lx - sx;
-      finalPan -= delta * ps;
-      finalVolume -= delta * vs;
-    }
-    if (sx > lx) {
-      delta = sx - lx;
-      finalPan += delta * ps;
-      finalVolume -= delta * vs;
-    }
-    if (finalPan < -100) {
-      finalPan = -100;
-    }
-    if (finalPan > 100) {
-      finalPan = 100;
-    }
-    if (finalVolume < 0) {
-      finalVolume = 0;
-    }
-    if (this.pan != finalPan / 100) this.pan = finalPan / 100;
-    if (this.volume != finalVolume / 100) this.volume = finalVolume / 100;
-  }
-
-  position2d(listener_x, listener_y, source_x, source_y, pan_step, volume_step, behind_pitch_decrease, start_pan = 0, start_volume = 100, start_pitch = 100) {
-    let delta_x = 0;
-    let delta_y = 0;
-    let final_pan = start_pan;
-    let final_volume = start_volume;
-    let final_pitch = start_pitch;
-
-    // First, we calculate the delta between the listener && the source.
-    if (source_x < listener_x) {
-      delta_x = listener_x - source_x;
-      final_pan -= delta_x * pan_step;
-      final_volume -= delta_x * volume_step;
-    }
-    if (source_x > listener_x) {
-      delta_x = source_x - listener_x;
-      final_pan += delta_x * pan_step;
-      final_volume -= delta_x * volume_step;
-    }
-    if (source_y < listener_y) {
-      final_pitch -= Math.abs(behind_pitch_decrease);
-      delta_y = listener_y - source_y;
-      final_volume -= delta_y * volume_step;
-    }
-    if (source_y > listener_y) {
-      delta_y = source_y - listener_y;
-      final_volume -= delta_y * volume_step;
-    }
-
-    // Then we check if the calculated values are out of range, && fix them if that's the case.
-    if (final_pan < -100) {
-      final_pan = -100;
-    }
-    if (final_pan > 100) {
-      final_pan = 100;
-    }
-    if (final_volume < -100) {
-      final_volume = -100;
-    }
-    if (this.pan != final_pan / 100) this.pan = final_pan / 100;
-    if (this.volume != final_volume / 100) this.volume = final_volume / 100;
-    if (this.pitch != final_pitch / 100) this.pitch = final_pitch / 100;
-  }
-  update(listener_x, listener_y) {
-    if (typeof this.handle === "undefined") {
-      return;
-    }
-    if (this.max_distance > 0 && this.looping == true) {
-      let total_distance = this.get_total_distance(listener_x, listener_y);
-      if (total_distance > this.max_distance && this.handle.active == true) {
-        this.handle.destroy();
-        return;
-      }
-      if (total_distance <= this.max_distance && this.handle.active == false) {
-        this.handle = _soundObject.so.create(filename);
-        if (this.handle.active == true) {
-          if (this.start_offset > 0) {
-            this.handle.seek(start_offset);
-          }
-          this.update_listener_position(listener_x, listener_y);
-          if (this.paused == false) {
-            this.handle.play();
-            this.handle.loop = true;
-          }
-        }
-        return;
-      }
-    }
-    this.update_listener_position(listener_x, listener_y);
-  }
-  update_listener_position(listener_x, listener_y) {
-    if (this.handle.active == false) {
-      return;
-    }
-    if (this.stationary == true) {
-      return;
-    }
-    let delta_left = this.x - this.left_range;
-    let delta_right = this.x + this.right_range;
-    let delta_backward = this.y - this.backward_range;
-    let delta_forward = this.y + this.forward_range;
-    let true_x = listener_x;
-    let true_y = listener_y;
-    if (this.is_3d == false) {
-      if (listener_x >= delta_left && listener_x <= delta_right) {
-        this.position1d(listener_x, listener_x, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
-        return;
-      }
-      if (listener_x < delta_left) this.position1d(listener_x, delta_left, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
-      if (listener_x > delta_right) this.position1d(listener_x, delta_right, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
-      return;
-    }
-    if (listener_x < delta_left) true_x = delta_left;else if (listener_x > delta_right) true_x = delta_right;
-    if (listener_y < delta_backward) true_y = delta_backward;else if (listener_y > delta_forward) true_y = delta_forward;
-    this.position2d(listener_x, listener_y, true_x, true_y, this.pan_step, this.volume_step, this.behind_pitch_decrease, this.start_pan, this.start_volume, this.start_pitch);
-  }
-
-  /*
-  This method returns the total distance between the current sound && the listener in space. This is used to calculate in && out of earshot conditions.
-  */
-  get_total_distance(listener_x, listener_y) {
-    if (this.stationary == true) {
-      return 0;
-    }
-    let delta_left = this.x - this.left_range;
-    let delta_right = this.x + this.right_range;
-    let delta_backward = this.y - this.backward_range;
-    let delta_forward = this.y + this.forward_range;
-    let true_x = listener_x;
-    let true_y = listener_y;
-    let distance = 0;
-    if (this.is_3d == false) {
-      if (listener_x >= delta_left && listener_x <= delta_right) {
-        return distance;
-      }
-      if (listener_x < delta_left) distance = delta_left - listener_x;
-      if (listener_x > delta_right) distance = listener_x - delta_right;
-      return distance;
-    }
-    if (listener_x < delta_left) true_x = delta_left;else if (listener_x > delta_right) true_x = delta_right;
-    if (listener_y < delta_backward) true_y = delta_backward;else if (listener_y > delta_forward) true_y = delta_forward;
-    if (listener_x < true_x) distance = true_x - listener_x;
-    if (listener_x > true_x) distance = listener_x - true_x;
-    if (listener_y < true_y) distance += true_y - listener_y;
-    if (listener_y > true_y) distance += listener_y - true_y;
-    return distance;
-  }
-
-}
-
-class SoundPool {
-  // Default constructor, where we give the user 100 sounds.
-  constructor() {
-    this.items = [];
-    this.items.splice();
-    this.max_distance = 0;
-    this.pan_step = 1.0;
-    this.volume_step = 1.0;
-    this.behind_pitch_decrease = 0.25;
-    this.last_listener_x = x;
-    this.last_listener_y = 0;
-    this.highest_slot = 0;
-    this.clean_frequency = 3;
-  }
-
-  // In this constructor the user can specify how many sounds they want.
-
-  playStationary(filename, looping, persistent = false) {
-    return playStationaryExtended(filename, looping, 0, 0, 100, 100, persistent);
-  }
-
-  play_stationary_extended(filename, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
-    let slot = this.reserve_slot();
-    if (slot == -1) {
-      return -1;
-    }
-    this.items.splice(slot, 0, new SoundPoolItem(filename));
-    this.items[slot].looping = looping;
-    this.items[slot].stationary = true;
-    this.items[slot].start_offset = offset;
-    this.items[slot].start_pan = start_pan;
-    this.items[slot].start_volume = start_volume;
-    this.items[slot].start_pitch = start_pitch;
-    this.items[slot].persistent = persistent;
-    if (this.items[slot].start_offset > 0) {
-      this.items[slot].handle.seek(this.items[slot].start_offset);
-    }
-    if (this.start_pan != 0.0) {
-      this.items[slot].handle.pan = start_pan;
-    }
-    if (this.start_volume < 100.0) {
-      this.items[slot].handle.volume = start_volume;
-    }
-    this.items[slot].handle.pitch = this.start_pitch;
-    if (this.looping == true) {
-      this.items[slot].handle.play();
-      this.items[slot].handle.loop = true;
-    } else {
-      this.items[slot].handle.play();
-    }
-    if (slot > this.highest_slot) this.highest_slot = slot;
-    return items[slot].handle;
-  }
-  reserve_slot() {
-    // This finds the first available sound slot && prepares it for use.
-    this.clean_frequency -= 1;
-    if (this.clean_frequency == 0) {
-      this.clean_frequency = 3;
-      this.clean_unused();
-    }
-    let slot = -1;
-    let current_length = this.items.length;
-    for (let i = 0; i < current_length; i++) {
-      if (this.items[i].persistent == true) {
-        continue;
-      }
-      if (this.items[i].looping == true) {
-        continue;
-      }
-      if (typeof this.items[i].handle === "undefined") {
-        slot = i;
-        this.items.splice(slot, 1);
-        break;
-      }
-      if (this.items[i].handle.active == false) {
-        slot = i;
-        this.items.splice(slot, 1);
-        break;
-      }
-      if (this.items[i].handle.playing == false) {
-        slot = i;
-        this.items.splice(slot, 1);
-        break;
-      }
-    }
-    if (slot == -1) {
-      slot = current_length;
-      return slot;
-    }
-  }
-  play1d(filename, listener_x, sound_x, looping, persistent = false) {
-    return play_extended_1d(filename, listener_x, sound_x, 0, 0, looping, 0, 0, 100, 100, persistent);
-  }
-
-  playExtended1d(filename, listener_x, sound_x, left_range, right_range, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
-    let slot = this.reserve_slot();
-    if (slot == -1) {
-      return -1;
-    }
-    this.items.splice(slot, 0, new SoundPoolItem(filename));
-    this.items[slot].x = sound_x;
-    this.items[slot].y = 0;
-    this.items[slot].looping = looping;
-    this.items[slot].pan_step = this.pan_step;
-    this.items[slot].volume_step = this.volume_step;
-    this.items[slot].behind_pitch_decrease = 0.0;
-    this.items[slot].start_pan = start_pan;
-    this.items[slot].start_volume = start_volume;
-    this.items[slot].start_pitch = start_pitch;
-    this.items[slot].left_range = left_range;
-    this.items[slot].right_range = right_range;
-    this.items[slot].backward_range = 0;
-    this.items[slot].forward_range = 0;
-    this.items[slot].max_distance = this.max_distance;
-    this.items[slot].is_3d = false;
-    this.items[slot].start_offset = offset;
-    this.items[slot].persistent = persistent;
-    if (this.max_distance > 0 && this.items[slot].get_total_distance(listener_x, 0) > this.max_distance) {
-      // We are out of earshot, so we cancel.
-      if (looping == false) {
-        this.items[slot].destroy();
-        this.items.splice(slot, 1);
-        return -2;
-      } else {
-        this.last_listener_x = listener_x;
-        this.items[slot].handle.pitch = start_pitch;
-        this.items[slot].update(listener_x, 0);
-        if (slot > this.highest_slot) this.highest_slot = slot;
-        return items[slot].handle;
-      }
-    }
-    this.items[slot].handle.load(this.items[slot].filename);
-    if (this.items[slot].handle.active == false) {
-      this.items[slot].reset();
-      return -1;
-    }
-    if (this.items[slot].start_offset > 0) {
-      this.items[slot].handle.seek(this.items[slot].start_offset);
-    }
-    this.items[slot].handle.pitch = start_pitch;
-    this.last_listener_x = listener_x;
-    this.items[slot].update(listener_x, 0);
-    if (looping == true) {
-      this.items[slot].handle.play();
-      this.items[slot].handle.loop = true;
-    } else {
-      this.items[slot].handle.play();
-    }
-    if (slot > this.highest_slot) this.highest_slot = slot;
-    return items[slot].handle;
-  }
-  play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent = false) {
-    return playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
-  }
-  play_extended_2d(filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
-    slot = reserve_slot();
-    if (slot == -1) {
-      return -1;
-    }
-    this.items.splice(slot, 0, new SoundPoolItem(filename));
-    this.items[slot].x = sound_x;
-    this.items[slot].y = sound_y;
-    this.items[slot].looping = looping;
-    this.items[slot].pan_step = this.pan_step;
-    this.items[slot].volume_step = this.volume_step;
-    this.items[slot].behind_pitch_decrease = this.behind_pitch_decrease;
-    this.items[slot].start_pan = start_pan;
-    this.items[slot].start_volume = start_volume;
-    this.items[slot].start_pitch = start_pitch;
-    this.items[slot].left_range = left_range;
-    this.items[slot].right_range = right_range;
-    this.items[slot].backward_range = backward_range;
-    this.items[slot].forward_range = forward_range;
-    this.items[slot].max_distance = this.max_distance;
-    this.items[slot].is_3d = true;
-    this.items[slot].start_offset = offset;
-    this.items[slot].persistent = persistent;
-    if (this.max_distance > 0 && this.items[slot].get_total_distance(listener_x, listener_y) > this.max_distance) {
-      // We are out of earshot, so we cancel.
-      if (looping == false) {
-        this.items[slot].destroy();
-        this.items.splice(slot, 1);
-        return -2;
-      } else {
-        this.last_listener_x = listener_x;
-        this.last_listener_y = listener_y;
-        this.items[slot].update(listener_x, listener_y);
-        if (slot > this.highest_slot) this.highest_slot = slot;
-        return slot;
-      }
-    }
-    if (this.items[slot].handle.active == false) {
-      this.items[slot].destroy();
-      this.items.splice(slot, 1);
-      return -1;
-    }
-    if (this.items[slot].start_offset > 0) {
-      this.items[slot].handle.seek(this.items[slot].start_offset);
-    }
-    this.last_listener_x = listener_x;
-    this.last_listener_y = listener_y;
-    this.items[slot].update(listener_x, listener_y);
-    if (looping == true) {
-      this.items[slot].handle.play();
-      this.items[slot].handle.loop = true;
-    } else {
-      this.items[slot].handle.play();
-    }
-    if (slot > this.highest_slot) this.highest_slot = slot;
-    return slot;
-  }
-
-  soundActive(slot) {
-    /*
-    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
-    */
-    if (this.verify_slot(slot) == false) {
-      return false;
-    }
-    if (this.items[slot].looping == false && typeof this.items[slot].handle === "undefined") {
-      return false;
-    }
-    if (this.items[slot].looping == false && this.items[slot].handle.playing == false) {
-      return false;
-    }
-    return true;
-  }
-  soundPlaying(slot) {
-    if (sound_is_active(slot) == false) {
-      return false;
-    }
-    return this.items[slot].handle.playing;
-  }
-
-  pause_sound(slot) {
-    if (sound_is_active(slot) == false) {
-      return false;
-    }
-    if (this.items[slot].paused == true) {
-      return false;
-    }
-    this.items[slot].paused = true;
-    if (this.items[slot].handle.playing == true) this.items[slot].handle.pause();
-    return true;
-  }
-
-  resume_sound(slot) {
-    if (verify_slot(slot) == false) {
-      return false;
-    }
-    if (this.items[slot].paused == false) {
-      return false;
-    }
-    this.items[slot].paused = false;
-    if (this.items[slot].max_distance > 0 && this.items[slot].get_total_distance(this.last_listener_x, this.last_listener_y) > this.items[slot].max_distance) {
-      if (this.items[slot].handle.active == true) this.items[slot].handle.close();
-      return true;
-    }
-    this.items[slot].update(this.last_listener_x, this.last_listener_y);
-    if (this.items[slot].handle.active == true && this.items[slot].handle.playing == false) {
-      if (this.items[slot].looping == true) {
-        this.items[slot].handle.play();
-        this.items[slot].handle.loop = true;
-      } else {
-        this.items[slot].handle.play();
-      }
-    }
-    return true;
-  }
-
-  pause_all() {
-    let currently_playing = 0;
-    let current_length = this.items.length;
-    for (let i = 0; i < current_length; i++) {
-      if (sound_is_playing(i)) currently_playing += 1;
-      this.pause_sound(i);
-    }
-  }
-
-  resume_all() {
-    let currently_playing = 0;
-    let current_length = this.items.length;
-    for (let i = 0; i < current_length; i++) {
-      resume_sound(i);
-      if (sound_is_playing(i)) currently_playing += 1;
-    }
-  }
-
-  destroy_all() {
-    for (let i = 0; i < this.items.length; i++) {
-      this.items[i].destroy();
-    }
-    this.highest_slot = 0;
-    this.items.splice();
-  }
-
-  update_listener_1d(listener_x) {
-    this.update_listener_2d(listener_x, 0);
-  }
-
-  update_listener_2d(listener_x, listener_y) {
-    if (this.items.length() == 0) return;
-    this.last_listener_x = listener_x;
-    this.last_listener_y = listener_y;
-    for (let i = 0; i <= this.highest_slot; i++) {
-      this.items[i].update(listener_x, listener_y);
-    }
-  }
-
-  update_sound_1d(slot, x) {
-    return this.update_sound_2d(slot, x, 0);
-  }
-
-  update_sound_2d(slot, x, y) {
-    if (verify_slot(slot) == false) {
-      return false;
-    }
-    this.items[slot].x = x;
-    this.items[slot].y = y;
-    this.items[slot].update(this.last_listener_x, this.last_listener_y);
-    return true;
-  }
-
-  update_sound_start_values(slot, start_pan, start_volume, start_pitch) {
-    if (verify_slot(slot) == false) {
-      return false;
-    }
-    this.items[slot].start_pan = start_pan;
-    this.items[slot].start_volume = start_volume;
-    this.items[slot].start_pitch = start_pitch;
-    this.items[slot].update(this.last_listener_x, this.last_listener_y);
-    if (this.items[slot].stationary == true && typeof this.items[slot].handle !== "undefined") {
-      this.items[slot].handle.pan = start_pan;
-      this.items[slot].handle.volume = start_volume;
-      this.items[slot].handle.pitch = start_pitch;
-      return true;
-    }
-    if (this.items[slot].is_3d == false && this.items[slot].handle.pitch != start_pitch) {
-      this.items[slot].handle.pitch = start_pitch;
-    }
-    return true;
-  }
-
-  update_sound_range_1d(slot, left_range, right_range) {
-    return update_sound_range_2d(slot, left_range, right_range, 0, 0);
-  }
-
-  update_sound_range_2d(slot, left_range, right_range, backward_range, forward_range) {
-    if (verify_slot(slot) == false) {
-      return false;
-    }
-    this.items[slot].left_range = left_range;
-    this.items[slot].right_range = right_range;
-    this.items[slot].backward_range = backward_range;
-    this.items[slot].forward_range = forward_range;
-    this.items[slot].update(this.last_listener_x, this.last_listener_y);
-    return true;
-  }
-
-  destroy_sound(slot) {
-    if (verify_slot(slot) == true) {
-      this.items[slot].destroy();
-      if (slot == this.highest_slot) find_highest_slot(this.highest_slot);
-      return true;
-    }
-    return false;
-  }
-
-  // Internal properties.
-
-
-  // Internal methods.
-
-  find_highest_slot(limit) {
-    /*
-    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
-    */
-    highest_slot = 0;
-    for (let i = 0; i < limit; i++) {
-      if (this.items[i].looping == false && typeof this.items[i].handle === "undefined") {
-        continue;
-      }
-      if (this.items[i].looping == false && this.items[i].handle.playing == false) {
-        continue;
-      }
-      highest_slot = i;
-    }
-  }
-
-  clean_unused() {
-    /*
-    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up if it is not set to be persistent.
-    */
-    if (this.items.length() == 0) return;
-    let limit = this.highest_slot;
-    let killed_highest_slot = false;
-    for (let i = 0; i <= limit; i++) {
-      if (this.items[i].persistent == true) {
-        continue;
-      }
-      if (this.items[i].looping == true) {
-        continue;
-      }
-      if (typeof this.items[i].handle === "undefined") {
-        continue;
-      }
-      if (this.items[i].handle.active == false) {
-        continue;
-      }
-      if (this.items[i].handle.playing == false && this.items[i].paused == false) {
-        if (i == this.highest_slot) killed_highest_slot = true;
-        this.items[i].destroy();
-        this.items.splice(i, 1);
-      }
-    }
-    if (killed_highest_slot == true) find_highest_slot(this.highest_slot);
-  }
-
-  verify_slot(slot) {
-    // This is a security function to perform basic sanity checks.
-    if (slot < 0) {
-      return false;
-    }
-    if (slot >= this.items.length()) {
-      return false;
-    }
-    if (this.items[slot].persistent == true) {
-      return true;
-    }
-    if (this.items[slot].looping == true) {
-      return true;
-    }
-    if (typeof this.items[slot].handle !== "undefined") {
-      return true;
-    }
-    return false;
-  }
-
-}
-exports.SoundPool = SoundPool;
-},{"./soundObject.js":14}],15:[function(require,module,exports) {
-
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-if (typeof KeyEvent === 'undefined') {
-	var KeyEvent = {
-		DOM_VK_CANCEL: 3,
-		DOM_VK_HELP: 6,
-		DOM_VK_BACK_SPACE: 8,
-		DOM_VK_TAB: 9,
-		DOM_VK_CLEAR: 12,
-		DOM_VK_RETURN: 13,
-		DOM_VK_ENTER: 14,
-		DOM_VK_SHIFT: 16,
-		DOM_VK_CONTROL: 17,
-		DOM_VK_ALT: 18,
-		DOM_VK_PAUSE: 19,
-		DOM_VK_CAPS_LOCK: 20,
-		DOM_VK_ESCAPE: 27,
-		DOM_VK_SPACE: 32,
-		DOM_VK_PAGE_UP: 33,
-		DOM_VK_PAGE_DOWN: 34,
-		DOM_VK_END: 35,
-		DOM_VK_HOME: 36,
-		DOM_VK_LEFT: 37,
-		DOM_VK_UP: 38,
-		DOM_VK_RIGHT: 39,
-		DOM_VK_DOWN: 40,
-		DOM_VK_PRINTSCREEN: 44,
-		DOM_VK_INSERT: 45,
-		DOM_VK_DELETE: 46,
-		DOM_VK_0: 48,
-		DOM_VK_1: 49,
-		DOM_VK_2: 50,
-		DOM_VK_3: 51,
-		DOM_VK_4: 52,
-		DOM_VK_5: 53,
-		DOM_VK_6: 54,
-		DOM_VK_7: 55,
-		DOM_VK_8: 56,
-		DOM_VK_9: 57,
-		DOM_VK_SEMICOLON: 59,
-		DOM_VK_EQUALS: 61,
-		DOM_VK_A: 65,
-		DOM_VK_B: 66,
-		DOM_VK_C: 67,
-		DOM_VK_D: 68,
-		DOM_VK_E: 69,
-		DOM_VK_F: 70,
-		DOM_VK_G: 71,
-		DOM_VK_H: 72,
-		DOM_VK_I: 73,
-		DOM_VK_J: 74,
-		DOM_VK_K: 75,
-		DOM_VK_L: 76,
-		DOM_VK_M: 77,
-		DOM_VK_N: 78,
-		DOM_VK_O: 79,
-		DOM_VK_P: 80,
-		DOM_VK_Q: 81,
-		DOM_VK_R: 82,
-		DOM_VK_S: 83,
-		DOM_VK_T: 84,
-		DOM_VK_U: 85,
-		DOM_VK_V: 86,
-		DOM_VK_W: 87,
-		DOM_VK_X: 88,
-		DOM_VK_Y: 89,
-		DOM_VK_Z: 90,
-		DOM_VK_CONTEXT_MENU: 93,
-		DOM_VK_NUMPAD0: 96,
-		DOM_VK_NUMPAD1: 97,
-		DOM_VK_NUMPAD2: 98,
-		DOM_VK_NUMPAD3: 99,
-		DOM_VK_NUMPAD4: 100,
-		DOM_VK_NUMPAD5: 101,
-		DOM_VK_NUMPAD6: 102,
-		DOM_VK_NUMPAD7: 103,
-		DOM_VK_NUMPAD8: 104,
-		DOM_VK_NUMPAD9: 105,
-		DOM_VK_MULTIPLY: 106,
-		DOM_VK_ADD: 107,
-		DOM_VK_SEPARATOR: 108,
-		DOM_VK_SUBTRACT: 109,
-		DOM_VK_DECIMAL: 110,
-		DOM_VK_DIVIDE: 111,
-		DOM_VK_F1: 112,
-		DOM_VK_F2: 113,
-		DOM_VK_F3: 114,
-		DOM_VK_F4: 115,
-		DOM_VK_F5: 116,
-		DOM_VK_F6: 117,
-		DOM_VK_F7: 118,
-		DOM_VK_F8: 119,
-		DOM_VK_F9: 120,
-		DOM_VK_F10: 121,
-		DOM_VK_F11: 122,
-		DOM_VK_F12: 123,
-		DOM_VK_F13: 124,
-		DOM_VK_F14: 125,
-		DOM_VK_F15: 126,
-		DOM_VK_F16: 127,
-		DOM_VK_F17: 128,
-		DOM_VK_F18: 129,
-		DOM_VK_F19: 130,
-		DOM_VK_F20: 131,
-		DOM_VK_F21: 132,
-		DOM_VK_F22: 133,
-		DOM_VK_F23: 134,
-		DOM_VK_F24: 135,
-		DOM_VK_NUM_LOCK: 144,
-		DOM_VK_SCROLL_LOCK: 145,
-		DOM_VK_COMMA: 188,
-		DOM_VK_PERIOD: 190,
-		DOM_VK_SLASH: 191,
-		DOM_VK_BACK_QUOTE: 192,
-		DOM_VK_OPEN_BRACKET: 219,
-		DOM_VK_BACK_SLASH: 220,
-		DOM_VK_CLOSE_BRACKET: 221,
-		DOM_VK_QUOTE: 222,
-		DOM_VK_META: 224
-	};
-}
-exports.KeyEvent = KeyEvent;
-},{}],9:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.speech = exports.ScrollingText = undefined;
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _keycodes = require('./keycodes');
-
-var _soundObject = require('./soundObject');
-
-var _tts = require('./tts');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-if (typeof speech === 'undefined') {
-	var speech = new _tts.TTS();
-}
-if (runningText == undefined) {
-	var runningText = 0;
-}
-class ScrollingText {
-	constructor(text, delimiter = '\n', callback = 0) {
-		this.text = text;
-		this.delimiter = delimiter;
-		this.splitText = this.text.split(delimiter);
-		this.currentLine = 0;
-		this.sndOpen = _soundObject.so.create('UI/textOpen');
-		this.sndContinue = _soundObject.so.create('UI/textScroll');
-		this.sndClose = _soundObject.so.create('UI/textClose');
-		this.callback = callback;
-		const id = document.getElementById('touchArea');
-		// This.hammer = new Hammer(id);
-		this.init();
-	}
-
-	init() {
-		const that = this;
-		runningText = this;
-		document.addEventListener('keydown', this.handleKeys);
-		// This.hammer.on("swipeleft swiperight", function() { that.handleTap(0); });
-		// this.hammer.on("tap", function() { that.handleTap(1); });
-		this.sndOpen.play();
-		this.currentLine = 0;
-		this.readCurrentLine();
-	}
-
-	handleKeys(event) {
-		switch (event.which) {
-			case _keycodes.KeyEvent.DOM_VK_UP:
-			case _keycodes.KeyEvent.DOM_VK_DOWN:
-			case _keycodes.KeyEvent.DOM_VK_LEFT:
-			case _keycodes.KeyEvent.DOM_VK_RIGHT:
-				runningText.readCurrentLine();
-				break;
-			case _keycodes.KeyEvent.DOM_VK_RETURN:
-				runningText.advance();
-				break;
-		}
-	}
-
-	handleTap(action) {
-		if (action == 0) {
-			this.readCurrentLine();
-		}
-
-		if (action == 1) {
-			this.advance();
-		}
-	}
-
-	readCurrentLine() {
-		speech.speak(this.splitText[this.currentLine]);
-	}
-
-	advance() {
-		if (this.currentLine < this.splitText.length - 1) {
-			this.currentLine++;
-			this.sndContinue.play();
-			this.readCurrentLine();
-		} else {
-			this.sndClose.play();
-			this.sndClose.unload();
-			this.sndOpen.unload();
-			this.sndContinue.unload();
-			document.removeEventListener('keydown', this.handleKeys);
-			//			This.hammer.unload();
-			if (this.callback != 0) {
-				this.callback();
-			}
-		}
-	}
-}
-exports.ScrollingText = ScrollingText;
-exports.speech = speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":12}],5:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Player = undefined;
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _os = require('os');
-
-var _os2 = _interopRequireDefault(_os);
-
-var _keycodes = require('./keycodes');
-
-var _main = require('./main');
-
-var _scrollingText = require('./scrollingText');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Player {
-	constructor() {
-		this.beatcoins = 0, this.pack = 'default', this.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
-		this.unlocks = {};
-		this.unlocks["default"] = {
-			"level": 0,
-			"insurance": 0,
-			"fails": 0,
-			"win": false,
-			"average": 0
-		};
-	}
-}
-exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":9}],6:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.MenuTypes = exports.SelectorItem = exports.SliderItem = exports.MenuItem = undefined;
-
-var _tts = require('./tts');
-
-if (typeof speech === 'undefined') {
-	var speech = new _tts.TTS();
-}
-const MenuTypes = {
-	NORMAL: 0,
-	SELECTOR: 1,
-	SLIDER: 2,
-	EDIT: 3
-};
-class MenuItem {
-	constructor(id, name) {
-		this.name = name;
-		this.id = id;
-		this.type = MenuTypes.NORMAL;
-	}
-
-	speak() {
-		speech.speak(this.name);
-	}
-
-	select() {
-		return this.id;
-	}
-}
-
-class SelectorItem extends MenuItem {
-	constructor(id, name, options, defaultOption = 0, selectCallback) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.options = options;
-		this.type = MenuTypes.SELECTOR;
-		this.currentOption = defaultOption;
-		this.selectCallback = selectCallback;
-	}
-
-	speak() {
-		speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
-	}
-
-	increase() {
-		if (this.currentOption < this.options.length - 1) {
-			this.currentOption++;
-		}
-		speech.speak(this.options[this.currentOption]);
-		if (typeof this.selectCallback !== 'undefined') {
-			this.selectCallback(this.options[this.currentOption]);
-		}
-	}
-
-	decrease() {
-		if (this.currentOption > 0) {
-			this.currentOption--;
-		}
-		speech.speak(this.options[this.currentOption]);
-		if (typeof this.selectCallback !== 'undefined') {
-			this.selectCallback(this.options[this.currentOption]);
-		}
-	}
-
-	select() {
-		return this.id;
-	}
-}
-
-class SliderItem extends MenuItem {
-	constructor(id, name, from, to, currentValue = 0) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.minValue = from;
-		this.maxValue = to;
-		this.currentValue = currentValue;
-		this.type = MenuTypes.SLIDER;
-	}
-
-	speak() {
-		speech.speak(this.name + '. Slider. Set to ' + this.currentValue);
-	}
-
-	increase() {
-		if (this.currentValue < this.maxValue) {
-			this.currentValue++;
-		}
-		speech.speak(this.currentValue);
-	}
-
-	decrease() {
-		if (this.currentValue > this.minValue) {
-			this.currentValue--;
-		}
-		speech.speak(this.currentValue);
-	}
-
-	select() {
-		return this.id;
-	}
-}
-
-class EditItem extends MenuItem {
-	constructor(id, name, defaultText = '') {
-		super();
-		this.id = id;
-		this.name = name;
-		this.text = defaultText;
-		this.type = MenuTypes.EDIT;
-	}
-
-	speak() {
-		speech.speak(this.name + '. Editable. ' + (this.text == '' ? 'Nothing entered.' : 'Set to ' + this.text));
-	}
-
-	addChar(char) {
-		this.text += char;
-		speech.speak(char);
-	}
-
-	removeChar() {
-		this.text = this.text.substring(0, this.text.length - 1);
-		speech.speak(this.text);
-	}
-
-	select() {
-		return this.text;
-	}
-}
-exports.MenuItem = MenuItem;
-exports.SliderItem = SliderItem;
-exports.SelectorItem = SelectorItem;
-exports.MenuTypes = MenuTypes;
-},{"./tts":12}],13:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-class GameUtils {
-	progressPan(current, max) {
-		return (current * 200 / max - 100) / 100;
-	}
-	progressPitch(current, max) {
-		return current * 200 / max / 100;
-	}
-	distance3D(x1, y1, z1, x2, y2, z2) {
-		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
-	}
-
-	distance(jx, jy, kx, ky) {
-		// Return Math.hypot(jx-kx, jy-ky)
-		return Math.sqrt((jx - kx) * (jx - kx) + (jy - ky) * (jy - ky));
-	}
-
-	calculateAngle(x1, y1, x2, y2) {
-		let angle = Math.atan2(y2 - y1, x2 - x1);
-		angle = angle >= 0 ? 0 : 2 * Math.PI + angle;
-		return angle;
-		// Return Math.atan2((y2 - y1),(x2 - x1));
-	}
-
-	isCollide3D(a, b) {
-		return a.x <= b.x + b.width && a.x + a.width >= b.x && a.y <= b.y + b.height && a.y + a.height >= b.y && a.z <= b.z + b.depth && a.z + a.depth >= b.z;
-	}
-
-	randomInt(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-
-	getRandomArbitrary(min, max) {
-		return Math.random() * (max - min) + min;
-	}
-
-	sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	percent(int1, int2) {
-		return int1 * 100 / int2;
-	}
-	average(arr, startIndex = 0) {
-		let len = arr.length;
-		let val = 0;
-		let average = 0;
-		for (let i = startIndex; i < arr.length; i++) {
-			val += arr[i];
-		}
-		average = val / len;
-		return average;
-	}
-	averageInt(arr, startIndex = 0) {
-		let len = arr.length;
-		let val = 0;
-		let average = 0;
-		for (let i = startIndex; i < arr.length; i++) {
-			val += arr[i];
-		}
-		average = val / len;
-		return Math.floor(average);
-	}
-	neg(num) {
-		return num >= 0 ? num == 0 ? 0 : 1 : -1;
-	}
-
-	numericSort(a, b) {
-		return a < b ? -1 : a == b ? 0 : 1;
-	}
-
-}
-var utils = exports.utils = new GameUtils();
-},{}],10:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.strings = undefined;
-
-var _main = require('./main');
-
-class Strings {
-	constructor() {
-		this.strings = {};
-		this.strings[1] = {
-			"mFound": "Found %1 new packs: what do you wish to do?",
-			mGames: "minigames",
-			sGames: "Select a minigame to play",
-			cost: "Price",
-			slot: "Beat slots",
-			unlocked: "Already bought",
-			buygame: "Do  you want to buy %1 for %2 beatcoins?",
-			nogame: "You don't have the required %1 beatcoins for this game, you only have %2.",
-			mainmenu: "main menu",
-			mSelect: "Please select",
-			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
-			packprice: "This pack costs %1 beatcoins, please confirm",
-			mReady: 'Please wait...',
-			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
-			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
-			mSafeguards: "Buy safeguards (now %1)",
-			dfiles: "Downloading %1 files. Press any key to obtain percentage",
-			packno: "Not enough beatcoins to get this pack, it costs %1.",
-			retrieving: "Retrieving data ",
-			nodown: "No downloads are available. So sorry! Check back soon",
-			mDownloadList: 'List all new available packs (%1)',
-			buy: "buy",
-			"mBack": "go back",
-			safequestion: "How many safeguards would you like? They cost %1 each. You have %2 beatcoins. You can get a maximum of %3. Remember, you can get a maximum of 100. If you want more, run me again.",
-			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
-			mListen: "Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
-			mStart: 'Start Game',
-			mLearn: 'Learn the pack',
-			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
-			"yes": "Yes",
-			"no": "no",
-
-			dling: 'Downloading %2 packs please wait...',
-			dlprog: "downloading pack %1 of %2...",
-			dlingdone: 'Done! Rebuilding database...',
-			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
-			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
-			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!',
-			keymapStart: 'We will now remap your keyboard. You will hear the sounds for the different actions, and you will be prompted to press the key you want to associate to the new actions.',
-			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
-			mNew: 'Get new packs',
-			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
-			noGuardCash: "You need %1 beatcoins to buy one safeguard. You have %2.",
-			mBrowse: 'buy new packs (You have %1 beatcoins )',
-			mBrowseIncompleted: 'Browse uncompleted packs',
-			mBrowseUnlocked: "Change to different unlocked pack",
-			"youwin": "You win %1 coins!",
-			"youlose": "You lose %1 coins.",
-
-			mHashes: 'Rebuild packs folder',
-			mDownload: 'Download new packs'
-		};
-		this.strings[2] = {
-			"mFound": "Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
-			mReady: 'Espera, por favor...',
-			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
-			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
-			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
-			buy: "comprar",
-			"mBack": "volver",
-			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
-			mStart: 'jugar',
-			mLearn: 'aprender el pack',
-			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. Para escuchar la acción de quedarse quieto, pulsa la tecla del punto. Para salir pulsa la q.',
-			dling: 'Descargando %2 packs por favor espera...',
-			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
-			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
-			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
-			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!',
-			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
-			dlprog: "descargando pack %1 de %2...",
-			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
-			mUnlocked: "Escuchar la música desbloqueada de este pack (%1 niveles)",
-			mBrowseIncompleted: 'Ver packs comprados no completados',
-			"yes": "sí",
-			"youwin": "Ganas %1 monedas!",
-			noGuardCash: "No tienes suficientes monedas. Cada antifallo cuesta %1 y tienes %2.",
-			"youlose": "Pierdes %1 monedas!",
-			"no": "no",
-			mNew: 'Conseguir nuevos packs',
-			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
-			unlocked: "Ya lo has comprado",
-			mBrowse: 'comprar un pack (tienes %1 monedas)',
-			mBrowseUnlocked: 'Cambiar a otro pack comprado',
-			mHashes: 'Reconstruir base de datos de packs',
-			mainmenu: "menú principal",
-			mSelect: "Por favor selecciona",
-			mSafeSelect: "Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
-			mSafeguards: "Comprar antifallos (ahora %1)",
-			packprice: "Este pack cuesta %1 monedas, confirma que quieres comprarlo.",
-			packno: "No tienes monedas suficientes para este pack, cuesta %1.",
-			safequestion: "Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
-			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
-			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
-			retrieving: "Recopilando datos ",
-			mDownload: 'Descargar packs',
-			mGames: "minijuegos",
-			buygame: "Quieres comprar %1 por %2 monedas?",
-			nogame: "No tienes las %1 monedas que necesitas para este juego, solo tienes %2",
-
-			sGames: "Selecciona un minijuego:",
-			cost: "Precio",
-			slot: "Beat slots"
-
-		};
-	}
-
-	get(what, rep = []) {
-		let str;
-		if (typeof this.strings[_main.lang][what] !== 'undefined') {
-			str = this.strings[_main.lang][what];
-		} else if (typeof this.strings[1][what] !== 'undefined') {
-			str = this.strings[1][what];
-		} else {
-			return 'String error: ' + what;
-		}
-		rep.forEach((v, i) => {
-			const i1 = Number(i) + 1;
-			str = str.replace('%' + i1, v);
-		});
-		return str;
-	}
-}
-var strings = exports.strings = new Strings();
-},{"./main":1}],3:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.KeyboardInput = undefined;
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _tts = require('./tts');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-'use strict';
-class KeyboardInput {
-	constructor() {
-		this.keyDown = [];
-		this.justPressed = [];
-		this.chars = [];
-		this.justReleased = [];
-		this.justPressedEventCallback = null;
-		this.charEventCallback = null;
-	}
-
-	init() {
-		const that = this;
-		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
-		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
-		document.addEventListener('keydown', event => {
-			that.handleKeyDown(event);
-		});
-		document.addEventListener('keyup', event => {
-			that.handleKeyUp(event);
-		});
-		document.addEventListener('keypress', event => {
-			that.handleChar(event);
-		});
-	}
-
-	handleKeyDown(event) {
-		if (this.keyDown[event.which] != true || typeof this.keyDown[event.which] === 'undefined') {
-			this.keyDown[event.which] = true;
-			this.justPressed[event.which] = true;
-			this.justReleased[event.which] = false;
-			if (typeof this.justPressedEventCallback !== 'undefined' && this.justPressedEventCallback != null) {
-				this.justPressedEventCallback(event.which);
-			}
-		}
-	}
-
-	handleChar(char) {
-		if (char.which < 48 || char.which > 122) {
-			return;
-		}
-		if (String.fromCharCode(char.which) != '') {
-			this.chars += String.fromCharCode(char.which);
-			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
-				this.charEventCallback(String.fromCharCode(char.which));
-			}
-		}
-	}
-
-	handleKeyUp(event) {
-		if (this.keyDown[event.which] == true) {
-			this.keyDown[event.which] = false;
-			this.justPressed[event.which] = false;
-			this.justReleased[event.which] = true;
-		}
-		this.chars = '';
-	}
-
-	isDown(event) {
-		return this.keyDown[event];
-	}
-
-	isJustPressed(event) {
-		if (this.justPressed[event] == true) {
-			this.justPressed[event] = false;
-			return true;
-		}
-		return false;
-	}
-
-	isJustReleased(event) {
-		if (this.justReleased[event]) {
-			this.justReleased[event] = false;
-			return true;
-		}
-		return false;
-	}
-
-	keysDown() {
-		const kd = [];
-		this.keyDown.forEach((v, i) => {
-			if (v) {
-				kd.push(i);
-			}
-		});
-		return kd;
-	}
-
-	getChars() {
-		const kd = this.chars;
-		this.chars = '';
-		return kd;
-	}
-
-	keysPressed() {
-		const kd = [];
-		this.justPressed.forEach((v, i) => {
-			if (v) {
-				kd.push(i);
-			}
-		});
-		this.justPressed.splice();
-		return kd;
-	}
-
-	releaseAllKeys() {}
-
-	keysReleased() {
-		const kd = [];
-		this.justReleased.forEach((v, i) => {
-			if (v) {
-				kd.push(i);
-			}
-		});
-		this.justReleased.splice();
-		return kd;
-	}
-}
-
-exports.KeyboardInput = KeyboardInput;
-},{"./tts":12}],7:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Menu = undefined;
-
-var _utilities = require('./utilities');
-
-var _strings = require('./strings');
-
-var _tts = require('./tts');
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _soundObject = require('./soundObject.js');
-
-var _menuItem = require('./menuItem');
-
-var _keycodes = require('./keycodes');
-
-var _input = require('./input');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Menu {
-	constructor(name, menuData, music) {
-		this.menuData = menuData;
-		this.first = true;
-		this.cursor = 0;
-		this.name = name;
-		this.sndKeyChar = _soundObject.so.create('ui/keyChar');
-		this.sndKeyDelete = _soundObject.so.create('ui/keyDelete');
-		this.sndSliderLeft = _soundObject.so.create('ui/menuSliderLeft');
-		this.sndSliderRight = _soundObject.so.create('ui/menuSliderRight');
-		this.sndBoundary = _soundObject.so.create('ui/menuBoundary');
-		this.sndChoose = _soundObject.so.create('ui/menuChoose');
-		this.sndMove = _soundObject.so.create('ui/menuMove');
-		this.sndOpen = _soundObject.so.create('ui/menuOpen');
-		this.sndSelector = _soundObject.so.create('ui/menuSelector');
-		this.sndWrap = _soundObject.so.create('ui/menuWrap');
-		this.selectCallback = null;
-		if (typeof music !== 'undefined') {
-			this.music = music;
-		}
-		const id = document.getElementById('touchArea');
-		// This.hammer = new Hammer(id);
-	}
-
-	nextItem() {
-		if (this.cursor < this.menuData.length - 1) {
-			if (!this.first) {
-				this.cursor++;
-			} else {
-				this.first = false;
-			}
-		}
-		this.sndMove.play();
-		this.menuData[this.cursor].speak();
-	}
-
-	previousItem() {
-		if (this.first) this.first = false;
-		if (this.cursor > 0) {
-			this.cursor--;
-		}
-		this.sndMove.play();
-		this.menuData[this.cursor].speak();
-	}
-
-	increase() {
-		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER || this.menuData[this.cursor].type == _menuItem.MenuTypes.SELECTOR) {
-			this.menuData[this.cursor].increase();
-			if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER) {
-				this.sndSliderRight.play();
-			} else {
-				this.sndSelector.play();
-			}
-		}
-	}
-
-	decrease() {
-		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER || this.menuData[this.cursor].type == _menuItem.MenuTypes.SELECTOR) {
-			this.menuData[this.cursor].decrease();
-			if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER) {
-				this.sndSliderLeft.play();
-			} else {
-				this.sndSelector.play();
-			}
-		}
-	}
-
-	insertCharacter(char) {
-		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.EDIT) {
-			this.menuData[this.cursor].addChar(String.fromCharCode(char));
-			this.sndKeyChar.play();
-		}
-	}
-
-	removeCharacter() {
-		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.EDIT) {
-			this.menuData[this.cursor].removeChar();
-			this.sndKeyDelete.play();
-		}
-	}
-
-	handleInput(event) {
-		this.insertCharacter(event.which);
-	}
-
-	destroySounds() {
-		this.sndKeyChar.unload();
-		this.sndKeyDelete.unload();
-		this.sndSliderLeft.unload();
-		this.sndSliderRight.unload();
-		this.sndBoundary.unload();
-		this.sndChoose.unload();
-		this.sndMove.unload();
-		this.sndOpen.unload();
-		this.sndSelector.unload();
-		this.sndWrap.unload();
-		if (typeof this.music !== 'undefined') {
-			this.music.unload();
-		}
-	}
-
-	async fade() {
-		for (let i = this.music.volume; i > 0; i -= 0.06) {
-			this.music.volume = i;
-			await _utilities.utils.sleep(50);
-		}
-		this.music.unload();
-		this.destroy();
-	}
-
-	destroy() {
-		(0, _jquery2.default)(document).off('keydown');
-		(0, _jquery2.default)(document).off('keypress');
-		// This.hammer.destroy();
-		const that = this;
-		setTimeout(() => {
-			that.destroySounds();
-		}, 500);
-	}
-
-	handleKeys(event) {
-		switch (event.which) {
-			case _keycodes.KeyEvent.DOM_VK_RETURN:
-				this.select();
-				break;
-			case _keycodes.KeyEvent.DOM_VK_PAGE_UP:
-				this.music.volume += 0.03;
-				break;
-			case _keycodes.KeyEvent.DOM_VK_PAGE_DOWN:
-				this.music.volume -= 0.03;
-				break;
-			case _keycodes.KeyEvent.DOM_VK_BACK_SPACE:
-				this.removeCharacter();
-				break;
-
-			case _keycodes.KeyEvent.DOM_VK_DOWN:
-
-				this.nextItem();
-				break;
-			case _keycodes.KeyEvent.DOM_VK_UP:
-				this.previousItem();
-				break;
-			case _keycodes.KeyEvent.DOM_VK_RIGHT:
-
-				this.increase();
-
-				break;
-			case _keycodes.KeyEvent.DOM_VK_LEFT:
-
-				this.decrease();
-
-				break;
-		}
-	}
-
-	run(callback) {
-		if (typeof this.music === 'object') {
-			this.music.volume = 0.5;
-			this.music.loop = true;
-			this.music.play();
-		} else if (typeof this.music === 'string') {
-			this.music = _soundObject.so.create(this.music, true);
-			this.music.volume = 0.5;
-			this.music.loop = true;
-			this.music.play();
-		} else {}
-		this.selectCallback = callback;
-		const that = this;
-		(0, _jquery2.default)(document).on('keypress', event => {
-			that.handleInput(event);
-		});
-		(0, _jquery2.default)(document).on('keydown', event => {
-			that.handleKeys(event);
-		});
-		/*
-  This.hammer.on("swipeleft", function(event) { that.handleSwipe(0); });
-  this.hammer.on("swiperight", function(event) { that.handleSwipe(1); });
-  this.hammer.on("panup", function(event) { that.handleSwipe(3); });
-  this.hammer.on("pandown", function(event) { that.handleSwipe(4); });
-  this.hammer.on("tap", function(event) { that.handleSwipe(2); });
-  */
-		_tts.speech.speak(this.name);
-		this.sndOpen.play();
-	}
-
-	handleSwipe(action) {
-		if (action == 3) {
-			this.decrease();
-		}
-		if (action == 4) {
-			this.increase();
-		}
-
-		if (action == 0) {
-			this.previousItem();
-		}
-		if (action == 1) {
-			this.nextItem();
-		}
-		if (action == 2) {
-			this.select();
-		}
-	}
-
-	select() {
-		const selected = this.menuData[this.cursor].id;
-
-		const items = [];
-		for (let i = 0; i < this.menuData.length; i++) {
-			let addItem = null;
-			if (this.menuData[i].type == _menuItem.MenuTypes.SLIDER) {
-				addItem = {
-					id: this.menuData[i].id,
-					value: this.menuData[i].currentValue
-					//name: this.menuData[i].options[this.menuData[i].currentValue]
-				};
-			}
-			if (this.menuData[i].type == _menuItem.MenuTypes.EDIT) {
-				addItem = {
-					id: this.menuData[i].id,
-					value: this.menuData[i].text
-
-				};
-			}
-			if (this.menuData[i].type == _menuItem.MenuTypes.SELECTOR) {
-				addItem = {
-					id: this.menuData[i].id,
-					value: this.menuData[i].currentOption,
-					name: this.menuData[i].options[this.menuData[i].currentOption]
-				};
-			}
-			items.push(addItem);
-		}
-
-		const toReturn = {
-			selected,
-			cursor: this.cursor,
-			items
-		};
-		this.sndChoose.play();
-		(0, _jquery2.default)(document).off('keydown');
-		(0, _jquery2.default)(document).off('keypress');
-		this.musicDuration = 0;
-		this.musicDuration = this.sndChoose.duration;
-
-		if (this.musicDuration > 3000) this.musicDuration = 3000;
-		if (typeof this.music !== 'undefined') {
-			this.fade();
-		}
-		const that = this;
-		setTimeout(() => {
-			that.selectCallback(toReturn);
-		}, this.musicDuration);
-	}
-}
-exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],36:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-class OldTimer {
-	constructor() {
-		this.elapsed;
-		this.paused = true;
-		this.lastTime = 0;
-		this.pauseWhen = 0;
-		this.started = true;
-	}
-
-	isActive() {
-		return !paused & started;
-	}
-
-	get elapsed() {
-		if (this.paused) {
-			return this.pauseWhen - this.lastTime;
-		}
-		return performance.now() - this.lastTime;
-	}
-
-	pause() {
-		this.paused = true;
-		this.pauseWhen = performance.now();
-	}
-
-	reset() {
-		this.lastTime = performance.now();
-		this.pauseWhen = 0;
-		this.paused = false;
-		this.started = true;
-	}
-
-	resume() {
-		this.paused = false;
-		this.started = true;
-		this.lastTime += performance.now() - this.pauseWhen;
-	}
-}
-exports.OldTimer = OldTimer;
-},{}],37:[function(require,module,exports) {
+})({19:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -5078,7 +2980,2107 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],31:[function(require,module,exports) {
+},{}],11:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+const useWebTTS = true;
+
+class TTS {
+	constructor(webTTS = false) {
+		this.synth = window.speechSynthesis;
+		this.webTTS = webTTS;
+	}
+
+	speak(text) {
+		if (this.webTTS) {
+			const utterThis = new SpeechSynthesisUtterance(text);
+			this.synth.stop();
+			this.synth.speak(utterThis);
+		} else {
+			document.getElementById('speech').innerHTML = '';
+			const para = document.createElement('p');
+			para.appendChild(document.createTextNode(text));
+			document.getElementById('speech').appendChild(para);
+		}
+	} // End speak()
+
+	setWebTTS(tts) {
+		this.webTTS = tts;
+	}
+} // End class
+if (typeof speech === 'undefined') {
+	var speech = new TTS();
+}
+exports.TTS = TTS;
+exports.speech = speech;
+},{}],13:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.so = undefined;
+
+var _howler = require('./howler');
+
+var _tts = require('./tts');
+
+const isElectron = true;
+let playOnceTimer;
+class SoundObjectItem {
+	constructor(file, callback = 0, tag = 0, stream = false) {
+		const that = this;
+		this.fileName = file;
+		this.sound = new _howler.Howl({
+			src: file,
+			html5: stream,
+			onload() {
+				that.doneLoading();
+			}
+		});
+		this.timeout = setTimeout(() => {
+			that.checkProgress();
+		}, 2000);
+		this.loaded = false;
+		this.callback = callback;
+		this.timeToLoad = performance.now();
+		this.tag = tag;
+	}
+
+	checkProgress() {
+		if (this.sound.state() == 'loaded') {
+			this.doneLoading();
+		} else {
+			const that = this;
+			this.timeout = setTimeout(() => {
+				that.checkProgress();
+			}, 500);
+		}
+	}
+
+	doneLoading() {
+		clearTimeout(this.timeout);
+		this.loaded = true;
+		if (this.callback != 0) {
+			this.callback();
+		}
+	}
+
+	play() {
+		this.sound.play();
+	}
+
+	stop() {
+		this.sound.stop();
+	}
+
+	pause() {
+		this.sound.pause();
+	}
+
+	destroy() {
+		this.sound.unload();
+	}
+
+	unload() {
+		this.sound.unload();
+	}
+
+	get volume() {
+		return this.sound.volume();
+	}
+
+	set volume(v) {
+		return this.sound.volume(v);
+	}
+	get pan() {
+		return this.sound.stereo();
+	}
+
+	set pan(v) {
+		return this.sound.stereo(v);
+	}
+
+	set loop(v) {
+		return this.sound.loop(v);
+	}
+	get active() {
+		if (this.sound.state() == "unloaded") return false;
+		if (this.sound.state() == "loaded") return true;
+		if (this.sound.state() == "loading") return true;
+	}
+	get loop() {
+		return this.sound.loop();
+	}
+	get playing() {
+		return this.sound.playing();
+	}
+	get playbackRate() {
+		return this.sound.rate();
+	}
+
+	set playbackRate(v) {
+		return this.sound.rate(v);
+	}
+	get pitch() {
+		return this.sound.rate();
+	}
+
+	set pitch(v) {
+		return this.sound.rate(v);
+	}
+
+	get currentTime() {
+		return this.sound.seek();
+	}
+
+	get duration() {
+		return this.sound.duration() * 1000;
+	}
+
+	get position() {
+		return this.sound.seek();
+	}
+
+	set currentTime(v) {
+		return this.sound.seek(v);
+	}
+
+	seek(time) {
+		return this.sound.seek(time);
+	}
+}
+class SoundObject {
+	constructor() {
+		this.sounds = new Array();
+		this.oneShots = new Array();
+		this.debug = false;
+		this.loadingQueue = false;
+		this.queueCallback = 0;
+		this.loadedSounds = 0;
+		this.loadingSounds = 0;
+		this.loadedCallback = 0;
+		this.queue = new Array();
+		this.queueLength = 0;
+		this.statusCallback = null;
+
+		this.extension = '.ogg';
+		if (isElectron == true) {
+			this.directory = './sounds/';
+		} else {
+			this.directory = '../soundsopus/';
+			this.extension = '.opus';
+		}
+
+		this.oneShotSound = null;
+	}
+
+	setStatusCallback(callback) {
+		this.statusCallback = callback;
+	}
+
+	findSound(file) {
+		for (const i in this.sounds) {
+			if (this.sounds[i].fileName == file) {
+				return this.sounds[i];
+			}
+		}
+		return -1;
+	}
+
+	findSoundIndex(file) {
+		for (const i in this.sounds) {
+			if (this.sounds[i].fileName == file) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	resetQueuedInstance() {
+		for (let i = 0; i < this.sounds.length; i++) {
+			if (typeof this.sounds[i] !== 'undefined') {
+				if (this.sounds[i].tag == 1) {
+					this.sounds[i].sound.unload();
+					this.sounds.splice(i, 1);
+				}
+			}
+		}
+
+		this.loadingQueue = false;
+		this.queueCallback = 0;
+		this.loadedSounds = 0;
+		this.loadingSounds = 0;
+		this.loadedCallback = 0;
+		this.queue = new Array();
+		this.queueLength = 0;
+		this.statusCallback = null;
+	}
+
+	create(file, stream = false) {
+		file = this.directory + file + this.extension;
+		let returnObject = null;
+		const that = this;
+		returnObject = new SoundObjectItem(file, () => {
+			that.doneLoading();
+		}, 0, stream);
+		this.sounds.push(returnObject);
+		return returnObject;
+	}
+
+	enqueue(file) {
+		file = this.directory + file + this.extension;
+		this.queue.push(file);
+		this.queueLength = this.queue.length;
+	}
+
+	loadQueue() {
+		this.handleQueue();
+		this.loadingQueue = true;
+	}
+
+	setQueueCallback(callback) {
+		this.queueCallback = callback;
+	}
+
+	resetQueue() {
+		this.queue = new Array();
+		this.loadingQueue = false;
+	}
+
+	handleQueue() {
+		if (this.queue.length > 0) {
+			const that = this;
+			if (typeof this.statusCallback !== 'undefined' && this.statusCallback != null) {
+				this.statusCallback(1 - this.queue.length / this.queueLength);
+			}
+			if (this.findSound(this.queue[0]) != -1) {
+				this.queue.splice(0, 1);
+				this.handleQueue();
+				return;
+			}
+			this.sounds.push(new SoundObjectItem(this.queue[0], () => {
+				that.handleQueue();
+			}, 1));
+			this.queue.splice(0, 1);
+		} else {
+			this.loadingQueue = false;
+			if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
+				this.queueCallback();
+			}
+		}
+	}
+
+	setCallback(callback) {
+		this.loadedCallback = callback;
+	}
+
+	doneLoading() {
+		const result = this.isLoading();
+
+		if (result == 1) {
+			if (typeof this.loadedCallback !== 'undefined' && this.loadedCallback != 0 && this.loadedCallback != null) {
+				this.loadedCallback();
+			}
+		}
+	}
+
+	isLoading() {
+		const loading = 0;
+		this.loadedSounds = 0;
+		this.loadingSounds = 0;
+		const stillLoading = new Array();
+		for (let i = 0; i < this.sounds.length; i++) {
+			if (typeof this.sounds[i] !== 'undefined') {
+				if (this.sounds[i].loaded == false) {
+					this.loadingSounds++;
+				} else {
+					this.loadedSounds++;
+				}
+			}
+		}
+
+		return this.loadedSounds / this.sounds.length;
+	}
+
+	playOnce(file) {
+		this.oneShotSound = so.create(file);
+		this.oneShots.push(this.oneShotSound);
+		this.oneShotSound.play();
+		const toDestroy = new Array();
+		const that = this;
+		this.oneShotSound.on('ended', () => {
+			for (var i = 0; i < that.oneShots.length; i++) {
+				if (that.oneShots[i].playing == false) {
+					that.oneShots[i].unload();
+					toDestroy.push(i);
+				}
+			}
+			for (var i = 0; i < toDestroy.length; i++) {
+				if (that.oneShotSounds[i].playing == false) {
+					that.oneShotSounds.splice(toDestroy[i], 1);
+					_tts.speech.speak('destroyed.' + toDestroy[i]);
+				}
+			}
+		});
+	}
+
+	destroy(file, callback = 0) {
+		let noMore = false;
+		const filename = this.directory + file + this.extension;
+		while (!noMore) {
+			const found = this.findSoundIndex(filename);
+			if (found == -1) {
+				noMore = true;
+			} else {
+				this.sounds[found].sound.unload();
+				this.sounds.splice(found, 1);
+			}
+		}
+		if (callback != 0) {
+			callback();
+		}
+	}
+
+	kill(callback = 0) {
+		while (this.sounds.length > 0) {
+			this.sounds.splice(0, 1);
+		}
+		_howler.Howler.unload();
+		if (callback != 0) {
+			callback();
+		}
+	}
+}
+const so = new SoundObject();
+exports.so = so;
+},{"./howler":19,"./tts":11}],3:[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SoundPool = undefined;
+
+var _soundObject = require("./soundObject.js");
+
+class SoundPoolItem {
+  constructor(filename) {
+    this.reset(filename);
+  }
+  reset(filename) {
+    this.filename = filename;
+    if (typeof handle !== "undefined") handle.destroy();
+    this.handle = _soundObject.so.create(filename);
+    this.x = 0;
+    this.y = 0;
+    this.looping = false;
+    this.pan_step = 0;
+    this.volume_step = 0;
+    this.behind_pitch_decrease = 0;
+    this.start_pan = 0;
+    this.start_volume = 100;
+    this.start_pitch = 100;
+    this.left_range = 0;
+    this.right_range = 0;
+    this.backward_range = 0;
+    this.forward_range = 0;
+    this.max_distance = 0;
+    this.is_3d = false;
+    this.paused = false;
+    this.stationary = false;
+    this.start_offset = 0;
+    this.persistent = false;
+  }
+
+  position1d(lx, sx, ps, vs, start_pan = 0, start_volume = 100) {
+    let delta = 0;
+    let finalPan = start_pan;
+    let finalVolume = start_volume;
+    if (sx < lx) {
+      delta = lx - sx;
+      finalPan -= delta * ps;
+      finalVolume -= delta * vs;
+    }
+    if (sx > lx) {
+      delta = sx - lx;
+      finalPan += delta * ps;
+      finalVolume -= delta * vs;
+    }
+    if (finalPan < -100) {
+      finalPan = -100;
+    }
+    if (finalPan > 100) {
+      finalPan = 100;
+    }
+    if (finalVolume < 0) {
+      finalVolume = 0;
+    }
+    if (this.pan != finalPan / 100) this.pan = finalPan / 100;
+    if (this.volume != finalVolume / 100) this.volume = finalVolume / 100;
+  }
+
+  position2d(listener_x, listener_y, source_x, source_y, pan_step, volume_step, behind_pitch_decrease, start_pan = 0, start_volume = 100, start_pitch = 100) {
+    let delta_x = 0;
+    let delta_y = 0;
+    let final_pan = start_pan;
+    let final_volume = start_volume;
+    let final_pitch = start_pitch;
+
+    // First, we calculate the delta between the listener && the source.
+    if (source_x < listener_x) {
+      delta_x = listener_x - source_x;
+      final_pan -= delta_x * pan_step;
+      final_volume -= delta_x * volume_step;
+    }
+    if (source_x > listener_x) {
+      delta_x = source_x - listener_x;
+      final_pan += delta_x * pan_step;
+      final_volume -= delta_x * volume_step;
+    }
+    if (source_y < listener_y) {
+      final_pitch -= Math.abs(behind_pitch_decrease);
+      delta_y = listener_y - source_y;
+      final_volume -= delta_y * volume_step;
+    }
+    if (source_y > listener_y) {
+      delta_y = source_y - listener_y;
+      final_volume -= delta_y * volume_step;
+    }
+
+    // Then we check if the calculated values are out of range, && fix them if that's the case.
+    if (final_pan < -100) {
+      final_pan = -100;
+    }
+    if (final_pan > 100) {
+      final_pan = 100;
+    }
+    if (final_volume < -100) {
+      final_volume = -100;
+    }
+    if (this.pan != final_pan / 100) this.pan = final_pan / 100;
+    if (this.volume != final_volume / 100) this.volume = final_volume / 100;
+    if (this.pitch != final_pitch / 100) this.pitch = final_pitch / 100;
+  }
+  update(listener_x, listener_y) {
+    if (typeof this.handle === "undefined") {
+      return;
+    }
+    if (this.max_distance > 0 && this.looping == true) {
+      let total_distance = this.get_total_distance(listener_x, listener_y);
+      if (total_distance > this.max_distance && this.handle.active == true) {
+        this.handle.destroy();
+        return;
+      }
+      if (total_distance <= this.max_distance && this.handle.active == false) {
+        this.handle = _soundObject.so.create(filename);
+        if (this.handle.active == true) {
+          if (this.start_offset > 0) {
+            this.handle.seek(start_offset);
+          }
+          this.update_listener_position(listener_x, listener_y);
+          if (this.paused == false) {
+            this.handle.play();
+            this.handle.loop = true;
+          }
+        }
+        return;
+      }
+    }
+    this.update_listener_position(listener_x, listener_y);
+  }
+  update_listener_position(listener_x, listener_y) {
+    if (this.handle.active == false) {
+      return;
+    }
+    if (this.stationary == true) {
+      return;
+    }
+    let delta_left = this.x - this.left_range;
+    let delta_right = this.x + this.right_range;
+    let delta_backward = this.y - this.backward_range;
+    let delta_forward = this.y + this.forward_range;
+    let true_x = listener_x;
+    let true_y = listener_y;
+    if (this.is_3d == false) {
+      if (listener_x >= delta_left && listener_x <= delta_right) {
+        this.position1d(listener_x, listener_x, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
+        return;
+      }
+      if (listener_x < delta_left) this.position1d(listener_x, delta_left, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
+      if (listener_x > delta_right) this.position1d(listener_x, delta_right, this.pan_step, this.volume_step, this.start_pan, this.start_volume);
+      return;
+    }
+    if (listener_x < delta_left) true_x = delta_left;else if (listener_x > delta_right) true_x = delta_right;
+    if (listener_y < delta_backward) true_y = delta_backward;else if (listener_y > delta_forward) true_y = delta_forward;
+    this.position2d(listener_x, listener_y, true_x, true_y, this.pan_step, this.volume_step, this.behind_pitch_decrease, this.start_pan, this.start_volume, this.start_pitch);
+  }
+
+  /*
+  This method returns the total distance between the current sound && the listener in space. This is used to calculate in && out of earshot conditions.
+  */
+  get_total_distance(listener_x, listener_y) {
+    if (this.stationary == true) {
+      return 0;
+    }
+    let delta_left = this.x - this.left_range;
+    let delta_right = this.x + this.right_range;
+    let delta_backward = this.y - this.backward_range;
+    let delta_forward = this.y + this.forward_range;
+    let true_x = listener_x;
+    let true_y = listener_y;
+    let distance = 0;
+    if (this.is_3d == false) {
+      if (listener_x >= delta_left && listener_x <= delta_right) {
+        return distance;
+      }
+      if (listener_x < delta_left) distance = delta_left - listener_x;
+      if (listener_x > delta_right) distance = listener_x - delta_right;
+      return distance;
+    }
+    if (listener_x < delta_left) true_x = delta_left;else if (listener_x > delta_right) true_x = delta_right;
+    if (listener_y < delta_backward) true_y = delta_backward;else if (listener_y > delta_forward) true_y = delta_forward;
+    if (listener_x < true_x) distance = true_x - listener_x;
+    if (listener_x > true_x) distance = listener_x - true_x;
+    if (listener_y < true_y) distance += true_y - listener_y;
+    if (listener_y > true_y) distance += listener_y - true_y;
+    return distance;
+  }
+
+}
+
+class SoundPool {
+  // Default constructor, where we give the user 100 sounds.
+  constructor() {
+    this.items = [];
+    this.items.splice();
+    this.max_distance = 0;
+    this.pan_step = 1.0;
+    this.volume_step = 1.0;
+    this.behind_pitch_decrease = 0.25;
+    this.last_listener_x = this.x;
+    this.last_listener_y = 0;
+    this.highest_slot = 0;
+    this.clean_frequency = 3;
+  }
+
+  // In this constructor the user can specify how many sounds they want.
+
+  playStationary(filename, looping, persistent = false) {
+    return this.playStationaryExtended(filename, looping, 0, 0, 100, 100, persistent);
+  }
+
+  playStationaryExtended(filename, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
+    let slot = this.reserve_slot();
+    if (slot == -1) {
+      return -1;
+    }
+    console.log("slot" + slot);
+    this.items.splice(slot, 0, new SoundPoolItem(filename));
+    this.items[slot].looping = looping;
+    this.items[slot].stationary = true;
+    this.items[slot].start_offset = offset;
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].persistent = persistent;
+    if (this.items[slot].start_offset > 0) {
+      this.items[slot].handle.seek(this.items[slot].start_offset);
+    }
+    if (this.start_pan != 0.0) {
+      this.items[slot].handle.pan = start_pan / 100;
+    }
+    if (this.start_volume < 100.0) {
+      this.items[slot].handle.volume = start_volume / 100;
+    }
+    this.items[slot].handle.pitch = this.start_pitch / 100;
+    if (this.looping == true) {
+      this.items[slot].handle.play();
+      this.items[slot].handle.loop = true;
+    } else {
+      this.items[slot].handle.play();
+    }
+    if (slot > this.highest_slot) this.highest_slot = slot;
+    return items[slot].handle;
+  }
+
+  reserve_slot() {
+    // This finds the first available sound slot && prepares it for use.
+    this.clean_frequency -= 1;
+    if (this.clean_frequency == 0) {
+      this.clean_frequency = 3;
+      this.clean_unused();
+    }
+    let slot = -1;
+    let current_length = this.items.length;
+    for (let i = 0; i < current_length; i++) {
+      if (this.items[i].persistent == true) {
+        continue;
+      }
+      if (this.items[i].looping == true) {
+        continue;
+      }
+      if (typeof this.items[i].handle === "undefined") {
+        slot = i;
+        this.items.splice(slot, 1);
+        break;
+      }
+      if (this.items[i].handle.active == false) {
+        slot = i;
+        this.items.splice(slot, 1);
+        break;
+      }
+      if (this.items[i].handle.playing == false) {
+        slot = i;
+        this.items.splice(slot, 1);
+        break;
+      }
+    }
+    if (slot == -1) {
+      slot = current_length;
+      return slot;
+    }
+  }
+  play1d(filename, listener_x, sound_x, looping, persistent = false) {
+    return this.playExtended1d(filename, listener_x, sound_x, 0, 0, looping, 0, 0, 100, 100, persistent);
+  }
+
+  playExtended1d(filename, listener_x, sound_x, left_range, right_range, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
+    let slot = this.reserve_slot();
+    if (slot == -1) {
+      return -1;
+    }
+    this.items.splice(slot, 0, new SoundPoolItem(filename));
+    this.items[slot].x = sound_x;
+    this.items[slot].y = 0;
+    this.items[slot].looping = looping;
+    this.items[slot].pan_step = this.pan_step;
+    this.items[slot].volume_step = this.volume_step;
+    this.items[slot].behind_pitch_decrease = 0.0;
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].left_range = left_range;
+    this.items[slot].right_range = right_range;
+    this.items[slot].backward_range = 0;
+    this.items[slot].forward_range = 0;
+    this.items[slot].max_distance = this.max_distance;
+    this.items[slot].is_3d = false;
+    this.items[slot].start_offset = offset;
+    this.items[slot].persistent = persistent;
+    if (this.max_distance > 0 && this.items[slot].get_total_distance(listener_x, 0) > this.max_distance) {
+      // We are out of earshot, so we cancel.
+      if (looping == false) {
+        this.items[slot].destroy();
+        this.items.splice(slot, 1);
+        return -2;
+      } else {
+        this.last_listener_x = listener_x;
+        this.items[slot].handle.pitch = start_pitch;
+        this.items[slot].update(listener_x, 0);
+        if (slot > this.highest_slot) this.highest_slot = slot;
+        return items[slot].handle;
+      }
+    }
+    this.items[slot].handle.load(this.items[slot].filename);
+    if (this.items[slot].handle.active == false) {
+      this.items[slot].reset();
+      return -1;
+    }
+    if (this.items[slot].start_offset > 0) {
+      this.items[slot].handle.seek(this.items[slot].start_offset);
+    }
+    this.items[slot].handle.pitch = start_pitch;
+    this.last_listener_x = listener_x;
+    this.items[slot].update(listener_x, 0);
+    if (looping == true) {
+      this.items[slot].handle.play();
+      this.items[slot].handle.loop = true;
+    } else {
+      this.items[slot].handle.play();
+    }
+    if (slot > this.highest_slot) this.highest_slot = slot;
+    return items[slot].handle;
+  }
+  play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent = false) {
+    return this.playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
+  }
+  playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent = false) {
+    slot = reserve_slot();
+    if (slot == -1) {
+      return -1;
+    }
+    this.items.splice(slot, 0, new SoundPoolItem(filename));
+    this.items[slot].x = sound_x;
+    this.items[slot].y = sound_y;
+    this.items[slot].looping = looping;
+    this.items[slot].pan_step = this.pan_step;
+    this.items[slot].volume_step = this.volume_step;
+    this.items[slot].behind_pitch_decrease = this.behind_pitch_decrease;
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].left_range = left_range;
+    this.items[slot].right_range = right_range;
+    this.items[slot].backward_range = backward_range;
+    this.items[slot].forward_range = forward_range;
+    this.items[slot].max_distance = this.max_distance;
+    this.items[slot].is_3d = true;
+    this.items[slot].start_offset = offset;
+    this.items[slot].persistent = persistent;
+    if (this.max_distance > 0 && this.items[slot].get_total_distance(listener_x, listener_y) > this.max_distance) {
+      // We are out of earshot, so we cancel.
+      if (looping == false) {
+        this.items[slot].destroy();
+        this.items.splice(slot, 1);
+        return -2;
+      } else {
+        this.last_listener_x = listener_x;
+        this.last_listener_y = listener_y;
+        this.items[slot].update(listener_x, listener_y);
+        if (slot > this.highest_slot) this.highest_slot = slot;
+        return slot;
+      }
+    }
+    if (this.items[slot].handle.active == false) {
+      this.items[slot].destroy();
+      this.items.splice(slot, 1);
+      return -1;
+    }
+    if (this.items[slot].start_offset > 0) {
+      this.items[slot].handle.seek(this.items[slot].start_offset);
+    }
+    this.last_listener_x = listener_x;
+    this.last_listener_y = listener_y;
+    this.items[slot].update(listener_x, listener_y);
+    if (looping == true) {
+      this.items[slot].handle.play();
+      this.items[slot].handle.loop = true;
+    } else {
+      this.items[slot].handle.play();
+    }
+    if (slot > this.highest_slot) this.highest_slot = slot;
+    return slot;
+  }
+
+  soundActive(slot) {
+    /*
+    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
+    */
+    if (this.verify_slot(slot) == false) {
+      return false;
+    }
+    if (this.items[slot].looping == false && typeof this.items[slot].handle === "undefined") {
+      return false;
+    }
+    if (this.items[slot].looping == false && this.items[slot].handle.playing == false) {
+      return false;
+    }
+    return true;
+  }
+  soundPlaying(slot) {
+    if (sound_is_active(slot) == false) {
+      return false;
+    }
+    return this.items[slot].handle.playing;
+  }
+
+  pause_sound(slot) {
+    if (sound_is_active(slot) == false) {
+      return false;
+    }
+    if (this.items[slot].paused == true) {
+      return false;
+    }
+    this.items[slot].paused = true;
+    if (this.items[slot].handle.playing == true) this.items[slot].handle.pause();
+    return true;
+  }
+
+  resume_sound(slot) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    if (this.items[slot].paused == false) {
+      return false;
+    }
+    this.items[slot].paused = false;
+    if (this.items[slot].max_distance > 0 && this.items[slot].get_total_distance(this.last_listener_x, this.last_listener_y) > this.items[slot].max_distance) {
+      if (this.items[slot].handle.active == true) this.items[slot].handle.close();
+      return true;
+    }
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    if (this.items[slot].handle.active == true && this.items[slot].handle.playing == false) {
+      if (this.items[slot].looping == true) {
+        this.items[slot].handle.play();
+        this.items[slot].handle.loop = true;
+      } else {
+        this.items[slot].handle.play();
+      }
+    }
+    return true;
+  }
+
+  pause_all() {
+    let currently_playing = 0;
+    let current_length = this.items.length;
+    for (let i = 0; i < current_length; i++) {
+      if (sound_is_playing(i)) currently_playing += 1;
+      this.pause_sound(i);
+    }
+  }
+
+  resume_all() {
+    let currently_playing = 0;
+    let current_length = this.items.length;
+    for (let i = 0; i < current_length; i++) {
+      resume_sound(i);
+      if (sound_is_playing(i)) currently_playing += 1;
+    }
+  }
+
+  destroy_all() {
+    for (let i = 0; i < this.items.length; i++) {
+      this.items[i].destroy();
+    }
+    this.highest_slot = 0;
+    this.items.splice();
+  }
+
+  update_listener_1d(listener_x) {
+    this.update_listener_2d(listener_x, 0);
+  }
+
+  update_listener_2d(listener_x, listener_y) {
+    if (this.items.length() == 0) return;
+    this.last_listener_x = listener_x;
+    this.last_listener_y = listener_y;
+    for (let i = 0; i <= this.highest_slot; i++) {
+      this.items[i].update(listener_x, listener_y);
+    }
+  }
+
+  update_sound_1d(slot, x) {
+    return this.update_sound_2d(slot, x, 0);
+  }
+
+  update_sound_2d(slot, x, y) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    this.items[slot].x = x;
+    this.items[slot].y = y;
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    return true;
+  }
+
+  update_sound_start_values(slot, start_pan, start_volume, start_pitch) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    this.items[slot].start_pan = start_pan;
+    this.items[slot].start_volume = start_volume;
+    this.items[slot].start_pitch = start_pitch;
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    if (this.items[slot].stationary == true && typeof this.items[slot].handle !== "undefined") {
+      this.items[slot].handle.pan = start_pan;
+      this.items[slot].handle.volume = start_volume;
+      this.items[slot].handle.pitch = start_pitch;
+      return true;
+    }
+    if (this.items[slot].is_3d == false && this.items[slot].handle.pitch != start_pitch) {
+      this.items[slot].handle.pitch = start_pitch;
+    }
+    return true;
+  }
+
+  update_sound_range_1d(slot, left_range, right_range) {
+    return update_sound_range_2d(slot, left_range, right_range, 0, 0);
+  }
+
+  update_sound_range_2d(slot, left_range, right_range, backward_range, forward_range) {
+    if (verify_slot(slot) == false) {
+      return false;
+    }
+    this.items[slot].left_range = left_range;
+    this.items[slot].right_range = right_range;
+    this.items[slot].backward_range = backward_range;
+    this.items[slot].forward_range = forward_range;
+    this.items[slot].update(this.last_listener_x, this.last_listener_y);
+    return true;
+  }
+
+  destroy_sound(slot) {
+    if (verify_slot(slot) == true) {
+      this.items[slot].destroy();
+      if (slot == this.highest_slot) find_highest_slot(this.highest_slot);
+      return true;
+    }
+    return false;
+  }
+
+  // Internal properties.
+
+
+  // Internal methods.
+
+  find_highest_slot(limit) {
+    /*
+    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up.
+    */
+    highest_slot = 0;
+    for (let i = 0; i < limit; i++) {
+      if (this.items[i].looping == false && typeof this.items[i].handle === "undefined") {
+        continue;
+      }
+      if (this.items[i].looping == false && this.items[i].handle.playing == false) {
+        continue;
+      }
+      highest_slot = i;
+    }
+  }
+
+  clean_unused() {
+    /*
+    If the looping parameter is set to true && the sound object is inactive, the sound is still considered to be active as this just means that we are currently out of earshot. A non-looping sound that has finished playing is considered to be dead, && will be cleaned up if it is not set to be persistent.
+    */
+    if (this.items.length() == 0) return;
+    let limit = this.highest_slot;
+    let killed_highest_slot = false;
+    for (let i = 0; i <= limit; i++) {
+      if (this.items[i].persistent == true) {
+        continue;
+      }
+      if (this.items[i].looping == true) {
+        continue;
+      }
+      if (typeof this.items[i].handle === "undefined") {
+        continue;
+      }
+      if (this.items[i].handle.active == false) {
+        continue;
+      }
+      if (this.items[i].handle.playing == false && this.items[i].paused == false) {
+        if (i == this.highest_slot) killed_highest_slot = true;
+        this.items[i].destroy();
+        this.items.splice(i, 1);
+      }
+    }
+    if (killed_highest_slot == true) find_highest_slot(this.highest_slot);
+  }
+
+  verify_slot(slot) {
+    // This is a security function to perform basic sanity checks.
+    if (slot < 0) {
+      return false;
+    }
+    if (slot >= this.items.length()) {
+      return false;
+    }
+    if (this.items[slot].persistent == true) {
+      return true;
+    }
+    if (this.items[slot].looping == true) {
+      return true;
+    }
+    if (typeof this.items[slot].handle !== "undefined") {
+      return true;
+    }
+    return false;
+  }
+
+}
+exports.SoundPool = SoundPool;
+},{"./soundObject.js":13}],14:[function(require,module,exports) {
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+if (typeof KeyEvent === 'undefined') {
+	var KeyEvent = {
+		DOM_VK_CANCEL: 3,
+		DOM_VK_HELP: 6,
+		DOM_VK_BACK_SPACE: 8,
+		DOM_VK_TAB: 9,
+		DOM_VK_CLEAR: 12,
+		DOM_VK_RETURN: 13,
+		DOM_VK_ENTER: 14,
+		DOM_VK_SHIFT: 16,
+		DOM_VK_CONTROL: 17,
+		DOM_VK_ALT: 18,
+		DOM_VK_PAUSE: 19,
+		DOM_VK_CAPS_LOCK: 20,
+		DOM_VK_ESCAPE: 27,
+		DOM_VK_SPACE: 32,
+		DOM_VK_PAGE_UP: 33,
+		DOM_VK_PAGE_DOWN: 34,
+		DOM_VK_END: 35,
+		DOM_VK_HOME: 36,
+		DOM_VK_LEFT: 37,
+		DOM_VK_UP: 38,
+		DOM_VK_RIGHT: 39,
+		DOM_VK_DOWN: 40,
+		DOM_VK_PRINTSCREEN: 44,
+		DOM_VK_INSERT: 45,
+		DOM_VK_DELETE: 46,
+		DOM_VK_0: 48,
+		DOM_VK_1: 49,
+		DOM_VK_2: 50,
+		DOM_VK_3: 51,
+		DOM_VK_4: 52,
+		DOM_VK_5: 53,
+		DOM_VK_6: 54,
+		DOM_VK_7: 55,
+		DOM_VK_8: 56,
+		DOM_VK_9: 57,
+		DOM_VK_SEMICOLON: 59,
+		DOM_VK_EQUALS: 61,
+		DOM_VK_A: 65,
+		DOM_VK_B: 66,
+		DOM_VK_C: 67,
+		DOM_VK_D: 68,
+		DOM_VK_E: 69,
+		DOM_VK_F: 70,
+		DOM_VK_G: 71,
+		DOM_VK_H: 72,
+		DOM_VK_I: 73,
+		DOM_VK_J: 74,
+		DOM_VK_K: 75,
+		DOM_VK_L: 76,
+		DOM_VK_M: 77,
+		DOM_VK_N: 78,
+		DOM_VK_O: 79,
+		DOM_VK_P: 80,
+		DOM_VK_Q: 81,
+		DOM_VK_R: 82,
+		DOM_VK_S: 83,
+		DOM_VK_T: 84,
+		DOM_VK_U: 85,
+		DOM_VK_V: 86,
+		DOM_VK_W: 87,
+		DOM_VK_X: 88,
+		DOM_VK_Y: 89,
+		DOM_VK_Z: 90,
+		DOM_VK_CONTEXT_MENU: 93,
+		DOM_VK_NUMPAD0: 96,
+		DOM_VK_NUMPAD1: 97,
+		DOM_VK_NUMPAD2: 98,
+		DOM_VK_NUMPAD3: 99,
+		DOM_VK_NUMPAD4: 100,
+		DOM_VK_NUMPAD5: 101,
+		DOM_VK_NUMPAD6: 102,
+		DOM_VK_NUMPAD7: 103,
+		DOM_VK_NUMPAD8: 104,
+		DOM_VK_NUMPAD9: 105,
+		DOM_VK_MULTIPLY: 106,
+		DOM_VK_ADD: 107,
+		DOM_VK_SEPARATOR: 108,
+		DOM_VK_SUBTRACT: 109,
+		DOM_VK_DECIMAL: 110,
+		DOM_VK_DIVIDE: 111,
+		DOM_VK_F1: 112,
+		DOM_VK_F2: 113,
+		DOM_VK_F3: 114,
+		DOM_VK_F4: 115,
+		DOM_VK_F5: 116,
+		DOM_VK_F6: 117,
+		DOM_VK_F7: 118,
+		DOM_VK_F8: 119,
+		DOM_VK_F9: 120,
+		DOM_VK_F10: 121,
+		DOM_VK_F11: 122,
+		DOM_VK_F12: 123,
+		DOM_VK_F13: 124,
+		DOM_VK_F14: 125,
+		DOM_VK_F15: 126,
+		DOM_VK_F16: 127,
+		DOM_VK_F17: 128,
+		DOM_VK_F18: 129,
+		DOM_VK_F19: 130,
+		DOM_VK_F20: 131,
+		DOM_VK_F21: 132,
+		DOM_VK_F22: 133,
+		DOM_VK_F23: 134,
+		DOM_VK_F24: 135,
+		DOM_VK_NUM_LOCK: 144,
+		DOM_VK_SCROLL_LOCK: 145,
+		DOM_VK_COMMA: 188,
+		DOM_VK_PERIOD: 190,
+		DOM_VK_SLASH: 191,
+		DOM_VK_BACK_QUOTE: 192,
+		DOM_VK_OPEN_BRACKET: 219,
+		DOM_VK_BACK_SLASH: 220,
+		DOM_VK_CLOSE_BRACKET: 221,
+		DOM_VK_QUOTE: 222,
+		DOM_VK_META: 224
+	};
+}
+exports.KeyEvent = KeyEvent;
+},{}],8:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.speech = exports.ScrollingText = undefined;
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _keycodes = require('./keycodes');
+
+var _soundObject = require('./soundObject');
+
+var _tts = require('./tts');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+if (typeof speech === 'undefined') {
+	var speech = new _tts.TTS();
+}
+if (runningText == undefined) {
+	var runningText = 0;
+}
+class ScrollingText {
+	constructor(text, delimiter = '\n', callback = 0) {
+		this.text = text;
+		this.delimiter = delimiter;
+		this.splitText = this.text.split(delimiter);
+		this.currentLine = 0;
+		this.sndOpen = _soundObject.so.create('UI/textOpen');
+		this.sndContinue = _soundObject.so.create('UI/textScroll');
+		this.sndClose = _soundObject.so.create('UI/textClose');
+		this.callback = callback;
+		const id = document.getElementById('touchArea');
+		// This.hammer = new Hammer(id);
+		this.init();
+	}
+
+	init() {
+		const that = this;
+		runningText = this;
+		document.addEventListener('keydown', this.handleKeys);
+		// This.hammer.on("swipeleft swiperight", function() { that.handleTap(0); });
+		// this.hammer.on("tap", function() { that.handleTap(1); });
+		this.sndOpen.play();
+		this.currentLine = 0;
+		this.readCurrentLine();
+	}
+
+	handleKeys(event) {
+		switch (event.which) {
+			case _keycodes.KeyEvent.DOM_VK_UP:
+			case _keycodes.KeyEvent.DOM_VK_DOWN:
+			case _keycodes.KeyEvent.DOM_VK_LEFT:
+			case _keycodes.KeyEvent.DOM_VK_RIGHT:
+				runningText.readCurrentLine();
+				break;
+			case _keycodes.KeyEvent.DOM_VK_RETURN:
+				runningText.advance();
+				break;
+		}
+	}
+
+	handleTap(action) {
+		if (action == 0) {
+			this.readCurrentLine();
+		}
+
+		if (action == 1) {
+			this.advance();
+		}
+	}
+
+	readCurrentLine() {
+		speech.speak(this.splitText[this.currentLine]);
+	}
+
+	advance() {
+		if (this.currentLine < this.splitText.length - 1) {
+			this.currentLine++;
+			this.sndContinue.play();
+			this.readCurrentLine();
+		} else {
+			this.sndClose.play();
+			this.sndClose.unload();
+			this.sndOpen.unload();
+			this.sndContinue.unload();
+			document.removeEventListener('keydown', this.handleKeys);
+			//			This.hammer.unload();
+			if (this.callback != 0) {
+				this.callback();
+			}
+		}
+	}
+}
+exports.ScrollingText = ScrollingText;
+exports.speech = speech;
+},{"./keycodes":14,"./soundObject":13,"./tts":11}],4:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.Player = undefined;
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _os = require('os');
+
+var _os2 = _interopRequireDefault(_os);
+
+var _keycodes = require('./keycodes');
+
+var _main = require('./main');
+
+var _scrollingText = require('./scrollingText');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class Player {
+	constructor() {
+		this.beatcoins = 0, this.pack = 'default', this.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
+		this.unlocks = {};
+		this.unlocks["default"] = {
+			"level": 0,
+			"insurance": 0,
+			"fails": 0,
+			"win": false,
+			"average": 0
+		};
+	}
+}
+exports.Player = Player;
+},{"./keycodes":14,"./main":1,"./scrollingText":8}],5:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.MenuTypes = exports.SelectorItem = exports.SliderItem = exports.MenuItem = undefined;
+
+var _tts = require('./tts');
+
+if (typeof speech === 'undefined') {
+	var speech = new _tts.TTS();
+}
+const MenuTypes = {
+	NORMAL: 0,
+	SELECTOR: 1,
+	SLIDER: 2,
+	EDIT: 3
+};
+class MenuItem {
+	constructor(id, name) {
+		this.name = name;
+		this.id = id;
+		this.type = MenuTypes.NORMAL;
+	}
+
+	speak() {
+		speech.speak(this.name);
+	}
+
+	select() {
+		return this.id;
+	}
+}
+
+class SelectorItem extends MenuItem {
+	constructor(id, name, options, defaultOption = 0, selectCallback) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.options = options;
+		this.type = MenuTypes.SELECTOR;
+		this.currentOption = defaultOption;
+		this.selectCallback = selectCallback;
+	}
+
+	speak() {
+		speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
+	}
+
+	increase() {
+		if (this.currentOption < this.options.length - 1) {
+			this.currentOption++;
+		}
+		speech.speak(this.options[this.currentOption]);
+		if (typeof this.selectCallback !== 'undefined') {
+			this.selectCallback(this.options[this.currentOption]);
+		}
+	}
+
+	decrease() {
+		if (this.currentOption > 0) {
+			this.currentOption--;
+		}
+		speech.speak(this.options[this.currentOption]);
+		if (typeof this.selectCallback !== 'undefined') {
+			this.selectCallback(this.options[this.currentOption]);
+		}
+	}
+
+	select() {
+		return this.id;
+	}
+}
+
+class SliderItem extends MenuItem {
+	constructor(id, name, from, to, currentValue = 0) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.minValue = from;
+		this.maxValue = to;
+		this.currentValue = currentValue;
+		this.type = MenuTypes.SLIDER;
+	}
+
+	speak() {
+		speech.speak(this.name + '. Slider. Set to ' + this.currentValue);
+	}
+
+	increase() {
+		if (this.currentValue < this.maxValue) {
+			this.currentValue++;
+		}
+		speech.speak(this.currentValue);
+	}
+
+	decrease() {
+		if (this.currentValue > this.minValue) {
+			this.currentValue--;
+		}
+		speech.speak(this.currentValue);
+	}
+
+	select() {
+		return this.id;
+	}
+}
+
+class EditItem extends MenuItem {
+	constructor(id, name, defaultText = '') {
+		super();
+		this.id = id;
+		this.name = name;
+		this.text = defaultText;
+		this.type = MenuTypes.EDIT;
+	}
+
+	speak() {
+		speech.speak(this.name + '. Editable. ' + (this.text == '' ? 'Nothing entered.' : 'Set to ' + this.text));
+	}
+
+	addChar(char) {
+		this.text += char;
+		speech.speak(char);
+	}
+
+	removeChar() {
+		this.text = this.text.substring(0, this.text.length - 1);
+		speech.speak(this.text);
+	}
+
+	select() {
+		return this.text;
+	}
+}
+exports.MenuItem = MenuItem;
+exports.SliderItem = SliderItem;
+exports.SelectorItem = SelectorItem;
+exports.MenuTypes = MenuTypes;
+},{"./tts":11}],12:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+class GameUtils {
+	progressPan(current, max) {
+		return (current * 200 / max - 100) / 100;
+	}
+	progressPitch(current, max) {
+		return current * 200 / max / 100;
+	}
+	distance3D(x1, y1, z1, x2, y2, z2) {
+		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
+	}
+
+	distance(jx, jy, kx, ky) {
+		// Return Math.hypot(jx-kx, jy-ky)
+		return Math.sqrt((jx - kx) * (jx - kx) + (jy - ky) * (jy - ky));
+	}
+
+	calculateAngle(x1, y1, x2, y2) {
+		let angle = Math.atan2(y2 - y1, x2 - x1);
+		angle = angle >= 0 ? 0 : 2 * Math.PI + angle;
+		return angle;
+		// Return Math.atan2((y2 - y1),(x2 - x1));
+	}
+
+	isCollide3D(a, b) {
+		return a.x <= b.x + b.width && a.x + a.width >= b.x && a.y <= b.y + b.height && a.y + a.height >= b.y && a.z <= b.z + b.depth && a.z + a.depth >= b.z;
+	}
+
+	randomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	getRandomArbitrary(min, max) {
+		return Math.random() * (max - min) + min;
+	}
+
+	sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	percent(int1, int2) {
+		return int1 * 100 / int2;
+	}
+	average(arr, startIndex = 0) {
+		let len = arr.length;
+		let val = 0;
+		let average = 0;
+		for (let i = startIndex; i < arr.length; i++) {
+			val += arr[i];
+		}
+		average = val / len;
+		return average;
+	}
+	averageInt(arr, startIndex = 0) {
+		let len = arr.length;
+		let val = 0;
+		let average = 0;
+		for (let i = startIndex; i < arr.length; i++) {
+			val += arr[i];
+		}
+		average = val / len;
+		return Math.floor(average);
+	}
+	neg(num) {
+		return num >= 0 ? num == 0 ? 0 : 1 : -1;
+	}
+
+	numericSort(a, b) {
+		return a < b ? -1 : a == b ? 0 : 1;
+	}
+
+}
+var utils = exports.utils = new GameUtils();
+},{}],9:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.strings = undefined;
+
+var _main = require('./main');
+
+class Strings {
+	constructor() {
+		this.strings = {};
+		this.strings[1] = {
+			"mFound": "Found %1 new packs: what do you wish to do?",
+			mGames: "minigames",
+			sGames: "Select a minigame to play",
+			cost: "Price",
+			slot: "Beat slots",
+			unlocked: "Already bought",
+			buygame: "Do  you want to buy %1 for %2 beatcoins?",
+			nogame: "You don't have the required %1 beatcoins for this game, you only have %2.",
+			mainmenu: "main menu",
+			mSelect: "Please select",
+			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
+			packprice: "This pack costs %1 beatcoins, please confirm",
+			mReady: 'Please wait...',
+			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
+			mUnlocked: "Listen to unlocked music for this pack (%1 levels)",
+			mSafeguards: "Buy safeguards (now %1)",
+			dfiles: "Downloading %1 files. Press any key to obtain percentage",
+			packno: "Not enough beatcoins to get this pack, it costs %1.",
+			retrieving: "Retrieving data ",
+			nodown: "No downloads are available. So sorry! Check back soon",
+			mDownloadList: 'List all new available packs (%1)',
+			buy: "buy",
+			"mBack": "go back",
+			safequestion: "How many safeguards would you like? They cost %1 each. You have %2 beatcoins. You can get a maximum of %3. Remember, you can get a maximum of 100. If you want more, run me again.",
+			mDownloadInstructions: 'Press arrow keys to browse packs, the space bar to select a pack, p to preview its sound, and enter to begin downloading selected packs. Press escape or the left arrow to cancel',
+			mListen: "Ready: %1 levels unlocked. you can go back to the main menu with the left arrow key.",
+			mStart: 'Start Game',
+			mLearn: 'Learn the pack',
+			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
+			"yes": "Yes",
+			"no": "no",
+
+			dling: 'Downloading %2 packs please wait...',
+			dlprog: "downloading pack %1 of %2...",
+			dlingdone: 'Done! Rebuilding database...',
+			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
+			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
+			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!',
+			keymapStart: 'We will now remap your keyboard. You will hear the sounds for the different actions, and you will be prompted to press the key you want to associate to the new actions.',
+			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
+			mNew: 'Get new packs',
+			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
+			noGuardCash: "You need %1 beatcoins to buy one safeguard. You have %2.",
+			mBrowse: 'buy new packs (You have %1 beatcoins )',
+			mBrowseIncompleted: 'Browse uncompleted packs',
+			mBrowseUnlocked: "Change to different unlocked pack",
+			"youwin": "You win %1 coins!",
+			"youlose": "You lose %1 coins.",
+
+			mHashes: 'Rebuild packs folder',
+			mDownload: 'Download new packs'
+		};
+		this.strings[2] = {
+			"mFound": "Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
+			mReady: 'Espera, por favor...',
+			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
+			nodown: "No hay descargas disponibles por el momento. prueba pronto!",
+			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
+			buy: "comprar",
+			"mBack": "volver",
+			mDownloadInstructions: 'Pulsa las flechas para moverte por los packs, barra espaciadora para seleccionar un pack, la p para previsualizarlo, y enter para empezar la descarga de los seleccionados. pulsa escape o la flecha izquierda para cancelar',
+			mStart: 'jugar',
+			mLearn: 'aprender el pack',
+			mActions: 'Este pack tiene %1 acciones. Las teclas normales son espacio, tabulador, enter, retroceso/borrar, y opcionalmente las flechas. Si has cambiado la distribución del teclado puedes usarla. Para escuchar la acción de quedarse quieto, pulsa la tecla del punto. Para salir pulsa la q.',
+			dling: 'Descargando %2 packs por favor espera...',
+			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
+			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
+			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
+			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!',
+			keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
+			dlprog: "descargando pack %1 de %2...",
+			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
+			mUnlocked: "Escuchar la música desbloqueada de este pack (%1 niveles)",
+			mBrowseIncompleted: 'Ver packs comprados no completados',
+			"yes": "sí",
+			"youwin": "Ganas %1 monedas!",
+			noGuardCash: "No tienes suficientes monedas. Cada antifallo cuesta %1 y tienes %2.",
+			"youlose": "Pierdes %1 monedas!",
+			"no": "no",
+			mNew: 'Conseguir nuevos packs',
+			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
+			unlocked: "Ya lo has comprado",
+			mBrowse: 'comprar un pack (tienes %1 monedas)',
+			mBrowseUnlocked: 'Cambiar a otro pack comprado',
+			mHashes: 'Reconstruir base de datos de packs',
+			mainmenu: "menú principal",
+			mSelect: "Por favor selecciona",
+			mSafeSelect: "Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
+			mSafeguards: "Comprar antifallos (ahora %1)",
+			packprice: "Este pack cuesta %1 monedas, confirma que quieres comprarlo.",
+			packno: "No tienes monedas suficientes para este pack, cuesta %1.",
+			safequestion: "Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
+			mListen: "listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
+			dfiles: "Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
+			retrieving: "Recopilando datos ",
+			mDownload: 'Descargar packs',
+			mGames: "minijuegos",
+			buygame: "Quieres comprar %1 por %2 monedas?",
+			nogame: "No tienes las %1 monedas que necesitas para este juego, solo tienes %2",
+
+			sGames: "Selecciona un minijuego:",
+			cost: "Precio",
+			slot: "Beat slots"
+
+		};
+	}
+
+	get(what, rep = []) {
+		let str;
+		if (typeof this.strings[_main.lang][what] !== 'undefined') {
+			str = this.strings[_main.lang][what];
+		} else if (typeof this.strings[1][what] !== 'undefined') {
+			str = this.strings[1][what];
+		} else {
+			return 'String error: ' + what;
+		}
+		rep.forEach((v, i) => {
+			const i1 = Number(i) + 1;
+			str = str.replace('%' + i1, v);
+		});
+		return str;
+	}
+}
+var strings = exports.strings = new Strings();
+},{"./main":1}],2:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.KeyboardInput = undefined;
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _tts = require('./tts');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+'use strict';
+class KeyboardInput {
+	constructor() {
+		this.keyDown = [];
+		this.justPressed = [];
+		this.chars = [];
+		this.justReleased = [];
+		this.justPressedEventCallback = null;
+		this.charEventCallback = null;
+	}
+
+	init() {
+		const that = this;
+		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
+		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
+		document.addEventListener('keydown', event => {
+			that.handleKeyDown(event);
+		});
+		document.addEventListener('keyup', event => {
+			that.handleKeyUp(event);
+		});
+		document.addEventListener('keypress', event => {
+			that.handleChar(event);
+		});
+	}
+
+	handleKeyDown(event) {
+		if (this.keyDown[event.which] != true || typeof this.keyDown[event.which] === 'undefined') {
+			this.keyDown[event.which] = true;
+			this.justPressed[event.which] = true;
+			this.justReleased[event.which] = false;
+			if (typeof this.justPressedEventCallback !== 'undefined' && this.justPressedEventCallback != null) {
+				this.justPressedEventCallback(event.which);
+			}
+		}
+	}
+
+	handleChar(char) {
+		if (char.which < 48 || char.which > 122) {
+			return;
+		}
+		if (String.fromCharCode(char.which) != '') {
+			this.chars += String.fromCharCode(char.which);
+			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
+				this.charEventCallback(String.fromCharCode(char.which));
+			}
+		}
+	}
+
+	handleKeyUp(event) {
+		if (this.keyDown[event.which] == true) {
+			this.keyDown[event.which] = false;
+			this.justPressed[event.which] = false;
+			this.justReleased[event.which] = true;
+		}
+		this.chars = '';
+	}
+
+	isDown(event) {
+		return this.keyDown[event];
+	}
+
+	isJustPressed(event) {
+		if (this.justPressed[event] == true) {
+			this.justPressed[event] = false;
+			return true;
+		}
+		return false;
+	}
+
+	isJustReleased(event) {
+		if (this.justReleased[event]) {
+			this.justReleased[event] = false;
+			return true;
+		}
+		return false;
+	}
+
+	keysDown() {
+		const kd = [];
+		this.keyDown.forEach((v, i) => {
+			if (v) {
+				kd.push(i);
+			}
+		});
+		return kd;
+	}
+
+	getChars() {
+		const kd = this.chars;
+		this.chars = '';
+		return kd;
+	}
+
+	keysPressed() {
+		const kd = [];
+		this.justPressed.forEach((v, i) => {
+			if (v) {
+				kd.push(i);
+			}
+		});
+		this.justPressed.splice();
+		return kd;
+	}
+
+	releaseAllKeys() {}
+
+	keysReleased() {
+		const kd = [];
+		this.justReleased.forEach((v, i) => {
+			if (v) {
+				kd.push(i);
+			}
+		});
+		this.justReleased.splice();
+		return kd;
+	}
+}
+
+exports.KeyboardInput = KeyboardInput;
+},{"./tts":11}],6:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.Menu = undefined;
+
+var _utilities = require('./utilities');
+
+var _strings = require('./strings');
+
+var _tts = require('./tts');
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _soundObject = require('./soundObject.js');
+
+var _menuItem = require('./menuItem');
+
+var _keycodes = require('./keycodes');
+
+var _input = require('./input');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class Menu {
+	constructor(name, menuData, music) {
+		this.menuData = menuData;
+		this.first = true;
+		this.cursor = 0;
+		this.name = name;
+		this.sndKeyChar = _soundObject.so.create('ui/keyChar');
+		this.sndKeyDelete = _soundObject.so.create('ui/keyDelete');
+		this.sndSliderLeft = _soundObject.so.create('ui/menuSliderLeft');
+		this.sndSliderRight = _soundObject.so.create('ui/menuSliderRight');
+		this.sndBoundary = _soundObject.so.create('ui/menuBoundary');
+		this.sndChoose = _soundObject.so.create('ui/menuChoose');
+		this.sndMove = _soundObject.so.create('ui/menuMove');
+		this.sndOpen = _soundObject.so.create('ui/menuOpen');
+		this.sndSelector = _soundObject.so.create('ui/menuSelector');
+		this.sndWrap = _soundObject.so.create('ui/menuWrap');
+		this.selectCallback = null;
+		if (typeof music !== 'undefined') {
+			this.music = music;
+		}
+		const id = document.getElementById('touchArea');
+		// This.hammer = new Hammer(id);
+	}
+
+	nextItem() {
+		if (this.cursor < this.menuData.length - 1) {
+			if (!this.first) {
+				this.cursor++;
+			} else {
+				this.first = false;
+			}
+		}
+		this.sndMove.play();
+		this.menuData[this.cursor].speak();
+	}
+
+	previousItem() {
+		if (this.first) this.first = false;
+		if (this.cursor > 0) {
+			this.cursor--;
+		}
+		this.sndMove.play();
+		this.menuData[this.cursor].speak();
+	}
+
+	increase() {
+		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER || this.menuData[this.cursor].type == _menuItem.MenuTypes.SELECTOR) {
+			this.menuData[this.cursor].increase();
+			if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER) {
+				this.sndSliderRight.play();
+			} else {
+				this.sndSelector.play();
+			}
+		}
+	}
+
+	decrease() {
+		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER || this.menuData[this.cursor].type == _menuItem.MenuTypes.SELECTOR) {
+			this.menuData[this.cursor].decrease();
+			if (this.menuData[this.cursor].type == _menuItem.MenuTypes.SLIDER) {
+				this.sndSliderLeft.play();
+			} else {
+				this.sndSelector.play();
+			}
+		}
+	}
+
+	insertCharacter(char) {
+		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.EDIT) {
+			this.menuData[this.cursor].addChar(String.fromCharCode(char));
+			this.sndKeyChar.play();
+		}
+	}
+
+	removeCharacter() {
+		if (this.menuData[this.cursor].type == _menuItem.MenuTypes.EDIT) {
+			this.menuData[this.cursor].removeChar();
+			this.sndKeyDelete.play();
+		}
+	}
+
+	handleInput(event) {
+		this.insertCharacter(event.which);
+	}
+
+	destroySounds() {
+		this.sndKeyChar.unload();
+		this.sndKeyDelete.unload();
+		this.sndSliderLeft.unload();
+		this.sndSliderRight.unload();
+		this.sndBoundary.unload();
+		this.sndChoose.unload();
+		this.sndMove.unload();
+		this.sndOpen.unload();
+		this.sndSelector.unload();
+		this.sndWrap.unload();
+		if (typeof this.music !== 'undefined') {
+			this.music.unload();
+		}
+	}
+
+	async fade() {
+		for (let i = this.music.volume; i > 0; i -= 0.06) {
+			this.music.volume = i;
+			await _utilities.utils.sleep(50);
+		}
+		this.music.unload();
+		this.destroy();
+	}
+
+	destroy() {
+		(0, _jquery2.default)(document).off('keydown');
+		(0, _jquery2.default)(document).off('keypress');
+		// This.hammer.destroy();
+		const that = this;
+		setTimeout(() => {
+			that.destroySounds();
+		}, 500);
+	}
+
+	handleKeys(event) {
+		switch (event.which) {
+			case _keycodes.KeyEvent.DOM_VK_RETURN:
+				this.select();
+				break;
+			case _keycodes.KeyEvent.DOM_VK_PAGE_UP:
+				this.music.volume += 0.03;
+				break;
+			case _keycodes.KeyEvent.DOM_VK_PAGE_DOWN:
+				this.music.volume -= 0.03;
+				break;
+			case _keycodes.KeyEvent.DOM_VK_BACK_SPACE:
+				this.removeCharacter();
+				break;
+
+			case _keycodes.KeyEvent.DOM_VK_DOWN:
+
+				this.nextItem();
+				break;
+			case _keycodes.KeyEvent.DOM_VK_UP:
+				this.previousItem();
+				break;
+			case _keycodes.KeyEvent.DOM_VK_RIGHT:
+
+				this.increase();
+
+				break;
+			case _keycodes.KeyEvent.DOM_VK_LEFT:
+
+				this.decrease();
+
+				break;
+		}
+	}
+
+	run(callback) {
+		if (typeof this.music === 'object') {
+			this.music.volume = 0.5;
+			this.music.loop = true;
+			this.music.play();
+		} else if (typeof this.music === 'string') {
+			this.music = _soundObject.so.create(this.music, true);
+			this.music.volume = 0.5;
+			this.music.loop = true;
+			this.music.play();
+		} else {}
+		this.selectCallback = callback;
+		const that = this;
+		(0, _jquery2.default)(document).on('keypress', event => {
+			that.handleInput(event);
+		});
+		(0, _jquery2.default)(document).on('keydown', event => {
+			that.handleKeys(event);
+		});
+		/*
+  This.hammer.on("swipeleft", function(event) { that.handleSwipe(0); });
+  this.hammer.on("swiperight", function(event) { that.handleSwipe(1); });
+  this.hammer.on("panup", function(event) { that.handleSwipe(3); });
+  this.hammer.on("pandown", function(event) { that.handleSwipe(4); });
+  this.hammer.on("tap", function(event) { that.handleSwipe(2); });
+  */
+		_tts.speech.speak(this.name);
+		this.sndOpen.play();
+	}
+
+	handleSwipe(action) {
+		if (action == 3) {
+			this.decrease();
+		}
+		if (action == 4) {
+			this.increase();
+		}
+
+		if (action == 0) {
+			this.previousItem();
+		}
+		if (action == 1) {
+			this.nextItem();
+		}
+		if (action == 2) {
+			this.select();
+		}
+	}
+
+	select() {
+		const selected = this.menuData[this.cursor].id;
+
+		const items = [];
+		for (let i = 0; i < this.menuData.length; i++) {
+			let addItem = null;
+			if (this.menuData[i].type == _menuItem.MenuTypes.SLIDER) {
+				addItem = {
+					id: this.menuData[i].id,
+					value: this.menuData[i].currentValue
+					//name: this.menuData[i].options[this.menuData[i].currentValue]
+				};
+			}
+			if (this.menuData[i].type == _menuItem.MenuTypes.EDIT) {
+				addItem = {
+					id: this.menuData[i].id,
+					value: this.menuData[i].text
+
+				};
+			}
+			if (this.menuData[i].type == _menuItem.MenuTypes.SELECTOR) {
+				addItem = {
+					id: this.menuData[i].id,
+					value: this.menuData[i].currentOption,
+					name: this.menuData[i].options[this.menuData[i].currentOption]
+				};
+			}
+			items.push(addItem);
+		}
+
+		const toReturn = {
+			selected,
+			cursor: this.cursor,
+			items
+		};
+		this.sndChoose.play();
+		(0, _jquery2.default)(document).off('keydown');
+		(0, _jquery2.default)(document).off('keypress');
+		this.musicDuration = 0;
+		this.musicDuration = this.sndChoose.duration;
+
+		if (this.musicDuration > 3000) this.musicDuration = 3000;
+		if (typeof this.music !== 'undefined') {
+			this.fade();
+		}
+		const that = this;
+		setTimeout(() => {
+			that.selectCallback(toReturn);
+		}, this.musicDuration);
+	}
+}
+exports.Menu = Menu;
+},{"./utilities":12,"./strings":9,"./tts":11,"./soundObject.js":13,"./menuItem":5,"./keycodes":14,"./input":2}],18:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+class OldTimer {
+	constructor() {
+		this.elapsed;
+		this.paused = true;
+		this.lastTime = 0;
+		this.pauseWhen = 0;
+		this.started = true;
+	}
+
+	isActive() {
+		return !paused & started;
+	}
+
+	get elapsed() {
+		if (this.paused) {
+			return this.pauseWhen - this.lastTime;
+		}
+		return performance.now() - this.lastTime;
+	}
+
+	pause() {
+		this.paused = true;
+		this.pauseWhen = performance.now();
+	}
+
+	reset() {
+		this.lastTime = performance.now();
+		this.pauseWhen = 0;
+		this.paused = false;
+		this.started = true;
+	}
+
+	resume() {
+		this.paused = false;
+		this.started = true;
+		this.lastTime += performance.now() - this.pauseWhen;
+	}
+}
+exports.OldTimer = OldTimer;
+},{}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5169,7 +5171,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":37,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":19,"./soundObject.js":13}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5304,7 +5306,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":31,"./soundObject.js":14}],35:[function(require,module,exports) {
+},{"./soundSource.js":16,"./soundObject.js":13}],20:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5356,7 +5358,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],32:[function(require,module,exports) {
+},{}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5801,7 +5803,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":36,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":35,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./tts":11,"./main":1,"./oldtimer":18,"./soundHandler":10,"./utilities":12,"./soundObject":13,"./stateMachine":15,"./timer":20,"./scrollingText":8,"./input.js":2,"./keycodes.js":14}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5889,7 +5891,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":32}],8:[function(require,module,exports) {
+},{"./input":2,"./tts":11,"./main":1,"./menuHandler":7,"./soundObject":13,"./keycodes":14,"./game":17}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5958,7 +5960,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],1:[function(require,module,exports) {
+},{"./soundObject":13,"./main":1,"./stateMachine":15,"./strings":9,"./menuItem":5,"./menu":6}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6044,7 +6046,9 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
-	//	document.getElementById("touchArea").focus();
+	let pool = new _soundPool.SoundPool();
+	pool.playStationary("safe");
+	document.getElementById("touchArea").focus();
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -7076,7 +7080,7 @@ function runGame(name) {
 			_stateMachine.st.setState(2);
 	}
 }
-},{"./soundPool":4,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],45:[function(require,module,exports) {
+},{"./soundPool":3,"./player":4,"./menuItem":5,"./menu":6,"./menuHandler":7,"./scrollingText":8,"./strings":9,"./soundHandler":10,"./tts":11,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":15,"./input.js":2}],34:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7253,5 +7257,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[45,1])
+},{}]},{},[34,1])
 //# sourceMappingURL=/main.map

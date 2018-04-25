@@ -34,7 +34,9 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-//	document.getElementById("touchArea").focus();
+	let pool=new SoundPool();
+	pool.playStationary("safe");
+	document.getElementById("touchArea").focus();
 	st.setState(1);
 }
 function proceed() {

@@ -1,4 +1,4 @@
-import {Howl, Howler} from 'howler';
+import {Howl, Howler,Spatial} from './howler';
 import {speech} from './tts';
 const isElectron = true;
 let playOnceTimer;

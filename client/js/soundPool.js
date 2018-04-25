@@ -241,7 +241,7 @@ this.max_distance=0;
 this.pan_step=1.0;
 this.volume_step=1.0;
 this.behind_pitch_decrease=0.25;
-this.last_listener_x=x;
+this.last_listener_x=this.x;
 this.last_listener_y=0;
 this.highest_slot=0;
 this.clean_frequency=3;
@@ -251,16 +251,17 @@ this.clean_frequency=3;
 
 playStationary(filename, looping, persistent=false)
 {
-return playStationaryExtended(filename, looping, 0, 0, 100, 100, persistent);
+return this.playStationaryExtended(filename, looping, 0, 0, 100, 100, persistent);
 }
 
-play_stationary_extended(filename, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
+playStationaryExtended(filename, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
 {
 let slot=this.reserve_slot();
 if(slot==-1)
 {
 return -1;
 }
+console.log("slot"+slot);
 this.items.splice(slot,0,new SoundPoolItem(filename));
 this.items[slot].looping=looping;
 this.items[slot].stationary=true;
@@ -275,13 +276,13 @@ this.items[slot].handle.seek(this.items[slot].start_offset);
 }
 if(this.start_pan!=0.0)
 {
-this.items[slot].handle.pan=start_pan;
+this.items[slot].handle.pan=start_pan/100;
 }
 if(this.start_volume<100.0)
 {
-this.items[slot].handle.volume=start_volume;
+this.items[slot].handle.volume=start_volume/100;
 }
-this.items[slot].handle.pitch=this.start_pitch;
+this.items[slot].handle.pitch=this.start_pitch/100;
 if(this.looping==true)
 {
 this.items[slot].handle.play();
@@ -295,6 +296,7 @@ if(slot>this.highest_slot)
 this.highest_slot=slot;
 return items[slot].handle;
 }
+
 reserve_slot()
 {
 // This finds the first available sound slot && prepares it for use.
@@ -343,7 +345,7 @@ return slot;
 }
 play1d(filename, listener_x, sound_x, looping, persistent=false)
 {
-return play_extended_1d(filename, listener_x, sound_x, 0, 0, looping, 0, 0, 100, 100, persistent);
+return this.playExtended1d(filename, listener_x, sound_x, 0, 0, looping, 0, 0, 100, 100, persistent);
 }
 
 playExtended1d(filename, listener_x, sound_x, left_range, right_range, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
@@ -418,9 +420,9 @@ return items[slot].handle;
 }
 play_2d(filename, listener_x, listener_y, sound_x, sound_y, looping, persistent=false)
 {
-return playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
+return this.playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, 0, 0, 0, 0, looping, 0, 0, 100, 100, persistent);
 }
-play_extended_2d(filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
+playExtended2d(filename, listener_x, listener_y, sound_x, sound_y, left_range, right_range, backward_range, forward_range, looping, offset, start_pan, start_volume, start_pitch, persistent=false)
 {
 slot=reserve_slot();
 if(slot==-1)
