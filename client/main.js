@@ -1,4 +1,4 @@
-process.env.HMR_PORT=53056;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=57022;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({10:[function(require,module,exports) {
+})({12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -113,7 +113,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],12:[function(require,module,exports) {
+},{}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -192,6 +192,13 @@ class SoundObjectItem {
 
 	set volume(v) {
 		return this.sound.volume(v);
+	}
+	get pan() {
+		return this.sound.stereo();
+	}
+
+	set pan(v) {
+		return this.sound.stereo(v);
 	}
 
 	set loop(v) {
@@ -447,7 +454,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./tts":10}],29:[function(require,module,exports) {
+},{"./tts":12}],4:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1082,7 +1089,7 @@ class SoundPool {
 
 }
 exports.SoundPool = SoundPool;
-},{"./soundObject.js":12}],13:[function(require,module,exports) {
+},{"./soundObject.js":14}],15:[function(require,module,exports) {
 
 'use strict';
 
@@ -1209,7 +1216,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],7:[function(require,module,exports) {
+},{}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1309,7 +1316,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":13,"./soundObject":12,"./tts":10}],4:[function(require,module,exports) {
+},{"./keycodes":15,"./soundObject":14,"./tts":12}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1347,7 +1354,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":13,"./main":1,"./scrollingText":7}],3:[function(require,module,exports) {
+},{"./keycodes":15,"./main":1,"./scrollingText":10}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1487,7 +1494,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":10}],11:[function(require,module,exports) {
+},{"./tts":12}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1555,9 +1562,17 @@ class GameUtils {
 		average = val / len;
 		return Math.floor(average);
 	}
+	neg(num) {
+		return num >= 0 ? num == 0 ? 0 : 1 : -1;
+	}
+
+	numericSort(a, b) {
+		return a < b ? -1 : a == b ? 0 : 1;
+	}
+
 }
 var utils = exports.utils = new GameUtils();
-},{}],8:[function(require,module,exports) {
+},{}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1695,7 +1710,7 @@ class Strings {
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1}],2:[function(require,module,exports) {
+},{"./main":1}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1831,7 +1846,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":10}],5:[function(require,module,exports) {
+},{"./tts":12}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2115,7 +2130,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":11,"./strings":8,"./tts":10,"./soundObject.js":12,"./menuItem":3,"./keycodes":13,"./input":2}],18:[function(require,module,exports) {
+},{"./utilities":13,"./strings":9,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],20:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2160,7 +2175,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],17:[function(require,module,exports) {
+},{}],19:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -5063,7 +5078,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],15:[function(require,module,exports) {
+},{}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5154,7 +5169,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":17,"./soundObject.js":12}],9:[function(require,module,exports) {
+},{"./howler":19,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5289,7 +5304,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":15,"./soundObject.js":12}],19:[function(require,module,exports) {
+},{"./soundSource.js":17,"./soundObject.js":14}],21:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5341,7 +5356,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],16:[function(require,module,exports) {
+},{}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5786,7 +5801,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":10,"./main":1,"./oldtimer":18,"./soundHandler":9,"./utilities":11,"./soundObject":12,"./stateMachine":14,"./timer":19,"./scrollingText":7,"./input.js":2,"./keycodes.js":13}],14:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":20,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":10,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5874,7 +5889,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":2,"./tts":10,"./main":1,"./menuHandler":6,"./soundObject":12,"./keycodes":13,"./game":16}],6:[function(require,module,exports) {
+},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":18}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5943,7 +5958,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":12,"./main":1,"./stateMachine":14,"./strings":8,"./menuItem":3,"./menu":5}],1:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":9,"./menuItem":6,"./menu":7}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6029,13 +6044,10 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
-
-	return;
 	let snd = _soundObject.so.create("minimusic");
 	snd.sound.stereo(1);
 	snd.play();
 	snd.loop = true;
-
 	return;
 	_stateMachine.st.setState(1);
 }
@@ -7068,7 +7080,7 @@ function runGame(name) {
 			_stateMachine.st.setState(2);
 	}
 }
-},{"./soundPool":29,"./player":4,"./menuItem":3,"./menu":5,"./menuHandler":6,"./scrollingText":7,"./strings":8,"./soundHandler":9,"./tts":10,"./utilities":11,"./soundObject":12,"./keycodes":13,"./stateMachine":14,"./input.js":2}],28:[function(require,module,exports) {
+},{"./soundPool":4,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":10,"./strings":9,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7245,5 +7257,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[28,1])
+},{}]},{},[22,1])
 //# sourceMappingURL=/main.map

@@ -63,5 +63,13 @@ averageInt(arr,startIndex=0) {
 		average=val/len;
 	return Math.floor(average);
 }
+neg(num) {
+	return (num>=0?(num==0?0:1):-1)
+}
+
+numericSort(a, b) {
+	return (a<b?-1:(a==b?0:1))
+}
+
 }
 export var utils = new GameUtils();

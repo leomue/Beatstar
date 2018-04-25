@@ -68,6 +68,13 @@ class SoundObjectItem {
 	set volume(v) {
 		return this.sound.volume(v);
 	}
+get pan() {
+		return this.sound.stereo();
+	}
+
+	set pan(v) {
+		return this.sound.stereo(v);
+	}
 
 	set loop(v) {
 		return this.sound.loop(v);

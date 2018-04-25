@@ -34,13 +34,10 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-
-return;
 let snd=so.create("minimusic");
 snd.sound.stereo(1);
 snd.play();
 snd.loop=true;
-
 return;
 	st.setState(1);
 }
