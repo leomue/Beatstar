@@ -1,4 +1,4 @@
-process.env.HMR_PORT=57022;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=49493;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -1216,7 +1216,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],10:[function(require,module,exports) {
+},{}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1354,7 +1354,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":10}],6:[function(require,module,exports) {
+},{"./keycodes":15,"./main":1,"./scrollingText":9}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1572,7 +1572,7 @@ class GameUtils {
 
 }
 var utils = exports.utils = new GameUtils();
-},{}],9:[function(require,module,exports) {
+},{}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2130,7 +2130,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":9,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],20:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],36:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2175,7 +2175,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],19:[function(require,module,exports) {
+},{}],37:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -5078,7 +5078,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],17:[function(require,module,exports) {
+},{}],31:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5169,7 +5169,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":19,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":37,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5304,7 +5304,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":17,"./soundObject.js":14}],21:[function(require,module,exports) {
+},{"./soundSource.js":31,"./soundObject.js":14}],35:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5356,7 +5356,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],18:[function(require,module,exports) {
+},{}],32:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5801,7 +5801,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":20,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":10,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":36,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":35,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5889,7 +5889,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":18}],8:[function(require,module,exports) {
+},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":32}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5958,7 +5958,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":9,"./menuItem":6,"./menu":7}],1:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6044,11 +6044,7 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
-	let snd = _soundObject.so.create("minimusic");
-	snd.sound.stereo(1);
-	snd.play();
-	snd.loop = true;
-	return;
+	//	document.getElementById("touchArea").focus();
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -7080,7 +7076,7 @@ function runGame(name) {
 			_stateMachine.st.setState(2);
 	}
 }
-},{"./soundPool":4,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":10,"./strings":9,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
+},{"./soundPool":4,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],45:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7257,5 +7253,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[22,1])
+},{}]},{},[45,1])
 //# sourceMappingURL=/main.map
