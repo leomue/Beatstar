@@ -650,9 +650,9 @@ this.items[slot].start_pitch=start_pitch;
 this.items[slot].update(this.last_listener_x, this.last_listener_y);
 if(this.items[slot].stationary==true && typeof this.items[slot].handle!=="undefined")
 {
-this.items[slot].handle.pan=start_pan;
-this.items[slot].handle.volume=start_volume;
-this.items[slot].handle.pitch=start_pitch;
+this.items[slot].handle.pan=start_pan/100;
+this.items[slot].handle.volume=start_volume/100;
+this.items[slot].handle.pitch=start_pitch/100;
 return true;
 }
 if(this.items[slot].is_3d==false && this.items[slot].handle.pitch!=start_pitch)
