@@ -17,6 +17,7 @@ const fs=require('fs');
 	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
 	
 items.push(new MenuItem(1, strings.get( 'mLearn')));
+items.push(new MenuItem(11, strings.get( 'mEdit')));
 	items.push(new MenuItem(9, strings.get( 'mGames',)));
 		
 items.push(new MenuItem(2, strings.get( 'mBrowse',[data.beatcoins])));
@@ -53,6 +54,17 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 		case 8: buySafeguards(); break;
 			case 9: minigames(); break;
 			case 10: minituts(); break;
+			case 11:
+			const electron = require('electron')
+const remote = electron.remote
+const {dialog} = require('electron').remote
+let stuff=dialog.showOpenDialog({
+title:"select pack",
+    properties: ['openDirectory']
+  },function(path){
+  editPack(path);
+    }); 
+			break;
 		}
 	});
 }

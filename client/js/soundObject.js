@@ -1,4 +1,5 @@
 import {Howl, Howler,Spatial} from './howler';
+import {utils} from './utilities';
 import {speech} from './tts';
 const isElectron = true;
 let playOnceTimer;
@@ -43,6 +44,16 @@ class SoundObjectItem {
 
 	play() {
 		this.sound.play();
+	}
+	
+playWait() {
+ this.sound.play();
+return new Promise((resolve,reject)=>{
+ this.sound.once("end",function() {
+ this.sound.unload();
+  resolve("ok");
+ });//end
+ });//promise
 	}
 
 	stop() {

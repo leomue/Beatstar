@@ -1,4 +1,5 @@
 export var lang = 0;
+export var editing=false;
 import $ from 'jquery';
 import {playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
@@ -37,7 +38,11 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-     	st.setState(1);
+utils.sleep(2000);
+    let snd=so.create("minimusic");
+        snd.pitch=0.6;
+await snd.playWait();
+             	st.setState(1);
 }
 function proceed() {
 	const sound = so.create('memtest');
@@ -810,6 +815,7 @@ require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
 				}// If length > 1
 }
 export function save() {
+if (editing) return;
 const fs=require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
 fs.mkdirSync(os.homedir() + '/beatpacks');
@@ -1156,4 +1162,13 @@ st.setState(2);
 			callback();
 			}
 			}
-			
+			function editPack(path) {
+			if (typeof path==="undefined") {
+			st.setState(2);
+			}
+			const fs=require('fs');
+			const os=require('os');
+			const checkFiles=["a1","a2","a3","a4","a5","o1","o2","o3","o4","o5","1music","2music","3music","4music","5music","fail","name","loop","select","win"];
+			editing=true;
+			console.log(path);
+			}
