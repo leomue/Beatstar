@@ -37,8 +37,7 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-	document.getElementById("touchArea").focus();
-		st.setState(1);
+     	st.setState(1);
 }
 function proceed() {
 	const sound = so.create('memtest');
@@ -48,8 +47,8 @@ function proceed() {
 }
 // St.setState(1);
 // document.removeEventListener("DOMContentLoaded",setup);
-
 export async function learnPack() {
+so.directory="";
 const fs=require('fs');
 	const pool = new SoundHandler();
 	let actions = 0;
@@ -430,8 +429,7 @@ let items=new Array();
 					dm.run(s=>{
 		console.log("ok");
 						so.directory = './sounds/';
-						console.log("meow"+s.selected);
-						switch(s.selected) {
+												switch(s.selected) {
 							case 0:
 							dm.destroy();
 answer=true;
@@ -468,6 +466,7 @@ counter++;
 		lm.run((s)=> {
 		lang=s.selected;
 		data.lang=lang;
+		lm.destroy();
 						new ScrollingText(strings.get("intro"),"\n",function() {
 		introing=false;
 		});
@@ -789,7 +788,7 @@ prevPercent=0;
 												let event=new KeyboardInput();
 						event.init();
 						event.justPressedEventCallback=function() {
-												percent=utils.percent(currentIndex, toDownload.length).toFixed(1);
+																		percent=utils.percent(currentIndex, toDownload.length).toFixed(1);
 										speech.speak(percent+"%");
 																				console.log(percent+"%");
 										};
@@ -848,7 +847,7 @@ if (unlocked==0) unlocked=1; //first level is always unlocked even if you haven'
 		}
 		speech.speak(strings.get("mListen",[unlocked]));
 		inp.justPressedEventCallback=function(evt) {
-		lock.stop();
+				lock.stop();
 if (typeof mus!=="undefined") mus.destroy();
 
 		if (evt==KeyEvent.DOM_VK_LEFT) {
@@ -1032,7 +1031,7 @@ st.setState(2);
 				}
 				}
 				export function minigames() {
-				if (typeof data.minis==="undefined") {
+								if (typeof data.minis==="undefined") {
 				data.minis={}
 				save();
 				}
@@ -1145,3 +1144,16 @@ new ScrollingText(strings.get("tut"+name),"\n",function() {
 st.setState(2);
 });
 			}
+			export function safeget(amount,callback) {
+			if (amount>0) {
+			data.safeguards+=amount;
+			save();
+			new ScrollingText(strings.get("safeget",[amount]),"\n",function() {
+			callback();
+			});
+			}
+			else {
+			callback();
+			}
+			}
+			

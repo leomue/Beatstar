@@ -4,6 +4,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+safeget:"You get %1 safeguards... cool!",
 lang:"English",
 langs:"Select your language",
 codescracked:"You managed to crack %1 codes, with %2 different actions!",
@@ -115,6 +116,7 @@ Have fun playing evil slots!`,
 						"youlose":"Pierdes %1 monedas!",
 			"no":"no",
 			mNew: 'Conseguir nuevos packs',
+			safeget:"Consigues %1 antifallos... Que guay!",
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
 			codes:"Número de teclas en el código: %1",
 			unlocked:"Ya lo has comprado",

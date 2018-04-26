@@ -1,4 +1,4 @@
-import {pack,packdir,actionKeys,save,question,addCash,data} from './main';
+import {safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
 import {SliderItem,MenuItem} from './menuItem';
@@ -152,7 +152,7 @@ st.setState(2);
 				so.directory="./sounds/";
 				}
 				export async function playCode() {
-				const fs=require('fs');
+								const fs=require('fs');
 	let pool = new SoundHandler();
 	let actions = 0;
 	for (let i = 1; i <= 10; i++) {
@@ -179,35 +179,36 @@ actionsa.push("a"+i);
 let go;
 let input=new KeyboardInput();
 input.init();
+let fumbled=false;
 sos();
 go=so.create("codego");
 let tick=true;
 while(playing) {
 await utils.sleep(5);
 level++;
-allowed=30000+(level*1000);
+allowed=35000+(actions*500);
 acode.splice();
 acode=actionsa;
 if (level+actions-1>actions) {
 let more=level-1;
 for (let i=1;i<=more;i++) {
 acode.push("a"+utils.randomInt(2,actions));
-//why -1 there? wtf?
 }
 }
 acode=utils.shuffle(acode);
 let counter=0;
 sos();
+if (!fumbled) {
 speech.speak(strings.get("level",[level]));
 await utils.sleep(700);
 speech.speak(strings.get("codes",[acode.length]));
-await utils.sleep(utils.randomInt(600,950));
+await utils.sleep(utils.randomInt(800,1250));
 go.play();
 sop();
 time.reset();
+}
 while (time.elapsed<allowed && playing) {
 await utils.sleep(5);
-
 if (time.elapsed%1000<=10 && tick) {
 let formula=(allowed-time.elapsed)/1000;
 ticker.pitch=(120-formula)/100;
@@ -254,15 +255,21 @@ if (time.elapsed>=allowed) {
 input.justPressedEventCallback=null;
 sos();
 let fumble;
+fumbled=true;
+playing=false;
 fumble=so.create("fumble");
 fumble.play();
 await utils.sleep(400);
-new ScrollingText(strings.get("codescracked",[crackedcodes]),"\n",function() {
-playing=false;
-});
 }//allowed
 }//while playing
-so.kill(()=> {st.setState(2);
+let newsafe=utils.randomInt(0,level-1);
+new ScrollingText(strings.get("codescracked",[crackedcodes]),"\n",function() {
+safeget(newsafe,function() {
+so.kill(()=> {
 input.justPressedEventCallback=null;
+st.setState(2);
+});
+
+});
 });
 }//function

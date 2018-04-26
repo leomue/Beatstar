@@ -36,6 +36,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 }
 	mainMenu.run(s => {
 		so.directory = './sounds/';
+		mainMenu.destroy();
 		switch (s.selected) {
 			case 0: st.setState(3); break;
 			case 1: st.setState(4); break;

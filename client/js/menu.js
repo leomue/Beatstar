@@ -33,7 +33,7 @@ class Menu {
 	}
 
 	nextItem() {
-	if (!this.first) {
+		if (!this.first) {
 		if (this.cursor < this.menuData.length - 1) {
 		this.sndMove.play();
 		this.cursor++;
@@ -130,7 +130,7 @@ this.music.unload();
 			await utils.sleep(50);
 		}
 		this.music.unload();
-		this.destroy();
+		//this.destroy();
 	}
 
 destroy() {

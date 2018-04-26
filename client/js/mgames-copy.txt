@@ -1,39 +1,3 @@
-void doub() {
-sound ok;
-sos();
-if (cash<5000) {
-ok.stream("mini_nodoub");
-ok.play_wait();
-mainmenu();
-return;
-}
-ok.stream("doub_intro");
-if (!testing) {
-ok.play_wait();
-vo.speak_wait(cash);
-speak("beatcoins",true);
-vo.speak_wait(safeguards);
-speak("safeguards",true);
-}
-int what=random(1,2);
-if (what==1) {
-ok.stream("doub_loser");
-ok.play_wait();
-cash=0;
-safeguards=0;
-get_ach("dloser");
-ser();
-}
-else {
-ok.stream("doub_winner");
-ok.play_wait();
-get_ach("dwinner");
-cash=cash*2;
-safeguards=safeguards*2;
-ser();
-}
-mainmenu();
-}
 void beatpong() {
 sound sp;
 sos();

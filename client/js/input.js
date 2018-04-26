@@ -97,7 +97,7 @@ this.charEventCallback(String.fromCharCode(char.which));
 	}
 
 	keysPressed() {
-		const kd = [];
+			const kd = [];
 	this.justPressed.forEach((v, i) => {
 		if (v) {
 	kd.push(i);

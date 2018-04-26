@@ -3879,6 +3879,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			safeget: "You get %1 safeguards... cool!",
 			lang: "English",
 			langs: "Select your language",
 			codescracked: "You managed to crack %1 codes, with %2 different actions!",
@@ -3990,6 +3991,7 @@ Have fun playing evil slots!`,
 			"youlose": "Pierdes %1 monedas!",
 			"no": "no",
 			mNew: 'Conseguir nuevos packs',
+			safeget: "Consigues %1 antifallos... Que guay!",
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
 			codes: "Número de teclas en el código: %1",
 			unlocked: "Ya lo has comprado",
@@ -4451,7 +4453,7 @@ class Menu {
 			await _utilities.utils.sleep(50);
 		}
 		this.music.unload();
-		this.destroy();
+		//this.destroy();
 	}
 
 	destroy() {
@@ -4756,6 +4758,7 @@ async function mainMenu() {
 	}
 	mainMenu.run(s => {
 		_soundObject.so.directory = './sounds/';
+		mainMenu.destroy();
 		switch (s.selected) {
 			case 0:
 				_stateMachine.st.setState(3);break;
@@ -5572,35 +5575,36 @@ async function playCode() {
 				let go;
 				let input = new _input.KeyboardInput();
 				input.init();
+				let fumbled = false;
 				sos();
 				go = _soundObject.so.create("codego");
 				let tick = true;
 				while (playing) {
 								await _utilities.utils.sleep(5);
 								level++;
-								allowed = 30000 + level * 1000;
+								allowed = 35000 + actions * 500;
 								acode.splice();
 								acode = actionsa;
 								if (level + actions - 1 > actions) {
 												let more = level - 1;
 												for (let i = 1; i <= more; i++) {
 																acode.push("a" + _utilities.utils.randomInt(2, actions));
-																//why -1 there? wtf?
 												}
 								}
 								acode = _utilities.utils.shuffle(acode);
 								let counter = 0;
 								sos();
-								_tts.speech.speak(_strings.strings.get("level", [level]));
-								await _utilities.utils.sleep(700);
-								_tts.speech.speak(_strings.strings.get("codes", [acode.length]));
-								await _utilities.utils.sleep(_utilities.utils.randomInt(600, 950));
-								go.play();
-								sop();
-								time.reset();
+								if (!fumbled) {
+												_tts.speech.speak(_strings.strings.get("level", [level]));
+												await _utilities.utils.sleep(700);
+												_tts.speech.speak(_strings.strings.get("codes", [acode.length]));
+												await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1250));
+												go.play();
+												sop();
+												time.reset();
+								}
 								while (time.elapsed < allowed && playing) {
 												await _utilities.utils.sleep(5);
-
 												if (time.elapsed % 1000 <= 10 && tick) {
 																let formula = (allowed - time.elapsed) / 1000;
 																ticker.pitch = (120 - formula) / 100;
@@ -5645,17 +5649,21 @@ async function playCode() {
 												input.justPressedEventCallback = null;
 												sos();
 												let fumble;
+												fumbled = true;
+												playing = false;
 												fumble = _soundObject.so.create("fumble");
 												fumble.play();
 												await _utilities.utils.sleep(400);
-												new _scrollingText.ScrollingText(_strings.strings.get("codescracked", [crackedcodes]), "\n", function () {
-																playing = false;
-												});
 								} //allowed
 				} //while playing
-				_soundObject.so.kill(() => {
-								_stateMachine.st.setState(2);
-								input.justPressedEventCallback = null;
+				let newsafe = _utilities.utils.randomInt(0, level - 1);
+				new _scrollingText.ScrollingText(_strings.strings.get("codescracked", [crackedcodes]), "\n", function () {
+								(0, _main.safeget)(newsafe, function () {
+												_soundObject.so.kill(() => {
+																input.justPressedEventCallback = null;
+																_stateMachine.st.setState(2);
+												});
+								});
 				});
 } //function
 },{"./main":1,"./oldtimer":22,"./soundHandler":11,"./menuItem":6,"./menu":8,"./scrollingText":10,"./strings":9,"./tts":16,"./utilities":13,"./soundObject":12,"./keycodes":14,"./input":4,"./stateMachine":15}],5:[function(require,module,exports) {
@@ -5717,6 +5725,7 @@ exports.buySafeguards = buySafeguards;
 exports.minigames = minigames;
 exports.runGame = runGame;
 exports.minituts = minituts;
+exports.safeget = safeget;
 
 var _jquery = require('jquery');
 
@@ -5786,7 +5795,6 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
-	document.getElementById("touchArea").focus();
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -5797,8 +5805,8 @@ function proceed() {
 }
 // St.setState(1);
 // document.removeEventListener("DOMContentLoaded",setup);
-
 async function learnPack() {
+	_soundObject.so.directory = "";
 	const fs = require('fs');
 	const pool = new _soundHandler.SoundHandler();
 	let actions = 0;
@@ -6173,7 +6181,6 @@ function question(text, localizedValues = [], callback = null) {
 	dm.run(s => {
 		console.log("ok");
 		_soundObject.so.directory = './sounds/';
-		console.log("meow" + s.selected);
 		switch (s.selected) {
 			case 0:
 				dm.destroy();
@@ -6211,6 +6218,7 @@ async function checkPack(changeBoot = true) {
 		lm.run(s => {
 			exports.lang = lang = s.selected;
 			data.lang = lang;
+			lm.destroy();
 			new _scrollingText.ScrollingText(_strings.strings.get("intro"), "\n", function () {
 				introing = false;
 			});
@@ -6878,7 +6886,18 @@ function runTut(name) {
 		_stateMachine.st.setState(2);
 	});
 }
-},{"./minis.js":25,"./player":5,"./menuItem":6,"./menu":8,"./menuHandler":7,"./scrollingText":10,"./strings":9,"./soundHandler":11,"./tts":16,"./utilities":13,"./soundObject":12,"./keycodes":14,"./stateMachine":15,"./input.js":4}],35:[function(require,module,exports) {
+function safeget(amount, callback) {
+	if (amount > 0) {
+		data.safeguards += amount;
+		save();
+		new _scrollingText.ScrollingText(_strings.strings.get("safeget", [amount]), "\n", function () {
+			callback();
+		});
+	} else {
+		callback();
+	}
+}
+},{"./minis.js":25,"./player":5,"./menuItem":6,"./menu":8,"./menuHandler":7,"./scrollingText":10,"./strings":9,"./soundHandler":11,"./tts":16,"./utilities":13,"./soundObject":12,"./keycodes":14,"./stateMachine":15,"./input.js":4}],40:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7055,5 +7074,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[35,1])
+},{}]},{},[40,1])
 //# sourceMappingURL=/main.map
