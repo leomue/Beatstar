@@ -2,7 +2,7 @@
 class OldTimer {
 	constructor() {
 		this.elapsed;
-		this.paused = true;
+		this.paused = false;
 		this.lastTime = 0;
 		this.pauseWhen = 0;
 		this.started = true;
@@ -25,6 +25,12 @@ class OldTimer {
 	}
 
 	reset() {
+		this.lastTime = performance.now();
+		this.pauseWhen = 0;
+		this.paused = false;
+		this.started = true;
+	}
+restart() {
 		this.lastTime = performance.now();
 		this.pauseWhen = 0;
 		this.paused = false;

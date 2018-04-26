@@ -3,7 +3,26 @@ import {lang} from './main';
 class Strings {
 	constructor() {
 		this.strings = {};
-		this.strings[1] = {
+this.strings[1] = {
+lang:"English",
+langs:"Select your language",
+codescracked:"You managed to crack %1 codes, with %2 different actions!",
+tutslot:`Welcome!
+Evil slots is very evil indeed.
+This game uses the action sounds from your pack to play a 3 wheel slot machine.
+If the pack you are currently playing has more than 5 actions, don't worry only the first 5 will be used.
+The first thing you will need to do is place a bet. The minimum is 5000 beatcoins. When you place a bet, those beatcoins will be deducted from your current beatcoins.
+Once you have done that, a wheel will spin, and 3 action sounds will play.
+But this is not a normal slots! This game is evil and, if you lose, the rest of your beatcoins will not be left alone.
+If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
+!slot_lose_2
+If you get 2 of the same type and 1 of a different type, you will get... half your bet back, perhaps a bit more.
+!slot_lose_1
+If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
+!slot_lose_3
+However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
+!slot_win_3
+Have fun playing evil slots!`,
 			"mFound":"Found %1 new packs: what do you wish to do?",
 			mGames:"minigames",
 			mGameTuts:"Minigame tutorials",
@@ -18,8 +37,11 @@ class Strings {
 			mainmenu:"main menu",
 			mSelect:"Please select",
 			mSafeSelect:"Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
+			level:"Level %1",
+			codes:"Number of keys in the code: %1",
 			packprice:"This pack costs %1 beatcoins, please confirm",
 			mReady: 'Please wait...',
+			code:"Beat the code",
 			mDownloadAll: 'Download all uninstalled packs (size: %1 %2)',
 			mUnlocked:"Listen to unlocked music for this pack (%1 levels)",
 			mSafeguards:"Buy safeguards (now %1)",
@@ -46,7 +68,7 @@ class Strings {
 			dlingdone: 'Done! Rebuilding database...',
 			keymapChoose: 'Press the key to replace this action: You can\'t use q, p, escape, enter or space.',
 			packError: 'No packs were found on your computer. I will now proceed to download the default pack, please wait...',
-			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!',
+			intro: 'Welcome to beatstar!\nThis is a world of music, fun and games.\nPlease read the online instructions to learn how to play.\nYou will now be put into the main menu, where you will find different options.\nI recommend you get some beatcoins by playing the default pack!\nIf you want to change the language, you will need to delete your save file found in your username folder/beatpacks/save.dat',
 			keymapStart: 'We will now remap your keyboard. You will hear the sounds for the different actions, and you will be prompted to press the key you want to associate to the new actions.',
 			tamperWarning: 'This pack has been tampered with and is no longer unlocked. Press enter to continue.',
 			mNew: 'Get new packs',
@@ -62,9 +84,13 @@ class Strings {
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		lang:"Español",
+		
+		langs:"Selecciona tu idioma",
 			"mFound":"Hemos encontrado %1 packs nuevos: ¿Qué quieres hacer?",
 			mReady: 'Espera, por favor...',
 			mDownloadAll: 'Descargar todos los packs no instalados (tamaño: %1 %2)',
+			level:"Nivel %1",
 			nodown:"No hay descargas disponibles por el momento. prueba pronto!",
 			mDownloadList: 'Lista todos los packs no instalados (%1 en total)',
 			buy:"comprar",
@@ -77,7 +103,7 @@ class Strings {
 			dlingdone: '¡Hecho! Reconstruyendo base de datos...',
 			keymapChoose: 'Pulsa la tecla que quieras que reemplace a No puedes usar la q, escape, enter o espacio.',
 			packError: 'No hemos encontrado packs en tu pc, vamos a bajar el pack por defecto, espera por favor...',
-			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!',
+			intro: 'Bienvenido a beat star!\nEste es un mundo de música y diversión!\nPor favor, lee el manual en internet para aprender a jugar.\nAhora te llevaré al menú principal, donde encontrarás diferentes opciones.\nTe recomiendo que consigas unas monedas jugando el pack por defecto!\nSi quieres cambiar el idioma del juego, deberás borrar tu archivo de datos que encontrarás en tu carpeta de usuario/beatpacks/save.dat',
 						keymapStart: 'Vamos a cambiar la distribución del teclado. Vas a escuchar los sonidos de las acciones y vas a tener que pulsar la tecla que quieres que corresponda para la acción.',
 			dlprog:"descargando pack %1 de %2...",
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
@@ -90,10 +116,12 @@ class Strings {
 			"no":"no",
 			mNew: 'Conseguir nuevos packs',
 			nopacks: 'No hay packs disponibles. Si crees que hay un error en el juego, ponte en contacto conmigo.',
+			codes:"Número de teclas en el código: %1",
 			unlocked:"Ya lo has comprado",
 			mBrowse: 'comprar un pack (tienes %1 monedas)',
 			mBrowseUnlocked: 'Cambiar a otro pack comprado',
 			mHashes: 'Reconstruir base de datos de packs',
+			codescracked:"Has podido desbloquear %1 códigos, con %2 acciones diferentes!",
 			mainmenu:"menú principal",
 			mSelect:"Por favor selecciona",
 			mSafeSelect:"Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
@@ -103,6 +131,7 @@ class Strings {
 			packprice:"Este pack cuesta %1 monedas, confirma que quieres comprarlo.",
 			packno:"No tienes monedas suficientes para este pack, cuesta %1.",
 			safequestion:"Cuántos antifallos quieres comprar? Cuestan %1 cada una y tienes %2 monedas. Puedes comprar %3. Recuerda que solo puedes comprar 100 de una tirada. Si quieres más, dale otra vez a la opción del menú.",
+			code:"rompecódigos",
 			mListen:"listo: %1 niveles desbloqueados, flecha izquierda vuelve al menú principal",
 			dfiles:"Descargando %1 archivos. Pulsa cualquier tecla para obtener porcentaje",
 			retrieving:"Recopilando datos ",

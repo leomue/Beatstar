@@ -61,7 +61,17 @@ class ScrollingText {
 	}
 
 	readCurrentLine() {
+	if (this.splitText[this.currentLine][0]=="!") {
+	let str=this.splitText[this.currentLine].substr(1);
+	let snd=so.create(str,true);
+	snd.play();
+	snd.sound.once("end",()=> {
+	this.advance();
+	});
+		}
+	else {
 		speech.speak(this.splitText[this.currentLine]);
+		}
 	}
 
 	advance() {

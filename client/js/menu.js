@@ -33,25 +33,39 @@ class Menu {
 	}
 
 	nextItem() {
+	if (!this.first) {
 		if (this.cursor < this.menuData.length - 1) {
-		if (!this.first) {
-					this.cursor++;
-					}
-					else {
-					this.first=false;
-					}
-		}
 		this.sndMove.play();
+		this.cursor++;
+										}
+															else {
+					this.sndWrap.play();
+					this.cursor=0;
+					}
+					}
+				else {
+				this.sndMove.play();
+				this.first=false;
+		}
+		
 		this.menuData[this.cursor].speak();
 	}
 
 	previousItem() {
-	if (this.first) this.first=false;
+	if (this.first) {
+	this.first=false;
+	this.sndMove.play();
+	}
 		if (this.cursor > 0) {
+		this.sndMove.play();
 			this.cursor--;
 		}
-		this.sndMove.play();
-		this.menuData[this.cursor].speak();
+		else {
+		this.cursor=this.menuData.length-1;
+		this.sndWrap.play();
+					
+		}
+				this.menuData[this.cursor].speak();
 	}
 
 	increase() {

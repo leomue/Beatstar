@@ -1,11 +1,13 @@
+export var lang = 0;
 import $ from 'jquery';
-import {playSlots} from './minis.js';
+import {playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
 export let credits=false;
 export let minis={
-slot:5000,
+slot:8500,
+code:10000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -27,7 +29,7 @@ export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEv
 export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
 
-export var lang = 1;
+
 export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
 export var data = '';
@@ -419,7 +421,7 @@ st.setState(2);
 export function question(text,localizedValues=[],callback=null) {
 let answer=false;
 let items=new Array();
-			items.push(new MenuItem(-1,strings.get(text,localizedValues)));
+			items.push(new MenuItem(0,strings.get(text,localizedValues)));
 	items.push(new MenuItem(0,strings.get("yes",)));
 	items.push(new MenuItem(1,strings.get("no",)));
 		so.directory = './sounds/';
@@ -450,15 +452,32 @@ const fs=require('fs');
 		data = JSON.parse(fs.readFileSync(os.homedir() + '/beatpacks/save.dat'));
 	} catch (err) {
 		data = new Player();
-		let introing=true;
-				new ScrollingText(strings.get("intro"),"\n",function() {
+				let introing=true;
+		let str="";
+		for (let i in strings.strings) {
+		str+=strings.strings[i].langs+". ";
+		}
+		
+		let items=[];
+		let counter=1;
+				for (let i in strings.strings) {
+items.push(new MenuItem(counter,strings.strings[i].lang));
+counter++;
+		}
+		let lm=new Menu(str,items);
+		lm.run((s)=> {
+		lang=s.selected;
+		data.lang=lang;
+						new ScrollingText(strings.get("intro"),"\n",function() {
 		introing=false;
+		});
 		});
 		while (introing) {
 		await utils.sleep(10);
 		}
 	}
 	pack = data.pack;
+	lang=data.lang;
 	if (!changeBoot) boot=false;
 		if (changeBoot) boot=true;
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
@@ -479,6 +498,7 @@ downloadPacks(['default']);
 }
 var download = function(url, dest, cb) {
 const http=require('http');
+const fs=require('fs');
   var file = fs.createWriteStream(dest);
   var request = http.get(url, function(response) {
     response.pipe(file);
@@ -489,7 +509,7 @@ const http=require('http');
   });
 }
 export async function downloadPacks(arr = []) {
-var fs=require('fs');
+const fs=require('fs');
 		if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -499,7 +519,7 @@ var fs=require('fs');
 						 .then(event => event.text())
 			.then(data => {
 				remoteHashes = JSON.parse(mangle.decrypt(data));
-console.log(remoteHashes.length);
+console.log("remote"+remoteHashes.length);
 			});
 		// Ok
 		const browseArray = [];
@@ -512,9 +532,9 @@ console.log(remoteHashes.length);
 						shouldPush = false;
 						break;
 					} else {
-						shouldPush = true;
+											shouldPush = true;
 					}
-				}
+					}
 				if (shouldPush) {
 									browseArray.push(i);
 									size += i.hash;
@@ -733,7 +753,7 @@ let prevPercent=0;
 const datas = data.split('\n');
 datas.forEach(i => {
 	if (i != '') {
-toDownload.push(name+"/"+i);
+toDownload.push(i);
 		
 	}
 });
@@ -776,6 +796,7 @@ prevPercent=0;
 																																																												var threads = 3;
 require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
 		  download(fileUrl, dests[index],next);
+		  
 		  currentIndex=index;
 		  		    
 		  		  }, function() {
@@ -1077,6 +1098,9 @@ st.setState(2);
 				if (name=="slot") {
 				playSlots();
 				}
+				else if (name=="code") {
+				playCode();
+				}
 				else {
 				st.setState(2);
 				}
@@ -1111,12 +1135,13 @@ st.setState(2);
 				return;
 								}
 								else {
-								runTut(name);
+								runTut(s.selected);
 								}
 				});
 				
 				}
 				function runTut(name) {
-				
-			speech.speak(name);
+new ScrollingText(strings.get("tut"+name),"\n",function() {
+st.setState(2);
+});
 			}
