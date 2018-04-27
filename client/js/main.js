@@ -1231,6 +1231,7 @@ let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 			fileLevels.splice(fileLevels.length-1,1);
 					}
 		} else {
+				fileLevels.push("0");
 					}
 			let str="";
 			for (let i=0;i<fileLevels.length;i++) {
@@ -1239,7 +1240,7 @@ let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 			console.log(str);
 						so.directory="./sounds/"
 			console.log("levels"+fileLevels.length);
-let items=[];
+			let items=[];
 items.push(new MenuItem(-2,strings.get("mPackTut")));
 items.push(new MenuItem(0,strings.get("startOver")));
 for (let i=1;i<fileLevels.length;i++) {
@@ -1274,7 +1275,6 @@ let space=so.create("pbeep",true);
 so.directory=path;
 let music;
 let mCounter=0;
-fileLevels[0]="0,";
 for (let i=start;i<=limit;i++) {
 mCounter=i;
 arr=[];
