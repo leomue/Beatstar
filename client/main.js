@@ -7113,17 +7113,21 @@ async function editPackDefinite(path) {
 	if (fs.existsSync(path + 'bpm.txt')) {
 		let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		fileLevels = fileData.split(',');
-		fileLevels.splice(0, 1); //get rid of that first 0 because we'll write it later anyway
-		if (fileLevels[fileLevels.length] == "") {
-			fileLevels.splice(fileLevels.length, 1);
+		if (fileLevels[fileLevels.length - 1] == "") {
+			fileLevels.splice(fileLevels.length - 1, 1);
 		}
 	} else {}
+	let str = "";
+	for (let i = 0; i < fileLevels.length; i++) {
+		str += fileLevels[i] + ",";
+	}
+	console.log(str);
 	_soundObject.so.directory = "./sounds/";
 	console.log("levels" + fileLevels.length);
 	let items = [];
 	items.push(new _menuItem.MenuItem(-2, _strings.strings.get("mPackTut")));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("startOver")));
-	for (let i = 1; i <= fileLevels; i++) {
+	for (let i = 1; i < fileLevels.length; i++) {
 		items.push(new _menuItem.MenuItem(i, _strings.strings.get("level", [i])));
 	}
 	items.push(new _menuItem.MenuItem(-1, _strings.strings.get("mBack")));
@@ -7155,6 +7159,7 @@ async function editPackDefinite(path) {
 		_soundObject.so.directory = path;
 		let music;
 		let mCounter = 0;
+		fileLevels[0] = "0,";
 		for (let i = start; i <= limit; i++) {
 			mCounter = i;
 			arr = [];
@@ -7199,10 +7204,11 @@ async function editPackDefinite(path) {
 		music.stop();
 		//write shit
 		if (fs.existsSync(path + "bpm.txt")) fs.unlinkSync(path + "bpm.txt");
-		let str = "0,";
-		for (let i = 1; i < fileLevels.length; i++) {
-			str += fileLevels[i] + ",";
-			console.log(str);
+		let str = "";
+		for (let i = 0; i < fileLevels.length; i++) {
+			if (fileLevels[i] != "") {
+				str += fileLevels[i] + ",";
+			}
 		}
 		fs.writeFileSync(path + "bpm.txt", str);
 		pos.sound.once("end", () => {

@@ -10,3 +10,4 @@ get a soundPool setting to load sounds using html5 if they are non looping and s
 beat memory is next
 pack music volume control inside game
 make tutorial for beat the code
+finish testing individual level edit

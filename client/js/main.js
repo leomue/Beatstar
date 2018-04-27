@@ -1227,18 +1227,22 @@ if (str=="") str=strings.get("missingFiles");
 			if (fs.existsSync(path+'bpm.txt')) {
 let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		fileLevels=fileData.split(',');
-		fileLevels.splice(0,1);//get rid of that first 0 because we'll write it later anyway
-				if (fileLevels[fileLevels.length]=="") {
-			fileLevels.splice(fileLevels.length,1);
-		}
+						if (fileLevels[fileLevels.length-1]=="") {
+			fileLevels.splice(fileLevels.length-1,1);
+					}
 		} else {
+					}
+			let str="";
+			for (let i=0;i<fileLevels.length;i++) {
+			str+=fileLevels[i]+",";
 			}
-			so.directory="./sounds/"
+			console.log(str);
+						so.directory="./sounds/"
 			console.log("levels"+fileLevels.length);
 let items=[];
 items.push(new MenuItem(-2,strings.get("mPackTut")));
 items.push(new MenuItem(0,strings.get("startOver")));
-for (let i=1;i<=fileLevels;i++) {
+for (let i=1;i<fileLevels.length;i++) {
 items.push(new MenuItem(i,strings.get("level",[i])));
 }
 items.push(new MenuItem(-1,strings.get("mBack")));
@@ -1270,6 +1274,7 @@ let space=so.create("pbeep",true);
 so.directory=path;
 let music;
 let mCounter=0;
+fileLevels[0]="0,";
 for (let i=start;i<=limit;i++) {
 mCounter=i;
 arr=[];
@@ -1314,10 +1319,11 @@ pos.play();
 music.stop();
 //write shit
 if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
-let str="0,";
-for (let i=1;i<fileLevels.length;i++) {
+let str="";
+for (let i=0;i<fileLevels.length;i++) {
+if (fileLevels[i]!="") {
 str+=fileLevels[i]+",";
-console.log(str);
+}
 }
 fs.writeFileSync(path+"bpm.txt",str);
 pos.sound.once("end",()=> {
