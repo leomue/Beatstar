@@ -16,11 +16,11 @@ class SoundHandler {
 		this.directional = directional;
 	}
 
-	playStatic(file, loop = 1, slot = -1) {
+	playStatic(file, loop = 1, slot = -1,stream=false) {
 		if (slot = -1) {
 			slot = this.findFreeStaticSlot();
 		}
-		this.staticSounds[slot] = new SoundItem(file, this.directional);
+		this.staticSounds[slot] = new SoundItem(file, this.directional,stream);
 		if (loop == 1) {
 			this.staticSounds[slot].sound.loop = true;
 		}
@@ -108,13 +108,13 @@ class SoundHandler {
 	}
 }
 class SoundItem {
-	constructor(file, threeD = false) {
+	constructor(file, threeD = false,stream=false) {
 		this.file = file;
 		this.threeD = threeD;
 		if (this.threeD == true) {
 			this.sound = new SoundSource(file, 0, 0, 0);
 		} else {
-			this.sound = so.create(file);
+			this.sound = so.create(file,stream);
 		}
 	}
 

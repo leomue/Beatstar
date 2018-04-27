@@ -9,3 +9,4 @@ partially completed games don't give you coins.
 get a soundPool setting to load sounds using html5 if they are non looping and stationary.
 beat memory is next
 pack music volume control inside game
+make tutorial for beat the code

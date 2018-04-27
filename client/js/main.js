@@ -1208,7 +1208,7 @@ if (str=="") str=strings.get("missingFiles");
 			editPackDefinite(path);
 			}
 			}
-			function editPackDefinite(path) {
+			async function editPackDefinite(path) {
 			const fs=require('fs');
 			so.directory=path;
 						let levels=3;
@@ -1235,36 +1235,85 @@ let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 			}
 			so.directory="./sounds/"
 let items=[];
+items.push(new MenuItem(-2,strings.get("mPackTut")));
 items.push(new MenuItem(0,strings.get("startOver")));
-for (let i=1;i<=levels;i++) {
+for (let i=1;i<=fileLevels;i++) {
 items.push(new MenuItem(i,strings.get("level",[i])));
 }
 items.push(new MenuItem(-1,strings.get("mBack")));
 let start=-1;
-let mm=new Menu(strings.get("mEdit"),items);
-so.directory=path;
-mm.run(s=> {
+let limit=levels;
+let mm=new Menu(strings.get("mSelectEdit"),items);
+mm.run(async s=> {
 start=s.selected;
 mm.destroy();
 if (start==-1) {
 st.setState(2);
 return;
 }
-speech.speak("ready");
+if (start==-2) {
+new ScrollingText(strings.get("packtut"),"\n",()=>{
+editPackDefinite(path);
+});//tutorial
+return;
+}
+if (start>0) limit=start;
+if (start==0) start++;
 let timer=new OldTimer();
+let pool=new SoundHandler();
 let arr=[];
-});//menu callback
-			}//function
-			
-			/*write code
+let inp=new KeyboardInput();
+inp.init();
+let space=so.create("pbeep",true);
+so.directory=path;
+let music;
+for (let i=start;i<=limit;i++) {
+arr.splice();
+timer.restart();
+if (typeof music!=="undefined") music.stop();
+music=so.create(i+"music");
+music.loop=true;
+music.volume=0.5;
+music.play();
+while (arr.length<10) {
+await utils.sleep(5);
+if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
+arr.push(timer.elapsed);
+//speech.speak(timer.elapsed);
+timer.restart();
+space.play();
+}//if
+}//while
+fileLevels[i]=utils.averageInt(arr,1);
+let cont=false;
+music.seek(0);
+timer.restart();
+while (!cont) {
+await utils.sleep(5);
+if (timer.elapsed>=fileLevels[i]) {
+timer.restart();
+space.play();
+}//timer elapsed
+if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+arr.splice();
+cont=true;
+}
+if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
+arr.splice();
+i--;
+cont=true;
+}
+}//second while
+}//limit for
+//write shit
 if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
 let str="0,";
 for (let i=0;i<fileLevels.length;i++) {
 str+=fileLevels[i]+",";
 }
-try {
 fs.writeFileSync(path+"bpm.txt",str);
-} catch {
-new ScrollingText("Error!","\n",function() { st.setState(2); });
-}
-			*/
+so.kill(()=> {
+st.setState(2);
+});//kill call
+});//menu callback
+			}//function

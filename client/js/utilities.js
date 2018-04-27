@@ -55,7 +55,7 @@ return ((current*200/max))/100;
 	for (let i=startIndex;i<arr.length;i++) {
 	val+=arr[i];
 	}
-		average=val/len;
+		average=(val/len)-startIndex;
 	return average;
 }
 averageInt(arr,startIndex=0) {
@@ -66,7 +66,7 @@ averageInt(arr,startIndex=0) {
 	for (let i=startIndex;i<arr.length;i++) {
 	val+=arr[i];
 	}
-		average=val/len;
+		average=(val/len)-startIndex;
 	return Math.floor(average);
 }
 

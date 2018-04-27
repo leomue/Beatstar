@@ -4,8 +4,21 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+mPackTut:"Pack making tutorial",
+packtut:`Welcome to the pack editor!
+First, thank you very much for wanting to create a pack.
+It is very simple. You will be instructed to select whether you want to create a pack from the beginning or, if you already have a times file, called bpm.txt in your pack, you can change one of the levels by using the menu.
+Once you have selected what to do, you will hear the music for the selected levels.
+You will have to press the space bar at the speed you wish the level to go. Each press of the space bar is one cycle of the game, meaning that you have this amount of time to press the correct key
+After you do this 10 times, the music will restart and you will hear your result.
+You will hear a sound which will play on every cycle. Think of this cycle as if you were playing the game. Is this enough time for you to press the key? Is it in sync with the music?
+If you are not satisfied with the result, you can press the space bar again to reset the time and start again.
+Once you are satisfied, press enter. The next music will play.
+Once all the levels are done, the file bpm.txt will be created (or voerwritten).
+Note that you will have to put the pack in your user folder/beatpacks if you want to play it, and unlock it as normal.
+You can upload your pack via the website by making a zip file of the pack's folder and sending it via the upload form.`,
 startOver:"Start over from the first level",
-mEdit:"Please select which level to edit, or start over",
+mSelectEdit:"Please select which level to edit, or start over",
 selectPack:"Please select a pack to edit",
 floop:"Music for the main menu",
 fa1:"Sound for the freeze action, also known as quiet action or stop action. This has no o sound because no key is needed",
@@ -121,8 +134,21 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		mPackTut:"Tutorial de cómo hacer packs",
+packtut:`Bienvenido al editor de packs!
+Primero, darte las gracias por querer crear un pack.
+Es muy fácil. Primero, deberás seleccionar si editar uno de los niveles (si ya existe un archivo de tiempos llamado bpm.txt) o empezar de 0.
+Cuando hayas seleccionado qué hacer, escucharás la música de los niveles seleccionados.
+Deberás pulsar la barra espaciadora a la velocidad que quieres que corra el nivel. Cada pulsación del espacio es un ciclo del juego, lo que significa que tienes esa cantidad de tiempo para pulsar la tecla correcta.
+Cuando hayas hecho eso 10 veces, escucharás que la música se reinicia y tu resultado.
+Escucharás un sonido que se reproducirá cada ciclo. Piensa en esos ciclos como si estuvieras jugando. ¿Está sincronizado con la música? ¿Tienes suficiente tiempo para pulsar la tecla correcta?
+Si no estás satisfecho con el resultado, puedes pulsar de nuevo el espacio para reiniciar la música y comenzar de nuevo con el mismo nivel.
+Cuando el resultado te parezca bien, pulsa enter. Si has seleccionado más de un nivel, este se reproducirá.
+Cuando estén hechos todos los niveles, se creará automáticamente el archivo bpm.txt en el pack (o se reemplazará si ya existía).
+Si quieres jugar, tendrás que ponerlo en tu carpeta de usuario/beatpacks, y desbloquearlo con beatcoins.
+Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y enviándolo con el formulario de subida`,
 		startOver:"Comenzar desde el primer nivel",
-		mEdit:"Por favor selecciona el nivel a editar, o empezar de 0",
+		mSelectEdit:"Por favor selecciona el nivel a editar, o empezar de 0",
 		selectPack:"Selecciona un pack a editar",
 		floop:"Música del menú",
 		fa1:"Sonido para la acción freeze, también se le llama acción de quieto. No necesita sonido o ya que no hay tecla que pulsar",

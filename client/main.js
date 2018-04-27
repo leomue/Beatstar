@@ -77,12 +77,52 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({18:[function(require,module,exports) {
+})({12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+const useWebTTS = true;
+
+class TTS {
+	constructor(webTTS = false) {
+		this.synth = window.speechSynthesis;
+		this.webTTS = webTTS;
+	}
+
+	speak(text) {
+		if (this.webTTS) {
+			const utterThis = new SpeechSynthesisUtterance(text);
+			this.synth.stop();
+			this.synth.speak(utterThis);
+		} else {
+			document.getElementById('speech').innerHTML = '';
+			const para = document.createElement('p');
+			para.appendChild(document.createTextNode(text));
+			document.getElementById('speech').appendChild(para);
+		}
+	} // End speak()
+
+	setWebTTS(tts) {
+		this.webTTS = tts;
+	}
+} // End class
+if (typeof speech === 'undefined') {
+	var speech = new TTS();
+}
+exports.TTS = TTS;
+exports.speech = speech;
+},{}],18:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.OldTimer = undefined;
+
+var _tts = require('./tts');
+
 class OldTimer {
 	constructor() {
 		this.elapsed;
@@ -115,6 +155,7 @@ class OldTimer {
 		this.started = true;
 	}
 	restart() {
+		_tts.speech.speak("restarted");
 		this.lastTime = performance.now();
 		this.pauseWhen = 0;
 		this.paused = false;
@@ -128,7 +169,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],19:[function(require,module,exports) {
+},{"./tts":12}],19:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3031,42 +3072,6 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],12:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-const useWebTTS = true;
-
-class TTS {
-	constructor(webTTS = false) {
-		this.synth = window.speechSynthesis;
-		this.webTTS = webTTS;
-	}
-
-	speak(text) {
-		if (this.webTTS) {
-			const utterThis = new SpeechSynthesisUtterance(text);
-			this.synth.stop();
-			this.synth.speak(utterThis);
-		} else {
-			document.getElementById('speech').innerHTML = '';
-			const para = document.createElement('p');
-			para.appendChild(document.createTextNode(text));
-			document.getElementById('speech').appendChild(para);
-		}
-	} // End speak()
-
-	setWebTTS(tts) {
-		this.webTTS = tts;
-	}
-} // End class
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
-exports.TTS = TTS;
-exports.speech = speech;
 },{}],4:[function(require,module,exports) {
 'use strict';
 
@@ -3390,7 +3395,7 @@ class GameUtils {
 		for (let i = startIndex; i < arr.length; i++) {
 			val += arr[i];
 		}
-		average = val / len;
+		average = val / len - startIndex;
 		return average;
 	}
 	averageInt(arr, startIndex = 0) {
@@ -3401,7 +3406,7 @@ class GameUtils {
 		for (let i = startIndex; i < arr.length; i++) {
 			val += arr[i];
 		}
-		average = val / len;
+		average = val / len - startIndex;
 		return Math.floor(average);
 	}
 
@@ -3907,11 +3912,11 @@ class SoundHandler {
 		this.directional = directional;
 	}
 
-	playStatic(file, loop = 1, slot = -1) {
+	playStatic(file, loop = 1, slot = -1, stream = false) {
 		if (slot = -1) {
 			slot = this.findFreeStaticSlot();
 		}
-		this.staticSounds[slot] = new SoundItem(file, this.directional);
+		this.staticSounds[slot] = new SoundItem(file, this.directional, stream);
 		if (loop == 1) {
 			this.staticSounds[slot].sound.loop = true;
 		}
@@ -3999,13 +4004,13 @@ class SoundHandler {
 	}
 }
 class SoundItem {
-	constructor(file, threeD = false) {
+	constructor(file, threeD = false, stream = false) {
 		this.file = file;
 		this.threeD = threeD;
 		if (this.threeD == true) {
 			this.sound = new _soundSource.SoundSource(file, 0, 0, 0);
 		} else {
-			this.sound = _soundObject.so.create(file);
+			this.sound = _soundObject.so.create(file, stream);
 		}
 	}
 
@@ -4172,8 +4177,21 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			mPackTut: "Pack making tutorial",
+			packtut: `Welcome to the pack editor!
+First, thank you very much for wanting to create a pack.
+It is very simple. You will be instructed to select whether you want to create a pack from the beginning or, if you already have a times file, called bpm.txt in your pack, you can change one of the levels by using the menu.
+Once you have selected what to do, you will hear the music for the selected levels.
+You will have to press the space bar at the speed you wish the level to go. Each press of the space bar is one cycle of the game, meaning that you have this amount of time to press the correct key
+After you do this 10 times, the music will restart and you will hear your result.
+You will hear a sound which will play on every cycle. Think of this cycle as if you were playing the game. Is this enough time for you to press the key? Is it in sync with the music?
+If you are not satisfied with the result, you can press the space bar again to reset the time and start again.
+Once you are satisfied, press enter. The next music will play.
+Once all the levels are done, the file bpm.txt will be created (or voerwritten).
+Note that you will have to put the pack in your user folder/beatpacks if you want to play it, and unlock it as normal.
+You can upload your pack via the website by making a zip file of the pack's folder and sending it via the upload form.`,
 			startOver: "Start over from the first level",
-			mEdit: "Please select which level to edit, or start over",
+			mSelectEdit: "Please select which level to edit, or start over",
 			selectPack: "Please select a pack to edit",
 			floop: "Music for the main menu",
 			fa1: "Sound for the freeze action, also known as quiet action or stop action. This has no o sound because no key is needed",
@@ -4289,8 +4307,21 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			mPackTut: "Tutorial de cómo hacer packs",
+			packtut: `Bienvenido al editor de packs!
+Primero, darte las gracias por querer crear un pack.
+Es muy fácil. Primero, deberás seleccionar si editar uno de los niveles (si ya existe un archivo de tiempos llamado bpm.txt) o empezar de 0.
+Cuando hayas seleccionado qué hacer, escucharás la música de los niveles seleccionados.
+Deberás pulsar la barra espaciadora a la velocidad que quieres que corra el nivel. Cada pulsación del espacio es un ciclo del juego, lo que significa que tienes esa cantidad de tiempo para pulsar la tecla correcta.
+Cuando hayas hecho eso 10 veces, escucharás que la música se reinicia y tu resultado.
+Escucharás un sonido que se reproducirá cada ciclo. Piensa en esos ciclos como si estuvieras jugando. ¿Está sincronizado con la música? ¿Tienes suficiente tiempo para pulsar la tecla correcta?
+Si no estás satisfecho con el resultado, puedes pulsar de nuevo el espacio para reiniciar la música y comenzar de nuevo con el mismo nivel.
+Cuando el resultado te parezca bien, pulsa enter. Si has seleccionado más de un nivel, este se reproducirá.
+Cuando estén hechos todos los niveles, se creará automáticamente el archivo bpm.txt en el pack (o se reemplazará si ya existía).
+Si quieres jugar, tendrás que ponerlo en tu carpeta de usuario/beatpacks, y desbloquearlo con beatcoins.
+Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y enviándolo con el formulario de subida`,
 			startOver: "Comenzar desde el primer nivel",
-			mEdit: "Por favor selecciona el nivel a editar, o empezar de 0",
+			mSelectEdit: "Por favor selecciona el nivel a editar, o empezar de 0",
 			selectPack: "Selecciona un pack a editar",
 			floop: "Música del menú",
 			fa1: "Sonido para la acción freeze, también se le llama acción de quieto. No necesita sonido o ya que no hay tecla que pulsar",
@@ -7064,7 +7095,7 @@ async function editPack(path) {
 		editPackDefinite(path);
 	}
 }
-function editPackDefinite(path) {
+async function editPackDefinite(path) {
 	const fs = require('fs');
 	_soundObject.so.directory = path;
 	let levels = 3;
@@ -7089,40 +7120,89 @@ function editPackDefinite(path) {
 	} else {}
 	_soundObject.so.directory = "./sounds/";
 	let items = [];
+	items.push(new _menuItem.MenuItem(-2, _strings.strings.get("mPackTut")));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("startOver")));
-	for (let i = 1; i <= levels; i++) {
+	for (let i = 1; i <= fileLevels; i++) {
 		items.push(new _menuItem.MenuItem(i, _strings.strings.get("level", [i])));
 	}
 	items.push(new _menuItem.MenuItem(-1, _strings.strings.get("mBack")));
 	let start = -1;
-	let mm = new _menu.Menu(_strings.strings.get("mEdit"), items);
-	_soundObject.so.directory = path;
-	mm.run(s => {
+	let limit = levels;
+	let mm = new _menu.Menu(_strings.strings.get("mSelectEdit"), items);
+	mm.run(async s => {
 		start = s.selected;
 		mm.destroy();
 		if (start == -1) {
 			_stateMachine.st.setState(2);
 			return;
 		}
-		_tts.speech.speak("ready");
+		if (start == -2) {
+			new _scrollingText.ScrollingText(_strings.strings.get("packtut"), "\n", () => {
+				editPackDefinite(path);
+			}); //tutorial
+			return;
+		}
+		if (start > 0) limit = start;
+		if (start == 0) start++;
 		let timer = new _oldtimer.OldTimer();
+		let pool = new _soundHandler.SoundHandler();
 		let arr = [];
+		let inp = new _input.KeyboardInput();
+		inp.init();
+		let space = _soundObject.so.create("pbeep", true);
+		_soundObject.so.directory = path;
+		let music;
+		for (let i = start; i <= limit; i++) {
+			arr.splice();
+			timer.restart();
+			if (typeof music !== "undefined") music.stop();
+			music = _soundObject.so.create(i + "music");
+			music.loop = true;
+			music.volume = 0.5;
+			music.play();
+			while (arr.length < 10) {
+				await _utilities.utils.sleep(5);
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_SPACE)) {
+					arr.push(timer.elapsed);
+					//speech.speak(timer.elapsed);
+					timer.restart();
+					space.play();
+				} //if
+			} //while
+			fileLevels[i] = _utilities.utils.averageInt(arr, 1);
+			let cont = false;
+			music.seek(0);
+			timer.restart();
+			while (!cont) {
+				await _utilities.utils.sleep(5);
+				if (timer.elapsed >= fileLevels[i]) {
+					timer.restart();
+					space.play();
+				} //timer elapsed
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+					arr.splice();
+					cont = true;
+				}
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_SPACE)) {
+					arr.splice();
+					i--;
+					cont = true;
+				}
+			} //second while
+		} //limit for
+		//write shit
+		if (fs.existsSync(path + "bpm.txt")) fs.unlinkSync(path + "bpm.txt");
+		let str = "0,";
+		for (let i = 0; i < fileLevels.length; i++) {
+			str += fileLevels[i] + ",";
+		}
+		fs.writeFileSync(path + "bpm.txt", str);
+		_soundObject.so.kill(() => {
+			_stateMachine.st.setState(2);
+		}); //kill call
 	}); //menu callback
 } //function
-
-/*write code
-if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
-let str="0,";
-for (let i=0;i<fileLevels.length;i++) {
-str+=fileLevels[i]+",";
-}
-try {
-fs.writeFileSync(path+"bpm.txt",str);
-} catch {
-new ScrollingText("Error!","\n",function() { st.setState(2); });
-}
-*/
-},{"./oldtimer":18,"./minis.js":3,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":16,"./stateMachine":15,"./input.js":4}],25:[function(require,module,exports) {
+},{"./oldtimer":18,"./minis.js":3,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":16,"./stateMachine":15,"./input.js":4}],26:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7299,5 +7379,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[25,1])
+},{}]},{},[26,1])
 //# sourceMappingURL=/main.map
