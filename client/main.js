@@ -7119,6 +7119,7 @@ async function editPackDefinite(path) {
 		}
 	} else {}
 	_soundObject.so.directory = "./sounds/";
+	console.log("levels" + fileLevels.length);
 	let items = [];
 	items.push(new _menuItem.MenuItem(-2, _strings.strings.get("mPackTut")));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("startOver")));
@@ -7145,6 +7146,7 @@ async function editPackDefinite(path) {
 		if (start > 0) limit = start;
 		if (start == 0) start++;
 		let timer = new _oldtimer.OldTimer();
+		let pos = _soundObject.so.create("positive");
 		let pool = new _soundHandler.SoundHandler();
 		let arr = [];
 		let inp = new _input.KeyboardInput();
@@ -7152,7 +7154,9 @@ async function editPackDefinite(path) {
 		let space = _soundObject.so.create("pbeep", true);
 		_soundObject.so.directory = path;
 		let music;
+		let mCounter = 0;
 		for (let i = start; i <= limit; i++) {
+			mCounter = i;
 			arr = [];
 			timer.restart();
 			if (typeof music !== "undefined") music.stop();
@@ -7169,6 +7173,7 @@ async function editPackDefinite(path) {
 				} //if
 			} //while
 			console.log("avg" + _utilities.utils.averageInt(arr, 1));
+			fileLevels[i] = _utilities.utils.averageInt(arr, 1);
 			let cont = false;
 			music.seek(0);
 			timer.restart();
@@ -7179,7 +7184,6 @@ async function editPackDefinite(path) {
 					space.play();
 				} //timer elapsed
 				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
-					fileLevels[i] = _utilities.utils.averageInt(arr, 1);
 					arr = [];
 					break;
 				}
@@ -7191,14 +7195,14 @@ async function editPackDefinite(path) {
 			} //second while
 		} //limit for
 		_soundObject.so.directory = "./sounds/";
-		let pos = _soundObject.so.create("positive");
 		pos.play();
 		music.stop();
 		//write shit
 		if (fs.existsSync(path + "bpm.txt")) fs.unlinkSync(path + "bpm.txt");
 		let str = "0,";
-		for (let i = 0; i < fileLevels.length; i++) {
-			if (typeof levels[i] !== "undefined") str += fileLevels[i] + ",";
+		for (let i = 1; i < fileLevels.length; i++) {
+			str += fileLevels[i] + ",";
+			console.log(str);
 		}
 		fs.writeFileSync(path + "bpm.txt", str);
 		pos.sound.once("end", () => {

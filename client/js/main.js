@@ -1234,6 +1234,7 @@ let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		} else {
 			}
 			so.directory="./sounds/"
+			console.log("levels"+fileLevels.length);
 let items=[];
 items.push(new MenuItem(-2,strings.get("mPackTut")));
 items.push(new MenuItem(0,strings.get("startOver")));
@@ -1260,6 +1261,7 @@ return;
 if (start>0) limit=start;
 if (start==0) start++;
 let timer=new OldTimer();
+let pos=so.create("positive");
 let pool=new SoundHandler();
 let arr=[];
 let inp=new KeyboardInput();
@@ -1267,7 +1269,9 @@ inp.init();
 let space=so.create("pbeep",true);
 so.directory=path;
 let music;
+let mCounter=0;
 for (let i=start;i<=limit;i++) {
+mCounter=i;
 arr=[];
 timer.restart();
 if (typeof music!=="undefined") music.stop();
@@ -1284,6 +1288,7 @@ space.play();
 }//if
 }//while
 console.log("avg"+utils.averageInt(arr,1));
+fileLevels[i]=utils.averageInt(arr,1);
 let cont=false;
 music.seek(0);
 timer.restart();
@@ -1294,7 +1299,6 @@ timer.restart();
 space.play();
 }//timer elapsed
 if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-fileLevels[i]=utils.averageInt(arr,1);
 arr=[];
 break;
 }
@@ -1306,14 +1310,14 @@ break;
 }//second while
 }//limit for
 so.directory="./sounds/";
-let pos=so.create("positive");
 pos.play();
 music.stop();
 //write shit
 if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
 let str="0,";
-for (let i=0;i<fileLevels.length;i++) {
-if (typeof levels[i]!=="undefined") str+=fileLevels[i]+",";
+for (let i=1;i<fileLevels.length;i++) {
+str+=fileLevels[i]+",";
+console.log(str);
 }
 fs.writeFileSync(path+"bpm.txt",str);
 pos.sound.once("end",()=> {
