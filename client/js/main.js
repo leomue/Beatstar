@@ -38,8 +38,6 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-let snd=so.create("minimusic");
-await snd.playWait();
              	st.setState(1);
 }
 function proceed() {
@@ -448,6 +446,7 @@ callback(answer);
 });
 }
 export async function checkPack(changeBoot=true) {
+editing=false;
 const fs=require('fs');
 	try {
 		data = JSON.parse(fs.readFileSync(os.homedir() + '/beatpacks/save.dat'));
@@ -1166,15 +1165,17 @@ st.setState(2);
 			return;
 			}
 			await utils.sleep(1000);
-			path+="/"
-			const fs=require('fs');
+			console.log(path);
+						path+="/"
+						const fs=require('fs');
 						const checkFiles=["a1","a2","a3","a4","a5","o2","o3","o4","o5","1music","2music","3music","fail","name","loop","select","win"];
 			const optionalFiles=["boot","credits","nlevel","pre1","a6","o6","a7","o7","o8","a8","a9","o9"]
 			editing=true;
+						let str="";
 						
-						let str=strings.get("missingFiles");
 			checkFiles.forEach(function(i,index) {
-			if (!fs.exists(path+i)) {
+			if (!fs.existsSync(path+i+".ogg")) {
+if (str=="") str=strings.get("missingFiles");
 			str+="\n"+i+".ogg: "+strings.get("f"+i);
 			}
 			});
@@ -1184,9 +1185,10 @@ st.setState(2);
 			});
 			return;
 			}
-												str=strings.get("missingOptional");
+												str="";
 			optionalFiles.forEach(function(i,index) {
-			if (!fs.exists(path+i)) {
+			if (!fs.existsSync(path+i+".ogg")) {
+			if (str=="") str=strings.get("missingOptional");
 			str+="\n"+i+".ogg: "+strings.get("f"+i);
 			}
 			});
@@ -1200,6 +1202,41 @@ st.setState(2);
 			}
 			}
 			function editPackDefinite(path) {
+			const fs=require('fs');
 			so.directory=path;
-			speech.speak(path);
+						let levels=3;
+			let stop=false;
+			while (!stop) {
+			if (fs.existsSync(path+levels+"music.ogg")) {
+			levels++;
 			}
+			else {
+			stop=true;
+			}
+			}
+			console.log("music levels"+levels);
+			let fileLevels=[];
+			if (fs.existsSync(path+'bpm.txt')) {
+let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
+		fileLevels=fileData.split(',');
+		fileLevels.splice(0,1);//get rid of that first 0 because we'll write it later anyway
+				if (fileLevels[fileLevels.length]=="") {
+			fileLevels.splice(fileLevels.length,1);
+		}
+		} else {
+			}
+console.log("file"+fileLevels.length);
+			}
+			
+			/*write code
+if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
+let str="0,";
+for (let i=0;i<fileLevels.length;i++) {
+str+=fileLevels[i]+",";
+}
+try {
+fs.writeFileSync(path+"bpm.txt",str);
+} catch {
+new ScrollingText("Error!","\n",function() { st.setState(2); });
+}
+			*/

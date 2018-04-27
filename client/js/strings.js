@@ -4,6 +4,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+mEdit:"Please select which level to edit, or start over",
 selectPack:"Please select a pack to edit",
 floop:"Music for the main menu",
 fa1:"Sound for the freeze action, also known as quiet action or stop action. This has no o sound because no key is needed",
@@ -119,6 +120,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		mEdit:"Por favor selecciona el nivel a editar, o empezar de 0",
 		selectPack:"Selecciona un pack a editar",
 		floop:"Música del menú",
 		fa1:"Sonido para la acción freeze, también se le llama acción de quieto. No necesita sonido o ya que no hay tecla que pulsar",
