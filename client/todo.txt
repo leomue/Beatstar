@@ -7,3 +7,5 @@ remember to add safeguards and some cash depending on the average score obtained
 no more insurance, just save files. and most actions delete your save file.
 partially completed games don't give you coins.
 get a soundPool setting to load sounds using html5 if they are non looping and stationary.
+beat memory is next
+pack music volume control inside game

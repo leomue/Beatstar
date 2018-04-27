@@ -1,4 +1,6 @@
 import {Howl, Howler,Spatial} from './howler';
+import {KeyboardInput} from './input';
+import {KeyEvent} from './keycodes';
 import {utils} from './utilities';
 import {speech} from './tts';
 const isElectron = true;
@@ -47,15 +49,26 @@ class SoundObjectItem {
 	}
 	
 playWait() {
+let inp=new KeyboardInput();
+inp.init();
  this.sound.play();
+ inp.justPressedEventCallback=((evt)=> {
+ this.sound.stop();
+ inp.justPressedEventCallback=null;
+ });
 return new Promise((resolve,reject)=>{
- this.sound.once("end",function() {
+ this.sound.once("end",()=> {
+ this.sound.unload();
+   resolve("ok");
+   inp.justPressedEventCallback=null;
+ });//end
+  this.sound.once("stop",()=> {
  this.sound.unload();
   resolve("ok");
- });//end
+  inp.justPressedEventCallback=null;
+ });//stop
  });//promise
 	}
-
 	stop() {
 		this.sound.stop();
 	}

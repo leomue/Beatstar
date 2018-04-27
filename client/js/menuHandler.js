@@ -1,7 +1,7 @@
 'use strict';
 
 import {so} from './soundObject';
-import {minituts,minigames,buySafeguards,data} from './main';
+import {editPack,minituts,minigames,buySafeguards,data} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -59,7 +59,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 const remote = electron.remote
 const {dialog} = require('electron').remote
 let stuff=dialog.showOpenDialog({
-title:"select pack",
+title:strings.get("selectPack"),
     properties: ['openDirectory']
   },function(path){
   editPack(path);

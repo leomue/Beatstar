@@ -38,9 +38,7 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-utils.sleep(2000);
-    let snd=so.create("minimusic");
-        snd.pitch=0.6;
+let snd=so.create("minimusic");
 await snd.playWait();
              	st.setState(1);
 }
@@ -1162,13 +1160,46 @@ st.setState(2);
 			callback();
 			}
 			}
-			function editPack(path) {
-			if (typeof path==="undefined") {
+			export async function editPack(path) {
+			if (typeof path==="undefined" || path=="") {
 			st.setState(2);
+			return;
 			}
+			await utils.sleep(1000);
+			path+="/"
 			const fs=require('fs');
-			const os=require('os');
-			const checkFiles=["a1","a2","a3","a4","a5","o1","o2","o3","o4","o5","1music","2music","3music","4music","5music","fail","name","loop","select","win"];
+						const checkFiles=["a1","a2","a3","a4","a5","o2","o3","o4","o5","1music","2music","3music","fail","name","loop","select","win"];
+			const optionalFiles=["boot","credits","nlevel","pre1","a6","o6","a7","o7","o8","a8","a9","o9"]
 			editing=true;
-			console.log(path);
+						
+						let str=strings.get("missingFiles");
+			checkFiles.forEach(function(i,index) {
+			if (!fs.exists(path+i)) {
+			str+="\n"+i+".ogg: "+strings.get("f"+i);
+			}
+			});
+			if (str!="") {
+			new ScrollingText(str,"\n",function() {
+			st.setState(2);
+			});
+			return;
+			}
+												str=strings.get("missingOptional");
+			optionalFiles.forEach(function(i,index) {
+			if (!fs.exists(path+i)) {
+			str+="\n"+i+".ogg: "+strings.get("f"+i);
+			}
+			});
+			if (str!="") {
+			new ScrollingText(str,"\n",function() {
+			editPackDefinite(path);
+			});
+			}
+			else {
+			editPackDefinite(path);
+			}
+			}
+			function editPackDefinite(path) {
+			so.directory=path;
+			speech.speak(path);
 			}

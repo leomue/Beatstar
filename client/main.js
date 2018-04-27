@@ -1,4 +1,4 @@
-process.env.HMR_PORT=55281;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=56303;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({40:[function(require,module,exports) {
+})({17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -128,7 +128,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],43:[function(require,module,exports) {
+},{}],19:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3031,7 +3031,306 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],35:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+const useWebTTS = true;
+
+class TTS {
+	constructor(webTTS = false) {
+		this.synth = window.speechSynthesis;
+		this.webTTS = webTTS;
+	}
+
+	speak(text) {
+		if (this.webTTS) {
+			const utterThis = new SpeechSynthesisUtterance(text);
+			this.synth.stop();
+			this.synth.speak(utterThis);
+		} else {
+			document.getElementById('speech').innerHTML = '';
+			const para = document.createElement('p');
+			para.appendChild(document.createTextNode(text));
+			document.getElementById('speech').appendChild(para);
+		}
+	} // End speak()
+
+	setWebTTS(tts) {
+		this.webTTS = tts;
+	}
+} // End class
+if (typeof speech === 'undefined') {
+	var speech = new TTS();
+}
+exports.TTS = TTS;
+exports.speech = speech;
+},{}],4:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.KeyboardInput = undefined;
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _tts = require('./tts');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+'use strict';
+class KeyboardInput {
+	constructor() {
+		this.keyDown = [];
+		this.justPressed = [];
+		this.chars = [];
+		this.justReleased = [];
+		this.justPressedEventCallback = null;
+		this.charEventCallback = null;
+	}
+
+	init() {
+		const that = this;
+		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
+		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
+		document.addEventListener('keydown', event => {
+			that.handleKeyDown(event);
+		});
+		document.addEventListener('keyup', event => {
+			that.handleKeyUp(event);
+		});
+		document.addEventListener('keypress', event => {
+			that.handleChar(event);
+		});
+	}
+
+	handleKeyDown(event) {
+		if (this.keyDown[event.which] != true || typeof this.keyDown[event.which] === 'undefined') {
+			this.keyDown[event.which] = true;
+			this.justPressed[event.which] = true;
+			this.justReleased[event.which] = false;
+			if (typeof this.justPressedEventCallback !== 'undefined' && this.justPressedEventCallback != null) {
+				this.justPressedEventCallback(event.which);
+			}
+		}
+	}
+
+	handleChar(char) {
+		if (char.which < 48 || char.which > 122) {
+			return;
+		}
+		if (String.fromCharCode(char.which) != '') {
+			this.chars += String.fromCharCode(char.which);
+			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
+				this.charEventCallback(String.fromCharCode(char.which));
+			}
+		}
+	}
+
+	handleKeyUp(event) {
+		if (this.keyDown[event.which] == true) {
+			this.keyDown[event.which] = false;
+			this.justPressed[event.which] = false;
+			this.justReleased[event.which] = true;
+		}
+		this.chars = '';
+	}
+
+	isDown(event) {
+		return this.keyDown[event];
+	}
+
+	isJustPressed(event) {
+		if (this.justPressed[event] == true) {
+			this.justPressed[event] = false;
+			return true;
+		}
+		return false;
+	}
+
+	isJustReleased(event) {
+		if (this.justReleased[event]) {
+			this.justReleased[event] = false;
+			return true;
+		}
+		return false;
+	}
+
+	keysDown() {
+		const kd = [];
+		this.keyDown.forEach((v, i) => {
+			if (v) {
+				kd.push(i);
+			}
+		});
+		return kd;
+	}
+
+	getChars() {
+		const kd = this.chars;
+		this.chars = '';
+		return kd;
+	}
+
+	keysPressed() {
+		const kd = [];
+		this.justPressed.forEach((v, i) => {
+			if (v) {
+				kd.push(i);
+			}
+		});
+		this.justPressed.splice();
+		return kd;
+	}
+
+	releaseAllKeys() {}
+
+	keysReleased() {
+		const kd = [];
+		this.justReleased.forEach((v, i) => {
+			if (v) {
+				kd.push(i);
+			}
+		});
+		this.justReleased.splice();
+		return kd;
+	}
+}
+
+exports.KeyboardInput = KeyboardInput;
+},{"./tts":12}],15:[function(require,module,exports) {
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+if (typeof KeyEvent === 'undefined') {
+	var KeyEvent = {
+		DOM_VK_CANCEL: 3,
+		DOM_VK_HELP: 6,
+		DOM_VK_BACK_SPACE: 8,
+		DOM_VK_TAB: 9,
+		DOM_VK_CLEAR: 12,
+		DOM_VK_RETURN: 13,
+		DOM_VK_ENTER: 14,
+		DOM_VK_SHIFT: 16,
+		DOM_VK_CONTROL: 17,
+		DOM_VK_ALT: 18,
+		DOM_VK_PAUSE: 19,
+		DOM_VK_CAPS_LOCK: 20,
+		DOM_VK_ESCAPE: 27,
+		DOM_VK_SPACE: 32,
+		DOM_VK_PAGE_UP: 33,
+		DOM_VK_PAGE_DOWN: 34,
+		DOM_VK_END: 35,
+		DOM_VK_HOME: 36,
+		DOM_VK_LEFT: 37,
+		DOM_VK_UP: 38,
+		DOM_VK_RIGHT: 39,
+		DOM_VK_DOWN: 40,
+		DOM_VK_PRINTSCREEN: 44,
+		DOM_VK_INSERT: 45,
+		DOM_VK_DELETE: 46,
+		DOM_VK_0: 48,
+		DOM_VK_1: 49,
+		DOM_VK_2: 50,
+		DOM_VK_3: 51,
+		DOM_VK_4: 52,
+		DOM_VK_5: 53,
+		DOM_VK_6: 54,
+		DOM_VK_7: 55,
+		DOM_VK_8: 56,
+		DOM_VK_9: 57,
+		DOM_VK_SEMICOLON: 59,
+		DOM_VK_EQUALS: 61,
+		DOM_VK_A: 65,
+		DOM_VK_B: 66,
+		DOM_VK_C: 67,
+		DOM_VK_D: 68,
+		DOM_VK_E: 69,
+		DOM_VK_F: 70,
+		DOM_VK_G: 71,
+		DOM_VK_H: 72,
+		DOM_VK_I: 73,
+		DOM_VK_J: 74,
+		DOM_VK_K: 75,
+		DOM_VK_L: 76,
+		DOM_VK_M: 77,
+		DOM_VK_N: 78,
+		DOM_VK_O: 79,
+		DOM_VK_P: 80,
+		DOM_VK_Q: 81,
+		DOM_VK_R: 82,
+		DOM_VK_S: 83,
+		DOM_VK_T: 84,
+		DOM_VK_U: 85,
+		DOM_VK_V: 86,
+		DOM_VK_W: 87,
+		DOM_VK_X: 88,
+		DOM_VK_Y: 89,
+		DOM_VK_Z: 90,
+		DOM_VK_CONTEXT_MENU: 93,
+		DOM_VK_NUMPAD0: 96,
+		DOM_VK_NUMPAD1: 97,
+		DOM_VK_NUMPAD2: 98,
+		DOM_VK_NUMPAD3: 99,
+		DOM_VK_NUMPAD4: 100,
+		DOM_VK_NUMPAD5: 101,
+		DOM_VK_NUMPAD6: 102,
+		DOM_VK_NUMPAD7: 103,
+		DOM_VK_NUMPAD8: 104,
+		DOM_VK_NUMPAD9: 105,
+		DOM_VK_MULTIPLY: 106,
+		DOM_VK_ADD: 107,
+		DOM_VK_SEPARATOR: 108,
+		DOM_VK_SUBTRACT: 109,
+		DOM_VK_DECIMAL: 110,
+		DOM_VK_DIVIDE: 111,
+		DOM_VK_F1: 112,
+		DOM_VK_F2: 113,
+		DOM_VK_F3: 114,
+		DOM_VK_F4: 115,
+		DOM_VK_F5: 116,
+		DOM_VK_F6: 117,
+		DOM_VK_F7: 118,
+		DOM_VK_F8: 119,
+		DOM_VK_F9: 120,
+		DOM_VK_F10: 121,
+		DOM_VK_F11: 122,
+		DOM_VK_F12: 123,
+		DOM_VK_F13: 124,
+		DOM_VK_F14: 125,
+		DOM_VK_F15: 126,
+		DOM_VK_F16: 127,
+		DOM_VK_F17: 128,
+		DOM_VK_F18: 129,
+		DOM_VK_F19: 130,
+		DOM_VK_F20: 131,
+		DOM_VK_F21: 132,
+		DOM_VK_F22: 133,
+		DOM_VK_F23: 134,
+		DOM_VK_F24: 135,
+		DOM_VK_NUM_LOCK: 144,
+		DOM_VK_SCROLL_LOCK: 145,
+		DOM_VK_COMMA: 188,
+		DOM_VK_PERIOD: 190,
+		DOM_VK_SLASH: 191,
+		DOM_VK_BACK_QUOTE: 192,
+		DOM_VK_OPEN_BRACKET: 219,
+		DOM_VK_BACK_SLASH: 220,
+		DOM_VK_CLOSE_BRACKET: 221,
+		DOM_VK_QUOTE: 222,
+		DOM_VK_META: 224
+	};
+}
+exports.KeyEvent = KeyEvent;
+},{}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3119,43 +3418,7 @@ class GameUtils {
 	}
 }
 var utils = exports.utils = new GameUtils();
-},{}],34:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-const useWebTTS = true;
-
-class TTS {
-	constructor(webTTS = false) {
-		this.synth = window.speechSynthesis;
-		this.webTTS = webTTS;
-	}
-
-	speak(text) {
-		if (this.webTTS) {
-			const utterThis = new SpeechSynthesisUtterance(text);
-			this.synth.stop();
-			this.synth.speak(utterThis);
-		} else {
-			document.getElementById('speech').innerHTML = '';
-			const para = document.createElement('p');
-			para.appendChild(document.createTextNode(text));
-			document.getElementById('speech').appendChild(para);
-		}
-	} // End speak()
-
-	setWebTTS(tts) {
-		this.webTTS = tts;
-	}
-} // End class
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
-exports.TTS = TTS;
-exports.speech = speech;
-},{}],36:[function(require,module,exports) {
+},{}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3164,6 +3427,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.so = undefined;
 
 var _howler = require('./howler');
+
+var _input = require('./input');
+
+var _keycodes = require('./keycodes');
 
 var _utilities = require('./utilities');
 
@@ -3215,15 +3482,26 @@ class SoundObjectItem {
 	}
 
 	playWait() {
+		let inp = new _input.KeyboardInput();
+		inp.init();
 		this.sound.play();
+		inp.justPressedEventCallback = evt => {
+			this.sound.stop();
+			inp.justPressedEventCallback = null;
+		};
 		return new Promise((resolve, reject) => {
-			this.sound.once("end", function () {
+			this.sound.once("end", () => {
 				this.sound.unload();
 				resolve("ok");
+				inp.justPressedEventCallback = null;
 			}); //end
+			this.sound.once("stop", () => {
+				this.sound.unload();
+				resolve("ok");
+				inp.justPressedEventCallback = null;
+			}); //stop
 		}); //promise
 	}
-
 	stop() {
 		this.sound.stop();
 	}
@@ -3508,7 +3786,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":43,"./utilities":35,"./tts":34}],41:[function(require,module,exports) {
+},{"./howler":19,"./input":4,"./keycodes":15,"./utilities":13,"./tts":12}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3599,7 +3877,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":43,"./soundObject.js":36}],33:[function(require,module,exports) {
+},{"./howler":19,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3734,7 +4012,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":41,"./soundObject.js":36}],28:[function(require,module,exports) {
+},{"./soundSource.js":18,"./soundObject.js":14}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3877,7 +4155,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":34}],32:[function(require,module,exports) {
+},{"./tts":12}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3891,6 +4169,39 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			selectPack: "Please select a pack to edit",
+			floop: "Music for the main menu",
+			fa1: "Sound for the freeze action, also known as quiet action or stop action. This has no o sound because no key is needed",
+			fa2: "Sound for the space key action instruction",
+			fo2: "Sound for the space key action",
+			fa3: "Sound for the tab key action instruction",
+			fo3: "Sound for the tab key action",
+			fselect: "Sound played when an action of the main menu is pressed",
+			fa4: "Sound for the enter key action instruction",
+			fo4: "Sound for the enter key action",
+			fa5: "Sound for the backspace key action instruction",
+			fo5: "Sound for the backspace key action",
+			fa6: "Sound for the up arrow key action instruction",
+			fo6: "Sound for the up arrow key action",
+			fa7: "Sound for the down arrow key action instruction",
+			fo7: "Sound for the down arrow key action",
+			fa8: "Sound for the right arrow key action instruction",
+			fo8: "Sound for the right arrow key action",
+			fa9: "Sound for the left arrow key action instruction",
+			fo9: "Sound for the left arrow key action",
+
+			fwin: "Sound played upon completing all levels",
+			fnlevel: "Sound which is played at the beginning of each level for which there is no pre sound. If neither pre nor nlevel are provided no extra sounds will be played before a level",
+			fpre1: "pre + a level's number (pre1,pre2) will be played before a level begins. Can be useful in certain situations. If neither pre nor nlevel.ogg is provided, the game will continue with the next level with no extra sounds.",
+			fcredits: "The credits are played only once, after playing the pack one time.",
+			missingFiles: "The following files are missing and must be added before your pack can be edited",
+			missingOptional: "The following files are missing from your pack, but are not strictly required to play. You can skip the arrow key actions, as most packs only have the usual 4 actions.",
+			fname: "File which contains the preview sound used in menus",
+			fboot: "This fail is played when the pack is ran for the first time, before reaching the main menu.",
+			ffail: "This file is played upon failing, when the game ends",
+			f1music: "Levels for the game. They must be loops so that the game can synchronize properly. At least 3 levels are required. The format is levelnumber+music, like 1music, 2music, 3music, 4music...",
+			f2music: "Levels for the game. They must be loops so that the game can synchronize properly. At least 3 levels are required. The format is levelnumber+music, like 1music, 2music, 3music, 4music...",
+			f3music: "Levels for the game. They must be loops so that the game can synchronize properly. At least 3 levels are required. The format is levelnumber+music, like 1music, 2music, 3music, 4music...",
 			safeget: "You get %1 safeguards... cool!",
 			lang: "English",
 			langs: "Select your language",
@@ -3973,6 +4284,39 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			selectPack: "Selecciona un pack a editar",
+			floop: "Música del menú",
+			fa1: "Sonido para la acción freeze, también se le llama acción de quieto. No necesita sonido o ya que no hay tecla que pulsar",
+			fa2: "Sonido de indicación de la acción para el espacio o barra espaciadora",
+			fo2: "Sonido de la acción para el espacio o barra espaciadora",
+			fa3: "Sonido de indicación de la acción para el tabulador",
+			fo3: "Sonido para la acción del tabulador",
+			fselect: "Sonido que se reproduce cuando se selecciona una opción del menú",
+			fa4: "sonido para la acción de la tecla enter",
+			fo4: "sonido para la acción de la tecla enter",
+			fa5: "sonido para la acción de la indicación de la tecla borrar",
+			fo5: "sonido para la acción de la tecla borrar",
+			fa6: "sonido para la indicación de la acción de la flecha arriba",
+			fo6: "sonido para la acción de la flecha arriba",
+			fa7: "sonido para la indicación de la acción de la flecha abajo",
+			fo7: "sonido para la acción de la flecha abajo",
+			fa8: "Sonido para la indicación de la acción de la flecha derecha",
+			fo8: "sonido para la acción de la flecha derecha",
+			fa9: "sonido para la indicación de la acción de la flecha izquierda",
+			fo9: "Sonido para la acción de la flecha izquierda",
+
+			fwin: "Sonido que se reproduce al completar todos los niveles",
+			fnlevel: "Sonido que se reproduce al cambiar de nivel, si no existe un sonido pre para ese nivel. Si no se proporciona ni nlevel ni pre, se pasa al siguiente nivel sin sonidos extra.",
+			fpre1: "Pre y el número de un nivel (como pre1.ogg o pre2.ogg), se reproduce antes de que comience un nivel. Si no se proporciona ni nlevel.ogg ni pre, el juego saltará al siguiente nivel sin más sonidos extra.",
+			fcredits: "Los créditos se reproducen cuando el juego termina, solo una vez.",
+			fname: "Archivo utilizado como vista previa en los menús",
+			fboot: "Archivo que se reproduce al abrir el pack por primera vez, antes de jugar",
+			ffail: "Archivo que se reproduce cuando termina el juego, al fallar",
+			f1music: "Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
+			f2music: "Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
+			f3music: "Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
+			missingFiles: "Los siguientes archivos no están presentes en el pack y son necesarios para poder editarlo:",
+			missingAdditional: "Los siguientes archivos son opcionales y no están presentes en el pack, pero no son estrictamente necesarios. Puedes saltarte las acciones de las flechas ya que la mayoría de packs solo tienen las 4 acciones básicas.",
 			lang: "Español",
 
 			langs: "Selecciona tu idioma",
@@ -4058,270 +4402,7 @@ Have fun playing evil slots!`,
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1}],37:[function(require,module,exports) {
-
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-if (typeof KeyEvent === 'undefined') {
-	var KeyEvent = {
-		DOM_VK_CANCEL: 3,
-		DOM_VK_HELP: 6,
-		DOM_VK_BACK_SPACE: 8,
-		DOM_VK_TAB: 9,
-		DOM_VK_CLEAR: 12,
-		DOM_VK_RETURN: 13,
-		DOM_VK_ENTER: 14,
-		DOM_VK_SHIFT: 16,
-		DOM_VK_CONTROL: 17,
-		DOM_VK_ALT: 18,
-		DOM_VK_PAUSE: 19,
-		DOM_VK_CAPS_LOCK: 20,
-		DOM_VK_ESCAPE: 27,
-		DOM_VK_SPACE: 32,
-		DOM_VK_PAGE_UP: 33,
-		DOM_VK_PAGE_DOWN: 34,
-		DOM_VK_END: 35,
-		DOM_VK_HOME: 36,
-		DOM_VK_LEFT: 37,
-		DOM_VK_UP: 38,
-		DOM_VK_RIGHT: 39,
-		DOM_VK_DOWN: 40,
-		DOM_VK_PRINTSCREEN: 44,
-		DOM_VK_INSERT: 45,
-		DOM_VK_DELETE: 46,
-		DOM_VK_0: 48,
-		DOM_VK_1: 49,
-		DOM_VK_2: 50,
-		DOM_VK_3: 51,
-		DOM_VK_4: 52,
-		DOM_VK_5: 53,
-		DOM_VK_6: 54,
-		DOM_VK_7: 55,
-		DOM_VK_8: 56,
-		DOM_VK_9: 57,
-		DOM_VK_SEMICOLON: 59,
-		DOM_VK_EQUALS: 61,
-		DOM_VK_A: 65,
-		DOM_VK_B: 66,
-		DOM_VK_C: 67,
-		DOM_VK_D: 68,
-		DOM_VK_E: 69,
-		DOM_VK_F: 70,
-		DOM_VK_G: 71,
-		DOM_VK_H: 72,
-		DOM_VK_I: 73,
-		DOM_VK_J: 74,
-		DOM_VK_K: 75,
-		DOM_VK_L: 76,
-		DOM_VK_M: 77,
-		DOM_VK_N: 78,
-		DOM_VK_O: 79,
-		DOM_VK_P: 80,
-		DOM_VK_Q: 81,
-		DOM_VK_R: 82,
-		DOM_VK_S: 83,
-		DOM_VK_T: 84,
-		DOM_VK_U: 85,
-		DOM_VK_V: 86,
-		DOM_VK_W: 87,
-		DOM_VK_X: 88,
-		DOM_VK_Y: 89,
-		DOM_VK_Z: 90,
-		DOM_VK_CONTEXT_MENU: 93,
-		DOM_VK_NUMPAD0: 96,
-		DOM_VK_NUMPAD1: 97,
-		DOM_VK_NUMPAD2: 98,
-		DOM_VK_NUMPAD3: 99,
-		DOM_VK_NUMPAD4: 100,
-		DOM_VK_NUMPAD5: 101,
-		DOM_VK_NUMPAD6: 102,
-		DOM_VK_NUMPAD7: 103,
-		DOM_VK_NUMPAD8: 104,
-		DOM_VK_NUMPAD9: 105,
-		DOM_VK_MULTIPLY: 106,
-		DOM_VK_ADD: 107,
-		DOM_VK_SEPARATOR: 108,
-		DOM_VK_SUBTRACT: 109,
-		DOM_VK_DECIMAL: 110,
-		DOM_VK_DIVIDE: 111,
-		DOM_VK_F1: 112,
-		DOM_VK_F2: 113,
-		DOM_VK_F3: 114,
-		DOM_VK_F4: 115,
-		DOM_VK_F5: 116,
-		DOM_VK_F6: 117,
-		DOM_VK_F7: 118,
-		DOM_VK_F8: 119,
-		DOM_VK_F9: 120,
-		DOM_VK_F10: 121,
-		DOM_VK_F11: 122,
-		DOM_VK_F12: 123,
-		DOM_VK_F13: 124,
-		DOM_VK_F14: 125,
-		DOM_VK_F15: 126,
-		DOM_VK_F16: 127,
-		DOM_VK_F17: 128,
-		DOM_VK_F18: 129,
-		DOM_VK_F19: 130,
-		DOM_VK_F20: 131,
-		DOM_VK_F21: 132,
-		DOM_VK_F22: 133,
-		DOM_VK_F23: 134,
-		DOM_VK_F24: 135,
-		DOM_VK_NUM_LOCK: 144,
-		DOM_VK_SCROLL_LOCK: 145,
-		DOM_VK_COMMA: 188,
-		DOM_VK_PERIOD: 190,
-		DOM_VK_SLASH: 191,
-		DOM_VK_BACK_QUOTE: 192,
-		DOM_VK_OPEN_BRACKET: 219,
-		DOM_VK_BACK_SLASH: 220,
-		DOM_VK_CLOSE_BRACKET: 221,
-		DOM_VK_QUOTE: 222,
-		DOM_VK_META: 224
-	};
-}
-exports.KeyEvent = KeyEvent;
-},{}],39:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.KeyboardInput = undefined;
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _tts = require('./tts');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-'use strict';
-class KeyboardInput {
-	constructor() {
-		this.keyDown = [];
-		this.justPressed = [];
-		this.chars = [];
-		this.justReleased = [];
-		this.justPressedEventCallback = null;
-		this.charEventCallback = null;
-	}
-
-	init() {
-		const that = this;
-		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
-		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
-		document.addEventListener('keydown', event => {
-			that.handleKeyDown(event);
-		});
-		document.addEventListener('keyup', event => {
-			that.handleKeyUp(event);
-		});
-		document.addEventListener('keypress', event => {
-			that.handleChar(event);
-		});
-	}
-
-	handleKeyDown(event) {
-		if (this.keyDown[event.which] != true || typeof this.keyDown[event.which] === 'undefined') {
-			this.keyDown[event.which] = true;
-			this.justPressed[event.which] = true;
-			this.justReleased[event.which] = false;
-			if (typeof this.justPressedEventCallback !== 'undefined' && this.justPressedEventCallback != null) {
-				this.justPressedEventCallback(event.which);
-			}
-		}
-	}
-
-	handleChar(char) {
-		if (char.which < 48 || char.which > 122) {
-			return;
-		}
-		if (String.fromCharCode(char.which) != '') {
-			this.chars += String.fromCharCode(char.which);
-			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
-				this.charEventCallback(String.fromCharCode(char.which));
-			}
-		}
-	}
-
-	handleKeyUp(event) {
-		if (this.keyDown[event.which] == true) {
-			this.keyDown[event.which] = false;
-			this.justPressed[event.which] = false;
-			this.justReleased[event.which] = true;
-		}
-		this.chars = '';
-	}
-
-	isDown(event) {
-		return this.keyDown[event];
-	}
-
-	isJustPressed(event) {
-		if (this.justPressed[event] == true) {
-			this.justPressed[event] = false;
-			return true;
-		}
-		return false;
-	}
-
-	isJustReleased(event) {
-		if (this.justReleased[event]) {
-			this.justReleased[event] = false;
-			return true;
-		}
-		return false;
-	}
-
-	keysDown() {
-		const kd = [];
-		this.keyDown.forEach((v, i) => {
-			if (v) {
-				kd.push(i);
-			}
-		});
-		return kd;
-	}
-
-	getChars() {
-		const kd = this.chars;
-		this.chars = '';
-		return kd;
-	}
-
-	keysPressed() {
-		const kd = [];
-		this.justPressed.forEach((v, i) => {
-			if (v) {
-				kd.push(i);
-			}
-		});
-		this.justPressed.splice();
-		return kd;
-	}
-
-	releaseAllKeys() {}
-
-	keysReleased() {
-		const kd = [];
-		this.justReleased.forEach((v, i) => {
-			if (v) {
-				kd.push(i);
-			}
-		});
-		this.justReleased.splice();
-		return kd;
-	}
-}
-
-exports.KeyboardInput = KeyboardInput;
-},{"./tts":34}],29:[function(require,module,exports) {
+},{"./main":1}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4616,7 +4697,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":35,"./strings":32,"./tts":34,"./soundObject.js":36,"./menuItem":28,"./keycodes":37,"./input":39}],31:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":5,"./keycodes":15,"./input":4}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4725,7 +4806,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":37,"./soundObject":36,"./tts":34}],30:[function(require,module,exports) {
+},{"./keycodes":15,"./soundObject":14,"./tts":12}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4802,16 +4883,16 @@ async function mainMenu() {
 				const remote = electron.remote;
 				const { dialog } = require('electron').remote;
 				let stuff = dialog.showOpenDialog({
-					title: "select pack",
+					title: _strings.strings.get("selectPack"),
 					properties: ['openDirectory']
 				}, function (path) {
-					editPack(path);
+					(0, _main.editPack)(path);
 				});
 				break;
 		}
 	});
 }
-},{"./soundObject":36,"./main":1,"./stateMachine":38,"./strings":32,"./menuItem":28,"./menu":29}],44:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":5,"./menu":7}],21:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -4863,7 +4944,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],42:[function(require,module,exports) {
+},{}],20:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5306,7 +5387,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":34,"./main":1,"./oldtimer":40,"./soundHandler":33,"./utilities":35,"./soundObject":36,"./stateMachine":38,"./timer":44,"./scrollingText":31,"./input.js":39,"./keycodes.js":37}],38:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":17,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":4,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5394,7 +5475,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":39,"./tts":34,"./main":1,"./menuHandler":30,"./soundObject":36,"./keycodes":37,"./game":42}],26:[function(require,module,exports) {
+},{"./input":4,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":20}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5692,7 +5773,7 @@ async function playCode() {
 								});
 				});
 } //function
-},{"./main":1,"./oldtimer":40,"./soundHandler":33,"./menuItem":28,"./menu":29,"./scrollingText":31,"./strings":32,"./tts":34,"./utilities":35,"./soundObject":36,"./keycodes":37,"./input":39,"./stateMachine":38}],27:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":17,"./soundHandler":11,"./menuItem":5,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":4,"./stateMachine":16}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5730,7 +5811,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":37,"./main":1,"./scrollingText":31}],1:[function(require,module,exports) {
+},{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5752,6 +5833,7 @@ exports.minigames = minigames;
 exports.runGame = runGame;
 exports.minituts = minituts;
 exports.safeget = safeget;
+exports.editPack = editPack;
 
 var _jquery = require('jquery');
 
@@ -5822,9 +5904,7 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
-	_utilities.utils.sleep(2000);
 	let snd = _soundObject.so.create("minimusic");
-	snd.pitch = 0.6;
 	await snd.playWait();
 	_stateMachine.st.setState(1);
 }
@@ -6929,17 +7009,49 @@ function safeget(amount, callback) {
 		callback();
 	}
 }
-function editPack(path) {
-	if (typeof path === "undefined") {
+async function editPack(path) {
+	if (typeof path === "undefined" || path == "") {
 		_stateMachine.st.setState(2);
+		return;
 	}
+	await _utilities.utils.sleep(1000);
+	path += "/";
 	const fs = require('fs');
-	const os = require('os');
-	const checkFiles = ["a1", "a2", "a3", "a4", "a5", "o1", "o2", "o3", "o4", "o5", "1music", "2music", "3music", "4music", "5music", "fail", "name", "loop", "select", "win"];
+	const checkFiles = ["a1", "a2", "a3", "a4", "a5", "o2", "o3", "o4", "o5", "1music", "2music", "3music", "fail", "name", "loop", "select", "win"];
+	const optionalFiles = ["boot", "credits", "nlevel", "pre1", "a6", "o6", "a7", "o7", "o8", "a8", "a9", "o9"];
 	exports.editing = editing = true;
-	console.log(path);
+
+	let str = _strings.strings.get("missingFiles");
+	checkFiles.forEach(function (i, index) {
+		if (!fs.exists(path + i)) {
+			str += "\n" + i + ".ogg: " + _strings.strings.get("f" + i);
+		}
+	});
+	if (str != "") {
+		new _scrollingText.ScrollingText(str, "\n", function () {
+			_stateMachine.st.setState(2);
+		});
+		return;
+	}
+	str = _strings.strings.get("missingOptional");
+	optionalFiles.forEach(function (i, index) {
+		if (!fs.exists(path + i)) {
+			str += "\n" + i + ".ogg: " + _strings.strings.get("f" + i);
+		}
+	});
+	if (str != "") {
+		new _scrollingText.ScrollingText(str, "\n", function () {
+			editPackDefinite(path);
+		});
+	} else {
+		editPackDefinite(path);
+	}
 }
-},{"./minis.js":26,"./player":27,"./menuItem":28,"./menu":29,"./menuHandler":30,"./scrollingText":31,"./strings":32,"./soundHandler":33,"./tts":34,"./utilities":35,"./soundObject":36,"./keycodes":37,"./stateMachine":38,"./input.js":39}],45:[function(require,module,exports) {
+function editPackDefinite(path) {
+	_soundObject.so.directory = path;
+	_tts.speech.speak(path);
+}
+},{"./minis.js":3,"./player":6,"./menuItem":5,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":4}],22:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7116,5 +7228,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[45,1])
+},{}]},{},[22,1])
 //# sourceMappingURL=/main.map
