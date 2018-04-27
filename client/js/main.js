@@ -1268,7 +1268,7 @@ let space=so.create("pbeep",true);
 so.directory=path;
 let music;
 for (let i=start;i<=limit;i++) {
-arr.splice();
+arr=[];
 timer.restart();
 if (typeof music!=="undefined") music.stop();
 music=so.create(i+"music");
@@ -1279,12 +1279,11 @@ while (arr.length<10) {
 await utils.sleep(5);
 if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 arr.push(timer.elapsed);
-//speech.speak(timer.elapsed);
 timer.restart();
 space.play();
 }//if
 }//while
-fileLevels[i]=utils.averageInt(arr,1);
+console.log("avg"+utils.averageInt(arr,1));
 let cont=false;
 music.seek(0);
 timer.restart();
@@ -1295,25 +1294,32 @@ timer.restart();
 space.play();
 }//timer elapsed
 if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-arr.splice();
-cont=true;
+fileLevels[i]=utils.averageInt(arr,1);
+arr=[];
+break;
 }
 if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
-arr.splice();
+arr=[];
 i--;
-cont=true;
+break;
 }
 }//second while
 }//limit for
+so.directory="./sounds/";
+let pos=so.create("positive");
+pos.play();
+music.stop();
 //write shit
 if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
 let str="0,";
 for (let i=0;i<fileLevels.length;i++) {
-str+=fileLevels[i]+",";
+if (typeof levels[i]!=="undefined") str+=fileLevels[i]+",";
 }
 fs.writeFileSync(path+"bpm.txt",str);
+pos.sound.once("end",()=> {
 so.kill(()=> {
 st.setState(2);
 });//kill call
+});
 });//menu callback
 			}//function

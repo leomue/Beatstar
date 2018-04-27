@@ -155,7 +155,7 @@ class OldTimer {
 		this.started = true;
 	}
 	restart() {
-		_tts.speech.speak("restarted");
+		//speech.speak("restarted");
 		this.lastTime = performance.now();
 		this.pauseWhen = 0;
 		this.paused = false;
@@ -3395,7 +3395,7 @@ class GameUtils {
 		for (let i = startIndex; i < arr.length; i++) {
 			val += arr[i];
 		}
-		average = val / len - startIndex;
+		average = val / (len - startIndex);
 		return average;
 	}
 	averageInt(arr, startIndex = 0) {
@@ -3406,7 +3406,7 @@ class GameUtils {
 		for (let i = startIndex; i < arr.length; i++) {
 			val += arr[i];
 		}
-		average = val / len - startIndex;
+		average = val / (len - startIndex);
 		return Math.floor(average);
 	}
 
@@ -7153,7 +7153,7 @@ async function editPackDefinite(path) {
 		_soundObject.so.directory = path;
 		let music;
 		for (let i = start; i <= limit; i++) {
-			arr.splice();
+			arr = [];
 			timer.restart();
 			if (typeof music !== "undefined") music.stop();
 			music = _soundObject.so.create(i + "music");
@@ -7164,12 +7164,11 @@ async function editPackDefinite(path) {
 				await _utilities.utils.sleep(5);
 				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_SPACE)) {
 					arr.push(timer.elapsed);
-					//speech.speak(timer.elapsed);
 					timer.restart();
 					space.play();
 				} //if
 			} //while
-			fileLevels[i] = _utilities.utils.averageInt(arr, 1);
+			console.log("avg" + _utilities.utils.averageInt(arr, 1));
 			let cont = false;
 			music.seek(0);
 			timer.restart();
@@ -7180,26 +7179,33 @@ async function editPackDefinite(path) {
 					space.play();
 				} //timer elapsed
 				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
-					arr.splice();
-					cont = true;
+					fileLevels[i] = _utilities.utils.averageInt(arr, 1);
+					arr = [];
+					break;
 				}
 				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_SPACE)) {
-					arr.splice();
+					arr = [];
 					i--;
-					cont = true;
+					break;
 				}
 			} //second while
 		} //limit for
+		_soundObject.so.directory = "./sounds/";
+		let pos = _soundObject.so.create("positive");
+		pos.play();
+		music.stop();
 		//write shit
 		if (fs.existsSync(path + "bpm.txt")) fs.unlinkSync(path + "bpm.txt");
 		let str = "0,";
 		for (let i = 0; i < fileLevels.length; i++) {
-			str += fileLevels[i] + ",";
+			if (typeof levels[i] !== "undefined") str += fileLevels[i] + ",";
 		}
 		fs.writeFileSync(path + "bpm.txt", str);
-		_soundObject.so.kill(() => {
-			_stateMachine.st.setState(2);
-		}); //kill call
+		pos.sound.once("end", () => {
+			_soundObject.so.kill(() => {
+				_stateMachine.st.setState(2);
+			}); //kill call
+		});
 	}); //menu callback
 } //function
 },{"./oldtimer":18,"./minis.js":3,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":16,"./stateMachine":15,"./input.js":4}],26:[function(require,module,exports) {

@@ -32,7 +32,7 @@ class OldTimer {
 		this.started = true;
 	}
 restart() {
-speech.speak("restarted");
+//speech.speak("restarted");
 		this.lastTime = performance.now();
 		this.pauseWhen = 0;
 		this.paused = false;
