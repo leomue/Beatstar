@@ -39,8 +39,8 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
-checkPack(false,true);
-return;
+//checkPack(false,true);
+//return;
              	st.setState(1);
 }
 function proceed() {
