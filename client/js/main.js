@@ -1,5 +1,6 @@
 export var lang = 0;
 export var editing=false;
+import {OldTimer} from './oldtimer';
 import $ from 'jquery';
 import {playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
@@ -38,6 +39,8 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 so.debug = true;
 async function setup() {
+checkPack(false,true);
+return;
              	st.setState(1);
 }
 function proceed() {
@@ -445,7 +448,7 @@ callback(answer);
 }
 });
 }
-export async function checkPack(changeBoot=true) {
+export async function checkPack(changeBoot=true,debug=false) {
 editing=false;
 const fs=require('fs');
 	try {
@@ -495,6 +498,10 @@ downloadPacks(['default']);
 	}));
 	return;
 	}
+			if (debug) {
+		editPackDefinite("e:\\r/");
+		return;
+		}
 	booter();
 }
 var download = function(url, dest, cb) {
@@ -1211,6 +1218,7 @@ if (str=="") str=strings.get("missingFiles");
 			levels++;
 			}
 			else {
+			levels--;
 			stop=true;
 			}
 			}
@@ -1225,8 +1233,28 @@ let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		}
 		} else {
 			}
-console.log("file"+fileLevels.length);
-			}
+			so.directory="./sounds/"
+let items=[];
+items.push(new MenuItem(0,strings.get("startOver")));
+for (let i=1;i<=levels;i++) {
+items.push(new MenuItem(i,strings.get("level",[i])));
+}
+items.push(new MenuItem(-1,strings.get("mBack")));
+let start=-1;
+let mm=new Menu(strings.get("mEdit"),items);
+so.directory=path;
+mm.run(s=> {
+start=s.selected;
+mm.destroy();
+if (start==-1) {
+st.setState(2);
+return;
+}
+speech.speak("ready");
+let timer=new OldTimer();
+let arr=[];
+});//menu callback
+			}//function
 			
 			/*write code
 if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");

@@ -4,6 +4,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+startOver:"Start over from the first level",
 mEdit:"Please select which level to edit, or start over",
 selectPack:"Please select a pack to edit",
 floop:"Music for the main menu",
@@ -120,6 +121,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		startOver:"Comenzar desde el primer nivel",
 		mEdit:"Por favor selecciona el nivel a editar, o empezar de 0",
 		selectPack:"Selecciona un pack a editar",
 		floop:"Música del menú",

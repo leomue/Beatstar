@@ -3386,6 +3386,7 @@ class GameUtils {
 		let len = arr.length;
 		let val = 0;
 		let average = 0;
+		if (arr.length < startIndex) return -1;
 		for (let i = startIndex; i < arr.length; i++) {
 			val += arr[i];
 		}
@@ -3396,12 +3397,14 @@ class GameUtils {
 		let len = arr.length;
 		let val = 0;
 		let average = 0;
+		if (arr.length < startIndex) return -1;
 		for (let i = startIndex; i < arr.length; i++) {
 			val += arr[i];
 		}
 		average = val / len;
 		return Math.floor(average);
 	}
+
 	neg(num) {
 		return num >= 0 ? num == 0 ? 0 : 1 : -1;
 	}
@@ -4169,6 +4172,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			startOver: "Start over from the first level",
 			mEdit: "Please select which level to edit, or start over",
 			selectPack: "Please select a pack to edit",
 			floop: "Music for the main menu",
@@ -4285,6 +4289,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			startOver: "Comenzar desde el primer nivel",
 			mEdit: "Por favor selecciona el nivel a editar, o empezar de 0",
 			selectPack: "Selecciona un pack a editar",
 			floop: "Música del menú",
@@ -5837,6 +5842,8 @@ exports.minituts = minituts;
 exports.safeget = safeget;
 exports.editPack = editPack;
 
+var _oldtimer = require('./oldtimer');
+
 var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -5906,6 +5913,8 @@ var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + 
 document.addEventListener('DOMContentLoaded', setup);
 _soundObject.so.debug = true;
 async function setup() {
+	checkPack(false, true);
+	return;
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -6307,7 +6316,7 @@ function question(text, localizedValues = [], callback = null) {
 		}
 	});
 }
-async function checkPack(changeBoot = true) {
+async function checkPack(changeBoot = true, debug = false) {
 	exports.editing = editing = false;
 	const fs = require('fs');
 	try {
@@ -6355,6 +6364,10 @@ async function checkPack(changeBoot = true) {
 		const text = new _scrollingText.ScrollingText(_strings.strings.get('packError'), '\n', () => {
 			downloadPacks(['default']);
 		});
+		return;
+	}
+	if (debug) {
+		editPackDefinite("e:\\r/");
 		return;
 	}
 	booter();
@@ -7060,6 +7073,7 @@ function editPackDefinite(path) {
 		if (fs.existsSync(path + levels + "music.ogg")) {
 			levels++;
 		} else {
+			levels--;
 			stop = true;
 		}
 	}
@@ -7073,8 +7087,28 @@ function editPackDefinite(path) {
 			fileLevels.splice(fileLevels.length, 1);
 		}
 	} else {}
-	console.log("file" + fileLevels.length);
-}
+	_soundObject.so.directory = "./sounds/";
+	let items = [];
+	items.push(new _menuItem.MenuItem(0, _strings.strings.get("startOver")));
+	for (let i = 1; i <= levels; i++) {
+		items.push(new _menuItem.MenuItem(i, _strings.strings.get("level", [i])));
+	}
+	items.push(new _menuItem.MenuItem(-1, _strings.strings.get("mBack")));
+	let start = -1;
+	let mm = new _menu.Menu(_strings.strings.get("mEdit"), items);
+	_soundObject.so.directory = path;
+	mm.run(s => {
+		start = s.selected;
+		mm.destroy();
+		if (start == -1) {
+			_stateMachine.st.setState(2);
+			return;
+		}
+		_tts.speech.speak("ready");
+		let timer = new _oldtimer.OldTimer();
+		let arr = [];
+	}); //menu callback
+} //function
 
 /*write code
 if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
@@ -7088,7 +7122,7 @@ fs.writeFileSync(path+"bpm.txt",str);
 new ScrollingText("Error!","\n",function() { st.setState(2); });
 }
 */
-},{"./minis.js":3,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":16,"./stateMachine":15,"./input.js":4}],22:[function(require,module,exports) {
+},{"./oldtimer":18,"./minis.js":3,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":16,"./stateMachine":15,"./input.js":4}],25:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7265,5 +7299,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[22,1])
+},{}]},{},[25,1])
 //# sourceMappingURL=/main.map
