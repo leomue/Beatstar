@@ -25,7 +25,6 @@ import {utils} from './utilities';
 import {so} from './soundObject';
 import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
-// Import test from './test.js'
 export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT];
 export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
