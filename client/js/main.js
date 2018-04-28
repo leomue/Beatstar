@@ -6,7 +6,7 @@ import {playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
-export let credits=false;
+export var credits=false;
 export let minis={
 slot:8500,
 code:10000,
@@ -14,7 +14,6 @@ code:10000,
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
 import {Menu} from './menu';
-import 'hash-files';
 import walk from 'fs-walk';
 import os from 'os';
 import {mainMenu} from './menuHandler';
@@ -219,6 +218,7 @@ snd.sound.once("end",function() {
 addCash(0,price,function() {
 pack = browseArray[browsePosition].name;
 		boot=false;
+		credits=true;
 	data.pack = pack;
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
@@ -231,6 +231,7 @@ pack = browseArray[browsePosition].name;
 					}//unlocks undefined
 						packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	boot=false;
+	credits=true;
 	so.directory = './sounds/';
 save();
 so.kill(() => {
@@ -247,6 +248,7 @@ return;
 else {
 	pack = browseArray[browsePosition].name;
 		boot=false;
+		credits=true;
 	data.pack = pack;
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
@@ -259,6 +261,7 @@ else {
 					}//unlocks undefined
 						packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	boot=false;
+	credits=true;
 	so.directory = './sounds/';
 save();
 so.kill(() => {
@@ -360,7 +363,6 @@ st.setState(2);
 }
 export async function rebuildHashes(silent = false) {
 const fs=require('fs');
-// Var hash=require('hash-files');
 	let corrupts = '';
 	// Var walk=require('fs-walk');
 		let newHash = 0;
@@ -482,15 +484,20 @@ counter++;
 	}
 	pack = data.pack;
 	lang=data.lang;
-	if (!changeBoot) boot=false;
-		if (changeBoot) boot=true;
+	if (!changeBoot) {
+	boot=false;
+	credits=true;
+	}
+		if (changeBoot) {
+		boot=true;
+		credits=false;
+		}
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	actionKeys = data.actionKeys;
 save();
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	pack = 'default';
-	boot=false;
-	packdir = os.homedir() + '/beatpacks/' + pack + '/';
+		packdir = os.homedir() + '/beatpacks/' + pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	const text = new ScrollingText(strings.get( 'packError'), '\n', (() => {
@@ -901,9 +908,12 @@ pos--;
 		if (!data.safeguards) data.safeguards=0;
 		save();
 		const fs=require('fs');
+		/*if (fs.existsSync(packdir + 'credits.ogg') && !credits) {
+		credits=true;
+	}*/
+		
 				if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 boot=true;
-credits=true;
 let input=new KeyboardInput();
 input.init();
 			so.directory = '';
@@ -924,8 +934,7 @@ mainMenu();
 }
 		}//if file exists
 		else {
-		credits=false;
-		mainMenu();
+				mainMenu();
 		}
 		}
 		export async function addCash(c1,c2=0,callback) {

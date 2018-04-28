@@ -184,7 +184,6 @@ so.resetQueuedInstance();
 var that=this;
 so.kill(() => {
 if (fs.existsSync(packdir + 'credits.ogg') && credits) {
-//credits=false;
 let input=new KeyboardInput();
 input.init();
 			so.directory = '';
@@ -212,7 +211,7 @@ that.doScore();
 	}
 
 	async quit() {
-			this.timer.stop();
+				this.timer.stop();
 		const snd = this.music;
 		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
 			snd.playbackRate = i;
@@ -223,7 +222,32 @@ that.doScore();
 so.resetQueuedInstance();
 var that=this;
 so.kill(() => {
+if (fs.existsSync(packdir + 'credits.ogg') && credits) {
+console.log("found credits");
+let input=new KeyboardInput();
+input.init();
+			so.directory = '';
+let bootSound = so.create(packdir + 'credits');
+bootSound.play();
+bootSound.sound.once("end",function() {
+input.justPressedEventCallback=null;
 that.doScore();
+});
+			so.directory = './sounds/';
+			
+input.justPressedEventCallback=function(evt) {
+bootSound.sound.off("end");
+bootSound.stop();
+bootSound.destroy();
+input.justPressedEventCallback=null;
+that.doScore();
+}
+		}//if file exists
+		else {
+		that.doScore();
+		}
+		
+
 });
 			}
 

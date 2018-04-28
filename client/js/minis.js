@@ -263,7 +263,7 @@ await utils.sleep(400);
 }//allowed
 }//while playing
 let newsafe=utils.randomInt(0,level-1);
-new ScrollingText(strings.get("codescracked",[crackedcodes]),"\n",function() {
+new ScrollingText(strings.get("codescracked",[crackedcodes,actions]),"\n",function() {
 safeget(newsafe,function() {
 so.kill(()=> {
 input.justPressedEventCallback=null;
