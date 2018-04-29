@@ -907,10 +907,6 @@ pos--;
 		if (!data.safeguards) data.safeguards=0;
 		save();
 		const fs=require('fs');
-		/*if (fs.existsSync(packdir + 'credits.ogg') && !credits) {
-		credits=true;
-	}*/
-		
 				if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 boot=true;
 let input=new KeyboardInput();
@@ -1300,6 +1296,7 @@ arr=[];
 timer.restart();
 if (typeof music!=="undefined") music.stop();
 music=so.create(i+"music");
+speech.speak(strings.get("level",[i]));
 music.loop=true;
 music.volume=0.5;
 music.play();

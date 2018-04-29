@@ -2,7 +2,7 @@
 import fs from 'fs';
 import os from 'os';
 import {speech} from './tts';
-import {credits,addCash,data,actionKeys} from './main';
+import {addCash,data,actionKeys} from './main';
 import {pack, packdir,save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
@@ -18,7 +18,8 @@ import {KeyboardInput} from './input.js';
 import {KeyEvent} from './keycodes.js';
 
 class Game {
-	constructor() {
+	constructor(creds) {
+	
 	this.totalScore=[];
 	this.totalAverage=[];
 	this.cash=0;
@@ -49,10 +50,11 @@ class Game {
 		this.input.init();
 		this.levels = null;
 		var that = this;
-		this.setup();
+		this.setup(creds);
 	}
 
-	setup() {
+	setup(creds) {
+	this.credits=creds;
 		if (fs.existsSync(packdir + 'bpm.txt')) {
 			this.fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 		} else {
@@ -183,7 +185,7 @@ if (data.safeguards<=3) this.safe.pitch=1.4;
 so.resetQueuedInstance();
 var that=this;
 so.kill(() => {
-if (fs.existsSync(packdir + 'credits.ogg') && credits) {
+if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 let input=new KeyboardInput();
 input.init();
 			so.directory = '';
@@ -211,7 +213,7 @@ that.doScore();
 	}
 
 	async quit() {
-				this.timer.stop();
+						this.timer.stop();
 		const snd = this.music;
 		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
 			snd.playbackRate = i;
@@ -222,7 +224,7 @@ that.doScore();
 so.resetQueuedInstance();
 var that=this;
 so.kill(() => {
-if (fs.existsSync(packdir + 'credits.ogg') && credits) {
+if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 console.log("found credits");
 let input=new KeyboardInput();
 input.init();

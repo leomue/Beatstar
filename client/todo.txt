@@ -5,5 +5,3 @@ beat memory is next
 pack music volume control inside game
 make tutorial for beat the code
 fix the credits with and without boot.
-make an exit feature for the fucking pack editor
-make it speak level when it changes also

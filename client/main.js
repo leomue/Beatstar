@@ -5035,7 +5035,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Var os=require('os');
 class Game {
-	constructor() {
+	constructor(creds) {
+
 		this.totalScore = [];
 		this.totalAverage = [];
 		this.cash = 0;
@@ -5064,10 +5065,11 @@ class Game {
 		this.input.init();
 		this.levels = null;
 		var that = this;
-		this.setup();
+		this.setup(creds);
 	}
 
-	setup() {
+	setup(creds) {
+		this.credits = creds;
 		if (_fs2.default.existsSync(_main.packdir + 'bpm.txt')) {
 			this.fileData = _fs2.default.readFileSync(_main.packdir + 'bpm.txt', 'utf8');
 		} else {
@@ -5197,7 +5199,7 @@ class Game {
 		_soundObject.so.resetQueuedInstance();
 		var that = this;
 		_soundObject.so.kill(() => {
-			if (_fs2.default.existsSync(_main.packdir + 'credits.ogg') && _main.credits) {
+			if (_fs2.default.existsSync(_main.packdir + 'credits.ogg') && this.credits) {
 				let input = new _input.KeyboardInput();
 				input.init();
 				_soundObject.so.directory = '';
@@ -5235,7 +5237,7 @@ class Game {
 		_soundObject.so.resetQueuedInstance();
 		var that = this;
 		_soundObject.so.kill(() => {
-			if (_fs2.default.existsSync(_main.packdir + 'credits.ogg') && _main.credits) {
+			if (_fs2.default.existsSync(_main.packdir + 'credits.ogg') && this.credits) {
 				console.log("found credits");
 				let input = new _input.KeyboardInput();
 				input.init();
@@ -5512,7 +5514,7 @@ class StateMachine {
 			(0, _main.checkPack)();
 			this.state = state;
 		} else if (state == 3) {
-			this.currentState = new _game.Game();
+			this.currentState = new _game.Game(_main.credits);
 			this.state = state;
 		} else if (state == 20) {
 			event = null;
@@ -6824,10 +6826,6 @@ function booter() {
 	if (!data.safeguards) data.safeguards = 0;
 	save();
 	const fs = require('fs');
-	/*if (fs.existsSync(packdir + 'credits.ogg') && !credits) {
- credits=true;
- }*/
-
 	if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
 		boot = true;
 		let input = new _input.KeyboardInput();
@@ -7209,6 +7207,7 @@ async function editPackDefinite(path) {
 			timer.restart();
 			if (typeof music !== "undefined") music.stop();
 			music = _soundObject.so.create(i + "music");
+			_tts.speech.speak(_strings.strings.get("level", [i]));
 			music.loop = true;
 			music.volume = 0.5;
 			music.play();
@@ -7271,7 +7270,7 @@ async function editPackDefinite(path) {
 		});
 	}); //menu callback
 } //function
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],21:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],24:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7448,5 +7447,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[21,1])
+},{}]},{},[24,1])
 //# sourceMappingURL=/main.map

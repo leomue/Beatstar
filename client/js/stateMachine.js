@@ -3,7 +3,7 @@ let event = new KeyboardInput();
 
 import {KeyboardInput} from './input';
 import {speech} from './tts';
-import {listenPack,checkPack, learnPack, browsePacks} from './main';
+import {credits,listenPack,checkPack, learnPack, browsePacks} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
@@ -42,7 +42,7 @@ class StateMachine {
 checkPack();
 this.state = state;
 		} else if (state == 3) {
-			this.currentState = new Game();
+			this.currentState = new Game(credits);
 			this.state = state;
 		} 
 		else if (state == 20) {
