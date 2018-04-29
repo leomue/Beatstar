@@ -35,7 +35,7 @@ export var pack = 'default';
 export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
-so.debug = true;
+so.debug = false;
 async function setup() {
 //checkPack(false,true);
 //return;
@@ -505,7 +505,7 @@ downloadPacks(['default']);
 	return;
 	}
 			if (debug) {
-		editPackDefinite("e:\\r/");
+		editPackDefinite("f:\\r/");
 		return;
 		}
 	booter();
@@ -1251,11 +1251,16 @@ let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 			let items=[];
 items.push(new MenuItem(-2,strings.get("mPackTut")));
 items.push(new MenuItem(0,strings.get("startOver")));
+let continuing=false;
+if (levels>fileLevels.length-1) {
+items.push(new MenuItem(-3,strings.get("contPack",[fileLevels.length])));
+}
 for (let i=1;i<fileLevels.length;i++) {
 items.push(new MenuItem(i,strings.get("level",[i])));
 }
 items.push(new MenuItem(-1,strings.get("mBack")));
 let start=-1;
+
 let limit=levels;
 let mm=new Menu(strings.get("mSelectEdit"),items);
 mm.run(async s=> {
@@ -1271,7 +1276,12 @@ editPackDefinite(path);
 });//tutorial
 return;
 }
-if (start>0) limit=start;
+if (start==-3) {
+continuing=true;
+start=fileLevels.length;
+limit=levels;
+}
+if (start>0 && !continuing) limit=start;
 if (start==0) start++;
 let timer=new OldTimer();
 let pos=so.create("positive");
@@ -1283,6 +1293,7 @@ let space=so.create("pbeep",true);
 so.directory=path;
 let music;
 let mCounter=0;
+let escaping=false;
 for (let i=start;i<=limit;i++) {
 mCounter=i;
 arr=[];
@@ -1292,8 +1303,13 @@ music=so.create(i+"music");
 music.loop=true;
 music.volume=0.5;
 music.play();
-while (arr.length<10) {
+while (arr.length<10 && !escaping) {
 await utils.sleep(5);
+if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(KeyEvent.DOM_VK_Q)) {
+i=limit+1;
+escaping=true;
+break;
+}
 if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 arr.push(timer.elapsed);
 timer.restart();
@@ -1301,12 +1317,17 @@ space.play();
 }//if
 }//while
 console.log("avg"+utils.averageInt(arr,1));
-fileLevels[i]=utils.averageInt(arr,1);
+if (!escaping) fileLevels[i]=utils.averageInt(arr,1);
 let cont=false;
 music.seek(0);
 timer.restart();
-while (!cont) {
+while (!cont && !escaping) {
 await utils.sleep(5);
+if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(KeyEvent.DOM_VK_Q)) {
+i=limit+1;
+cont=true;
+break;
+}
 if (timer.elapsed>=fileLevels[i]) {
 timer.restart();
 space.play();

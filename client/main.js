@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49974;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=51007;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({15:[function(require,module,exports) {
+})({12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -113,7 +113,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],5:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -169,7 +169,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{"./tts":15}],18:[function(require,module,exports) {
+},{"./tts":12}],19:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3208,7 +3208,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":15}],14:[function(require,module,exports) {
+},{"./tts":12}],15:[function(require,module,exports) {
 
 'use strict';
 
@@ -3335,7 +3335,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],12:[function(require,module,exports) {
+},{}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3426,7 +3426,7 @@ class GameUtils {
 	}
 }
 var utils = exports.utils = new GameUtils();
-},{}],13:[function(require,module,exports) {
+},{}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3794,7 +3794,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":18,"./input":3,"./keycodes":14,"./utilities":12,"./tts":15}],17:[function(require,module,exports) {
+},{"./howler":19,"./input":3,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3885,7 +3885,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":18,"./soundObject.js":13}],10:[function(require,module,exports) {
+},{"./howler":19,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4020,7 +4020,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":17,"./soundObject.js":13}],7:[function(require,module,exports) {
+},{"./soundSource.js":17,"./soundObject.js":14}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4163,7 +4163,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":15}],11:[function(require,module,exports) {
+},{"./tts":12}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4177,12 +4177,14 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			contPack: "Continue where you left off (level %1)",
 			mPackTut: "Pack making tutorial",
 			packtut: `Welcome to the pack editor!
 First, thank you very much for wanting to create a pack.
 It is very simple. You will be instructed to select whether you want to create a pack from the beginning or, if you already have a times file, called bpm.txt in your pack, you can change one of the levels by using the menu.
 Once you have selected what to do, you will hear the music for the selected levels.
 You will have to press the space bar at the speed you wish the level to go. Each press of the space bar is one cycle of the game, meaning that you have this amount of time to press the correct key
+Hit q at any time to exit the pack editor and write your changes.
 After you do this 10 times, the music will restart and you will hear your result.
 You will hear a sound which will play on every cycle. Think of this cycle as if you were playing the game. Is this enough time for you to press the key? Is it in sync with the music?
 If you are not satisfied with the result, you can press the space bar again to reset the time and start again.
@@ -4190,7 +4192,7 @@ Once you are satisfied, press enter. The next music will play.
 Once all the levels are done, the file bpm.txt will be created (or voerwritten).
 Note that you will have to put the pack in your user folder/beatpacks if you want to play it, and unlock it as normal.
 You can upload your pack via the website by making a zip file of the pack's folder and sending it via the upload form.`,
-			startOver: "Start over from the first level",
+			startOver: "Start from the first level",
 			mSelectEdit: "Please select which level to edit, or start over",
 			selectPack: "Please select a pack to edit",
 			floop: "Music for the main menu",
@@ -4307,6 +4309,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			contPack: "Continuar donde lo dejaste (nivel %1)",
 			mPackTut: "Tutorial de cómo hacer packs",
 			packtut: `Bienvenido al editor de packs!
 Primero, darte las gracias por querer crear un pack.
@@ -4440,7 +4443,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1}],6:[function(require,module,exports) {
+},{"./main":1}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4735,7 +4738,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":12,"./strings":11,"./tts":15,"./soundObject.js":13,"./menuItem":7,"./keycodes":14,"./input":3}],8:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4844,7 +4847,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":14,"./soundObject":13,"./tts":15}],9:[function(require,module,exports) {
+},{"./keycodes":15,"./soundObject":14,"./tts":12}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4930,7 +4933,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":13,"./main":1,"./stateMachine":16,"./strings":11,"./menuItem":7,"./menu":6}],20:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],20:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -4982,7 +4985,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],19:[function(require,module,exports) {
+},{}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5447,7 +5450,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":15,"./main":1,"./oldtimer":5,"./soundHandler":10,"./utilities":12,"./soundObject":13,"./stateMachine":16,"./timer":20,"./scrollingText":8,"./input.js":3,"./keycodes.js":14}],16:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5535,7 +5538,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":15,"./main":1,"./menuHandler":9,"./soundObject":13,"./keycodes":14,"./game":19}],2:[function(require,module,exports) {
+},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":18}],2:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5833,7 +5836,7 @@ async function playCode() {
 								});
 				});
 } //function
-},{"./main":1,"./oldtimer":5,"./soundHandler":10,"./menuItem":7,"./menu":6,"./scrollingText":8,"./strings":11,"./tts":15,"./utilities":12,"./soundObject":13,"./keycodes":14,"./input":3,"./stateMachine":16}],4:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5871,7 +5874,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":14,"./main":1,"./scrollingText":8}],1:[function(require,module,exports) {
+},{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5960,7 +5963,7 @@ var pack = exports.pack = 'default';
 var data = exports.data = '';
 var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
-_soundObject.so.debug = true;
+_soundObject.so.debug = false;
 async function setup() {
 	//checkPack(false,true);
 	//return;
@@ -6424,7 +6427,7 @@ async function checkPack(changeBoot = true, debug = false) {
 		return;
 	}
 	if (debug) {
-		editPackDefinite("e:\\r/");
+		editPackDefinite("f:\\r/");
 		return;
 	}
 	booter();
@@ -7157,11 +7160,16 @@ async function editPackDefinite(path) {
 	let items = [];
 	items.push(new _menuItem.MenuItem(-2, _strings.strings.get("mPackTut")));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("startOver")));
+	let continuing = false;
+	if (levels > fileLevels.length - 1) {
+		items.push(new _menuItem.MenuItem(-3, _strings.strings.get("contPack", [fileLevels.length])));
+	}
 	for (let i = 1; i < fileLevels.length; i++) {
 		items.push(new _menuItem.MenuItem(i, _strings.strings.get("level", [i])));
 	}
 	items.push(new _menuItem.MenuItem(-1, _strings.strings.get("mBack")));
 	let start = -1;
+
 	let limit = levels;
 	let mm = new _menu.Menu(_strings.strings.get("mSelectEdit"), items);
 	mm.run(async s => {
@@ -7177,7 +7185,12 @@ async function editPackDefinite(path) {
 			}); //tutorial
 			return;
 		}
-		if (start > 0) limit = start;
+		if (start == -3) {
+			continuing = true;
+			start = fileLevels.length;
+			limit = levels;
+		}
+		if (start > 0 && !continuing) limit = start;
 		if (start == 0) start++;
 		let timer = new _oldtimer.OldTimer();
 		let pos = _soundObject.so.create("positive");
@@ -7189,6 +7202,7 @@ async function editPackDefinite(path) {
 		_soundObject.so.directory = path;
 		let music;
 		let mCounter = 0;
+		let escaping = false;
 		for (let i = start; i <= limit; i++) {
 			mCounter = i;
 			arr = [];
@@ -7198,8 +7212,13 @@ async function editPackDefinite(path) {
 			music.loop = true;
 			music.volume = 0.5;
 			music.play();
-			while (arr.length < 10) {
+			while (arr.length < 10 && !escaping) {
 				await _utilities.utils.sleep(5);
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_Q)) {
+					i = limit + 1;
+					escaping = true;
+					break;
+				}
 				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_SPACE)) {
 					arr.push(timer.elapsed);
 					timer.restart();
@@ -7207,12 +7226,17 @@ async function editPackDefinite(path) {
 				} //if
 			} //while
 			console.log("avg" + _utilities.utils.averageInt(arr, 1));
-			fileLevels[i] = _utilities.utils.averageInt(arr, 1);
+			if (!escaping) fileLevels[i] = _utilities.utils.averageInt(arr, 1);
 			let cont = false;
 			music.seek(0);
 			timer.restart();
-			while (!cont) {
+			while (!cont && !escaping) {
 				await _utilities.utils.sleep(5);
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_Q)) {
+					i = limit + 1;
+					cont = true;
+					break;
+				}
 				if (timer.elapsed >= fileLevels[i]) {
 					timer.restart();
 					space.play();
@@ -7247,7 +7271,7 @@ async function editPackDefinite(path) {
 		});
 	}); //menu callback
 } //function
-},{"./oldtimer":5,"./minis.js":2,"./player":4,"./menuItem":7,"./menu":6,"./menuHandler":9,"./scrollingText":8,"./strings":11,"./soundHandler":10,"./tts":15,"./utilities":12,"./soundObject":13,"./keycodes":14,"./stateMachine":16,"./input.js":3}],27:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],21:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7424,5 +7448,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[27,1])
+},{}]},{},[21,1])
 //# sourceMappingURL=/main.map

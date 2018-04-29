@@ -4,12 +4,14 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+contPack:"Continue where you left off (level %1)",
 mPackTut:"Pack making tutorial",
 packtut:`Welcome to the pack editor!
 First, thank you very much for wanting to create a pack.
 It is very simple. You will be instructed to select whether you want to create a pack from the beginning or, if you already have a times file, called bpm.txt in your pack, you can change one of the levels by using the menu.
 Once you have selected what to do, you will hear the music for the selected levels.
 You will have to press the space bar at the speed you wish the level to go. Each press of the space bar is one cycle of the game, meaning that you have this amount of time to press the correct key
+Hit q at any time to exit the pack editor and write your changes.
 After you do this 10 times, the music will restart and you will hear your result.
 You will hear a sound which will play on every cycle. Think of this cycle as if you were playing the game. Is this enough time for you to press the key? Is it in sync with the music?
 If you are not satisfied with the result, you can press the space bar again to reset the time and start again.
@@ -17,7 +19,7 @@ Once you are satisfied, press enter. The next music will play.
 Once all the levels are done, the file bpm.txt will be created (or voerwritten).
 Note that you will have to put the pack in your user folder/beatpacks if you want to play it, and unlock it as normal.
 You can upload your pack via the website by making a zip file of the pack's folder and sending it via the upload form.`,
-startOver:"Start over from the first level",
+startOver:"Start from the first level",
 mSelectEdit:"Please select which level to edit, or start over",
 selectPack:"Please select a pack to edit",
 floop:"Music for the main menu",
@@ -134,6 +136,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		contPack:"Continuar donde lo dejaste (nivel %1)",
 		mPackTut:"Tutorial de cómo hacer packs",
 packtut:`Bienvenido al editor de packs!
 Primero, darte las gracias por querer crear un pack.
