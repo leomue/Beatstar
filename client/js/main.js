@@ -378,7 +378,7 @@ walk.filesSync(path, (pb, pf, stat) => {
 	theFiles += stat.size;
 });
 newHash = theFiles;
-const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
+const fileData = mangle.decrypt(fs.readFileSync(path + 'bpm.txt', 'utf8'));
 const levelsa = fileData.split(',');
 let levels = levelsa.length - 1;
 if (levelsa[levels] == '') {
@@ -453,7 +453,7 @@ export async function checkPack(changeBoot=true,debug=false) {
 editing=false;
 const fs=require('fs');
 	try {
-		data = JSON.parse(fs.readFileSync(os.homedir() + '/beatpacks/save.dat'));
+		data = JSON.parse(mangle.decrypt(fs.readFileSync(os.homedir() + '/beatpacks/save.dat')));
 	} catch (err) {
 		data = new Player();
 				let introing=true;
@@ -825,13 +825,12 @@ require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
 				}// If length > 1
 }
 export function save() {
-if (editing) return;
 const fs=require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
 fs.mkdirSync(os.homedir() + '/beatpacks');
 	}
-	const write = JSON.stringify(data);
-// Write=mangle.encrypt(write);
+	let write = JSON.stringify(data);
+write=mangle.encrypt(write);
 fs.writeFileSync(os.homedir() + '/beatpacks/save.dat', write);
 }
 export function listenPack() {
@@ -1181,8 +1180,7 @@ st.setState(2);
 						const fs=require('fs');
 						const checkFiles=["a1","a2","a3","a4","a5","o2","o3","o4","o5","1music","2music","3music","fail","name","loop","select","win"];
 			const optionalFiles=["boot","credits","nlevel","pre1","a6","o6","a7","o7","o8","a8","a9","o9"]
-			editing=true;
-						let str="";
+									let str="";
 						
 			checkFiles.forEach(function(i,index) {
 			if (!fs.existsSync(path+i+".ogg")) {

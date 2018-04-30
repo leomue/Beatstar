@@ -2,6 +2,4 @@ remember to encrypt the fucking savefile
 no more insurance, just save files. and most actions delete your save file.
 get a soundPool setting to load sounds using html5 if they are non looping and stationary.
 beat memory is next
-pack music volume control inside game
 make tutorial for beat the code
-fix the credits with and without boot.

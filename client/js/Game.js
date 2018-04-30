@@ -21,6 +21,7 @@ class Game {
 	constructor(creds) {
 	
 	this.totalScore=[];
+	this.volume=1;
 	this.totalAverage=[];
 	this.cash=0;
 	so.directory="./sounds/",
@@ -35,9 +36,6 @@ class Game {
 		this.toDestroy = new Array();
 		this.scoreTimer = new OldTimer();
 		var that = this;
-		$(document).on('blur', () => {
-		that.pause();
-		});
 		this.pauseTime = 0;
 		this.timer = null;
 		this.music = null;
@@ -262,6 +260,16 @@ that.doScore();
 		this.pause();
 		return;
 		}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_PAGE_UP)) {
+		this.volume+=0.08;
+		this.music.volume=this.volume;
+		return;
+		}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_PAGE_DOWN)) {
+		this.volume-=0.08;
+		this.music.volume=this.volume;
+		}
+		
 				this.handleKeys();
 	}
 
@@ -356,6 +364,7 @@ this.playing = true;
 		const that = this;
 		this.music = so.create(packdir + this.level + 'music',false);
 		this.music.loop = true;
+		this.music.volume=this.volume;
 		so.directory = './sounds/';
 this.music.play();
 	this.music.sound.once("play",()=> {
@@ -368,9 +377,9 @@ this.music.play();
 	this.actionCompleted = false;
 	this.currentAction = 0;
 	if (!this.playing && this.level > 1) {
-		this.currentAction++;
+		//this.currentAction++;
 	}
-	this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 6);
+	this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
 	}
 
 	unload() {

@@ -1,4 +1,4 @@
-process.env.HMR_PORT=51007;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=51821;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -113,7 +113,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],4:[function(require,module,exports) {
+},{}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -169,7 +169,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{"./tts":12}],19:[function(require,module,exports) {
+},{"./tts":12}],18:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3072,7 +3072,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],3:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3794,7 +3794,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":19,"./input":3,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
+},{"./howler":18,"./input":4,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3885,7 +3885,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":19,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":18,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4177,6 +4177,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			dq: "This is a game of risk. You will risk losing %1 beatcoins. Continue?",
 			contPack: "Continue where you left off (level %1)",
 			mPackTut: "Pack making tutorial",
 			packtut: `Welcome to the pack editor!
@@ -4309,6 +4310,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			dq: "Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
 			contPack: "Continuar donde lo dejaste (nivel %1)",
 			mPackTut: "Tutorial de cómo hacer packs",
 			packtut: `Bienvenido al editor de packs!
@@ -4738,7 +4740,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],9:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":4}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4985,7 +4987,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],18:[function(require,module,exports) {
+},{}],19:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5038,6 +5040,7 @@ class Game {
 	constructor(creds) {
 
 		this.totalScore = [];
+		this.volume = 1;
 		this.totalAverage = [];
 		this.cash = 0;
 		_soundObject.so.directory = "./sounds/", this.scoreAverage = [];
@@ -5050,9 +5053,6 @@ class Game {
 		this.toDestroy = new Array();
 		this.scoreTimer = new _oldtimer.OldTimer();
 		var that = this;
-		(0, _jquery2.default)(document).on('blur', () => {
-			that.pause();
-		});
 		this.pauseTime = 0;
 		this.timer = null;
 		this.music = null;
@@ -5273,6 +5273,16 @@ class Game {
 			this.pause();
 			return;
 		}
+		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_PAGE_UP)) {
+			this.volume += 0.08;
+			this.music.volume = this.volume;
+			return;
+		}
+		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_PAGE_DOWN)) {
+			this.volume -= 0.08;
+			this.music.volume = this.volume;
+		}
+
 		this.handleKeys();
 	}
 
@@ -5367,6 +5377,7 @@ class Game {
 		const that = this;
 		this.music = _soundObject.so.create(_main.packdir + this.level + 'music', false);
 		this.music.loop = true;
+		this.music.volume = this.volume;
 		_soundObject.so.directory = './sounds/';
 		this.music.play();
 		this.music.sound.once("play", () => {
@@ -5379,9 +5390,9 @@ class Game {
 		this.actionCompleted = false;
 		this.currentAction = 0;
 		if (!this.playing && this.level > 1) {
-			this.currentAction++;
+			//this.currentAction++;
 		}
-		this.numberOfActions = _utilities.utils.randomInt(6 + this.level, this.level * 2 + 6);
+		this.numberOfActions = _utilities.utils.randomInt(6 + this.level, this.level * 2 + 5);
 	}
 
 	unload() {}
@@ -5452,7 +5463,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":3,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":4,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5540,7 +5551,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":18}],2:[function(require,module,exports) {
+},{"./input":4,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5838,7 +5849,7 @@ async function playCode() {
 								});
 				});
 } //function
-},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":3,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":4,"./stateMachine":16}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6302,7 +6313,7 @@ async function rebuildHashes(silent = false) {
 			theFiles += stat.size;
 		});
 		newHash = theFiles;
-		const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
+		const fileData = mangle.decrypt(fs.readFileSync(path + 'bpm.txt', 'utf8'));
 		const levelsa = fileData.split(',');
 		let levels = levelsa.length - 1;
 		if (levelsa[levels] == '') {
@@ -6377,7 +6388,7 @@ async function checkPack(changeBoot = true, debug = false) {
 	exports.editing = editing = false;
 	const fs = require('fs');
 	try {
-		exports.data = data = JSON.parse(fs.readFileSync(_os2.default.homedir() + '/beatpacks/save.dat'));
+		exports.data = data = JSON.parse(mangle.decrypt(fs.readFileSync(_os2.default.homedir() + '/beatpacks/save.dat')));
 	} catch (err) {
 		exports.data = data = new _player.Player();
 		let introing = true;
@@ -6746,13 +6757,12 @@ async function downloadPacks(arr = []) {
 	} // If length > 1
 }
 function save() {
-	if (editing) return;
 	const fs = require('fs');
 	if (!fs.existsSync(_os2.default.homedir() + '/beatpacks')) {
 		fs.mkdirSync(_os2.default.homedir() + '/beatpacks');
 	}
-	const write = JSON.stringify(data);
-	// Write=mangle.encrypt(write);
+	let write = JSON.stringify(data);
+	write = mangle.encrypt(write);
 	fs.writeFileSync(_os2.default.homedir() + '/beatpacks/save.dat', write);
 }
 function listenPack() {
@@ -7094,7 +7104,6 @@ async function editPack(path) {
 	const fs = require('fs');
 	const checkFiles = ["a1", "a2", "a3", "a4", "a5", "o2", "o3", "o4", "o5", "1music", "2music", "3music", "fail", "name", "loop", "select", "win"];
 	const optionalFiles = ["boot", "credits", "nlevel", "pre1", "a6", "o6", "a7", "o7", "o8", "a8", "a9", "o9"];
-	exports.editing = editing = true;
 	let str = "";
 
 	checkFiles.forEach(function (i, index) {
@@ -7270,7 +7279,7 @@ async function editPackDefinite(path) {
 		});
 	}); //menu callback
 } //function
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],24:[function(require,module,exports) {
+},{"./oldtimer":3,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":4}],21:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7447,5 +7456,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[24,1])
+},{}]},{},[21,1])
 //# sourceMappingURL=/main.map

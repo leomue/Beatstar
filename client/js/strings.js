@@ -4,6 +4,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+dq:"This is a game of risk. You will risk losing %1 beatcoins. Continue?",
 contPack:"Continue where you left off (level %1)",
 mPackTut:"Pack making tutorial",
 packtut:`Welcome to the pack editor!
@@ -136,6 +137,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		dq:"Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
 		contPack:"Continuar donde lo dejaste (nivel %1)",
 		mPackTut:"Tutorial de cómo hacer packs",
 packtut:`Bienvenido al editor de packs!
