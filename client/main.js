@@ -1,4 +1,4 @@
-process.env.HMR_PORT=51821;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=53823;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -113,7 +113,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],3:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3072,7 +3072,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],4:[function(require,module,exports) {
+},{}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3489,7 +3489,7 @@ class SoundObjectItem {
 		this.sound.play();
 	}
 
-	playWait() {
+	playSync() {
 		let inp = new _input.KeyboardInput();
 		inp.init();
 		this.sound.play();
@@ -3794,7 +3794,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":18,"./input":4,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
+},{"./howler":18,"./input":3,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4740,7 +4740,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":4}],9:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4935,7 +4935,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],20:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],21:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5338,7 +5338,7 @@ class Game {
 			_soundObject.so.resetQueue();
 			_soundObject.so.resetQueuedInstance();
 			//get some kind of reward if you win, but only if the pack has enough levels
-			if (this.levels > 9) this.cash += this.cash * 3;
+			if (this.levels > 9) this.cash += this.cash * 2;
 			_soundObject.so.kill(() => {
 				that2.doScore();
 			});
@@ -5463,7 +5463,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":3,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":4,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5551,7 +5551,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":4,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
+},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5849,7 +5849,7 @@ async function playCode() {
 								});
 				});
 } //function
-},{"./main":1,"./oldtimer":3,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":4,"./stateMachine":16}],5:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5903,6 +5903,7 @@ exports.downloadPacks = downloadPacks;
 exports.save = save;
 exports.listenPack = listenPack;
 exports.booter = booter;
+exports.addCashSync = addCashSync;
 exports.addCash = addCash;
 exports.buySafeguards = buySafeguards;
 exports.minigames = minigames;
@@ -6861,6 +6862,13 @@ function booter() {
 			(0, _menuHandler.mainMenu)();
 		}
 }
+async function addCashSync(c1, c2 = 0, callback) {
+	return new Promise((resolve, reject) => {
+		addCash(c1, c2, function () {
+			resolve("ok");
+		});
+	});
+}
 async function addCash(c1, c2 = 0, callback) {
 	let coinCap = -1;
 	let cash = Math.ceil(c1 - c2);
@@ -7279,7 +7287,7 @@ async function editPackDefinite(path) {
 		});
 	}); //menu callback
 } //function
-},{"./oldtimer":3,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":4}],21:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7456,5 +7464,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[21,1])
+},{}]},{},[22,1])
 //# sourceMappingURL=/main.map

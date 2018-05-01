@@ -48,7 +48,7 @@ class SoundObjectItem {
 		this.sound.play();
 	}
 	
-playWait() {
+playSync() {
 let inp=new KeyboardInput();
 inp.init();
  this.sound.play();

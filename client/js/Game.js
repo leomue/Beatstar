@@ -325,7 +325,7 @@ while (this.winSound.playing==true) {
 				so.resetQueue();
 so.resetQueuedInstance();
 //get some kind of reward if you win, but only if the pack has enough levels
-if (this.levels>9) this.cash+=(this.cash*3);
+if (this.levels>9) this.cash+=(this.cash*2);
 						so.kill(() => {
 				that2.doScore();
 });

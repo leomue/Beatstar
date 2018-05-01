@@ -931,6 +931,13 @@ mainMenu();
 				mainMenu();
 		}
 		}
+		export async function addCashSync(c1,c2=0,callback) {
+		return new Promise((resolve,reject)=>{
+		addCash(c1,c2,function() {
+		resolve("ok");
+});
+});
+		}
 		export async function addCash(c1,c2=0,callback) {
 		let coinCap=-1;
 		let cash=Math.ceil(c1-c2);

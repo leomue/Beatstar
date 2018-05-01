@@ -198,7 +198,16 @@ class SoundObject {
 		}
 		return returnObject;
 	}
+load(file) {
+const fs=require('fs');
+		file = this.directory + file + this.extension;
+		if (fs.exists(file)) {
+		this.queue.push(file);
+		this.queueLength = this.queue.length;
+		}
+	}
 
+	
 	enqueue(file) {
 		file = this.directory + file + this.extension;
 		this.queue.push(file);
