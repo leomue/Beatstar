@@ -1,9 +1,27 @@
 'use strict';
 import {lang} from './main';
+import {speech} from './tts';
 class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+collect:"Collect beatcoins and leave",
+highlow:"Higher or lower",
+hw:"Welcome to high or low!",
+yourCard:"Your card is the %1",
+nextCard:"Will the next card be higher or lower than the %1? Current bet %2 beatcoins",
+higher:"Higher",
+lower:"Lower",
+
+card:"%1 of %2",
+K:"king",
+		K:"queen",
+A:"ace",
+		J:"jack",
+		cspades:"spades",
+		cdiamonds:"diamonds",
+		cclubs:"clubs",
+		chearts:"hearts",
 dq:"This is a game of risk. You will risk losing %1 beatcoins. Continue?",
 contPack:"Continue where you left off (level %1)",
 mPackTut:"Pack making tutorial",
@@ -137,6 +155,16 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		collect:"Obtener monedas y salir",
+		card:"%1 de %2",
+K:"rey",
+Q:"reina",
+		A:"as",
+J:"sota",
+		cs:"picas",
+		cd:"diamantes",
+		cc:"bastos",
+		ch:"corazones",
 		dq:"Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
 		contPack:"Continuar donde lo dejaste (nivel %1)",
 		mPackTut:"Tutorial de cómo hacer packs",
@@ -263,7 +291,7 @@ f3music:"Los niveles del juego (se requieren al menos 3 para que un pack se cons
 		} else if (typeof this.strings[1][what] !== 'undefined') {
 			str = this.strings[1][what];
 		} else {
-			return 'String error: '+what;
+			return what;
 		}
 	rep.forEach((v, i) => {
 		const i1 = Number(i) + 1;
@@ -271,5 +299,21 @@ f3music:"Los niveles del juego (se requieren al menos 3 para que un pack se cons
 	});
 	return str;
 	}
+	speak(what, rep = []) {
+		let str;
+		if (typeof this.strings[lang][what] !== 'undefined') {
+			str = this.strings[lang][what];
+		} else if (typeof this.strings[1][what] !== 'undefined') {
+			str = this.strings[1][what];
+		} else {
+			speech.speak(what);
+		}
+	rep.forEach((v, i) => {
+		const i1 = Number(i) + 1;
+		str = str.replace('%' + i1, v);
+	});
+	speech.speak(str);
+	}
+
 }
 export var strings = new Strings();

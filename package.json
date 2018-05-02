@@ -17,6 +17,7 @@
   "author": "Oriol Gomez",
   "license": "GPL",
   "dependencies": {
+    "52-deck": "^1.1.0",
     "agk-ui": "0.0.2",
     "cryptr": "^3.0.0",
     "download-file-sync": "^1.0.4",
@@ -26,6 +27,7 @@
     "howler": "^2.0.9",
     "http-server": "^0.11.1",
     "jquery": "^3.3.1",
-    "parcel-bundler": "^1.7.1"
+    "parcel-bundler": "^1.7.1",
+    "s": "^0.1.1"
   }
 }

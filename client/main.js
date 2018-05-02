@@ -1,4 +1,4 @@
-process.env.HMR_PORT=53823;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=49882;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({12:[function(require,module,exports) {
+})({10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -169,7 +169,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{"./tts":12}],18:[function(require,module,exports) {
+},{"./tts":10}],19:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3208,7 +3208,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":12}],15:[function(require,module,exports) {
+},{"./tts":10}],14:[function(require,module,exports) {
 
 'use strict';
 
@@ -3335,7 +3335,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],13:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3426,7 +3426,7 @@ class GameUtils {
 	}
 }
 var utils = exports.utils = new GameUtils();
-},{}],14:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3794,7 +3794,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":18,"./input":3,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
+},{"./howler":19,"./input":3,"./keycodes":14,"./utilities":15,"./tts":10}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3885,7 +3885,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":18,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":19,"./soundObject.js":16}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4020,7 +4020,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":17,"./soundObject.js":14}],6:[function(require,module,exports) {
+},{"./soundSource.js":17,"./soundObject.js":16}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4163,7 +4163,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":12}],10:[function(require,module,exports) {
+},{"./tts":10}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4173,10 +4173,29 @@ exports.strings = undefined;
 
 var _main = require('./main');
 
+var _tts = require('./tts');
+
 class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			collect: "Collect beatcoins and leave",
+			highlow: "Higher or lower",
+			hw: "Welcome to high or low!",
+			yourCard: "Your card is the %1",
+			nextCard: "Will the next card be higher or lower than the %1? Current bet %2 beatcoins",
+			higher: "Higher",
+			lower: "Lower",
+
+			card: "%1 of %2",
+			K: "king",
+			K: "queen",
+			A: "ace",
+			J: "jack",
+			cspades: "spades",
+			cdiamonds: "diamonds",
+			cclubs: "clubs",
+			chearts: "hearts",
 			dq: "This is a game of risk. You will risk losing %1 beatcoins. Continue?",
 			contPack: "Continue where you left off (level %1)",
 			mPackTut: "Pack making tutorial",
@@ -4310,6 +4329,16 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			collect: "Obtener monedas y salir",
+			card: "%1 de %2",
+			K: "rey",
+			Q: "reina",
+			A: "as",
+			J: "sota",
+			cs: "picas",
+			cd: "diamantes",
+			cc: "bastos",
+			ch: "corazones",
 			dq: "Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
 			contPack: "Continuar donde lo dejaste (nivel %1)",
 			mPackTut: "Tutorial de cómo hacer packs",
@@ -4435,7 +4464,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 		} else if (typeof this.strings[1][what] !== 'undefined') {
 			str = this.strings[1][what];
 		} else {
-			return 'String error: ' + what;
+			return what;
 		}
 		rep.forEach((v, i) => {
 			const i1 = Number(i) + 1;
@@ -4443,9 +4472,25 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 		});
 		return str;
 	}
+	speak(what, rep = []) {
+		let str;
+		if (typeof this.strings[_main.lang][what] !== 'undefined') {
+			str = this.strings[_main.lang][what];
+		} else if (typeof this.strings[1][what] !== 'undefined') {
+			str = this.strings[1][what];
+		} else {
+			_tts.speech.speak(what);
+		}
+		rep.forEach((v, i) => {
+			const i1 = Number(i) + 1;
+			str = str.replace('%' + i1, v);
+		});
+		_tts.speech.speak(str);
+	}
+
 }
 var strings = exports.strings = new Strings();
-},{"./main":1}],7:[function(require,module,exports) {
+},{"./main":1,"./tts":10}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4740,7 +4785,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],9:[function(require,module,exports) {
+},{"./utilities":15,"./strings":12,"./tts":10,"./soundObject.js":16,"./menuItem":8,"./keycodes":14,"./input":3}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4768,6 +4813,8 @@ if (runningText == undefined) {
 }
 class ScrollingText {
 	constructor(text, delimiter = '\n', callback = 0) {
+		this.callback = callback;
+
 		this.text = text;
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
@@ -4775,10 +4822,14 @@ class ScrollingText {
 		this.sndOpen = _soundObject.so.create('UI/textOpen');
 		this.sndContinue = _soundObject.so.create('UI/textScroll');
 		this.sndClose = _soundObject.so.create('UI/textClose');
-		this.callback = callback;
 		const id = document.getElementById('touchArea');
 		// This.hammer = new Hammer(id);
 		this.init();
+		if (this.callback == 0) {
+			return this.prom = new Promise((resolve, reject) => {
+				this.res = resolve;
+			});
+		}
 	}
 
 	init() {
@@ -4843,13 +4894,15 @@ class ScrollingText {
 			//			This.hammer.unload();
 			if (this.callback != 0) {
 				this.callback();
+			} else {
+				this.res();
 			}
 		}
 	}
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":12}],8:[function(require,module,exports) {
+},{"./keycodes":14,"./soundObject":16,"./tts":10}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4935,7 +4988,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],21:[function(require,module,exports) {
+},{"./soundObject":16,"./main":1,"./stateMachine":13,"./strings":12,"./menuItem":8,"./menu":5}],20:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -4987,7 +5040,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],19:[function(require,module,exports) {
+},{}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5463,7 +5516,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./tts":10,"./main":1,"./oldtimer":4,"./soundHandler":9,"./utilities":15,"./soundObject":16,"./stateMachine":13,"./timer":20,"./scrollingText":11,"./input.js":3,"./keycodes.js":14}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5551,17 +5604,22 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
+},{"./input":3,"./tts":10,"./main":1,"./menuHandler":7,"./soundObject":16,"./keycodes":14,"./game":18}],2:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 				value: true
 });
+exports.betSync = betSync;
 exports.minibet = minibet;
 exports.playSlots = playSlots;
 exports.playCode = playCode;
+exports.playDeck = playDeck;
+exports.takeCard = takeCard;
 
 var _main = require('./main');
+
+var _deck = require('52-deck');
 
 var _oldtimer = require('./oldtimer');
 
@@ -5597,6 +5655,14 @@ var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+async function betSync(minBet = 5000, slideBy = 500) {
+				return new Promise((resolve, reject) => {
+								minibet(function (bet) {
+												resolve(bet);
+												return bet;
+								}, minBet, slideBy);
+				});
+}
 function minibet(callbet = null, minBet = 5000, slideBy = 500) {
 				if (_main.data.beatcoins < minBet) {
 								let error = new _scrollingText.ScrollingText(_strings.strings.get("noGameCash", [minBet, _main.data.beatcoins]), "\n", function () {
@@ -5849,7 +5915,121 @@ async function playCode() {
 								});
 				});
 } //function
-},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+async function playDeck() {
+				let deck = (0, _deck.shuffle)((0, _deck.newDecks)(1));
+				_soundObject.so.directory = "./sounds/";
+				let snd = _soundObject.so.create("hl_intro");
+				let bet = await betSync(1500, 500);
+				_tts.speech.speak(bet);
+				if (bet <= 0) {
+								_soundObject.so.kill(() => {
+												_stateMachine.st.setState(2);
+								});
+								return;
+				}
+				_strings.strings.speak("hw");
+				await snd.playSync();
+				let card;
+				let value;
+				let pool = new _soundHandler.SoundHandler();
+				let cardO;
+				let first = true;
+				let firstBet = bet;
+				bet += firstBet;
+				_soundObject.so.directory = "./sounds/";
+				let take = _soundObject.so.create("hl_card");
+				while (bet != 0) {
+								await _utilities.utils.sleep(8);
+								await new Promise((resolve, reject) => {
+												cardO = takeCard(deck);
+												take.playSync();
+												deck.splice(0, 1);
+												card = cardO[1];
+												value = cardO[0].value;
+												//question
+												let answer = false;
+												let items = new Array();
+												items.push(new _menuItem.MenuItem(0, _strings.strings.get("nextCard", [card, bet])));
+												items.push(new _menuItem.MenuItem(0, _strings.strings.get("higher")));
+												items.push(new _menuItem.MenuItem(1, _strings.strings.get("lower")));
+												if (!first) {
+																items.push(new _menuItem.MenuItem(2, _strings.strings.get("collect")));
+												} else {
+																first = false;
+												}
+												_soundObject.so.directory = './sounds/';
+												let dm = new _menu.Menu(_strings.strings.get("nextCard", [card, bet]), items);
+												_tts.speech.speak("ok");
+												dm.run(async s => {
+																_soundObject.so.directory = './sounds/';
+																switch (s.selected) {
+																				case 0:
+																								dm.destroy();
+																								answer = true;
+																								break;
+																				case 1:
+																								dm.destroy();
+																								answer = false;
+																								break;
+																				case 2:
+																								dm.destroy();
+																								await (0, _main.addCashSync)(bet, 0);
+																								_stateMachine.st.setState(2);
+																								resolve();
+																								bet = 0;
+																								return;
+																}
+																let nextCard = takeCard(deck);
+																await _utilities.utils.sleep(_utilities.utils.randomInt(1000, 1900));
+																_tts.speech.speak(nextCard[1] + "!");
+																await _utilities.utils.sleep(_utilities.utils.randomInt(400, 800));
+																if (nextCard[0].value < value && !answer) {
+																				bet = bet + firstBet;
+																				pool.playStatic("hl_right", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+																				pool.playStatic("hl_crowdwin", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
+																				resolve();
+																				return;
+																} else if (nextCard[0].value > value && answer) {
+																				bet = bet + firstBet;
+																				pool.playStatic("hl_right", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+																				pool.playStatic("hl_crowdwin", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
+																				resolve();
+																				return;
+																} else if (nextCard[0].value == value) {
+																				pool.playStatic("hl_equal", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+																				pool.playStatic("hl_crowdequal", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
+																				resolve();
+																				return;
+																} else {
+																				pool.playStatic("hl_wrong", 0);
+																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+																				pool.playStatic("hl_crowdlose", 0);
+																				await _utilities.utils.sleep(3400);
+																				_stateMachine.st.setState(2);
+																				resolve();
+																				bet = 0;
+																				return;
+																}
+												}); //menu
+								}); //promise
+				}
+}
+function takeCard(deck) {
+				let card = deck[0];
+				if (card.text == "J") card.value = 11;
+				if (card.text == "Q") card.value = 12;
+				if (card.text == "K") card.value = 13;
+				let str = _strings.strings.get("card", [_strings.strings.get(card.text), _strings.strings.get("c" + card.suite)]);
+				console.log(str);
+				return [card, str];
+}
+},{"./main":1,"./oldtimer":4,"./soundHandler":9,"./menuItem":8,"./menu":5,"./scrollingText":11,"./strings":12,"./tts":10,"./utilities":15,"./soundObject":16,"./keycodes":14,"./input":3,"./stateMachine":13}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5887,7 +6067,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
+},{"./keycodes":14,"./main":1,"./scrollingText":11}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5897,6 +6077,7 @@ exports.packdir = exports.data = exports.pack = exports.langs = exports.mangle =
 exports.learnPack = learnPack;
 exports.browsePacks = browsePacks;
 exports.rebuildHashes = rebuildHashes;
+exports.questionSync = questionSync;
 exports.question = question;
 exports.checkPack = checkPack;
 exports.downloadPacks = downloadPacks;
@@ -5968,7 +6149,8 @@ let boot = false;
 var credits = exports.credits = false;
 let minis = exports.minis = {
 	slot: 8500,
-	code: 10000
+	code: 10000,
+	highlow: 15000
 };
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
 var mangle = exports.mangle = new _cryptr2.default('sdf jkl wer uio');
@@ -5977,7 +6159,6 @@ var pack = exports.pack = 'default';
 var data = exports.data = '';
 var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
-_soundObject.so.debug = false;
 async function setup() {
 	//checkPack(false,true);
 	//return;
@@ -6314,7 +6495,7 @@ async function rebuildHashes(silent = false) {
 			theFiles += stat.size;
 		});
 		newHash = theFiles;
-		const fileData = mangle.decrypt(fs.readFileSync(path + 'bpm.txt', 'utf8'));
+		const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		const levelsa = fileData.split(',');
 		let levels = levelsa.length - 1;
 		if (levelsa[levels] == '') {
@@ -6357,6 +6538,13 @@ async function rebuildHashes(silent = false) {
 	} else if (!silent) {
 		_stateMachine.st.setState(2);
 	}
+}
+async function questionSync(text, localizedValues = []) {
+	return new Promise((resolve, reject) => {
+		question(text, localizedValues = [], function (answer) {
+			resolve(answer);
+		});
+	});
 }
 function question(text, localizedValues = [], callback = null) {
 	let answer = false;
@@ -6441,7 +6629,8 @@ async function checkPack(changeBoot = true, debug = false) {
 		return;
 	}
 	if (debug) {
-		editPackDefinite("f:\\r/");
+		data.beatcoins = 100000;
+		(0, _minis.playDeck)();
 		return;
 	}
 	booter();
@@ -7048,6 +7237,8 @@ function runGame(name) {
 		(0, _minis.playSlots)();
 	} else if (name == "code") {
 		(0, _minis.playCode)();
+	} else if (name == "highlow") {
+		(0, _minis.playDeck)();
 	} else {
 		_stateMachine.st.setState(2);
 	}
@@ -7287,7 +7478,7 @@ async function editPackDefinite(path) {
 		});
 	}); //menu callback
 } //function
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":6,"./menuItem":8,"./menu":5,"./menuHandler":7,"./scrollingText":11,"./strings":12,"./soundHandler":9,"./tts":10,"./utilities":15,"./soundObject":16,"./keycodes":14,"./stateMachine":13,"./input.js":3}],31:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7464,5 +7655,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[22,1])
+},{}]},{},[31,1])
 //# sourceMappingURL=/main.map

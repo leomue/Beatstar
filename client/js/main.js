@@ -2,7 +2,7 @@ export var lang = 0;
 export var editing=false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playCode,playSlots} from './minis.js';
+import {playDeck,playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
@@ -10,6 +10,7 @@ export var credits=false;
 export let minis={
 slot:8500,
 code:10000,
+highlow:15000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -35,7 +36,6 @@ export var pack = 'default';
 export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
-so.debug = false;
 async function setup() {
 //checkPack(false,true);
 //return;
@@ -378,7 +378,7 @@ walk.filesSync(path, (pb, pf, stat) => {
 	theFiles += stat.size;
 });
 newHash = theFiles;
-const fileData = mangle.decrypt(fs.readFileSync(path + 'bpm.txt', 'utf8'));
+const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 const levelsa = fileData.split(',');
 let levels = levelsa.length - 1;
 if (levelsa[levels] == '') {
@@ -421,6 +421,13 @@ st.setState(2);
 } else if (!silent) {
 st.setState(2);
 }
+}
+export async function questionSync(text,localizedValues=[]) {
+return new Promise((resolve,reject)=> {
+question(text,localizedValues=[],function(answer) {
+resolve(answer);
+});
+});
 }
 export function question(text,localizedValues=[],callback=null) {
 let answer=false;
@@ -505,9 +512,10 @@ downloadPacks(['default']);
 	return;
 	}
 			if (debug) {
-		editPackDefinite("f:\\r/");
+			data.beatcoins=100000;
+			playDeck();
 		return;
-		}
+				}
 	booter();
 }
 var download = function(url, dest, cb) {
@@ -1120,6 +1128,10 @@ st.setState(2);
 				else if (name=="code") {
 				playCode();
 				}
+				else if (name=="highlow") {
+				playDeck();
+				}
+				
 				else {
 				st.setState(2);
 				}

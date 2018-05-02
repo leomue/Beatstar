@@ -1,4 +1,5 @@
-import {safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+import {addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+import {shuffle,newDeck,newDecks} from '52-deck';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
 import {SliderItem,MenuItem} from './menuItem';
@@ -13,6 +14,14 @@ import {KeyEvent} from './keycodes';
 import {KeyboardInput} from './input';
 import {st} from './stateMachine';
 import fs from 'fs';
+export async function betSync(minBet=5000,slideBy=500) {
+return new Promise((resolve,reject)=> {
+minibet(function(bet) {
+resolve(bet);
+return bet;
+},minBet,slideBy);
+});
+}
 export function minibet(callbet=null,minBet=5000,slideBy=500) {
 				if (data.beatcoins<minBet) {
 let error=new ScrollingText(strings.get("noGameCash",[minBet,data.beatcoins]),"\n",function() {
@@ -273,3 +282,121 @@ st.setState(2);
 });
 });
 }//function
+export async function playDeck() {
+let deck=shuffle(newDecks(1));
+so.directory="./sounds/";
+let snd=so.create("hl_intro");
+let bet=await betSync(1500,500);
+speech.speak(bet);
+				if (bet<=0) {
+				so.kill(()=> {
+				st.setState(2);
+				});
+				return;
+				}
+				strings.speak("hw");
+await snd.playSync();
+let card;
+let value;
+let pool=new SoundHandler();
+let cardO;
+let first=true;
+let firstBet=bet;
+bet+=firstBet;
+so.directory="./sounds/";
+let take=so.create("hl_card");
+while (bet!=0) {
+await utils.sleep(8);
+await new Promise((resolve,reject)=> {
+cardO=takeCard(deck);
+take.playSync();
+deck.splice(0,1);
+card=cardO[1];
+value=cardO[0].value;
+//question
+let answer=false;
+let items=new Array();
+			items.push(new MenuItem(0,strings.get("nextCard",[card,bet])));
+	items.push(new MenuItem(0,strings.get("higher",)));
+	items.push(new MenuItem(1,strings.get("lower",)));
+	if (!first) {
+		items.push(new MenuItem(2,strings.get("collect",)));
+		}
+		else {
+		first=false;
+		}
+		so.directory = './sounds/';
+			let dm=new Menu(strings.get("nextCard",[card,bet]),items);
+									speech.speak("ok");
+								dm.run(async s=>{
+								so.directory = './sounds/';
+												switch(s.selected) {
+							case 0:
+							dm.destroy();
+answer=true;
+			break;
+			case 1:
+			dm.destroy();
+answer=false;
+break;
+case 2:
+dm.destroy();
+await addCashSync(bet,0);
+st.setState(2);
+resolve();
+bet=0;
+return;
+}
+let nextCard=takeCard(deck);
+await utils.sleep(utils.randomInt(1000,1900));
+speech.speak(nextCard[1]+"!");
+await utils.sleep(utils.randomInt(400,800));
+if (nextCard[0].value<value && !answer) {
+bet=bet+firstBet;
+pool.playStatic("hl_right",0);
+await utils.sleep(utils.randomInt(100,300));
+pool.playStatic("hl_crowdwin",0);
+await utils.sleep(utils.randomInt(800,1600));
+resolve();
+return;
+}
+else if (nextCard[0].value>value && answer) {
+bet=bet+firstBet;
+pool.playStatic("hl_right",0);
+await utils.sleep(utils.randomInt(100,300));
+pool.playStatic("hl_crowdwin",0);
+await utils.sleep(utils.randomInt(800,1600));
+resolve();
+return;
+}
+else if (nextCard[0].value==value) {
+pool.playStatic("hl_equal",0);
+await utils.sleep(utils.randomInt(100,300));
+pool.playStatic("hl_crowdequal",0);
+await utils.sleep(utils.randomInt(800,1600));
+resolve();
+return;
+}
+else {
+pool.playStatic("hl_wrong",0);
+await utils.sleep(utils.randomInt(100,300));
+pool.playStatic("hl_crowdlose",0);
+await utils.sleep(3400);
+st.setState(2);
+resolve();
+bet=0;
+return;
+}
+});//menu
+});//promise
+}
+}
+export function takeCard(deck) {
+let card=deck[0];
+if (card.text=="J") card.value=11;
+if (card.text=="Q") card.value=12;
+if (card.text=="K") card.value=13;
+let str=strings.get("card",[strings.get(card.text),strings.get("c"+card.suite)]);
+console.log(str);
+return [card,str];
+}
