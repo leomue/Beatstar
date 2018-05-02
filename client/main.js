@@ -5950,8 +5950,8 @@ async function playDeck() {
 												let answer = false;
 												let items = new Array();
 												items.push(new _menuItem.MenuItem(0, _strings.strings.get("nextCard", [card, bet])));
-												items.push(new _menuItem.MenuItem(0, _strings.strings.get("higher")));
-												items.push(new _menuItem.MenuItem(1, _strings.strings.get("lower")));
+												if (value < 13) items.push(new _menuItem.MenuItem(0, _strings.strings.get("higher")));
+												if (value > 1) items.push(new _menuItem.MenuItem(1, _strings.strings.get("lower")));
 												if (!first) {
 																items.push(new _menuItem.MenuItem(2, _strings.strings.get("collect")));
 												} else {

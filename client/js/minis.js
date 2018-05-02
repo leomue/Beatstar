@@ -317,8 +317,8 @@ value=cardO[0].value;
 let answer=false;
 let items=new Array();
 			items.push(new MenuItem(0,strings.get("nextCard",[card,bet])));
-	items.push(new MenuItem(0,strings.get("higher",)));
-	items.push(new MenuItem(1,strings.get("lower",)));
+	if (value<13) items.push(new MenuItem(0,strings.get("higher",)));
+	if (value>1) items.push(new MenuItem(1,strings.get("lower",)));
 	if (!first) {
 		items.push(new MenuItem(2,strings.get("collect",)));
 		}
