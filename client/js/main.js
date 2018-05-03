@@ -2,7 +2,7 @@ export var lang = 0;
 export var editing=false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playDeck,playCode,playSlots} from './minis.js';
+import {playDouble,playDeck,playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
@@ -11,6 +11,7 @@ export let minis={
 slot:8500,
 code:10000,
 highlow:15000,
+double:10000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -38,8 +39,8 @@ export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
 checkPack(false,true);
-//return;
-             	//st.setState(1);
+return;
+             	st.setState(1);
 }
 function proceed() {
 	const sound = so.create('memtest');
@@ -424,7 +425,7 @@ st.setState(2);
 }
 export async function questionSync(text,localizedValues=[]) {
 return new Promise((resolve,reject)=> {
-question(text,localizedValues=[],function(answer) {
+question(text,localizedValues,function(answer) {
 resolve(answer);
 });
 });
@@ -513,7 +514,10 @@ downloadPacks(['default']);
 	return;
 	}
 			if (debug) {
-			data.beatcoins=100000;
+			//await strings.check(2);
+			data.beatcoins=10000;
+			playDouble();
+			return;
 				}
 	booter();
 }
@@ -1328,6 +1332,7 @@ if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 arr.push(timer.elapsed);
 timer.restart();
 space.play();
+speech.speak(arr.length);
 }//if
 }//while
 console.log("avg"+utils.averageInt(arr,1));

@@ -1,4 +1,4 @@
-import {getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+import {questionSync,getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
 import {shuffle,newDeck,newDecks} from '52-deck';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
@@ -404,4 +404,37 @@ if (card.text=="K") card.value=13;
 let str=strings.get("card",[strings.get(card.text),strings.get("c"+card.suite)]);
 console.log(str);
 return [card,str];
+}
+export async function playDouble() {
+if (data.beatcoins<5000) {
+await new ScrollingText(strings.get("doublecash"));
+st.setState(2);
+return;
+}
+let answer=await questionSync("dq",[data.beatcoins]);
+if (!answer) {
+st.setState(2);
+return;
+}
+let old=data.beatcoins;
+so.directory="./sounds/";
+let snd=so.create("doub_intro");;
+await snd.playSync();
+await addCashSync(0,data.beatcoins);
+let rand=utils.randomInt(1,2);
+let win=false;
+if (rand==1) win=true;
+sos();
+if (!win) {
+snd=so.create("doub_loser");
+await snd.playSync();
+await getAch("dl");
+}
+else if (win) {
+snd=so.create("doub_winner");
+await snd.playSync();
+await addCashSync(old*2);
+await getAch("dw");
+}
+st.setState(2);
 }

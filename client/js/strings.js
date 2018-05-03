@@ -1,10 +1,15 @@
 'use strict';
 import {lang} from './main';
+import {utils} from './utilities';
 import {speech} from './tts';
+import {ScrollingText} from './scrollingText';
 class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+achdl:"Loser times 2",
+achdw:"winner times 2!",
+double:"Double or nothing",
 newach:"You have obtained the achievement: %1",
 achMenu:"Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
 noach:"You have no achievements yet. Go get some!",
@@ -151,6 +156,7 @@ Have fun playing evil slots!`,
 			mActions: 'This pack has %1 actions. Typical keys are space, tab, enter, backspace, and optionally arrows up, down, left, right. If you have mapped your keyboard differently, use your custom keys instead. To hear the stop action, press the period key (to the right of comma). To exit press Q',
 			"yes":"Yes",
 						noGameCash:"The minimum bet is %1 beatcoins, you don't have enough right now. Go play!",
+						doublecash:"Double or nothing requires at least 5000 beatcoins. Sorry!",
 			"no":"no",
 			ok:"ok",
 			
@@ -335,6 +341,13 @@ f3music:"Los niveles del juego (se requieren al menos 3 para que un pack se cons
 	});
 	speech.speak(str);
 	}
-
+async check(lng) {
+let len=utils.objSize(this.strings)-2;
+for (let i in this.strings[1]) {
+if (!this.strings[lng].hasOwnProperty(i)) {
+await new ScrollingText(i+": "+this.strings[1][i]);
+}
+}
+}
 }
 export var strings = new Strings();
