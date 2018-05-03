@@ -37,9 +37,9 @@ export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-//checkPack(false,true);
+checkPack(false,true);
 //return;
-             	st.setState(1);
+             	//st.setState(1);
 }
 function proceed() {
 	const sound = so.create('memtest');
@@ -514,8 +514,6 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			data.beatcoins=100000;
-			playDeck();
-		return;
 				}
 	booter();
 }

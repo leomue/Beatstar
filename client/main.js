@@ -4191,12 +4191,17 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			newach: "You have obtained the achievement: %1",
-			lactions: "Go learn the actions",
 			achMenu: "Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
 			noach: "You have no achievements yet. Go get some!",
 			mAch: "Browse achievements",
 			//the following are achievements
+			achw1: "beat newbie",
+			achw5: "it's time for a beer",
+			achw10: "time for another beer",
+			achw25: "25 makes 7",
+			achw50: "addicted to beatstar",
 			achusepinky: "Just using my pinky",
+			achlactions: "Go learn the actions",
 			achfingr: "Rhythmical fingers",
 			achbulk: "Vicious downloader",
 			achintro: "Get to work",
@@ -5154,6 +5159,8 @@ class Game {
 
 	setup(creds) {
 		this.credits = creds;
+		this.getscore = 0;
+		this.safeuse = false;
 		if (_fs2.default.existsSync(_main.packdir + 'bpm.txt')) {
 			this.fileData = _fs2.default.readFileSync(_main.packdir + 'bpm.txt', 'utf8');
 		} else {
@@ -5405,6 +5412,7 @@ class Game {
 			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.scoreAverage)));
 			if (_utilities.utils.averageInt(this.scoreAverage) > 90) this.getscore++;
 			if (_utilities.utils.averageInt(this.scoreAverage) < 90) this.getscore--;
+			console.log("getscore" + this.getscore);
 			this.cash += _utilities.utils.averageInt(this.scoreAverage) + _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
 		}
 		this.scoreAverage = [];
@@ -5424,6 +5432,18 @@ class Game {
 				} //while
 			} //if file exists
 			_main.data.unlocks[_main.pack]["win"] = true;
+			let wins = 0;
+			for (let i in _main.data.unlocks) {
+				if (_main.data.unlocks[i].win) {
+					wins++;
+				}
+			}
+			console.log("wins" + wins);
+			if (wins == 1) await (0, _main.getAch)("w1");
+			if (wins == 5) await (0, _main.getAch)("w5");
+			if (wins == 10) await (0, _main.getAch)("w10");
+			if (wins == 25) await (0, _main.getAch)("w25");
+			if (wins == 50) await (0, _main.getAch)("w50");
 			let that2 = this;
 			_soundObject.so.resetQueue();
 			_soundObject.so.resetQueuedInstance();
@@ -6204,9 +6224,9 @@ var data = exports.data = '';
 var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-	//checkPack(false,true);
+	checkPack(false, true);
 	//return;
-	_stateMachine.st.setState(1);
+	//st.setState(1);
 }
 function proceed() {
 	const sound = _soundObject.so.create('memtest');
@@ -6675,8 +6695,6 @@ async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		data.beatcoins = 100000;
-		(0, _minis.playDeck)();
-		return;
 	}
 	booter();
 }
@@ -7581,7 +7599,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":29,"./minis.js":30,"./player":31,"./menuItem":32,"./menu":33,"./menuHandler":34,"./scrollingText":35,"./strings":36,"./soundHandler":37,"./tts":38,"./utilities":39,"./soundObject":40,"./keycodes":41,"./stateMachine":42,"./input.js":43}],51:[function(require,module,exports) {
+},{"./oldtimer":29,"./minis.js":30,"./player":31,"./menuItem":32,"./menu":33,"./menuHandler":34,"./scrollingText":35,"./strings":36,"./soundHandler":37,"./tts":38,"./utilities":39,"./soundObject":40,"./keycodes":41,"./stateMachine":42,"./input.js":43}],53:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7758,5 +7776,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[51,1])
+},{}]},{},[53,1])
 //# sourceMappingURL=/main.map

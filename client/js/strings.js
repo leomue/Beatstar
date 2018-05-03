@@ -6,12 +6,17 @@ class Strings {
 		this.strings = {};
 this.strings[1] = {
 newach:"You have obtained the achievement: %1",
-lactions:"Go learn the actions",
 achMenu:"Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
 noach:"You have no achievements yet. Go get some!",
 mAch:"Browse achievements",
 //the following are achievements
+achw1:"beat newbie",
+achw5:"it's time for a beer",
+achw10:"time for another beer",
+achw25:"25 makes 7",
+achw50:"addicted to beatstar",
 achusepinky:"Just using my pinky",
+achlactions:"Go learn the actions",
 achfingr:"Rhythmical fingers",
 achbulk:"Vicious downloader",
 achintro:"Get to work",

@@ -53,6 +53,8 @@ class Game {
 
 	setup(creds) {
 	this.credits=creds;
+	this.getscore=0;
+	this.safeuse=false;
 		if (fs.existsSync(packdir + 'bpm.txt')) {
 			this.fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 		} else {
@@ -308,6 +310,7 @@ that.doScore();
 	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.scoreAverage)));
 	if (utils.averageInt(this.scoreAverage)>90) this.getscore++;
 		if (utils.averageInt(this.scoreAverage)<90) this.getscore--;
+		console.log("getscore"+this.getscore);
 		this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
 			}
 	this.scoreAverage=[];
@@ -327,6 +330,18 @@ while (this.winSound.playing==true) {
 		}//while
 		}//if file exists
 		data.unlocks[pack]["win"]=true;
+		let wins=0;
+		for (let i in data.unlocks) {
+		if (data.unlocks[i].win) {
+		wins++;
+		}
+		}
+		console.log("wins"+wins);
+		if (wins==1) await getAch("w1");
+				if (wins==5) await getAch("w5");
+								if (wins==10) await getAch("w10");
+																if (wins==25) await getAch("w25");
+																																if (wins==50) await getAch("w50");
 										let that2=this;
 				so.resetQueue();
 so.resetQueuedInstance();
