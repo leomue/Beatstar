@@ -4,3 +4,5 @@ get a soundPool setting to load sounds using html5 if they are non looping and s
 beat memory is next
 make tutorial for beat the code
 code in new card values for j k q
+make achievement browser, packs win counter using what's in the menu, win achievement.
+check the bank robber achievement

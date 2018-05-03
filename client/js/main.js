@@ -480,7 +480,8 @@ counter++;
 		lang=s.selected;
 		data.lang=lang;
 		lm.destroy();
-						new ScrollingText(strings.get("intro"),"\n",function() {
+						new ScrollingText(strings.get("intro"),"\n",async function() {
+						await getAch("intro");
 		introing=false;
 		});
 		});
@@ -585,16 +586,17 @@ let sizeS;
 		items.push(new MenuItem(1,strings.get("mDownloadList",[browseArray.length])));
 		items.push(new MenuItem(2,strings.get("mBack")));
 		so.directory = './sounds/';
-			let dm=new Menu(strings.get("mSelect"),items);
+					let dm=new Menu(strings.get("mSelect"),items);
 			so.directory = '';
 			let anotherSelected=false;
-		dm.run(s=>{
+		dm.run(async s=>{
 						so.directory = './sounds/';
 						switch(s.selected) {
 							case 0:
 							dm.destroy();
 							//anotherSelected=true;
 							let dls=new Array();
+							await getAch("bulk");
 							browseArray.forEach(function(i) {
 								dls.push(i.name);
 			});
@@ -1376,3 +1378,60 @@ st.setState(2);
 });
 });//menu callback
 			}//function
+export async function getAch(name,forcePlay=false) {
+const fs=require('fs');
+if (typeof data.ach==="undefined") data.ach={}
+if (!data.ach[name] || forcePlay) {
+data.ach[name]=name;
+save();
+let snd;
+let old=so.directory;
+so.directory="./sounds/";
+//if (fs.existsSync("sounds/"+lang+"/ach"+name+".ogg")) {
+snd=so.create(lang+"/ach"+name);
+//}
+/*else if (fs.existsSync("sounds/"+"1"+"/ach"+name+".ogg")) {
+snd=so.create("1"+"/ach"+name);
+}
+else {
+console.log("sounds/"+lang+"/ach"+name+".ogg");
+}
+*/
+if (typeof snd!=="undefined") await snd.playSync();
+if (!forcePlay) await new ScrollingText(strings.get("newach",[strings.get("ach"+name)]));
+so.directory=old;
+return true;
+}
+return false;
+}
+export async function browseAch() {
+if (typeof data.ach==="undefined") data.ach={}
+if (utils.objSize(data.ach)<1) {
+await new ScrollingText(strings.get("noach"));
+st.setState(2);
+return;
+}
+let items=[];
+for (let i in data.ach) {
+items.push(new MenuItem(data.ach[i],strings.get("ach"+data.ach[i])));
+}
+items.push(new MenuItem(0,strings.get("mBack")));
+let acm=new Menu(strings.get("achMenu"),items,so.create("ach_music"));
+let exit=false;
+while (!exit) {
+await utils.sleep(8);
+await new Promise((resolve,reject) => {
+acm.run(async s=> {
+if (s.selected==0) {
+acm.destroy();
+st.setState(2);
+resolve();
+exit=true;
+return;
+}
+await getAch(s.selected,true);
+resolve();
+});
+});
+}
+}

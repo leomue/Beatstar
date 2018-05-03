@@ -5,6 +5,21 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+newach:"You have obtained the achievement: %1",
+lactions:"Go learn the actions",
+achMenu:"Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
+noach:"You have no achievements yet. Go get some!",
+mAch:"Browse achievements",
+//the following are achievements
+achusepinky:"Just using my pinky",
+achfingr:"Rhythmical fingers",
+achbulk:"Vicious downloader",
+achintro:"Get to work",
+achslotwin:"Slots winner",
+achfrust:"Frustration unavoidable",
+achevils:"slots are evil and I can prove it",
+achcatslots:"Slots catastrophe",
+achrobber:"Bank robber",
 collect:"Collect beatcoins and leave",
 highlow:"Higher or lower",
 hw:"Welcome to high or low!",
@@ -156,6 +171,7 @@ Have fun playing evil slots!`,
 		};
 		this.strings[2] = {
 		collect:"Obtener monedas y salir",
+		achMenu:"Logros: Pulsa las flechas para moverte por tus logros, enter para reproducir uno. Puedes detener la reproducción de un logro pulsando la q.",
 		card:"%1 de %2",
 K:"rey",
 Q:"reina",

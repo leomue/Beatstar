@@ -3,7 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import {speech} from './tts';
 import {addCash,data,actionKeys} from './main';
-import {pack, packdir,save} from './main';
+import {getAch,pack, packdir,save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
 // Var os=require('os');
@@ -116,6 +116,7 @@ return;
 }
 else {
 data.safeguards--;
+this.safeuse=true;
 this.currentAction--;
 save();
 	this.actionCompleted=true;
@@ -155,6 +156,7 @@ return;
 	async fail(skipGuards=false) {
 	if (data.safeguards>=1 && !skipGuards) {
 	data.safeguards--;
+	this.safeuse=true;
 	save();
 	this.actionCompleted=true;
 	this.currentAction--;
@@ -182,6 +184,7 @@ if (data.safeguards<=3) this.safe.pitch=1.4;
 		so.resetQueue();
 so.resetQueuedInstance();
 var that=this;
+if (this.level==1) await getAch("lactions");
 so.kill(() => {
 if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 let input=new KeyboardInput();
@@ -302,7 +305,9 @@ that.doScore();
 	async setupLevel() {
 	if (this.level>1) {
 	//avg
-	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
+	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.scoreAverage)));
+	if (utils.averageInt(this.scoreAverage)>90) this.getscore++;
+		if (utils.averageInt(this.scoreAverage)<90) this.getscore--;
 		this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
 			}
 	this.scoreAverage=[];
@@ -310,7 +315,8 @@ that.doScore();
 	if (this.level>this.levels) {
 				if (fs.existsSync(packdir + 'win.ogg')) {
 									so.directory = '';
-						
+if (this.getscore>5) await getAch("fingr");	
+if (!this.safeuse) await getAch("usepinky");
 			this.winSound = so.create(packdir + 'win');
 			this.winSound.play();
 while (this.winSound.playing==true) {

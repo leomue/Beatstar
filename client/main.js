@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49882;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=50307;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,7 +77,7 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({10:[function(require,module,exports) {
+})({38:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -113,7 +113,7 @@ if (typeof speech === 'undefined') {
 }
 exports.TTS = TTS;
 exports.speech = speech;
-},{}],4:[function(require,module,exports) {
+},{}],29:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -169,7 +169,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{"./tts":10}],19:[function(require,module,exports) {
+},{"./tts":38}],45:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3072,7 +3072,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],3:[function(require,module,exports) {
+},{}],43:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3208,7 +3208,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":10}],14:[function(require,module,exports) {
+},{"./tts":38}],41:[function(require,module,exports) {
 
 'use strict';
 
@@ -3335,7 +3335,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],15:[function(require,module,exports) {
+},{}],39:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3424,9 +3424,18 @@ class GameUtils {
 		}
 		return a;
 	}
+	objSize(obj) {
+		var size = 0,
+		    key;
+		for (key in obj) {
+			if (obj.hasOwnProperty(key)) size++;
+		}
+		return size;
+	}
+
 }
 var utils = exports.utils = new GameUtils();
-},{}],16:[function(require,module,exports) {
+},{}],40:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3494,8 +3503,10 @@ class SoundObjectItem {
 		inp.init();
 		this.sound.play();
 		inp.justPressedEventCallback = evt => {
-			this.sound.stop();
-			inp.justPressedEventCallback = null;
+			if (evt == _keycodes.KeyEvent.DOM_VK_Q || evt == _keycodes.KeyEvent.DOM_VK_X) {
+				this.sound.stop();
+				inp.justPressedEventCallback = null;
+			}
 		};
 		return new Promise((resolve, reject) => {
 			this.sound.once("end", () => {
@@ -3794,7 +3805,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":19,"./input":3,"./keycodes":14,"./utilities":15,"./tts":10}],17:[function(require,module,exports) {
+},{"./howler":45,"./input":43,"./keycodes":41,"./utilities":39,"./tts":38}],44:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3885,7 +3896,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":19,"./soundObject.js":16}],9:[function(require,module,exports) {
+},{"./howler":45,"./soundObject.js":40}],37:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4020,7 +4031,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":17,"./soundObject.js":16}],8:[function(require,module,exports) {
+},{"./soundSource.js":44,"./soundObject.js":40}],32:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4163,7 +4174,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":10}],12:[function(require,module,exports) {
+},{"./tts":38}],36:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4179,6 +4190,21 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			newach: "You have obtained the achievement: %1",
+			lactions: "Go learn the actions",
+			achMenu: "Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
+			noach: "You have no achievements yet. Go get some!",
+			mAch: "Browse achievements",
+			//the following are achievements
+			achusepinky: "Just using my pinky",
+			achfingr: "Rhythmical fingers",
+			achbulk: "Vicious downloader",
+			achintro: "Get to work",
+			achslotwin: "Slots winner",
+			achfrust: "Frustration unavoidable",
+			achevils: "slots are evil and I can prove it",
+			achcatslots: "Slots catastrophe",
+			achrobber: "Bank robber",
 			collect: "Collect beatcoins and leave",
 			highlow: "Higher or lower",
 			hw: "Welcome to high or low!",
@@ -4330,6 +4356,7 @@ Have fun playing evil slots!`,
 		};
 		this.strings[2] = {
 			collect: "Obtener monedas y salir",
+			achMenu: "Logros: Pulsa las flechas para moverte por tus logros, enter para reproducir uno. Puedes detener la reproducción de un logro pulsando la q.",
 			card: "%1 de %2",
 			K: "rey",
 			Q: "reina",
@@ -4490,7 +4517,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 
 }
 var strings = exports.strings = new Strings();
-},{"./main":1,"./tts":10}],5:[function(require,module,exports) {
+},{"./main":1,"./tts":38}],33:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4785,7 +4812,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":15,"./strings":12,"./tts":10,"./soundObject.js":16,"./menuItem":8,"./keycodes":14,"./input":3}],11:[function(require,module,exports) {
+},{"./utilities":39,"./strings":36,"./tts":38,"./soundObject.js":40,"./menuItem":32,"./keycodes":41,"./input":43}],35:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4902,7 +4929,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = speech;
-},{"./keycodes":14,"./soundObject":16,"./tts":10}],7:[function(require,module,exports) {
+},{"./keycodes":41,"./soundObject":40,"./tts":38}],34:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4930,6 +4957,7 @@ async function mainMenu() {
 	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
 
 	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
+	items.push(new _menuItem.MenuItem(12, _strings.strings.get('mAch')));
 	items.push(new _menuItem.MenuItem(11, _strings.strings.get('mEdit')));
 	items.push(new _menuItem.MenuItem(9, _strings.strings.get('mGames')));
 
@@ -4985,10 +5013,13 @@ async function mainMenu() {
 					(0, _main.editPack)(path);
 				});
 				break;
+			case 12:
+				(0, _main.browseAch)();
+				break;
 		}
 	});
 }
-},{"./soundObject":16,"./main":1,"./stateMachine":13,"./strings":12,"./menuItem":8,"./menu":5}],20:[function(require,module,exports) {
+},{"./soundObject":40,"./main":1,"./stateMachine":42,"./strings":36,"./menuItem":32,"./menu":33}],47:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5040,7 +5071,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],18:[function(require,module,exports) {
+},{}],46:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5186,6 +5217,7 @@ class Game {
 				return;
 			} else {
 				_main.data.safeguards--;
+				this.safeuse = true;
 				this.currentAction--;
 				(0, _main.save)();
 				this.actionCompleted = true;
@@ -5224,6 +5256,7 @@ class Game {
 	async fail(skipGuards = false) {
 		if (_main.data.safeguards >= 1 && !skipGuards) {
 			_main.data.safeguards--;
+			this.safeuse = true;
 			(0, _main.save)();
 			this.actionCompleted = true;
 			this.currentAction--;
@@ -5251,6 +5284,7 @@ class Game {
 		_soundObject.so.resetQueue();
 		_soundObject.so.resetQueuedInstance();
 		var that = this;
+		if (this.level == 1) await (0, _main.getAch)("lactions");
 		_soundObject.so.kill(() => {
 			if (_fs2.default.existsSync(_main.packdir + 'credits.ogg') && this.credits) {
 				let input = new _input.KeyboardInput();
@@ -5368,7 +5402,9 @@ class Game {
 	async setupLevel() {
 		if (this.level > 1) {
 			//avg
-			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.levelAverage)));
+			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.scoreAverage)));
+			if (_utilities.utils.averageInt(this.scoreAverage) > 90) this.getscore++;
+			if (_utilities.utils.averageInt(this.scoreAverage) < 90) this.getscore--;
 			this.cash += _utilities.utils.averageInt(this.scoreAverage) + _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
 		}
 		this.scoreAverage = [];
@@ -5376,7 +5412,8 @@ class Game {
 		if (this.level > this.levels) {
 			if (_fs2.default.existsSync(_main.packdir + 'win.ogg')) {
 				_soundObject.so.directory = '';
-
+				if (this.getscore > 5) await (0, _main.getAch)("fingr");
+				if (!this.safeuse) await (0, _main.getAch)("usepinky");
 				this.winSound = _soundObject.so.create(_main.packdir + 'win');
 				this.winSound.play();
 				while (this.winSound.playing == true) {
@@ -5516,7 +5553,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":10,"./main":1,"./oldtimer":4,"./soundHandler":9,"./utilities":15,"./soundObject":16,"./stateMachine":13,"./timer":20,"./scrollingText":11,"./input.js":3,"./keycodes.js":14}],13:[function(require,module,exports) {
+},{"./tts":38,"./main":1,"./oldtimer":29,"./soundHandler":37,"./utilities":39,"./soundObject":40,"./stateMachine":42,"./timer":47,"./scrollingText":35,"./input.js":43,"./keycodes.js":41}],42:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5604,7 +5641,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":10,"./main":1,"./menuHandler":7,"./soundObject":16,"./keycodes":14,"./game":18}],2:[function(require,module,exports) {
+},{"./input":43,"./tts":38,"./main":1,"./menuHandler":34,"./soundObject":40,"./keycodes":41,"./game":46}],30:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5696,7 +5733,7 @@ function minibet(callbet = null, minBet = 5000, slideBy = 500) {
 												//bet end
 								} //enough cash
 } //function
-function playSlots() {
+async function playSlots() {
 				let myBet;
 				minibet(function (bet) {
 								if (bet <= 0) {
@@ -5730,7 +5767,8 @@ function playSlots() {
 																if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
 																				let win = _soundObject.so.create("slot_win_" + _utilities.utils.randomInt(1, 4));
 																				win.play();
-																				win.sound.once("end", () => {
+																				win.sound.once("end", async () => {
+																								await (0, _main.getAch)("slotwin");
 																								let capcash = myBet;
 																								console.log(capcash);
 																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(80, 100), capcash) + myBet);
@@ -5744,7 +5782,8 @@ function playSlots() {
 																} else if (wheels[2] == 1) {
 																				let lose = _soundObject.so.create("slot_lose_3");
 																				lose.play();
-																				lose.sound.once("end", function () {
+																				lose.sound.once("end", async function () {
+																								await (0, _main.getAch)("frust");
 																								let capcash = myBet;
 																								console.log(capcash);
 																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
@@ -5759,7 +5798,8 @@ function playSlots() {
 																} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
 																				let lose = _soundObject.so.create("slot_lose_1");
 																				lose.play();
-																				lose.sound.once("end", function () {
+																				lose.sound.once("end", async function () {
+																								await (0, _main.getAch)("evils");
 																								let capcash = myBet;
 																								console.log(capcash);
 																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(40, 69), capcash));
@@ -5773,7 +5813,8 @@ function playSlots() {
 																} else {
 																				let lose = _soundObject.so.create("slot_lose_2");
 																				lose.play();
-																				lose.sound.once("end", function () {
+																				lose.sound.once("end", async function () {
+																								await (0, _main.getAch)("catslots");
 																								let capcash = myBet;
 																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
 																								console.log(capcash);
@@ -5906,7 +5947,8 @@ async function playCode() {
 								} //allowed
 				} //while playing
 				let newsafe = _utilities.utils.randomInt(0, level - 1);
-				new _scrollingText.ScrollingText(_strings.strings.get("codescracked", [crackedcodes, actions]), "\n", function () {
+				new _scrollingText.ScrollingText(_strings.strings.get("codescracked", [crackedcodes, actions]), "\n", async function () {
+								if (crackedcodes >= 3) await (0, _main.getAch)("robber");
 								(0, _main.safeget)(newsafe, function () {
 												_soundObject.so.kill(() => {
 																input.justPressedEventCallback = null;
@@ -6029,7 +6071,7 @@ function takeCard(deck) {
 				console.log(str);
 				return [card, str];
 }
-},{"./main":1,"./oldtimer":4,"./soundHandler":9,"./menuItem":8,"./menu":5,"./scrollingText":11,"./strings":12,"./tts":10,"./utilities":15,"./soundObject":16,"./keycodes":14,"./input":3,"./stateMachine":13}],6:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":29,"./soundHandler":37,"./menuItem":32,"./menu":33,"./scrollingText":35,"./strings":36,"./tts":38,"./utilities":39,"./soundObject":40,"./keycodes":41,"./input":43,"./stateMachine":42}],31:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6067,7 +6109,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":14,"./main":1,"./scrollingText":11}],1:[function(require,module,exports) {
+},{"./keycodes":41,"./main":1,"./scrollingText":35}],1:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6092,6 +6134,8 @@ exports.runGame = runGame;
 exports.minituts = minituts;
 exports.safeget = safeget;
 exports.editPack = editPack;
+exports.getAch = getAch;
+exports.browseAch = browseAch;
 
 var _oldtimer = require('./oldtimer');
 
@@ -6597,7 +6641,8 @@ async function checkPack(changeBoot = true, debug = false) {
 			exports.lang = lang = s.selected;
 			data.lang = lang;
 			lm.destroy();
-			new _scrollingText.ScrollingText(_strings.strings.get("intro"), "\n", function () {
+			new _scrollingText.ScrollingText(_strings.strings.get("intro"), "\n", async function () {
+				await getAch("intro");
 				introing = false;
 			});
 		});
@@ -6703,13 +6748,14 @@ async function downloadPacks(arr = []) {
 		let dm = new _menu.Menu(_strings.strings.get("mSelect"), items);
 		_soundObject.so.directory = '';
 		let anotherSelected = false;
-		dm.run(s => {
+		dm.run(async s => {
 			_soundObject.so.directory = './sounds/';
 			switch (s.selected) {
 				case 0:
 					dm.destroy();
 					//anotherSelected=true;
 					let dls = new Array();
+					await getAch("bulk");
 					browseArray.forEach(function (i) {
 						dls.push(i.name);
 					});
@@ -7478,7 +7524,64 @@ async function editPackDefinite(path) {
 		});
 	}); //menu callback
 } //function
-},{"./oldtimer":4,"./minis.js":2,"./player":6,"./menuItem":8,"./menu":5,"./menuHandler":7,"./scrollingText":11,"./strings":12,"./soundHandler":9,"./tts":10,"./utilities":15,"./soundObject":16,"./keycodes":14,"./stateMachine":13,"./input.js":3}],31:[function(require,module,exports) {
+async function getAch(name, forcePlay = false) {
+	const fs = require('fs');
+	if (typeof data.ach === "undefined") data.ach = {};
+	if (!data.ach[name] || forcePlay) {
+		data.ach[name] = name;
+		save();
+		let snd;
+		let old = _soundObject.so.directory;
+		_soundObject.so.directory = "./sounds/";
+		//if (fs.existsSync("sounds/"+lang+"/ach"+name+".ogg")) {
+		snd = _soundObject.so.create(lang + "/ach" + name);
+		//}
+		/*else if (fs.existsSync("sounds/"+"1"+"/ach"+name+".ogg")) {
+  snd=so.create("1"+"/ach"+name);
+  }
+  else {
+  console.log("sounds/"+lang+"/ach"+name+".ogg");
+  }
+  */
+		if (typeof snd !== "undefined") await snd.playSync();
+		if (!forcePlay) await new _scrollingText.ScrollingText(_strings.strings.get("newach", [_strings.strings.get("ach" + name)]));
+		_soundObject.so.directory = old;
+		return true;
+	}
+	return false;
+}
+async function browseAch() {
+	if (typeof data.ach === "undefined") data.ach = {};
+	if (_utilities.utils.objSize(data.ach) < 1) {
+		await new _scrollingText.ScrollingText(_strings.strings.get("noach"));
+		_stateMachine.st.setState(2);
+		return;
+	}
+	let items = [];
+	for (let i in data.ach) {
+		items.push(new _menuItem.MenuItem(data.ach[i], _strings.strings.get("ach" + data.ach[i])));
+	}
+	items.push(new _menuItem.MenuItem(0, _strings.strings.get("mBack")));
+	let acm = new _menu.Menu(_strings.strings.get("achMenu"), items, _soundObject.so.create("ach_music"));
+	let exit = false;
+	while (!exit) {
+		await _utilities.utils.sleep(8);
+		await new Promise((resolve, reject) => {
+			acm.run(async s => {
+				if (s.selected == 0) {
+					acm.destroy();
+					_stateMachine.st.setState(2);
+					resolve();
+					exit = true;
+					return;
+				}
+				await getAch(s.selected, true);
+				resolve();
+			});
+		});
+	}
+}
+},{"./oldtimer":29,"./minis.js":30,"./player":31,"./menuItem":32,"./menu":33,"./menuHandler":34,"./scrollingText":35,"./strings":36,"./soundHandler":37,"./tts":38,"./utilities":39,"./soundObject":40,"./keycodes":41,"./stateMachine":42,"./input.js":43}],51:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7655,5 +7758,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[31,1])
+},{}]},{},[51,1])
 //# sourceMappingURL=/main.map

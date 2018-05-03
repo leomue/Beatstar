@@ -53,10 +53,12 @@ let inp=new KeyboardInput();
 inp.init();
  this.sound.play();
  inp.justPressedEventCallback=((evt)=> {
+ if (evt==KeyEvent.DOM_VK_Q || evt==KeyEvent.DOM_VK_X) {
  this.sound.stop();
  inp.justPressedEventCallback=null;
+ }
  });
-return new Promise((resolve,reject)=>{
+ return new Promise((resolve,reject)=>{
  this.sound.once("end",()=> {
  this.sound.unload();
    resolve("ok");

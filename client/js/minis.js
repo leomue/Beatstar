@@ -1,4 +1,4 @@
-import {addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+import {getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
 import {shuffle,newDeck,newDecks} from '52-deck';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
@@ -55,7 +55,7 @@ if (typeof callbet!=="undefined") callbet(myBet);
 								//bet end
 								}//enough cash
 				}//function
-				export function playSlots() {
+				export async function playSlots() {
 				let myBet;
 				minibet(function(bet) {
 				if (bet<=0) {
@@ -90,7 +90,8 @@ so.directory="./sounds/";
 if (wheels[0]==wheels[1] && wheels[1]==wheels[2]) {
 let win=so.create("slot_win_"+utils.randomInt(1,4));
 win.play();
-win.sound.once("end",()=> {
+win.sound.once("end",async ()=> {
+await getAch("slotwin");
 let capcash=myBet;
 console.log(capcash);
 let perc=Math.ceil(utils.percentOf(utils.randomInt(80,100),capcash)+myBet);
@@ -105,7 +106,8 @@ st.setState(2);
 else if (wheels[2]==1) {
 let lose=so.create("slot_lose_3");
 lose.play();
-lose.sound.once("end",function() {
+lose.sound.once("end",async function() {
+await getAch("frust");
 let capcash=myBet;
 console.log(capcash);
 if (capcash>data.beatcoins) capcash=data.beatcoins;
@@ -121,7 +123,8 @@ st.setState(2);
 else if (wheels[0]==wheels[1] || wheels[1]==wheels[2] || wheels[0]==wheels[2]) {
 let lose=so.create("slot_lose_1");
 lose.play();
-lose.sound.once("end",function() {
+lose.sound.once("end",async function() {
+await getAch("evils");
 let capcash=myBet;
 console.log(capcash);
 let perc=Math.ceil(utils.percentOf(utils.randomInt(40,69),capcash));
@@ -136,7 +139,8 @@ st.setState(2);
 else {
 let lose=so.create("slot_lose_2");
 lose.play();
-lose.sound.once("end",function() {
+lose.sound.once("end",async function() {
+await getAch("catslots");
 let capcash=myBet;
 if (capcash>data.beatcoins) capcash=data.beatcoins;
 console.log(capcash);
@@ -272,7 +276,8 @@ await utils.sleep(400);
 }//allowed
 }//while playing
 let newsafe=utils.randomInt(0,level-1);
-new ScrollingText(strings.get("codescracked",[crackedcodes,actions]),"\n",function() {
+new ScrollingText(strings.get("codescracked",[crackedcodes,actions]),"\n",async function() {
+if (crackedcodes>=3) await getAch("robber");
 safeget(newsafe,function() {
 so.kill(()=> {
 input.justPressedEventCallback=null;

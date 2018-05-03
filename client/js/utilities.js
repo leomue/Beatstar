@@ -84,5 +84,13 @@ shuffle(a) {
     }
     return a;
 }
+objSize(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+return size;
+}
+
 }
 export var utils = new GameUtils();

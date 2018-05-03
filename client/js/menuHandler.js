@@ -1,7 +1,7 @@
 'use strict';
 
 import {so} from './soundObject';
-import {editPack,minituts,minigames,buySafeguards,data} from './main';
+import {browseAch,editPack,minituts,minigames,buySafeguards,data} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -17,6 +17,7 @@ const fs=require('fs');
 	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
 	
 items.push(new MenuItem(1, strings.get( 'mLearn')));
+items.push(new MenuItem(12, strings.get( 'mAch')));
 items.push(new MenuItem(11, strings.get( 'mEdit')));
 	items.push(new MenuItem(9, strings.get( 'mGames',)));
 		
@@ -64,6 +65,9 @@ title:strings.get("selectPack"),
   },function(path){
   editPack(path);
     }); 
+			break;
+			case 12:
+			browseAch();
 			break;
 		}
 	});
