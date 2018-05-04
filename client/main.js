@@ -4311,6 +4311,12 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			saveFeature: `Congratulations, you have unlocked the saved games feature!
+Press the s key for save during a game to save its current state so that you can continue later.
+Note that this is not like the old insurance. The state is only saved until you win or fail, and you will destroy your save if you play minigames, buy packs or safeguards.
+Have fun!`,
+			saved: "Game saved!",
+			killSave: "This will destroy your save file for the pack %1 at level %2. Continue?",
 			achdl: "Loser times 2",
 			achdw: "winner times 2!",
 			double: "Double or nothing",
@@ -5103,6 +5109,8 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _strings = require('./strings');
+
 var _os = require('os');
 
 var _os2 = _interopRequireDefault(_os);
@@ -5172,7 +5180,21 @@ class Game {
 		this.setup(creds);
 	}
 
-	setup(creds) {
+	async setup(creds) {
+		this.forceLevel = 1;
+		if (typeof _main.data.save.pack !== "undefined") {
+			if (_main.data.save.pack != _main.pack) {
+				let answer = await questionSync("killSave", [_main.data.save.pack, _main.data.save.level]);
+				if (!answer) {
+					_stateMachine.st.setState(2);
+					return;
+				} //answer
+				_main.data.save = {};(0, _main.save)();
+			} //pack not equal
+			else {
+					this.forceLevel = _main.data.save.level;
+				} //it's the same pack
+		} //if save exists
 		this.credits = creds;
 		this.getscore = 0;
 		this.safeuse = false;
@@ -5191,7 +5213,9 @@ class Game {
 		if (this.bpms[this.levels] == '') {
 			this.levels--;
 		}
+		this.level = this.forceLevel - 1;
 		this.level++;
+		_main.data.save = {};(0, _main.save)();
 		_soundObject.so.directory = "./sounds/";
 		_soundObject.so.enqueue("safe");
 		_soundObject.so.directory = '';
@@ -5372,10 +5396,35 @@ class Game {
 				}
 		});
 	}
-
+	async save() {
+		if (!_main.data.allowSave) return;
+		this.timer.stop();
+		const snd = this.music;
+		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
+			snd.playbackRate = i;
+			await _utilities.utils.sleep(30);
+		}
+		snd.unload();
+		_soundObject.so.resetQueue();
+		_soundObject.so.resetQueuedInstance();
+		var that = this;
+		_soundObject.so.kill(async () => {
+			_main.data.save = {
+				"pack": _main.pack,
+				"level": this.level
+			};
+			(0, _main.save)();
+			await new _scrollingText.ScrollingText("saved");
+			this.doScore();
+		});
+	}
 	render() {
 		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_Q)) {
 			this.quit();
+			return;
+		}
+		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_S)) {
+			this.save();
 			return;
 		}
 		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_P)) {
@@ -5422,7 +5471,7 @@ class Game {
 	}
 
 	async setupLevel() {
-		if (this.level > 1) {
+		if (this.level > 1 && this.level != this.forceLevel) {
 			//avg
 			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.scoreAverage)));
 			if (_utilities.utils.averageInt(this.scoreAverage) > 90) this.getscore++;
@@ -5454,7 +5503,15 @@ class Game {
 				}
 			}
 			console.log("wins" + wins);
-			if (wins == 1) await (0, _main.getAch)("w1");
+			if (wins == 1) {
+				await (0, _main.getAch)("w1");
+				_soundObject.so.directory = "./sounds/";
+				let snd = _soundObject.so.create("saveUnlock");
+				await snd.playSync();
+				_main.data.allowSave = true;
+				(0, _main.save)();
+				await new _scrollingText.ScrollingText(_strings.strings.get("saveFeature"));
+			}
 			if (wins == 5) await (0, _main.getAch)("w5");
 			if (wins == 10) await (0, _main.getAch)("w10");
 			if (wins == 25) await (0, _main.getAch)("w25");
@@ -5482,7 +5539,7 @@ class Game {
 			this.preSound.play();
 			this.playing = true;
 		}
-		if (_fs2.default.existsSync(_main.packdir + 'nlevel.ogg') && !this.playing && this.level > 1) {
+		if (_fs2.default.existsSync(_main.packdir + 'nlevel.ogg') && !this.playing && this.level > 1 && this.level != this.forceLevel) {
 			_soundObject.so.directory = '';
 			this.preSound = _soundObject.so.create(_main.packdir + 'nlevel');
 			_soundObject.so.directory = './sounds/';
@@ -5508,7 +5565,7 @@ class Game {
 		this.music.sound.once("play", () => {
 			this.timer.change(that.bpms[that.level] / 1000.0);
 		});
-		if (!this.playing && this.level > 1) {
+		if (!this.playing && this.level > 1 && this.level != this.forceLevel) {
 			this.queueLevels();
 		}
 		this.action = 0;
@@ -5518,8 +5575,8 @@ class Game {
 			//this.currentAction++;
 		}
 		this.numberOfActions = _utilities.utils.randomInt(6 + this.level, this.level * 2 + 5);
+		ththis.forceLevel = 0;
 	}
-
 	unload() {}
 
 	async pause() {
@@ -5580,7 +5637,7 @@ class Game {
 				_soundObject.so.enqueue(_main.packdir + 'pre' + i);
 			}
 		}
-		if (this.level > 1) {
+		if (this.level > 1 && this.level != this.forceLevel) {
 			_soundObject.so.setQueueCallback(0);
 			_soundObject.so.loadQueue();
 			_soundObject.so.directory = './sounds/';
@@ -5588,7 +5645,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6165,11 +6222,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 class Player {
 	constructor() {
-		this.beatcoins = 0, this.pack = 'default', this.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
+		this.beatcoins = 0, this.pack = 'default', this.allowSave = false;
+		this.save = {};
+		this.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
 		this.unlocks = {};
 		this.unlocks["default"] = {
 			"level": 0,
-			"insurance": 0,
 			"fails": 0,
 			"win": false,
 			"average": 0
@@ -6334,6 +6392,14 @@ async function learnPack() {
 	_stateMachine.st.setState(2);
 }
 async function browsePacks(browsing = 1) {
+	if (typeof data.save.pack !== "undefined") {
+		let answer = await questionSync("killSave", [data.save.pack, data.save.level]);
+		if (!answer) {
+			_stateMachine.st.setState(2);
+			return;
+		}
+		data.save = {};save();
+	}
 	const fs = require('fs');
 	if (!fs.existsSync(_os2.default.homedir() + '/beatpacks/hashes.db')) {
 		var error = 0;
@@ -6454,7 +6520,6 @@ async function browsePacks(browsing = 1) {
 										if (typeof data.unlocks[pack] === "undefined") {
 											data.unlocks[pack] = {
 												"level": 0,
-												"insurance": 0,
 												"fails": 0,
 												"win": false,
 												"average": 0
@@ -6482,7 +6547,6 @@ async function browsePacks(browsing = 1) {
 					if (typeof data.unlocks[pack] === "undefined") {
 						data.unlocks[pack] = {
 							"level": 0,
-							"insurance": 0,
 							"fails": 0,
 							"win": false,
 							"average": 0
@@ -6744,8 +6808,6 @@ async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		//await strings.check(2);
-		data.beatcoins = 10000;
-		(0, _minis.playDouble)();
 		return;
 	}
 	booter();
@@ -7239,7 +7301,15 @@ async function addCash(c1, c2 = 0, callback) {
 			} //callback undefined
 		} //else
 } //function
-function buySafeguards() {
+async function buySafeguards() {
+	if (typeof data.save.pack !== "undefined") {
+		let answer = await questionSync("killSave", [data.save.pack, data.save.level]);
+		if (!answer) {
+			_stateMachine.st.setState(2);
+			return;
+		}
+		data.save = {};save();
+	}
 	if (typeof data.safeguards === "undefined") data.safeguards = 0;
 	let cash = data.beatcoins;
 	if (cash > 100000) cash = 100000;
@@ -7289,7 +7359,15 @@ function buySafeguards() {
 		}
 	}
 }
-function minigames() {
+async function minigames() {
+	if (typeof data.save.pack !== "undefined") {
+		let answer = await questionSync("killSave", [data.save.pack, data.save.level]);
+		if (!answer) {
+			_stateMachine.st.setState(2);
+			return;
+		}
+		data.save = {};save();
+	}
 	if (typeof data.minis === "undefined") {
 		data.minis = {};
 		save();
@@ -7652,7 +7730,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],27:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],34:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7829,5 +7907,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[27,1])
+},{}]},{},[34,1])
 //# sourceMappingURL=/main.map

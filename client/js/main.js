@@ -99,6 +99,14 @@ pool.playStatic(packdir + 'a' + 1, 0);
 				st.setState(2);
 }
 export async function browsePacks(browsing = 1) {
+if (typeof data.save.pack!=="undefined") {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}
+data.save={}; save();
+}
 const fs=require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks/hashes.db')) {
 		var error = 0;
@@ -223,8 +231,7 @@ pack = browseArray[browsePosition].name;
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
 			"level":0,
-			"insurance":0,
-			"fails":0,
+						"fails":0,
 			"win":false,
 			"average":0,
 					};//object
@@ -253,7 +260,6 @@ else {
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
 			"level":0,
-			"insurance":0,
 			"fails":0,
 			"win":false,
 			"average":0,
@@ -515,9 +521,7 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			//await strings.check(2);
-			data.beatcoins=10000;
-			playDouble();
-			return;
+						return;
 				}
 	booter();
 }
@@ -1009,7 +1013,15 @@ callback();
 }//callback undefined
 		}//else
 				}//function
-				export function buySafeguards() {
+				export async function buySafeguards() {
+				if (typeof data.save.pack!=="undefined") {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}
+data.save={}; save();
+}
 				if (typeof data.safeguards==="undefined") data.safeguards=0;
 				let cash=data.beatcoins;
 				if (cash>100000) cash=100000;
@@ -1062,7 +1074,15 @@ st.setState(2);
 }
 				}
 				}
-				export function minigames() {
+				export async function minigames() {
+				if (typeof data.save.pack!=="undefined") {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}
+data.save={}; save();
+}
 								if (typeof data.minis==="undefined") {
 				data.minis={}
 				save();

@@ -1,5 +1,6 @@
 'use strict';
 import fs from 'fs';
+import {strings} from './strings';
 import os from 'os';
 import {speech} from './tts';
 import {addCash,data,actionKeys} from './main';
@@ -51,7 +52,21 @@ class Game {
 		this.setup(creds);
 	}
 
-	setup(creds) {
+	async setup(creds) {
+this.forceLevel=1;
+	if (typeof data.save.pack!=="undefined") {
+	if (data.save.pack!=pack) {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}//answer
+data.save={}; save();
+}//pack not equal
+else {
+this.forceLevel=data.save.level;
+}//it's the same pack
+}//if save exists
 	this.credits=creds;
 	this.getscore=0;
 	this.safeuse=false;
@@ -70,7 +85,9 @@ class Game {
 		if (this.bpms[this.levels] == '') {
 			this.levels--;
 		}
+		this.level=this.forceLevel-1;
 		this.level++;
+				data.save={}; save();
 		so.directory="./sounds/";
 		so.enqueue("safe");
 		so.directory = '';
@@ -255,13 +272,38 @@ that.doScore();
 
 });
 			}
-
+async save() {
+if (!data.allowSave) return;
+						this.timer.stop();
+		const snd = this.music;
+		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
+			snd.playbackRate = i;
+			await utils.sleep(30);
+		}
+				snd.unload();
+				so.resetQueue();
+so.resetQueuedInstance();
+var that=this;
+so.kill(async () => {
+data.save={
+"pack":pack,
+"level":this.level,
+}
+save();
+await new ScrollingText("saved");
+this.doScore();
+});
+}
 	render() {
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_Q)) {
 	this.quit();
 	return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
+	this.save();
+	return;
+		}
+				if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
 		this.pause();
 		return;
 		}
@@ -305,7 +347,7 @@ that.doScore();
 	}
 	
 	async setupLevel() {
-	if (this.level>1) {
+	if (this.level>1 && this.level!=this.forceLevel) {
 	//avg
 	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.scoreAverage)));
 	if (utils.averageInt(this.scoreAverage)>90) this.getscore++;
@@ -337,7 +379,15 @@ while (this.winSound.playing==true) {
 		}
 		}
 		console.log("wins"+wins);
-		if (wins==1) await getAch("w1");
+		if (wins==1) {
+		await getAch("w1");
+		so.directory="./sounds/";
+		let snd=so.create("saveUnlock");
+		await snd.playSync();
+		data.allowSave=true;
+		save();
+		await new ScrollingText(strings.get("saveFeature"));
+		}
 				if (wins==5) await getAch("w5");
 								if (wins==10) await getAch("w10");
 																if (wins==25) await getAch("w25");
@@ -365,7 +415,7 @@ return;
 this.preSound.play();
 this.playing = true;
 		}
-		if (fs.existsSync(packdir + 'nlevel.ogg') && !this.playing && this.level > 1) {
+		if (fs.existsSync(packdir + 'nlevel.ogg') && !this.playing && this.level > 1 && this.level!=this.forceLevel) {
 			so.directory = '';
 			this.preSound = so.create(packdir + 'nlevel');
 			so.directory = './sounds/';
@@ -389,9 +439,9 @@ this.playing = true;
 		so.directory = './sounds/';
 this.music.play();
 	this.music.sound.once("play",()=> {
-	this.timer.change(that.bpms[that.level] / 1000.0);
+		this.timer.change(that.bpms[that.level] / 1000.0);
 	});
-	if (!this.playing && this.level > 1) {
+	if (!this.playing && this.level > 1 && this.level!=this.forceLevel) {
 									this.queueLevels();
 	}
 	this.action = 0;
@@ -401,8 +451,8 @@ this.music.play();
 		//this.currentAction++;
 	}
 	this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
+	ththis.forceLevel=0;
 	}
-
 	unload() {
 	}
 
@@ -453,7 +503,7 @@ this.levelAverage.push(mod);
 	}
 
 	queueLevels() {
-		let levelLimit = this.level + 1;
+			let levelLimit = this.level + 1;
 		if (this.levels < levelLimit) {
 			levelLimit = this.levels;
 		}
@@ -464,10 +514,10 @@ this.levelAverage.push(mod);
 		so.enqueue(packdir + 'pre' + i);
 																}
 		}
-		if (this.level > 1) {
+		if (this.level > 1 && this.level!=this.forceLevel) {
 			so.setQueueCallback(0);
 		so.loadQueue();
-		so.directory = './sounds/';
+				so.directory = './sounds/';
 		}
 	}
 }

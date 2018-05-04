@@ -7,6 +7,12 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+saveFeature:`Congratulations, you have unlocked the saved games feature!
+Press the s key for save during a game to save its current state so that you can continue later.
+Note that this is not like the old insurance. The state is only saved until you win or fail, and you will destroy your save if you play minigames, buy packs or safeguards.
+Have fun!`,
+saved:"Game saved!",
+killSave:"This will destroy your save file for the pack %1 at level %2. Continue?",
 achdl:"Loser times 2",
 achdw:"winner times 2!",
 double:"Double or nothing",
