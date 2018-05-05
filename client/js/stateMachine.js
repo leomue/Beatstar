@@ -41,7 +41,13 @@ class StateMachine {
 			event = null;
 checkPack();
 this.state = state;
-		} else if (state == 3) {
+		} 
+		else if (state == 21) {
+			this.currentState = new Game(credits,2);
+			this.state = state;
+		} 
+
+		else if (state == 3) {
 			this.currentState = new Game(credits);
 			this.state = state;
 		} 

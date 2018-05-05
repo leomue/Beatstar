@@ -19,7 +19,7 @@ import {KeyboardInput} from './input.js';
 import {KeyEvent} from './keycodes.js';
 
 class Game {
-	constructor(creds) {
+	constructor(creds,mode=1) {
 	
 	this.totalScore=[];
 	this.volume=1;
@@ -49,11 +49,13 @@ class Game {
 		this.input.init();
 		this.levels = null;
 		var that = this;
-		this.setup(creds);
+		this.setup(creds,mode);
 	}
 
-	async setup(creds) {
+	async setup(creds,mode) {
 this.forceLevel=1;
+if (mode==1) this.rev=false;
+if (mode==2) this.rev=true;
 	if (typeof data.save.pack!=="undefined") {
 	if (data.save.pack!=pack) {
 let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
@@ -161,7 +163,8 @@ return;
 		this.action = utils.randomInt(1, this.actions);
 		this.actionCompleted = false;
 		so.directory = '';
-	this.pool.playStatic(packdir + 'a' + this.action, 0);
+	if (!rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
+		if (rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
 	so.directory = './sounds/';
 	//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
@@ -339,7 +342,8 @@ this.doScore();
 		}
 		if (keys.length == 1 && keys[0] == this.keys[this.action]) {
 			so.directory = '';
-	this.pool.playStatic(packdir + 'o' + this.action, 0);
+	if (!rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
+		if (rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
 	so.directory = './sounds/';
 	this.actionCompleted = true;
 	this.calculateScore();

@@ -7,6 +7,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+	mRev:"Beat Reverse",
 football:"soccer kick",
 achfw:"Premier League Team",
 achfl:"Bad loser: You suck!",
@@ -191,6 +192,7 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			mRev:"beatrevés",
 		football:"Lanzamiento de penaltis",
 		doublecash:"El mínimo para jugar son 5000 monedas. Lo siento!",
 		achfw:"Equipo de primera",
