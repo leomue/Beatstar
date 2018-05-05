@@ -2,7 +2,7 @@ export var lang = 0;
 export var editing=false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playCode,playSlots} from './minis.js';
+import {playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
@@ -10,6 +10,9 @@ export var credits=false;
 export let minis={
 slot:8500,
 code:10000,
+highlow:15000,
+double:10000,
+football:12000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -35,7 +38,6 @@ export var pack = 'default';
 export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
-so.debug = false;
 async function setup() {
 //checkPack(false,true);
 //return;
@@ -98,6 +100,14 @@ pool.playStatic(packdir + 'a' + 1, 0);
 				st.setState(2);
 }
 export async function browsePacks(browsing = 1) {
+if (typeof data.save.pack!=="undefined") {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}
+data.save={}; save();
+}
 const fs=require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks/hashes.db')) {
 		var error = 0;
@@ -222,8 +232,7 @@ pack = browseArray[browsePosition].name;
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
 			"level":0,
-			"insurance":0,
-			"fails":0,
+						"fails":0,
 			"win":false,
 			"average":0,
 					};//object
@@ -252,7 +261,6 @@ else {
 	if (typeof data.unlocks[pack]==="undefined") {
 	data.unlocks[pack]={ 
 			"level":0,
-			"insurance":0,
 			"fails":0,
 			"win":false,
 			"average":0,
@@ -378,7 +386,7 @@ walk.filesSync(path, (pb, pf, stat) => {
 	theFiles += stat.size;
 });
 newHash = theFiles;
-const fileData = mangle.decrypt(fs.readFileSync(path + 'bpm.txt', 'utf8'));
+const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 const levelsa = fileData.split(',');
 let levels = levelsa.length - 1;
 if (levelsa[levels] == '') {
@@ -421,6 +429,13 @@ st.setState(2);
 } else if (!silent) {
 st.setState(2);
 }
+}
+export async function questionSync(text,localizedValues=[]) {
+return new Promise((resolve,reject)=> {
+question(text,localizedValues,function(answer) {
+resolve(answer);
+});
+});
 }
 export function question(text,localizedValues=[],callback=null) {
 let answer=false;
@@ -473,7 +488,8 @@ counter++;
 		lang=s.selected;
 		data.lang=lang;
 		lm.destroy();
-						new ScrollingText(strings.get("intro"),"\n",function() {
+						new ScrollingText(strings.get("intro"),"\n",async function() {
+						await getAch("intro");
 		introing=false;
 		});
 		});
@@ -505,9 +521,11 @@ downloadPacks(['default']);
 	return;
 	}
 			if (debug) {
-		editPackDefinite("f:\\r/");
-		return;
-		}
+			//await strings.check(2);
+			data.beatcoins=1000000;
+			st.setState(2);
+			return;
+										}
 	booter();
 }
 var download = function(url, dest, cb) {
@@ -577,16 +595,17 @@ let sizeS;
 		items.push(new MenuItem(1,strings.get("mDownloadList",[browseArray.length])));
 		items.push(new MenuItem(2,strings.get("mBack")));
 		so.directory = './sounds/';
-			let dm=new Menu(strings.get("mSelect"),items);
+					let dm=new Menu(strings.get("mSelect"),items);
 			so.directory = '';
 			let anotherSelected=false;
-		dm.run(s=>{
+		dm.run(async s=>{
 						so.directory = './sounds/';
 						switch(s.selected) {
 							case 0:
 							dm.destroy();
 							//anotherSelected=true;
 							let dls=new Array();
+							await getAch("bulk");
 							browseArray.forEach(function(i) {
 								dls.push(i.name);
 			});
@@ -997,7 +1016,15 @@ callback();
 }//callback undefined
 		}//else
 				}//function
-				export function buySafeguards() {
+				export async function buySafeguards() {
+				if (typeof data.save.pack!=="undefined") {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}
+data.save={}; save();
+}
 				if (typeof data.safeguards==="undefined") data.safeguards=0;
 				let cash=data.beatcoins;
 				if (cash>100000) cash=100000;
@@ -1050,7 +1077,15 @@ st.setState(2);
 }
 				}
 				}
-				export function minigames() {
+				export async function minigames() {
+				if (typeof data.save.pack!=="undefined") {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}
+data.save={}; save();
+}
 								if (typeof data.minis==="undefined") {
 				data.minis={}
 				save();
@@ -1120,6 +1155,11 @@ st.setState(2);
 				else if (name=="code") {
 				playCode();
 				}
+				else if (name=="highlow") {
+				playDeck();
+				}
+				else if (name=="double") {playDouble() }
+				else if (name=="football") playFootball();
 				else {
 				st.setState(2);
 				}
@@ -1316,6 +1356,7 @@ if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 arr.push(timer.elapsed);
 timer.restart();
 space.play();
+speech.speak(arr.length);
 }//if
 }//while
 console.log("avg"+utils.averageInt(arr,1));
@@ -1364,3 +1405,60 @@ st.setState(2);
 });
 });//menu callback
 			}//function
+export async function getAch(name,forcePlay=false) {
+const fs=require('fs');
+if (typeof data.ach==="undefined") data.ach={}
+if (!data.ach[name] || forcePlay) {
+data.ach[name]=name;
+save();
+let snd;
+let old=so.directory;
+so.directory="./sounds/";
+//if (fs.existsSync("sounds/"+lang+"/ach"+name+".ogg")) {
+snd=so.create(lang+"/ach"+name);
+//}
+/*else if (fs.existsSync("sounds/"+"1"+"/ach"+name+".ogg")) {
+snd=so.create("1"+"/ach"+name);
+}
+else {
+console.log("sounds/"+lang+"/ach"+name+".ogg");
+}
+*/
+if (typeof snd!=="undefined") await snd.playSync();
+if (!forcePlay) await new ScrollingText(strings.get("newach",[strings.get("ach"+name)]));
+so.directory=old;
+return true;
+}
+return false;
+}
+export async function browseAch() {
+if (typeof data.ach==="undefined") data.ach={}
+if (utils.objSize(data.ach)<1) {
+await new ScrollingText(strings.get("noach"));
+st.setState(2);
+return;
+}
+let items=[];
+for (let i in data.ach) {
+items.push(new MenuItem(data.ach[i],strings.get("ach"+data.ach[i])));
+}
+items.push(new MenuItem(0,strings.get("mBack")));
+let acm=new Menu(strings.get("achMenu"),items,so.create("ach_music"));
+let exit=false;
+while (!exit) {
+await utils.sleep(8);
+await new Promise((resolve,reject) => {
+acm.run(async s=> {
+if (s.selected==0) {
+acm.destroy();
+st.setState(2);
+resolve();
+exit=true;
+return;
+}
+await getAch(s.selected,true);
+resolve();
+});
+});
+}
+}

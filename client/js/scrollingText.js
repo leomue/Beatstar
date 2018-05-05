@@ -12,6 +12,8 @@ if (runningText == undefined) {
 }
 class ScrollingText {
 	constructor(text, delimiter = '\n', callback = 0) {
+			this.callback = callback;
+		
 		this.text = text;
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
@@ -19,11 +21,15 @@ class ScrollingText {
 		this.sndOpen = so.create('UI/textOpen');
 		this.sndContinue = so.create('UI/textScroll');
 		this.sndClose = so.create('UI/textClose');
-		this.callback = callback;
 		const id = document.getElementById('touchArea');
 		// This.hammer = new Hammer(id);
 		this.init();
-	}
+		if (this.callback==0) {
+				return this.prom=new Promise((resolve,reject)=> { 
+				this.res=resolve;
+		});
+				}
+		}
 
 	init() {
 		const that = this;
@@ -88,6 +94,9 @@ document.removeEventListener('keydown', this.handleKeys);
 //			This.hammer.unload();
 if (this.callback != 0) {
 this.callback();
+}
+else {
+this.res();
 }
 		}
 	}

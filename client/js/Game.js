@@ -1,9 +1,10 @@
 'use strict';
 import fs from 'fs';
+import {strings} from './strings';
 import os from 'os';
 import {speech} from './tts';
 import {addCash,data,actionKeys} from './main';
-import {pack, packdir,save} from './main';
+import {getAch,pack, packdir,save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
 // Var os=require('os');
@@ -51,8 +52,24 @@ class Game {
 		this.setup(creds);
 	}
 
-	setup(creds) {
+	async setup(creds) {
+this.forceLevel=1;
+	if (typeof data.save.pack!=="undefined") {
+	if (data.save.pack!=pack) {
+let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
+if (!answer) {
+st.setState(2);
+return;
+}//answer
+data.save={}; save();
+}//pack not equal
+else {
+this.forceLevel=data.save.level;
+}//it's the same pack
+}//if save exists
 	this.credits=creds;
+	this.getscore=0;
+	this.safeuse=false;
 		if (fs.existsSync(packdir + 'bpm.txt')) {
 			this.fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 		} else {
@@ -68,7 +85,9 @@ class Game {
 		if (this.bpms[this.levels] == '') {
 			this.levels--;
 		}
+		this.level=this.forceLevel-1;
 		this.level++;
+				data.save={}; save();
 		so.directory="./sounds/";
 		so.enqueue("safe");
 		so.directory = '';
@@ -116,6 +135,7 @@ return;
 }
 else {
 data.safeguards--;
+this.safeuse=true;
 this.currentAction--;
 save();
 	this.actionCompleted=true;
@@ -146,7 +166,8 @@ return;
 	//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-	doScore() {
+	async doScore() {
+	if (this.getscore>=6) await getAch("fingr");	
 	addCash(this.cash,0,function() {
 	st.setState(2);
 	});
@@ -155,6 +176,7 @@ return;
 	async fail(skipGuards=false) {
 	if (data.safeguards>=1 && !skipGuards) {
 	data.safeguards--;
+	this.safeuse=true;
 	save();
 	this.actionCompleted=true;
 	this.currentAction--;
@@ -182,6 +204,7 @@ if (data.safeguards<=3) this.safe.pitch=1.4;
 		so.resetQueue();
 so.resetQueuedInstance();
 var that=this;
+if (this.level==1) await getAch("lactions");
 so.kill(() => {
 if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 let input=new KeyboardInput();
@@ -250,13 +273,41 @@ that.doScore();
 
 });
 			}
-
+async save() {
+if (!data.allowSave) return;
+						this.timer.stop();
+		const snd = this.music;
+		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
+			snd.playbackRate = i;
+			await utils.sleep(30);
+		}
+				snd.unload();
+				so.resetQueue();
+so.resetQueuedInstance();
+var that=this;
+so.kill(async () => {
+data.save={
+"pack":pack,
+"level":this.level,
+}
+save();
+await new ScrollingText("saved");
+this.doScore();
+});
+}
 	render() {
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_Q)) {
 	this.quit();
 	return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_C)) {
+		speech.speak(this.cash);
+		}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
+	this.save();
+	return;
+		}
+				if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
 		this.pause();
 		return;
 		}
@@ -300,17 +351,22 @@ that.doScore();
 	}
 	
 	async setupLevel() {
-	if (this.level>1) {
+	if (this.level>1 && this.level!=this.forceLevel) {
 	//avg
 	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
-		this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
+	if (utils.averageInt(this.scoreAverage)>90) {
+	this.getscore++;
+	this.cash+=utils.averageInt(this.levelAverage);
+	}
+		if (utils.averageInt(this.scoreAverage)<90) this.getscore--;
+				this.cash+=(utils.averageInt(this.levelAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
 			}
 	this.scoreAverage=[];
 	this.levelAverage=[];
 	if (this.level>this.levels) {
 				if (fs.existsSync(packdir + 'win.ogg')) {
 									so.directory = '';
-						
+
 			this.winSound = so.create(packdir + 'win');
 			this.winSound.play();
 while (this.winSound.playing==true) {
@@ -320,7 +376,28 @@ while (this.winSound.playing==true) {
 			}//key
 		}//while
 		}//if file exists
+		if (!this.safeuse) await getAch("usepinky");
 		data.unlocks[pack]["win"]=true;
+		let wins=0;
+		for (let i in data.unlocks) {
+		if (data.unlocks[i].win) {
+		wins++;
+		}
+		}
+		console.log("wins"+wins);
+		if (wins==1) {
+		await getAch("w1");
+		so.directory="./sounds/";
+		let snd=so.create("saveUnlock");
+		await snd.playSync();
+		data.allowSave=true;
+		save();
+		await new ScrollingText(strings.get("saveFeature"));
+		}
+				if (wins==5) await getAch("w5");
+								if (wins==10) await getAch("w10");
+																if (wins==25) await getAch("w25");
+																																if (wins==50) await getAch("w50");
 										let that2=this;
 				so.resetQueue();
 so.resetQueuedInstance();
@@ -344,7 +421,7 @@ return;
 this.preSound.play();
 this.playing = true;
 		}
-		if (fs.existsSync(packdir + 'nlevel.ogg') && !this.playing && this.level > 1) {
+		if (fs.existsSync(packdir + 'nlevel.ogg') && !this.playing && this.level > 1 && this.level!=this.forceLevel) {
 			so.directory = '';
 			this.preSound = so.create(packdir + 'nlevel');
 			so.directory = './sounds/';
@@ -368,9 +445,9 @@ this.playing = true;
 		so.directory = './sounds/';
 this.music.play();
 	this.music.sound.once("play",()=> {
-	this.timer.change(that.bpms[that.level] / 1000.0);
+		this.timer.change(that.bpms[that.level] / 1000.0);
 	});
-	if (!this.playing && this.level > 1) {
+	if (!this.playing && this.level > 1 && this.level!=this.forceLevel) {
 									this.queueLevels();
 	}
 	this.action = 0;
@@ -380,8 +457,8 @@ this.music.play();
 		//this.currentAction++;
 	}
 	this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
+	this.forceLevel=0;
 	}
-
 	unload() {
 	}
 
@@ -389,6 +466,7 @@ this.music.play();
 		if (!this.canPause) {
 			return;
 		}
+		let idle=new OldTimer();
 		this.canPause = false;
 		const snd = this.music;
 this.timer.stop();
@@ -399,8 +477,13 @@ for (let i = snd.playbackRate; i > 0; i -= 0.05) {
 	await utils.sleep(30);
 }
 		snd.pause();
+		idle.reset();
 		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
 			await utils.sleep(10);
+			
+					if (idle.elapsed>=60000) {
+		await getAch("idle");
+		}
 		}
 		this.unpause();
 	}
@@ -432,7 +515,7 @@ this.levelAverage.push(mod);
 	}
 
 	queueLevels() {
-		let levelLimit = this.level + 1;
+			let levelLimit = this.level + 1;
 		if (this.levels < levelLimit) {
 			levelLimit = this.levels;
 		}
@@ -443,10 +526,10 @@ this.levelAverage.push(mod);
 		so.enqueue(packdir + 'pre' + i);
 																}
 		}
-		if (this.level > 1) {
+		if (this.level > 1 && this.level!=this.forceLevel) {
 			so.setQueueCallback(0);
 		so.loadQueue();
-		so.directory = './sounds/';
+				so.directory = './sounds/';
 		}
 	}
 }
