@@ -7,6 +7,10 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+football:"soccer kick",
+achfw:"Premier League Team",
+achfl:"Bad loser: You suck!",
+achidle:"Pay attention",
 saveFeature:`Congratulations, you have unlocked the saved games feature!
 Press the s key for save during a game to save its current state so that you can continue later.
 Note that this is not like the old insurance. The state is only saved until you win or fail, and you will destroy your save if you play minigames, buy packs or safeguards.
@@ -118,7 +122,7 @@ Once you have done that, a wheel will spin, and 3 action sounds will play.
 But this is not a normal slots! This game is evil and, if you lose, the rest of your beatcoins will not be left alone.
 If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
 !slot_lose_2
-If you get 2 of the same type and 1 of a different type, you will get... half your bet back, perhaps a bit more.
+If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
 !slot_lose_1
 If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
 !slot_lose_3
@@ -187,6 +191,44 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		football:"Lanzamiento de penaltis",
+		doublecash:"El mínimo para jugar son 5000 monedas. Lo siento!",
+		achfw:"Equipo de primera",
+		achfl:"Equipo de segunda",
+		achidle:"Te has quedao empanao!",
+		saveFeature:`Felicidades, has desbloqueado la opción guardar juego!
+		Pulsa la s (de save, guardar en inglés) durante un juego para guardar el estado y el nivel actuales para que puedas continuar después.
+Ten en cuenta que esto no es como el antiguo seguro, el estado se guarda solo hasta que ganes o falles. se perderá el juego si compras packs, antifallos o juegas algún minijuego.
+A disfrutar!`,
+saved:"Guardado!",
+killSave:"Esto eliminará tu juego guardado para el pack %1. Estás en el nivel %2. Continuar?",
+achdl:"Doble perdedor",
+achdw:"Doble ganador!",
+double:"Doble o nada",
+newach:"Has obtenido el logro: %1!",
+noach:"No tienes logros... qué raro!",
+mAch:"Ver tus logros",
+achw1:"Novatillo",
+achw5:"Una cervecita",
+achw10:"Otra cervecita",
+achw25:"25 son 7",
+achw50:"Beatadicto",
+achusepinky:"Sin fallos",
+achlactions:"Vete a aprender las acciones",
+achfingr:"Al ritmo",
+achbulk:"Descargador Viciosillo",
+achintro:"A trabajar!",
+achslotwin:"Ganador afortunado",
+achfrust:"Frustración inevitable",
+achevils:"Los tragaperras son malbados y lo puedo demostrar",
+achcatslots:"tragaperras catastrófico",
+achrobber:"Ladrón de bancos",
+highlow:"La carta más alta",
+hw:"Bienvenido a la carta más alta!",
+yourCard:"Tu carta es el %1",
+nextCard:"Crees que la próxima carta será más alta o más baja que el %1?",
+higher:"Más alta",
+lower:"Más baja",
 		collect:"Obtener monedas y salir",
 		achMenu:"Logros: Pulsa las flechas para moverte por tus logros, enter para reproducir uno. Puedes detener la reproducción de un logro pulsando la q.",
 		card:"%1 de %2",
@@ -194,11 +236,11 @@ K:"rey",
 Q:"reina",
 		A:"as",
 J:"sota",
-		cs:"picas",
-		cd:"diamantes",
-		cc:"bastos",
-		ch:"corazones",
-		dq:"Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
+		cspades:"picas",
+		cdiamonds:"diamantes",
+		cclubs:"bastos",
+		chearts:"corazones",
+				dq:"Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
 		contPack:"Continuar donde lo dejaste (nivel %1)",
 		mPackTut:"Tutorial de cómo hacer packs",
 packtut:`Bienvenido al editor de packs!
@@ -247,7 +289,7 @@ f1music:"Los niveles del juego (se requieren al menos 3 para que un pack se cons
 f2music:"Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
 f3music:"Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
 		missingFiles:"Los siguientes archivos no están presentes en el pack y son necesarios para poder editarlo:",
-		missingAdditional:"Los siguientes archivos son opcionales y no están presentes en el pack, pero no son estrictamente necesarios. Puedes saltarte las acciones de las flechas ya que la mayoría de packs solo tienen las 4 acciones básicas.",
+		missingOptional:"Los siguientes archivos son opcionales y no están presentes en el pack, pero no son estrictamente necesarios. Puedes saltarte las acciones de las flechas ya que la mayoría de packs solo tienen las 4 acciones básicas.",
 		lang:"Español",
 		
 		langs:"Selecciona tu idioma",

@@ -1,4 +1,4 @@
-import {questionSync,getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+import {lang,questionSync,getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
 import {shuffle,newDeck,newDecks} from '52-deck';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
@@ -107,11 +107,11 @@ else if (wheels[2]==1) {
 let lose=so.create("slot_lose_3");
 lose.play();
 lose.sound.once("end",async function() {
-await getAch("frust");
+await getAch("evils");
 let capcash=myBet;
 console.log(capcash);
 if (capcash>data.beatcoins) capcash=data.beatcoins;
-let perc=Math.ceil(utils.percentOf(utils.randomInt(25,30),capcash));
+let perc=Math.ceil(utils.percentOf(utils.randomInt(15,25),capcash));
 console.log("perc"+perc);
 addCash(0,perc,function() {
 so.kill(function() {
@@ -124,10 +124,10 @@ else if (wheels[0]==wheels[1] || wheels[1]==wheels[2] || wheels[0]==wheels[2]) {
 let lose=so.create("slot_lose_1");
 lose.play();
 lose.sound.once("end",async function() {
-await getAch("evils");
+await getAch("frust");
 let capcash=myBet;
 console.log(capcash);
-let perc=Math.ceil(utils.percentOf(utils.randomInt(40,69),capcash));
+let perc=capcash;
 console.log("perc"+perc);
 addCash(perc,0,function() {
 so.kill(function() {
@@ -438,3 +438,325 @@ await getAch("dw");
 }
 st.setState(2);
 }
+
+export async function playFootball() {
+so.directory="./sounds/"+lang+"/";
+let dir=so.directory;
+let loc;
+let kick;
+let st1=0;
+let st2=0;
+let sp;
+let bg;
+bg=so.create("bw_background",true);
+bg.loop=true;
+bg.play();
+let team1=utils.randomInt(1,10);
+let team2=utils.randomInt(1,10);
+while (team2==team1) {
+team2=utils.randomInt(1,10);
+}
+bg.volume=0.7;
+sp=so.create("bw_intro"+utils.randomInt(1,3));
+await sp.playSync();
+sp=so.create("bw_team_"+team1+"_1");
+await sp.playSync();
+sp=so.create("bw_vs");
+await sp.playSync();
+sp=so.create("bw_team_"+team2+"_2");
+await sp.playSync();
+let turn=team1;
+let inp=new KeyboardInput();
+inp.init();
+while (st1<5 && st2<5) {
+let counter=2;
+sp=so.create("bw_turn");
+await sp.playSync();
+sp=so.create("bw_team_"+turn+"_2");
+await sp.playSync();
+if (turn==team1) {
+sp=so.create("bw_where");
+await sp.playSync();
+while (!inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_LEFT)) {
+counter-=1;
+if (counter<1) counter=1;
+if (counter==1) {
+loc=so.create("bw_left");
+loc.pan=-80/100;
+loc.play();
+}
+if (counter==2) {
+loc=so.create("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc=so.create("bw_right");
+loc.pan=0.8;
+loc.play();
+}
+}
+if (inp.isJustPressed(KeyEvent.DOM_VK_RIGHT)) {
+counter+=1;
+if (counter>3) counter=3;
+if (counter==1) {
+loc=so.create("bw_left");
+loc.pan=-80/100;
+loc.play();
+}
+if (counter==2) {
+loc=so.create("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc=so.create("bw_right");
+loc.pan=80/100;
+loc.play();
+}
+}
+await utils.sleep(5);
+}
+let saving=utils.randomInt(1,3);
+bg.volume=0.3;
+kick=so.create("bw_chuta"+utils.randomInt(1,4));
+if (counter==1) kick.pan=-80/100;
+if (counter==2) kick.pan=0;
+if (counter==3) kick.pan=80/100;
+kick.play();
+await utils.sleep(220);
+let saved;
+if (counter==saving) {
+saved=so.create("bw_parar"+utils.randomInt(1,3));
+if (saving==1) saved.pan=-80/100;
+if (saving==2) saved.pan=0;
+if (saving==3) saved.pan=80/100;
+saved.play();
+await utils.sleep(300);
+}
+else {
+saved=so.create("bw_portero"+utils.randomInt(1,2));
+if (saving==1) saved.pan=-80/100;
+if (saving==2) saved.pan=0;
+if (saving==3) saved.pan=80/100;
+saved.play();
+await utils.sleep(200);
+}
+if (counter==saving) {
+sp=so.create("bw_paradon"+utils.randomInt(1,3));
+sp.play();
+let crowd;
+crowd=so.create("bw_mal"+utils.randomInt(1,3));
+await crowd.playSync();
+while (sp.playing) { await utils.sleep(5); }
+bg.volume=0.7;
+await utils.sleep(700);
+}//counter saving
+else {
+let falta=utils.randomInt(1,4);
+if (falta==1) {
+let falta;
+falta=so.create("bw_falta"+utils.randomInt(1,7));
+if (counter==1) falta.pan=-80/100;
+if (counter==3) falta.pan=80/100;
+if (counter==2) falta.pan=0;
+falta.play();
+await utils.sleep(400);
+sp=so.create("bw_falton"+utils.randomInt(1,4));
+sp.play();
+let crowd;
+crowd=so.create("bw_cfalta"+utils.randomInt(1,3));
+await crowd.playSync();
+while (sp.playing) { await utils.sleep(5); }
+await utils.sleep(400);
+}
+else {
+st1+=1;
+sp=so.create("bw_sgol"+utils.randomInt(1,7));
+sp.play();
+let crowd;
+crowd=so.create("bw_gol"+utils.randomInt(1,6));
+await crowd.playSync();
+while (sp.playing) { await utils.sleep(5); }
+bg.volume=0.6;
+sp=so.create("bw_marc"+utils.randomInt(1,3));
+await sp.playSync();
+sp=so.create("bw_team_"+team1+"_2");
+await sp.playSync();
+sp=so.create("bw_"+st1+"_1");
+await sp.playSync();
+sp=so.create("bw_team_"+team2+"_1");
+await sp.playSync();
+sp=so.create("bw_"+st2+"_2");
+await sp.playSync();
+}//falta
+}//counter not saving
+turn=team2;
+}//my turn
+else {
+//second turn
+sp=so.create("bw_dwhere");
+await sp.playSync();
+while (!inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_LEFT)) {
+counter-=1;
+if (counter<1) counter=1;
+if (counter==1) {
+loc=so.create("bw_left");
+loc.pan=-80/100;
+loc.play();
+}
+if (counter==2) {
+loc=so.create("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc=so.create("bw_right");
+loc.pan=80/100;
+loc.play();
+}
+}
+if (inp.isJustPressed(KeyEvent.DOM_VK_RIGHT)) {
+counter+=1;
+if (counter>3) counter=3;
+if (counter==1) {
+loc=so.create("bw_left");
+loc.pan=-80/100;
+loc.play();
+}
+if (counter==2) {
+
+loc=so.create("bw_center");
+loc.pan=0;
+loc.play();
+}
+if (counter==3) {
+loc=so.create("bw_right");
+loc.pan=80/100;
+loc.play();
+}
+}
+await utils.sleep(5);
+}
+sp=so.create("bw_prepara"+utils.randomInt(1,4));
+await sp.playSync();
+await utils.sleep(utils.randomInt(2000,3800));
+let saving=utils.randomInt(1,3);
+bg.volume=0.3;
+kick=so.create("bw_chuta"+utils.randomInt(1,4));
+if (saving==1) kick.pan=-80/100;
+if (saving==2) kick.pan=0;
+if (saving==3) kick.pan=80/100;
+kick.play();
+await utils.sleep(220);
+let saved;
+if (counter==saving) {
+saved=so.create("bw_parar"+utils.randomInt(1,3));
+if (saving==1) saved.pan=-80/100;
+if (saving==2) saved.pan=0/100;
+if (saving==3) saved.pan=80/100;
+saved.play();
+await utils.sleep(300);
+}
+else {
+saved=so.create("bw_portero"+utils.randomInt(1,2));
+if (counter==1) saved.pan=-80/100;
+if (counter==2) saved.pan=0/100;
+if (counter==3) saved.pan=80/100;
+saved.play();
+await utils.sleep(200);
+}
+if (counter==saving) {
+if (typeof data.safeguards==="undefined") data.safeguards=0;
+data.safeguards+=1;
+save();
+sp=so.create("bw_paradon"+utils.randomInt(1,3));
+sp.play();
+let crowd;
+crowd=so.create("bw_mal"+utils.randomInt(1,3));
+await crowd.playSync();
+while (sp.playing) { await utils.sleep(5); }
+bg.volume=0.7;
+await utils.sleep(700);
+}//counter saving
+else {
+let falta=utils.randomInt(1,4);
+if (falta==1) {
+let falta;
+falta=so.create("bw_falta"+utils.randomInt(1,7));
+if (counter==1) falta.pan=-80/100;
+if (counter==3) falta.pan=80/100;
+if (counter==2) falta.pan=0/100;
+falta.play();
+await utils.sleep(400);
+sp=so.create("bw_falton"+utils.randomInt(1,4));
+sp.play();
+let crowd;
+crowd=so.create("bw_cfalta"+utils.randomInt(1,3));
+await crowd.playSync();
+while (sp.playing) { await utils.sleep(5); }
+await utils.sleep(400);
+}
+else {
+st2+=1;
+sp=so.create("bw_sgol"+utils.randomInt(1,7));
+sp.play();
+let crowd;
+crowd=so.create("bw_gol"+utils.randomInt(1,6));
+await crowd.playSync();
+while (sp.playing) { await utils.sleep(5); }
+bg.volume=0.7;
+sp=so.create("bw_marc"+utils.randomInt(1,3));
+await sp.playSync();
+sp=so.create("bw_team_"+team1+"_2");
+await sp.playSync();
+sp=so.create("bw_"+st1+"_1");
+await sp.playSync();
+sp=so.create("bw_team_"+team2+"_1");
+await sp.playSync();
+sp=so.create("bw_"+st2+"_2");
+await sp.playSync();
+}//falta
+}//counter not saving
+turn=team1;
+
+}//second turn
+if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
+so.kill(function() {
+st.setState(2);
+});
+return;
+}
+await utils.sleep(5);
+}
+//winning
+bg.volume=0.3;
+sp=so.create("bw_ganador");
+await sp.playSync();
+await utils.sleep(utils.randomInt(500,1200));
+if (st1==5) sp=so.create("bw_team_"+team1+"_2");
+if (st2==5) sp=so.create("bw_team_"+team2+"_2");
+await sp.playSync();
+let bg2=so.create("bw_ganar");
+bg2.volume=0.4;
+bg.stop();
+bg2.loop=true;
+bg2.play();
+let himno;
+if (st1==5) himno=so.create("bw_himno"+team1);
+if (st2==5) himno=so.create("bw_himno"+team2);
+await himno.playSync();
+bg.stop();
+bg2.stop();
+sp.stop();
+himno.stop();
+if (st2==5) getAch("fl");
+if (st1==5) getAch("fw");
+so.kill(function() {
+st.setState(2);
+});
+return;
+}
+

@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49818;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=50976;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -4311,6 +4311,10 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			football: "soccer kick",
+			achfw: "Premier League Team",
+			achfl: "Bad loser: You suck!",
+			achidle: "Pay attention",
 			saveFeature: `Congratulations, you have unlocked the saved games feature!
 Press the s key for save during a game to save its current state so that you can continue later.
 Note that this is not like the old insurance. The state is only saved until you win or fail, and you will destroy your save if you play minigames, buy packs or safeguards.
@@ -4422,7 +4426,7 @@ Once you have done that, a wheel will spin, and 3 action sounds will play.
 But this is not a normal slots! This game is evil and, if you lose, the rest of your beatcoins will not be left alone.
 If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
 !slot_lose_2
-If you get 2 of the same type and 1 of a different type, you will get... half your bet back, perhaps a bit more.
+If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
 !slot_lose_1
 If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
 !slot_lose_3
@@ -4491,6 +4495,44 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			football: "Lanzamiento de penaltis",
+			doublecash: "El mínimo para jugar son 5000 monedas. Lo siento!",
+			achfw: "Equipo de primera",
+			achfl: "Equipo de segunda",
+			achidle: "Te has quedao empanao!",
+			saveFeature: `Felicidades, has desbloqueado la opción guardar juego!
+		Pulsa la s (de save, guardar en inglés) durante un juego para guardar el estado y el nivel actuales para que puedas continuar después.
+Ten en cuenta que esto no es como el antiguo seguro, el estado se guarda solo hasta que ganes o falles. se perderá el juego si compras packs, antifallos o juegas algún minijuego.
+A disfrutar!`,
+			saved: "Guardado!",
+			killSave: "Esto eliminará tu juego guardado para el pack %1. Estás en el nivel %2. Continuar?",
+			achdl: "Doble perdedor",
+			achdw: "Doble ganador!",
+			double: "Doble o nada",
+			newach: "Has obtenido el logro: %1!",
+			noach: "No tienes logros... qué raro!",
+			mAch: "Ver tus logros",
+			achw1: "Novatillo",
+			achw5: "Una cervecita",
+			achw10: "Otra cervecita",
+			achw25: "25 son 7",
+			achw50: "Beatadicto",
+			achusepinky: "Sin fallos",
+			achlactions: "Vete a aprender las acciones",
+			achfingr: "Al ritmo",
+			achbulk: "Descargador Viciosillo",
+			achintro: "A trabajar!",
+			achslotwin: "Ganador afortunado",
+			achfrust: "Frustración inevitable",
+			achevils: "Los tragaperras son malbados y lo puedo demostrar",
+			achcatslots: "tragaperras catastrófico",
+			achrobber: "Ladrón de bancos",
+			highlow: "La carta más alta",
+			hw: "Bienvenido a la carta más alta!",
+			yourCard: "Tu carta es el %1",
+			nextCard: "Crees que la próxima carta será más alta o más baja que el %1?",
+			higher: "Más alta",
+			lower: "Más baja",
 			collect: "Obtener monedas y salir",
 			achMenu: "Logros: Pulsa las flechas para moverte por tus logros, enter para reproducir uno. Puedes detener la reproducción de un logro pulsando la q.",
 			card: "%1 de %2",
@@ -4498,10 +4540,10 @@ Have fun playing evil slots!`,
 			Q: "reina",
 			A: "as",
 			J: "sota",
-			cs: "picas",
-			cd: "diamantes",
-			cc: "bastos",
-			ch: "corazones",
+			cspades: "picas",
+			cdiamonds: "diamantes",
+			cclubs: "bastos",
+			chearts: "corazones",
 			dq: "Este es un juego de riesgo. Te arriesgas a perder %1 monedas. Continuar?",
 			contPack: "Continuar donde lo dejaste (nivel %1)",
 			mPackTut: "Tutorial de cómo hacer packs",
@@ -4551,7 +4593,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 			f2music: "Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
 			f3music: "Los niveles del juego (se requieren al menos 3 para que un pack se considere válido y deben ser loops para que el juego se sincronice. Siguen el formato <númeroNivel>music, por ejemplo 1music, 2music, 3music.",
 			missingFiles: "Los siguientes archivos no están presentes en el pack y son necesarios para poder editarlo:",
-			missingAdditional: "Los siguientes archivos son opcionales y no están presentes en el pack, pero no son estrictamente necesarios. Puedes saltarte las acciones de las flechas ya que la mayoría de packs solo tienen las 4 acciones básicas.",
+			missingOptional: "Los siguientes archivos son opcionales y no están presentes en el pack, pero no son estrictamente necesarios. Puedes saltarte las acciones de las flechas ya que la mayoría de packs solo tienen las 4 acciones básicas.",
 			lang: "Español",
 
 			langs: "Selecciona tu idioma",
@@ -5293,7 +5335,8 @@ class Game {
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-	doScore() {
+	async doScore() {
+		if (this.getscore >= 6) await (0, _main.getAch)("fingr");
 		(0, _main.addCash)(this.cash, 0, function () {
 			_stateMachine.st.setState(2);
 		});
@@ -5423,6 +5466,9 @@ class Game {
 			this.quit();
 			return;
 		}
+		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_C)) {
+			_tts.speech.speak(this.cash);
+		}
 		if (this.input.isJustPressed(_keycodes.KeyEvent.DOM_VK_S)) {
 			this.save();
 			return;
@@ -5473,19 +5519,20 @@ class Game {
 	async setupLevel() {
 		if (this.level > 1 && this.level != this.forceLevel) {
 			//avg
-			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.scoreAverage)));
-			if (_utilities.utils.averageInt(this.scoreAverage) > 90) this.getscore++;
+			this.actionPercentage = Math.ceil(_utilities.utils.percentOf(this.numberOfActions * this.level, _utilities.utils.averageInt(this.levelAverage)));
+			if (_utilities.utils.averageInt(this.scoreAverage) > 90) {
+				this.getscore++;
+				this.cash += _utilities.utils.averageInt(this.levelAverage);
+			}
 			if (_utilities.utils.averageInt(this.scoreAverage) < 90) this.getscore--;
-			console.log("getscore" + this.getscore);
-			this.cash += _utilities.utils.averageInt(this.scoreAverage) + _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
+			this.cash += _utilities.utils.averageInt(this.levelAverage) + _utilities.utils.averageInt(this.levelAverage) + this.actionPercentage;
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
 		if (this.level > this.levels) {
 			if (_fs2.default.existsSync(_main.packdir + 'win.ogg')) {
 				_soundObject.so.directory = '';
-				if (this.getscore > 5) await (0, _main.getAch)("fingr");
-				if (!this.safeuse) await (0, _main.getAch)("usepinky");
+
 				this.winSound = _soundObject.so.create(_main.packdir + 'win');
 				this.winSound.play();
 				while (this.winSound.playing == true) {
@@ -5495,6 +5542,7 @@ class Game {
 					} //key
 				} //while
 			} //if file exists
+			if (!this.safeuse) await (0, _main.getAch)("usepinky");
 			_main.data.unlocks[_main.pack]["win"] = true;
 			let wins = 0;
 			for (let i in _main.data.unlocks) {
@@ -5575,7 +5623,7 @@ class Game {
 			//this.currentAction++;
 		}
 		this.numberOfActions = _utilities.utils.randomInt(6 + this.level, this.level * 2 + 5);
-		ththis.forceLevel = 0;
+		this.forceLevel = 0;
 	}
 	unload() {}
 
@@ -5583,6 +5631,7 @@ class Game {
 		if (!this.canPause) {
 			return;
 		}
+		let idle = new _oldtimer.OldTimer();
 		this.canPause = false;
 		const snd = this.music;
 		this.timer.stop();
@@ -5593,8 +5642,13 @@ class Game {
 			await _utilities.utils.sleep(30);
 		}
 		snd.pause();
+		idle.reset();
 		while (!this.input.isDown(_keycodes.KeyEvent.DOM_VK_P)) {
 			await _utilities.utils.sleep(10);
+
+			if (idle.elapsed >= 60000) {
+				await (0, _main.getAch)("idle");
+			}
 		}
 		this.unpause();
 	}
@@ -5746,6 +5800,7 @@ exports.playCode = playCode;
 exports.playDeck = playDeck;
 exports.takeCard = takeCard;
 exports.playDouble = playDouble;
+exports.playFootball = playFootball;
 
 var _main = require('./main');
 
@@ -5876,11 +5931,11 @@ async function playSlots() {
 																				let lose = _soundObject.so.create("slot_lose_3");
 																				lose.play();
 																				lose.sound.once("end", async function () {
-																								await (0, _main.getAch)("frust");
+																								await (0, _main.getAch)("evils");
 																								let capcash = myBet;
 																								console.log(capcash);
 																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
-																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(25, 30), capcash));
+																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(15, 25), capcash));
 																								console.log("perc" + perc);
 																								(0, _main.addCash)(0, perc, function () {
 																												_soundObject.so.kill(function () {
@@ -5892,10 +5947,10 @@ async function playSlots() {
 																				let lose = _soundObject.so.create("slot_lose_1");
 																				lose.play();
 																				lose.sound.once("end", async function () {
-																								await (0, _main.getAch)("evils");
+																								await (0, _main.getAch)("frust");
 																								let capcash = myBet;
 																								console.log(capcash);
-																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(40, 69), capcash));
+																								let perc = capcash;
 																								console.log("perc" + perc);
 																								(0, _main.addCash)(perc, 0, function () {
 																												_soundObject.so.kill(function () {
@@ -6196,6 +6251,334 @@ async function playDouble() {
 				}
 				_stateMachine.st.setState(2);
 }
+
+async function playFootball() {
+				_soundObject.so.directory = "./sounds/" + _main.lang + "/";
+				let dir = _soundObject.so.directory;
+				let loc;
+				let kick;
+				let st1 = 0;
+				let st2 = 0;
+				let sp;
+				let bg;
+				bg = _soundObject.so.create("bw_background", true);
+				bg.loop = true;
+				bg.play();
+				let team1 = _utilities.utils.randomInt(1, 10);
+				let team2 = _utilities.utils.randomInt(1, 10);
+				while (team2 == team1) {
+								team2 = _utilities.utils.randomInt(1, 10);
+				}
+				bg.volume = 0.7;
+				sp = _soundObject.so.create("bw_intro" + _utilities.utils.randomInt(1, 3));
+				await sp.playSync();
+				sp = _soundObject.so.create("bw_team_" + team1 + "_1");
+				await sp.playSync();
+				sp = _soundObject.so.create("bw_vs");
+				await sp.playSync();
+				sp = _soundObject.so.create("bw_team_" + team2 + "_2");
+				await sp.playSync();
+				let turn = team1;
+				let inp = new _input.KeyboardInput();
+				inp.init();
+				while (st1 < 5 && st2 < 5) {
+								let counter = 2;
+								sp = _soundObject.so.create("bw_turn");
+								await sp.playSync();
+								sp = _soundObject.so.create("bw_team_" + turn + "_2");
+								await sp.playSync();
+								if (turn == team1) {
+												sp = _soundObject.so.create("bw_where");
+												await sp.playSync();
+												while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+																if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
+																				counter -= 1;
+																				if (counter < 1) counter = 1;
+																				if (counter == 1) {
+																								loc = _soundObject.so.create("bw_left");
+																								loc.pan = -80 / 100;
+																								loc.play();
+																				}
+																				if (counter == 2) {
+																								loc = _soundObject.so.create("bw_center");
+																								loc.pan = 0;
+																								loc.play();
+																				}
+																				if (counter == 3) {
+																								loc = _soundObject.so.create("bw_right");
+																								loc.pan = 0.8;
+																								loc.play();
+																				}
+																}
+																if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
+																				counter += 1;
+																				if (counter > 3) counter = 3;
+																				if (counter == 1) {
+																								loc = _soundObject.so.create("bw_left");
+																								loc.pan = -80 / 100;
+																								loc.play();
+																				}
+																				if (counter == 2) {
+																								loc = _soundObject.so.create("bw_center");
+																								loc.pan = 0;
+																								loc.play();
+																				}
+																				if (counter == 3) {
+																								loc = _soundObject.so.create("bw_right");
+																								loc.pan = 80 / 100;
+																								loc.play();
+																				}
+																}
+																await _utilities.utils.sleep(5);
+												}
+												let saving = _utilities.utils.randomInt(1, 3);
+												bg.volume = 0.3;
+												kick = _soundObject.so.create("bw_chuta" + _utilities.utils.randomInt(1, 4));
+												if (counter == 1) kick.pan = -80 / 100;
+												if (counter == 2) kick.pan = 0;
+												if (counter == 3) kick.pan = 80 / 100;
+												kick.play();
+												await _utilities.utils.sleep(220);
+												let saved;
+												if (counter == saving) {
+																saved = _soundObject.so.create("bw_parar" + _utilities.utils.randomInt(1, 3));
+																if (saving == 1) saved.pan = -80 / 100;
+																if (saving == 2) saved.pan = 0;
+																if (saving == 3) saved.pan = 80 / 100;
+																saved.play();
+																await _utilities.utils.sleep(300);
+												} else {
+																saved = _soundObject.so.create("bw_portero" + _utilities.utils.randomInt(1, 2));
+																if (saving == 1) saved.pan = -80 / 100;
+																if (saving == 2) saved.pan = 0;
+																if (saving == 3) saved.pan = 80 / 100;
+																saved.play();
+																await _utilities.utils.sleep(200);
+												}
+												if (counter == saving) {
+																sp = _soundObject.so.create("bw_paradon" + _utilities.utils.randomInt(1, 3));
+																sp.play();
+																let crowd;
+																crowd = _soundObject.so.create("bw_mal" + _utilities.utils.randomInt(1, 3));
+																await crowd.playSync();
+																while (sp.playing) {
+																				await _utilities.utils.sleep(5);
+																}
+																bg.volume = 0.7;
+																await _utilities.utils.sleep(700);
+												} //counter saving
+												else {
+																				let falta = _utilities.utils.randomInt(1, 4);
+																				if (falta == 1) {
+																								let falta;
+																								falta = _soundObject.so.create("bw_falta" + _utilities.utils.randomInt(1, 7));
+																								if (counter == 1) falta.pan = -80 / 100;
+																								if (counter == 3) falta.pan = 80 / 100;
+																								if (counter == 2) falta.pan = 0;
+																								falta.play();
+																								await _utilities.utils.sleep(400);
+																								sp = _soundObject.so.create("bw_falton" + _utilities.utils.randomInt(1, 4));
+																								sp.play();
+																								let crowd;
+																								crowd = _soundObject.so.create("bw_cfalta" + _utilities.utils.randomInt(1, 3));
+																								await crowd.playSync();
+																								while (sp.playing) {
+																												await _utilities.utils.sleep(5);
+																								}
+																								await _utilities.utils.sleep(400);
+																				} else {
+																								st1 += 1;
+																								sp = _soundObject.so.create("bw_sgol" + _utilities.utils.randomInt(1, 7));
+																								sp.play();
+																								let crowd;
+																								crowd = _soundObject.so.create("bw_gol" + _utilities.utils.randomInt(1, 6));
+																								await crowd.playSync();
+																								while (sp.playing) {
+																												await _utilities.utils.sleep(5);
+																								}
+																								bg.volume = 0.6;
+																								sp = _soundObject.so.create("bw_marc" + _utilities.utils.randomInt(1, 3));
+																								await sp.playSync();
+																								sp = _soundObject.so.create("bw_team_" + team1 + "_2");
+																								await sp.playSync();
+																								sp = _soundObject.so.create("bw_" + st1 + "_1");
+																								await sp.playSync();
+																								sp = _soundObject.so.create("bw_team_" + team2 + "_1");
+																								await sp.playSync();
+																								sp = _soundObject.so.create("bw_" + st2 + "_2");
+																								await sp.playSync();
+																				} //falta
+																} //counter not saving
+												turn = team2;
+								} //my turn
+								else {
+																//second turn
+																sp = _soundObject.so.create("bw_dwhere");
+																await sp.playSync();
+																while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+																				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
+																								counter -= 1;
+																								if (counter < 1) counter = 1;
+																								if (counter == 1) {
+																												loc = _soundObject.so.create("bw_left");
+																												loc.pan = -80 / 100;
+																												loc.play();
+																								}
+																								if (counter == 2) {
+																												loc = _soundObject.so.create("bw_center");
+																												loc.pan = 0;
+																												loc.play();
+																								}
+																								if (counter == 3) {
+																												loc = _soundObject.so.create("bw_right");
+																												loc.pan = 80 / 100;
+																												loc.play();
+																								}
+																				}
+																				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
+																								counter += 1;
+																								if (counter > 3) counter = 3;
+																								if (counter == 1) {
+																												loc = _soundObject.so.create("bw_left");
+																												loc.pan = -80 / 100;
+																												loc.play();
+																								}
+																								if (counter == 2) {
+
+																												loc = _soundObject.so.create("bw_center");
+																												loc.pan = 0;
+																												loc.play();
+																								}
+																								if (counter == 3) {
+																												loc = _soundObject.so.create("bw_right");
+																												loc.pan = 80 / 100;
+																												loc.play();
+																								}
+																				}
+																				await _utilities.utils.sleep(5);
+																}
+																sp = _soundObject.so.create("bw_prepara" + _utilities.utils.randomInt(1, 4));
+																await sp.playSync();
+																await _utilities.utils.sleep(_utilities.utils.randomInt(2000, 3800));
+																let saving = _utilities.utils.randomInt(1, 3);
+																bg.volume = 0.3;
+																kick = _soundObject.so.create("bw_chuta" + _utilities.utils.randomInt(1, 4));
+																if (saving == 1) kick.pan = -80 / 100;
+																if (saving == 2) kick.pan = 0;
+																if (saving == 3) kick.pan = 80 / 100;
+																kick.play();
+																await _utilities.utils.sleep(220);
+																let saved;
+																if (counter == saving) {
+																				saved = _soundObject.so.create("bw_parar" + _utilities.utils.randomInt(1, 3));
+																				if (saving == 1) saved.pan = -80 / 100;
+																				if (saving == 2) saved.pan = 0 / 100;
+																				if (saving == 3) saved.pan = 80 / 100;
+																				saved.play();
+																				await _utilities.utils.sleep(300);
+																} else {
+																				saved = _soundObject.so.create("bw_portero" + _utilities.utils.randomInt(1, 2));
+																				if (counter == 1) saved.pan = -80 / 100;
+																				if (counter == 2) saved.pan = 0 / 100;
+																				if (counter == 3) saved.pan = 80 / 100;
+																				saved.play();
+																				await _utilities.utils.sleep(200);
+																}
+																if (counter == saving) {
+																				if (typeof _main.data.safeguards === "undefined") _main.data.safeguards = 0;
+																				_main.data.safeguards += 1;
+																				(0, _main.save)();
+																				sp = _soundObject.so.create("bw_paradon" + _utilities.utils.randomInt(1, 3));
+																				sp.play();
+																				let crowd;
+																				crowd = _soundObject.so.create("bw_mal" + _utilities.utils.randomInt(1, 3));
+																				await crowd.playSync();
+																				while (sp.playing) {
+																								await _utilities.utils.sleep(5);
+																				}
+																				bg.volume = 0.7;
+																				await _utilities.utils.sleep(700);
+																} //counter saving
+																else {
+																								let falta = _utilities.utils.randomInt(1, 4);
+																								if (falta == 1) {
+																												let falta;
+																												falta = _soundObject.so.create("bw_falta" + _utilities.utils.randomInt(1, 7));
+																												if (counter == 1) falta.pan = -80 / 100;
+																												if (counter == 3) falta.pan = 80 / 100;
+																												if (counter == 2) falta.pan = 0 / 100;
+																												falta.play();
+																												await _utilities.utils.sleep(400);
+																												sp = _soundObject.so.create("bw_falton" + _utilities.utils.randomInt(1, 4));
+																												sp.play();
+																												let crowd;
+																												crowd = _soundObject.so.create("bw_cfalta" + _utilities.utils.randomInt(1, 3));
+																												await crowd.playSync();
+																												while (sp.playing) {
+																																await _utilities.utils.sleep(5);
+																												}
+																												await _utilities.utils.sleep(400);
+																								} else {
+																												st2 += 1;
+																												sp = _soundObject.so.create("bw_sgol" + _utilities.utils.randomInt(1, 7));
+																												sp.play();
+																												let crowd;
+																												crowd = _soundObject.so.create("bw_gol" + _utilities.utils.randomInt(1, 6));
+																												await crowd.playSync();
+																												while (sp.playing) {
+																																await _utilities.utils.sleep(5);
+																												}
+																												bg.volume = 0.7;
+																												sp = _soundObject.so.create("bw_marc" + _utilities.utils.randomInt(1, 3));
+																												await sp.playSync();
+																												sp = _soundObject.so.create("bw_team_" + team1 + "_2");
+																												await sp.playSync();
+																												sp = _soundObject.so.create("bw_" + st1 + "_1");
+																												await sp.playSync();
+																												sp = _soundObject.so.create("bw_team_" + team2 + "_1");
+																												await sp.playSync();
+																												sp = _soundObject.so.create("bw_" + st2 + "_2");
+																												await sp.playSync();
+																								} //falta
+																				} //counter not saving
+																turn = team1;
+												} //second turn
+								if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_ESCAPE)) {
+												_soundObject.so.kill(function () {
+																_stateMachine.st.setState(2);
+												});
+												return;
+								}
+								await _utilities.utils.sleep(5);
+				}
+				//winning
+				bg.volume = 0.3;
+				sp = _soundObject.so.create("bw_ganador");
+				await sp.playSync();
+				await _utilities.utils.sleep(_utilities.utils.randomInt(500, 1200));
+				if (st1 == 5) sp = _soundObject.so.create("bw_team_" + team1 + "_2");
+				if (st2 == 5) sp = _soundObject.so.create("bw_team_" + team2 + "_2");
+				await sp.playSync();
+				let bg2 = _soundObject.so.create("bw_ganar");
+				bg2.volume = 0.4;
+				bg.stop();
+				bg2.loop = true;
+				bg2.play();
+				let himno;
+				if (st1 == 5) himno = _soundObject.so.create("bw_himno" + team1);
+				if (st2 == 5) himno = _soundObject.so.create("bw_himno" + team2);
+				await himno.playSync();
+				bg.stop();
+				bg2.stop();
+				sp.stop();
+				himno.stop();
+				if (st2 == 5) (0, _main.getAch)("fl");
+				if (st1 == 5) (0, _main.getAch)("fw");
+				_soundObject.so.kill(function () {
+								_stateMachine.st.setState(2);
+				});
+				return;
+}
 },{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
 'use strict';
 
@@ -6321,7 +6704,8 @@ let minis = exports.minis = {
 	slot: 8500,
 	code: 10000,
 	highlow: 15000,
-	double: 10000
+	double: 10000,
+	football: 12000
 };
 var actionKeys = exports.actionKeys = [0, 0, _keycodes.KeyEvent.DOM_VK_SPACE, _keycodes.KeyEvent.DOM_VK_TAB, _keycodes.KeyEvent.DOM_VK_RETURN, _keycodes.KeyEvent.DOM_VK_BACK_SPACE, _keycodes.KeyEvent.DOM_VK_UP, _keycodes.KeyEvent.DOM_VK_DOWN, _keycodes.KeyEvent.DOM_VK_RIGHT, _keycodes.KeyEvent.DOM_VK_LEFT];
 var mangle = exports.mangle = new _cryptr2.default('sdf jkl wer uio');
@@ -6331,8 +6715,8 @@ var data = exports.data = '';
 var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-	checkPack(false, true);
-	return;
+	//checkPack(false,true);
+	//return;
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -6808,6 +7192,8 @@ async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		//await strings.check(2);
+		data.beatcoins = 1000000;
+		_stateMachine.st.setState(2);
 		return;
 	}
 	booter();
@@ -7433,7 +7819,9 @@ function runGame(name) {
 		(0, _minis.playCode)();
 	} else if (name == "highlow") {
 		(0, _minis.playDeck)();
-	} else {
+	} else if (name == "double") {
+		(0, _minis.playDouble)();
+	} else if (name == "football") (0, _minis.playFootball)();else {
 		_stateMachine.st.setState(2);
 	}
 }
@@ -7730,7 +8118,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],34:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],43:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -7907,5 +8295,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[34,1])
+},{}]},{},[43,1])
 //# sourceMappingURL=/main.map

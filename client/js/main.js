@@ -2,7 +2,7 @@ export var lang = 0;
 export var editing=false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playDouble,playDeck,playCode,playSlots} from './minis.js';
+import {playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
@@ -12,6 +12,7 @@ slot:8500,
 code:10000,
 highlow:15000,
 double:10000,
+football:12000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -38,8 +39,8 @@ export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-checkPack(false,true);
-return;
+//checkPack(false,true);
+//return;
              	st.setState(1);
 }
 function proceed() {
@@ -521,8 +522,10 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			//await strings.check(2);
-						return;
-				}
+			data.beatcoins=1000000;
+			st.setState(2);
+			return;
+										}
 	booter();
 }
 var download = function(url, dest, cb) {
@@ -1155,7 +1158,8 @@ data.save={}; save();
 				else if (name=="highlow") {
 				playDeck();
 				}
-				
+				else if (name=="double") {playDouble() }
+				else if (name=="football") playFootball();
 				else {
 				st.setState(2);
 				}

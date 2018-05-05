@@ -166,7 +166,8 @@ return;
 	//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
-	doScore() {
+	async doScore() {
+	if (this.getscore>=6) await getAch("fingr");	
 	addCash(this.cash,0,function() {
 	st.setState(2);
 	});
@@ -299,6 +300,9 @@ this.doScore();
 	this.quit();
 	return;
 		}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_C)) {
+		speech.speak(this.cash);
+		}
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
 	this.save();
 	return;
@@ -349,19 +353,20 @@ this.doScore();
 	async setupLevel() {
 	if (this.level>1 && this.level!=this.forceLevel) {
 	//avg
-	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.scoreAverage)));
-	if (utils.averageInt(this.scoreAverage)>90) this.getscore++;
+	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
+	if (utils.averageInt(this.scoreAverage)>90) {
+	this.getscore++;
+	this.cash+=utils.averageInt(this.levelAverage);
+	}
 		if (utils.averageInt(this.scoreAverage)<90) this.getscore--;
-		console.log("getscore"+this.getscore);
-		this.cash+=(utils.averageInt(this.scoreAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
+				this.cash+=(utils.averageInt(this.levelAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
 			}
 	this.scoreAverage=[];
 	this.levelAverage=[];
 	if (this.level>this.levels) {
 				if (fs.existsSync(packdir + 'win.ogg')) {
 									so.directory = '';
-if (this.getscore>5) await getAch("fingr");	
-if (!this.safeuse) await getAch("usepinky");
+
 			this.winSound = so.create(packdir + 'win');
 			this.winSound.play();
 while (this.winSound.playing==true) {
@@ -371,6 +376,7 @@ while (this.winSound.playing==true) {
 			}//key
 		}//while
 		}//if file exists
+		if (!this.safeuse) await getAch("usepinky");
 		data.unlocks[pack]["win"]=true;
 		let wins=0;
 		for (let i in data.unlocks) {
@@ -451,7 +457,7 @@ this.music.play();
 		//this.currentAction++;
 	}
 	this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
-	ththis.forceLevel=0;
+	this.forceLevel=0;
 	}
 	unload() {
 	}
@@ -460,6 +466,7 @@ this.music.play();
 		if (!this.canPause) {
 			return;
 		}
+		let idle=new OldTimer();
 		this.canPause = false;
 		const snd = this.music;
 this.timer.stop();
@@ -470,8 +477,13 @@ for (let i = snd.playbackRate; i > 0; i -= 0.05) {
 	await utils.sleep(30);
 }
 		snd.pause();
+		idle.reset();
 		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
 			await utils.sleep(10);
+			
+					if (idle.elapsed>=60000) {
+		await getAch("idle");
+		}
 		}
 		this.unpause();
 	}

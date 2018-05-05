@@ -1,11 +1,11 @@
 void beatpong() {
-sound sp;
+let sp;
 sos();
 if (!g_pong) {
 if (cash<=8000) {
 sp=so.create("mini_notenough");
-sp.play_wait();
-vo.speak_wait(cash);
+await sp.playSync();
+vo.speak_await utils.sleep(cash);
 mainmenu();
 return;
 }
@@ -13,20 +13,20 @@ sp=so.create("mini_buygeneric");
 sp.play();
 bool cont=false;
 while (!cont) {
-if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_Y) || inp.isJustPressed(KeyEvent.DOM_VK_S)) {
 cont=true;
 g_pong=true;
 lesscash(8000);
 sp=so.create("gamecash");
-sp.play_wait();
+await sp.playSync();
 }//key s
-if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_N) || inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 sp.stop();
 cont=true;
 mainmenu();
 return;
 } //key
-wait(5);
+await utils.sleep(5);
 }//loop
 }//g_keep
 timer pong;
@@ -59,7 +59,7 @@ if(position==3 and pong.elapsed>=pongtime+100) {
 spool.play_stationary("pong4",false);
 playing=false;
 }
-if (key_pressed(KEY_RETURN) and position==3) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN) and position==3) {
 score++;
 if (score<=9) pongtime-=40;
 if (score>=10) pongtime-=15;
@@ -68,10 +68,10 @@ pong.restart();
 spool.play_stationary("pong3",false);
 position=4;
 }
-wait(5);
+await utils.sleep(5);
 }
-wait(690);
-vo.speak_wait(score);
+await utils.sleep(690);
+vo.speak_await utils.sleep(score);
 speak("points",true);
 if(score>=30) {
 get_ach("pongfire");
@@ -84,13 +84,13 @@ mainmenu();
 return;
 }
 void highlow() {
-sound dicer;
+let dicer;
 sos();
 if (!g_dice) {
 if (cash<=15000) {
 sp=so.create("mini_notenough");
-sp.play_wait();
-vo.speak_wait(cash);
+await sp.playSync();
+vo.speak_await utils.sleep(cash);
 mainmenu();
 return;
 }
@@ -98,20 +98,20 @@ sp=so.create("mini_buygeneric");
 sp.play();
 bool cont=false;
 while (!cont) {
-if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_Y) || inp.isJustPressed(KeyEvent.DOM_VK_S)) {
 cont=true;
 g_dice=true;
 lesscash(15000);
 sp=so.create("gamecash");
-sp.play_wait();
+await sp.playSync();
 }//key s
-if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_N) || inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 sp.stop();
 cont=true;
 mainmenu();
 return;
 } //key
-wait(5);
+await utils.sleep(5);
 }//loop
 }//g_keep
 dicer=so.create("d_roll");
@@ -126,10 +126,10 @@ bool playing=true;
 bool high=true;
 while(playing) {
 speak("d_playwith",true);
-vo.speak_wait(curcash);
+vo.speak_await utils.sleep(curcash);
 speak("beatcoins",true);
 speak("d_current",true);
-vo.speak_wait(curdice);
+vo.speak_await utils.sleep(curdice);
 speak("d_question",false);
 timer tutorial;
 while(true) {
@@ -137,30 +137,30 @@ if (!tutorialed and tutorial.elapsed>=5000) {
 tutorialed=true;
 speak("d_tut",true);
 }
-if(key_pressed(KEY_H) or key_pressed(KEY_A)) {
+if(inp.isJustPressed(KeyEvent.DOM_VK_H) or inp.isJustPressed(KeyEvent.DOM_VK_A)) {
 vos.stop();
 high=true;
 break;
 }
-if(key_pressed(KEY_L) or key_pressed(KEY_B)) {
+if(inp.isJustPressed(KeyEvent.DOM_VK_L) or inp.isJustPressed(KeyEvent.DOM_VK_B)) {
 vos.stop();
 high=false;
 break;
 }
-if (key_pressed(KEY_ESCAPE)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 playing=false;
 break;
 }
 }
-wait(5);
+await utils.sleep(5);
 if(playing) {
-int newdice=random(2,12);
-dicer.play_wait();
-sound table;
-table=so.create("d_dice"+random(1,3));
-table.play_wait();
+int newdice=utils.randomInt(2,12);
+dicer.play_await utils.sleep();
+let table;
+table=so.create("d_dice"+utils.randomInt(1,3));
+table.play_await utils.sleep();
 vo.speak(newdice);
-wait(random(140,300));
+await utils.sleep(utils.randomInt(140,300));
 if(newdice!=12 and newdice!=2) {
 if(newdice>curdice and high) {
 speak("d_win",true);
@@ -199,23 +199,23 @@ curdice=newdice;
 }
 }
 speak("d_over",true);
-vo.speak_wait(curcash);
+vo.speak_await utils.sleep(curcash);
 speak("beatcoins",true);
 cash+=curcash;
 mainmenu();
 return;
 }
 void playintro(string file) {
-sound intro;
+let intro;
 intro=so.create(file);
 intro.play();
 while(intro.playing) {
-if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)||key_pressed(KEY_ESCAPE)) {
+if(inp.isJustPressed(KeyEvent.DOM_VK_SPACE)||inp.isJustPressed(KeyEvent.DOM_VK_RETURN)||inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 intro.stop();
 intro=so.create("skip_intro");
-intro.play_wait();
+intro.play_await utils.sleep();
 }
-wait(5);
+await utils.sleep(5);
 }
 }
 void deal() {
@@ -223,11 +223,11 @@ bool didbad=false;
 int max=100000;
 oldavg=0;
 newavg=0;
-sound sp;
+let sp;
 if (!g_deal) {
 if (cash<=25000) {
 sp=so.create("mini_nodeal");
-sp.play_wait();
+await sp.playSync();
 mainmenu();
 return;
 }
@@ -235,35 +235,35 @@ sp=so.create("mini_buydeal");
 sp.play();
 bool cont=false;
 while (!cont) {
-if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_Y) || inp.isJustPressed(KeyEvent.DOM_VK_S)) {
 cont=true;
 g_deal=true;
 lesscash(25000);
 sp=so.create("gamecash");
-sp.play_wait();
+await sp.playSync();
 }//key s
-if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_N) || inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 sp.stop();
 cont=true;
 mainmenu();
 return;
 } //key
-wait(5);
+await utils.sleep(5);
 }//loop
 }//g_deal
 if (cash<10000) {
 sp=so.create("mini_dealno");
-sp.play_wait();
+await sp.playSync();
 mainmenu();
 return;
 }
 
 int newstart;
-sound tens;
+let tens;
 double av=0;
 int turnNumber=0;
-sound cmus;
-sound crd;
+let cmus;
+let crd;
 sos();
 int sacc;
 int sacs;
@@ -280,23 +280,23 @@ sacs=safeguards;
 else if (safeguards>25) {
 sacs=25;
 }
-sp.stream("sac");
-sp.play_wait();
-vo.speak_wait(sacc);
+sp=so.create("sac");
+await sp.playSync();
+vo.speak_await utils.sleep(sacc);
 sp=so.create("sacs");
-sp.play_wait();
-vo.speak_wait(sacs);
+await sp.playSync();
+vo.speak_await utils.sleep(sacs);
 sp=so.create("safeguards");
-sp.play_wait();
+await sp.playSync();
 sp=so.create("casecontinue");
 sp.play();
 while(true) {
-wait(5);
-if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+await utils.sleep(5);
+if (inp.isJustPressed(KeyEvent.DOM_VK_N) || inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 mainmenu();
 return;
 }
-if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_Y) || inp.isJustPressed(KeyEvent.DOM_VK_S)) {
 cash-=sacc;
 safeguards-=sacs;
 ser();
@@ -333,7 +333,7 @@ cases.insert_last("b13");
 //shuffle
 string[] shuffled=shuffle(cases);
 sp=so.create("case_intro"+lang);
-if (!testing) sp.play_wait();
+if (!testing) await sp.playSync();
 enhanced_menu cm;
 cm.allow_escape=false;
 cm.reset(false);
@@ -363,22 +363,22 @@ prize=gcn(position);
 shuffled[nn]="";
 if (!testing) {
 sp=so.create("case_give"+lang);
-sp.play_wait();
-vo.speak_wait(sacc);
+await sp.playSync();
+vo.speak_await utils.sleep(sacc);
 sp=so.create("case_thank"+lang);
-sp.play_wait();
+await sp.playSync();
 sp=so.create("case_begin"+lang);
-if (!testing) sp.play_wait();
+if (!testing) await sp.playSync();
 }
 sp=so.create("casec"+nn+"_"+lang);
 sp.play();
-wait(random(450,850));
-crd.stream("case_cintro");
+await utils.sleep(utils.randomInt(450,850));
+crd=so.create("case_cintro");
 crd.play();
-wait(2000);
-cmus.stream("case_play"+lang);
-if (!testing) cmus.play_wait();
-cmus.stream("case_music");
+await utils.sleep(2000);
+cmus=so.create("case_play"+lang);
+if (!testing) cmus.play_await utils.sleep();
+cmus=so.create("case_music");
 cmus.play_looped();
 while (turnNumber<23) {
 cm.reset(false);
@@ -391,7 +391,7 @@ cm.add("casec"+i+"_"+lang,i);
 }
 }
 string position;
-if (!sorting) position=cm.run_extended("case_open"+random(1,5),false,"check",true);
+if (!sorting) position=cm.run_extended("case_open"+utils.randomInt(1,5),false,"check",true);
 if (sorting) position=cm.run_extended("",false,"check",false);
 sorting=false;
 if (position=="check") {
@@ -400,25 +400,25 @@ sort_cases(shuffled,prize,prizet);
 else {
 cmus.volume=-10;
 cmus.pitch=cmus.pitch+0.5;
-sp.stream("open"+random(1,3));
+sp=so.create("open"+utils.randomInt(1,3));
 sp.play();
-wait(3000);
+await utils.sleep(3000);
 string ten;
 if (turnNumber<=20) ten="case_tension1";
 if (turnNumber>20) ten="case_tension2";
 tens.stream(ten);
 if (!testing) tens.play();
-if (!testing && ten=="case_tension1") wait(8000);
-if (!testing && ten=="case_tension2") wait(8300);
-sp.stream("case"+position);
-sp.play_wait();
+if (!testing && ten=="case_tension1") await utils.sleep(8000);
+if (!testing && ten=="case_tension2") await utils.sleep(8300);
+sp=so.create("case"+position);
+await sp.playSync();
 int nn=string_to_number(position);
 position=shuffled[nn];
 shuffled[nn]="";
 turnNumber++;
-sp.stream("ca"+position);
+sp=so.create("ca"+position);
 sp.play();
-wait(random(300,700));
+await utils.sleep(utils.randomInt(300,700));
 double value;
 case_avg(shuffled,turnNumber,prize,prizet);
 if (!testing) {
@@ -429,19 +429,19 @@ else {
 value=gcn(position);
 }
 if (value<=25000) {
-crd.stream("case_cr3");
-crd.play_wait();
+crd=so.create("case_cr3");
+crd.play_await utils.sleep();
 }
 else if (value>25000 && value<=100000) {
-crd.stream("case_cr1");
-crd.play_wait();
+crd=so.create("case_cr1");
+crd.play_await utils.sleep();
 }
 else if (value>=100000 || didbad) {
-crd.stream("case_cr2");
-crd.play_wait();
+crd=so.create("case_cr2");
+crd.play_await utils.sleep();
 }
 }
-if (testing) wait(1000);
+if (testing) await utils.sleep(1000);
 //offering
 if (string_contains(position,"b",1)>-1) {
 if (gcn(position)>=max) {
@@ -457,9 +457,9 @@ maxsort.sort_ascending();
 if (maxsort.length>1) max=maxsort[maxsort.length-1];
 if (maxsort.length<=1) max=maxsort[maxsort.length];
 if (max>=15000) {
-sp.stream("case_still"+lang);
-sp.play_wait();
-vo.speak_wait(max);
+sp=so.create("case_still"+lang);
+await sp.playSync();
+vo.speak_await utils.sleep(max);
 }
 }
 else {
@@ -467,12 +467,12 @@ didbad=false;
 }
 }
 if (turnNumber>4 && newavg!=oldavg) {
-crd.stream("case_offer");
+crd=so.create("case_offer");
 crd.play();
-wait(900);
-sp.stream("case_offer"+lang);
-sp.play_wait();
-vo.speak_wait(newavg);
+await utils.sleep(900);
+sp=so.create("case_offer"+lang);
+await sp.playSync();
+vo.speak_await utils.sleep(newavg);
 enhanced_menu dem;
 dem.allow_escape=true;
 dem.add("case_yes","y");
@@ -481,12 +481,12 @@ string dch=dem.run_extended("case_deal"+lang,false,"esc",true);
 if (dch=="y") {
 cash+=newavg;
 cmus.stop();
-cmus.stream("case_coward"+lang);
+cmus=so.create("case_coward"+lang);
 cmus.play();
-wait(5000);
-vo.speak_wait(newavg);
+await utils.sleep(5000);
+vo.speak_await utils.sleep(newavg);
 sp=so.create("beatcoins");
-sp.play_wait();
+await sp.playSync();
 mainmenu();
 return;
 }
@@ -496,37 +496,37 @@ cmus.volume=0;
 }//checking
 }//while
 cmus.stop();
-sp.stream("case_winning");
+sp=so.create("case_winning");
 sp.play();
-wait(6500);
-tens.stream("case_tension3");
+await utils.sleep(6500);
+tens=so.create("case_tension3");
 tens.play();
-wait(5000);
-sp.stream("case"+prizen);
-sp.play_wait();
-sp.stream("ca"+prizec);
+await utils.sleep(5000);
+sp=so.create("case"+prizen);
+await sp.playSync();
+sp=so.create("ca"+prizec);
 sp.play();
-wait(random(300,700));
+await utils.sleep(utils.randomInt(300,700));
 double value;
 value=prize;
 if (prizet==2) prize*=1000;
 if (value<=25000) {
-cmus.stream("case_loser");
-crd.stream("case_cr2");
+cmus=so.create("case_loser");
+crd=so.create("case_cr2");
 crd.play();
-cmus.play_wait();
+cmus.play_await utils.sleep();
 }
 else if (value>25000 && value<=100000) {
-cmus.stream("case_winner");
-crd.stream("case_cr3");
+cmus=so.create("case_winner");
+crd=so.create("case_cr3");
 crd.play();
-cmus.play_wait();
+cmus.play_await utils.sleep();
 }
 else if (value>=100000) {
-cmus.stream("case_winner100");
-crd.stream("bw_gol6");
+cmus=so.create("case_winner100");
+crd=so.create("bw_gol6");
 crd.play();
-cmus.play_wait();
+cmus.play_await utils.sleep();
 }
 if (prizet==1) cash+=prize;
 if (prizet==2) safeguards+=prize/1000;
@@ -537,14 +537,14 @@ double bpm2ms(double bpm) {
 return 1000*(60/bpm);
 }
 void upbeat() {
-sound sp;
+let sp;
 int sc=0;
 int level=1;
 sos();
 if (!g_keep) {
 if (cash<=7000) {
 sp=so.create("mini_nobeat");
-sp.play_wait();
+await sp.playSync();
 mainmenu();
 return;
 }
@@ -552,32 +552,32 @@ sp=so.create("mini_buybeat");
 sp.play();
 bool cont=false;
 while (!cont) {
-if (key_pressed(KEY_Y) || key_pressed(KEY_S)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_Y) || inp.isJustPressed(KeyEvent.DOM_VK_S)) {
 cont=true;
 g_keep=true;
 lesscash(7000);
 sp=so.create("gamecash");
-sp.play_wait();
+await sp.playSync();
 }//key s
-if (key_pressed(KEY_N) || key_pressed(KEY_ESCAPE)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_N) || inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 sp.stop();
 cont=true;
 mainmenu();
 return;
 } //key
-wait(5);
+await utils.sleep(5);
 }//loop
 }//g_keep
-sound next;
+let next;
 next=so.create("up_next");
-sound die;
+let die;
 die=so.create("up_die");
-sound ok;
+let ok;
 ok=so.create("up_ok");
 ok.volume=-4;
 string stempo;
 double tempo=180;
-sound test;
+let test;
 string ch1="a0r5l8@2o5q3C<B->D+ECp8<G>Cp8<G>D+ECp8p8p16<q8B-32B32q3>C<B->D+ECp8<B-Gp2p2>[CDE-DC<AGFp1>]2";
 string ch2="@1a0r2q2o2Cp4Gp4Cp4p8<B-4B-8>Cp4Gp4Cp4G8<q7G4.q2Fp4>Cp4<Fp4>Cp4<Fp4>Cp4<Fp4>C8<q8r0B4p8";
 int times=1;
@@ -601,9 +601,9 @@ sound@ output=s.synth.write_wave_sound();
 times=1;
 value=floor(output.length/64);
 if (tempo>30000) {
-sound win;
+let win;
 win=so.create("up_win");
-win.play_wait();
+win.play_await utils.sleep();
 get_ach("up_win");
 mainmenu();
 return;
@@ -614,18 +614,18 @@ while (times<=69) {
 if (hit.elapsed>=value*2+80) {
 hit.restart();
 }
-if (key_pressed(KEY_RETURN)) {
+if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 if (times>4) {
 if (hit.elapsed<value-80) {
 output.stop();
-die.play_wait();
+die.play_await utils.sleep();
 updie(sc);
 mainmenu();
 return;
 }//elapsed
 else if (hit.elapsed>=value+80) {
 output.stop();
-die.play_wait();
+die.play_await utils.sleep();
 updie(sc);
 mainmenu();
 return;
@@ -640,7 +640,7 @@ hitting=true;
 }//keypress
 if (hit.elapsed>=value+80 && times>6 && !hitting && !testing) {
 output.stop();
-die.play_wait();
+die.play_await utils.sleep();
 updie(sc);
 mainmenu();
 return;
