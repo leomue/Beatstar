@@ -13,6 +13,7 @@ export async function mainMenu() {
 const fs=require('fs');
 		const items = new Array();
 	items.push(new MenuItem(0, strings.get( 'mStart')));
+		items.push(new MenuItem(13, strings.get( 'mRev')));
 	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
 	
 items.push(new MenuItem(1, strings.get( 'mLearn')));
@@ -67,6 +68,9 @@ title:strings.get("selectPack"),
 			break;
 			case 12:
 			browseAch();
+			break;
+			case 13:
+			st.setState(21);
 			break;
 		}
 	});

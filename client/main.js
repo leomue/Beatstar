@@ -5013,6 +5013,7 @@ async function mainMenu() {
 	const fs = require('fs');
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
+	items.push(new _menuItem.MenuItem(13, _strings.strings.get('mRev')));
 	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
 
 	items.push(new _menuItem.MenuItem(1, _strings.strings.get('mLearn')));
@@ -5074,6 +5075,9 @@ async function mainMenu() {
 				break;
 			case 12:
 				(0, _main.browseAch)();
+				break;
+			case 13:
+				_stateMachine.st.setState(21);
 				break;
 		}
 	});
@@ -5748,6 +5752,9 @@ class StateMachine {
 		} else if (state == 2) {
 			event = null;
 			(0, _main.checkPack)();
+			this.state = state;
+		} else if (state == 21) {
+			this.currentState = new _game.Game(_main.credits, 2);
 			this.state = state;
 		} else if (state == 3) {
 			this.currentState = new _game.Game(_main.credits);
@@ -8109,7 +8116,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":7,"./menu":6,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":12,"./tts":11,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],25:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":7,"./menu":6,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":12,"./tts":11,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],26:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -8286,5 +8293,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[25,1])
+},{}]},{},[26,1])
 //# sourceMappingURL=/main.map
