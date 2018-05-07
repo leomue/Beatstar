@@ -1,9 +1,6 @@
 'use strict';
-import {TTS, useWebTTS} from './tts';
+import {speech} from './tts';
 
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
 const MenuTypes = {
 	NORMAL: 0,
 	SELECTOR: 1,

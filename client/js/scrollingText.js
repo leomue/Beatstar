@@ -2,12 +2,8 @@
 import $ from 'jquery';
 import {KeyEvent} from './keycodes';
 import {so} from './soundObject';
-import {TTS, useWebTTS} from './tts';
-
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
-if (runningText == undefined) {
+import {speech} from './tts';
+	if (runningText == undefined) {
 	var runningText = 0;
 }
 class ScrollingText {

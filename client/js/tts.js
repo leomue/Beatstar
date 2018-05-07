@@ -1,16 +1,20 @@
 'use strict';
+import {utils} from './utilities';
 const useWebTTS = true;
-
+import {ttsVoice,ttsRate} from './main';
 class TTS {
 	constructor(webTTS = false) {
 		this.synth = window.speechSynthesis;
 		this.webTTS = webTTS;
 	}
 
-	speak(text) {
+	async speak(text) {
 		if (this.webTTS) {
-			const utterThis = new SpeechSynthesisUtterance(text);
-			this.synth.stop();
+					const utterThis = new SpeechSynthesisUtterance(text);
+						if (typeof ttsVoice!=="undefined") utterThis.voice=ttsVoice;
+			if (typeof ttsRate!=="undefined") utterThis.rate=ttsRate;
+			this.synth.cancel();
+			await utils.sleep(150);
 			this.synth.speak(utterThis);
 		} else {
 			document.getElementById('speech').innerHTML = '';
@@ -24,7 +28,6 @@ class TTS {
 		this.webTTS = tts;
 	}
 } // End class
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
+	var speech = new TTS(false);
+	if (process.platform=='darwin') speech.webTTS=true;
 export {TTS, speech};

@@ -1,7 +1,7 @@
 'use strict';
 import {utils} from './utilities';
 import {strings} from './strings';
-import {speech, TTS, useWebTTS} from './tts';
+import {speech} from './tts';
 import $ from 'jquery';
 import {so} from './soundObject.js';
 import {MenuTypes, MenuItem} from './menuItem';

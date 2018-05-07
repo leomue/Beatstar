@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import {speech} from './tts';
 
 'use strict';
 class KeyboardInput {

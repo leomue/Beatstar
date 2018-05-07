@@ -307,10 +307,10 @@ let pool=new SoundHandler();
 let cardO;
 let first=true;
 let firstBet=bet;
-bet+=firstBet;
+bet=0;
 so.directory="./sounds/";
 let take=so.create("hl_card");
-while (bet!=0) {
+while (bet!=-1) {
 await utils.sleep(8);
 await new Promise((resolve,reject)=> {
 cardO=takeCard(deck);
@@ -349,7 +349,7 @@ dm.destroy();
 await addCashSync(bet,0);
 st.setState(2);
 resolve();
-bet=0;
+bet=-1;
 return;
 }
 let nextCard=takeCard(deck);
@@ -389,7 +389,7 @@ pool.playStatic("hl_crowdlose",0);
 await utils.sleep(3400);
 st.setState(2);
 resolve();
-bet=0;
+bet=-1;
 return;
 }
 });//menu

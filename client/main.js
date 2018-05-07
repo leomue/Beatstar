@@ -1,4 +1,4 @@
-process.env.HMR_PORT=50976;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=52221;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -77,52 +77,12 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({12:[function(require,module,exports) {
+})({4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-const useWebTTS = true;
-
-class TTS {
-	constructor(webTTS = false) {
-		this.synth = window.speechSynthesis;
-		this.webTTS = webTTS;
-	}
-
-	speak(text) {
-		if (this.webTTS) {
-			const utterThis = new SpeechSynthesisUtterance(text);
-			this.synth.stop();
-			this.synth.speak(utterThis);
-		} else {
-			document.getElementById('speech').innerHTML = '';
-			const para = document.createElement('p');
-			para.appendChild(document.createTextNode(text));
-			document.getElementById('speech').appendChild(para);
-		}
-	} // End speak()
-
-	setWebTTS(tts) {
-		this.webTTS = tts;
-	}
-} // End class
-if (typeof speech === 'undefined') {
-	var speech = new TTS();
-}
-exports.TTS = TTS;
-exports.speech = speech;
-},{}],4:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.OldTimer = undefined;
-
-var _tts = require('./tts');
-
 class OldTimer {
 	constructor() {
 		this.elapsed;
@@ -155,7 +115,6 @@ class OldTimer {
 		this.started = true;
 	}
 	restart() {
-		//speech.speak("restarted");
 		this.lastTime = performance.now();
 		this.pauseWhen = 0;
 		this.paused = false;
@@ -169,7 +128,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{"./tts":12}],18:[function(require,module,exports) {
+},{}],20:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3084,8 +3043,6 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _tts = require('./tts');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 'use strict';
@@ -3208,7 +3165,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{"./tts":12}],15:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 
 'use strict';
 
@@ -3450,8 +3407,6 @@ var _input = require('./input');
 var _keycodes = require('./keycodes');
 
 var _utilities = require('./utilities');
-
-var _tts = require('./tts');
 
 const isElectron = true;
 let playOnceTimer;
@@ -3770,7 +3725,6 @@ class SoundObject {
 			for (var i = 0; i < toDestroy.length; i++) {
 				if (that.oneShotSounds[i].playing == false) {
 					that.oneShotSounds.splice(toDestroy[i], 1);
-					_tts.speech.speak('destroyed.' + toDestroy[i]);
 				}
 			}
 		});
@@ -3805,7 +3759,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":18,"./input":3,"./keycodes":15,"./utilities":13,"./tts":12}],17:[function(require,module,exports) {
+},{"./howler":20,"./input":3,"./keycodes":15,"./utilities":13}],18:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3896,7 +3850,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":18,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":20,"./soundObject.js":14}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4031,7 +3985,51 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":17,"./soundObject.js":14}],6:[function(require,module,exports) {
+},{"./soundSource.js":18,"./soundObject.js":14}],11:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.speech = exports.TTS = undefined;
+
+var _utilities = require('./utilities');
+
+var _main = require('./main');
+
+const useWebTTS = true;
+
+class TTS {
+	constructor(webTTS = false) {
+		this.synth = window.speechSynthesis;
+		this.webTTS = webTTS;
+	}
+
+	async speak(text) {
+		if (this.webTTS) {
+			const utterThis = new SpeechSynthesisUtterance(text);
+			if (typeof _main.ttsVoice !== "undefined") utterThis.voice = _main.ttsVoice;
+			if (typeof _main.ttsRate !== "undefined") utterThis.rate = _main.ttsRate;
+			this.synth.cancel();
+			await _utilities.utils.sleep(150);
+			this.synth.speak(utterThis);
+		} else {
+			document.getElementById('speech').innerHTML = '';
+			const para = document.createElement('p');
+			para.appendChild(document.createTextNode(text));
+			document.getElementById('speech').appendChild(para);
+		}
+	} // End speak()
+
+	setWebTTS(tts) {
+		this.webTTS = tts;
+	}
+} // End class
+var speech = new TTS(false);
+if (process.platform == 'darwin') speech.webTTS = true;
+exports.TTS = TTS;
+exports.speech = speech;
+},{"./utilities":13,"./main":1}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4041,9 +4039,6 @@ exports.MenuTypes = exports.SelectorItem = exports.SliderItem = exports.MenuItem
 
 var _tts = require('./tts');
 
-if (typeof speech === 'undefined') {
-	var speech = new _tts.TTS();
-}
 const MenuTypes = {
 	NORMAL: 0,
 	SELECTOR: 1,
@@ -4058,7 +4053,7 @@ class MenuItem {
 	}
 
 	speak() {
-		speech.speak(this.name);
+		_tts.speech.speak(this.name);
 	}
 
 	select() {
@@ -4078,14 +4073,14 @@ class SelectorItem extends MenuItem {
 	}
 
 	speak() {
-		speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
+		_tts.speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
 	}
 
 	increase() {
 		if (this.currentOption < this.options.length - 1) {
 			this.currentOption++;
 		}
-		speech.speak(this.options[this.currentOption]);
+		_tts.speech.speak(this.options[this.currentOption]);
 		if (typeof this.selectCallback !== 'undefined') {
 			this.selectCallback(this.options[this.currentOption]);
 		}
@@ -4095,7 +4090,7 @@ class SelectorItem extends MenuItem {
 		if (this.currentOption > 0) {
 			this.currentOption--;
 		}
-		speech.speak(this.options[this.currentOption]);
+		_tts.speech.speak(this.options[this.currentOption]);
 		if (typeof this.selectCallback !== 'undefined') {
 			this.selectCallback(this.options[this.currentOption]);
 		}
@@ -4119,7 +4114,7 @@ class SliderItem extends MenuItem {
 	}
 
 	speak() {
-		speech.speak(this.name + '. Slider. Set to ' + this.currentValue);
+		_tts.speech.speak(this.name + '. Slider. Set to ' + this.currentValue);
 	}
 
 	increase() {
@@ -4127,7 +4122,7 @@ class SliderItem extends MenuItem {
 			this.currentValue += this.increaseBy;
 		}
 		if (this.currentValue > this.maxValue) this.currentValue = this.maxValue;
-		speech.speak(this.currentValue);
+		_tts.speech.speak(this.currentValue);
 	}
 
 	decrease() {
@@ -4135,7 +4130,7 @@ class SliderItem extends MenuItem {
 			this.currentValue -= this.increaseBy;
 		}
 		if (this.currentValue < this.minValue) this.currentValue = this.minValue;
-		speech.speak(this.currentValue);
+		_tts.speech.speak(this.currentValue);
 	}
 
 	select() {
@@ -4153,17 +4148,17 @@ class EditItem extends MenuItem {
 	}
 
 	speak() {
-		speech.speak(this.name + '. Editable. ' + (this.text == '' ? 'Nothing entered.' : 'Set to ' + this.text));
+		_tts.speech.speak(this.name + '. Editable. ' + (this.text == '' ? 'Nothing entered.' : 'Set to ' + this.text));
 	}
 
 	addChar(char) {
 		this.text += char;
-		speech.speak(char);
+		_tts.speech.speak(char);
 	}
 
 	removeChar() {
 		this.text = this.text.substring(0, this.text.length - 1);
-		speech.speak(this.text);
+		_tts.speech.speak(this.text);
 	}
 
 	select() {
@@ -4174,7 +4169,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":12}],9:[function(require,module,exports) {
+},{"./tts":11}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4194,9 +4189,6 @@ var _tts = require('./tts');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-if (typeof speech === 'undefined') {
-	var speech = new _tts.TTS();
-}
 if (runningText == undefined) {
 	var runningText = 0;
 }
@@ -4265,7 +4257,7 @@ class ScrollingText {
 				this.advance();
 			});
 		} else {
-			speech.speak(this.splitText[this.currentLine]);
+			_tts.speech.speak(this.splitText[this.currentLine]);
 		}
 	}
 
@@ -4290,8 +4282,8 @@ class ScrollingText {
 	}
 }
 exports.ScrollingText = ScrollingText;
-exports.speech = speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":12}],10:[function(require,module,exports) {
+exports.speech = _tts.speech;
+},{"./keycodes":15,"./soundObject":14,"./tts":11}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4702,7 +4694,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1,"./utilities":13,"./tts":12,"./scrollingText":9}],7:[function(require,module,exports) {
+},{"./main":1,"./utilities":13,"./tts":11,"./scrollingText":9}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4997,7 +4989,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":11,"./soundObject.js":14,"./menuItem":7,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5019,7 +5011,6 @@ var _menu = require('./menu');
 
 async function mainMenu() {
 	const fs = require('fs');
-	speech.webTTS = true;
 	const items = new Array();
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
 	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
@@ -5087,7 +5078,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],20:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":7,"./menu":6}],21:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5699,7 +5690,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":10,"./tts":11,"./main":1,"./oldtimer":4,"./soundHandler":12,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5708,8 +5699,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.st = undefined;
 
 var _input = require('./input');
-
-var _tts = require('./tts');
 
 var _main = require('./main');
 
@@ -5787,7 +5776,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./tts":12,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
+},{"./input":3,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6125,10 +6114,10 @@ async function playDeck() {
 				let cardO;
 				let first = true;
 				let firstBet = bet;
-				bet += firstBet;
+				bet = 0;
 				_soundObject.so.directory = "./sounds/";
 				let take = _soundObject.so.create("hl_card");
-				while (bet != 0) {
+				while (bet != -1) {
 								await _utilities.utils.sleep(8);
 								await new Promise((resolve, reject) => {
 												cardO = takeCard(deck);
@@ -6166,7 +6155,7 @@ async function playDeck() {
 																								await (0, _main.addCashSync)(bet, 0);
 																								_stateMachine.st.setState(2);
 																								resolve();
-																								bet = 0;
+																								bet = -1;
 																								return;
 																}
 																let nextCard = takeCard(deck);
@@ -6203,7 +6192,7 @@ async function playDeck() {
 																				await _utilities.utils.sleep(3400);
 																				_stateMachine.st.setState(2);
 																				resolve();
-																				bet = 0;
+																				bet = -1;
 																				return;
 																}
 												}); //menu
@@ -6579,7 +6568,7 @@ async function playFootball() {
 				});
 				return;
 }
-},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":4,"./soundHandler":12,"./menuItem":7,"./menu":6,"./scrollingText":9,"./strings":10,"./tts":11,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6619,12 +6608,12 @@ class Player {
 }
 exports.Player = Player;
 },{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.packdir = exports.data = exports.pack = exports.langs = exports.mangle = exports.actionKeys = exports.minis = exports.credits = exports.editing = exports.lang = undefined;
+exports.packdir = exports.data = exports.pack = exports.langs = exports.mangle = exports.actionKeys = exports.minis = exports.credits = exports.editing = exports.ttsRate = exports.ttsVoice = exports.lang = undefined;
 exports.learnPack = learnPack;
 exports.browsePacks = browsePacks;
 exports.rebuildHashes = rebuildHashes;
@@ -6646,55 +6635,58 @@ exports.editPack = editPack;
 exports.getAch = getAch;
 exports.browseAch = browseAch;
 
-var _oldtimer = require('./oldtimer');
+var _oldtimer = require("./oldtimer");
 
-var _jquery = require('jquery');
+var _jquery = require("jquery");
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _minis = require('./minis.js');
+var _minis = require("./minis.js");
 
-var _cryptr = require('cryptr');
+var _cryptr = require("cryptr");
 
 var _cryptr2 = _interopRequireDefault(_cryptr);
 
-var _player = require('./player');
+var _player = require("./player");
 
-var _menuItem = require('./menuItem');
+var _menuItem = require("./menuItem");
 
-var _menu = require('./menu');
+var _menu = require("./menu");
 
-var _fsWalk = require('fs-walk');
+var _fsWalk = require("fs-walk");
 
 var _fsWalk2 = _interopRequireDefault(_fsWalk);
 
-var _os = require('os');
+var _os = require("os");
 
 var _os2 = _interopRequireDefault(_os);
 
-var _menuHandler = require('./menuHandler');
+var _menuHandler = require("./menuHandler");
 
-var _scrollingText = require('./scrollingText');
+var _scrollingText = require("./scrollingText");
 
-var _strings = require('./strings');
+var _strings = require("./strings");
 
-var _soundHandler = require('./soundHandler');
+var _soundHandler = require("./soundHandler");
 
-var _tts = require('./tts');
+var _tts = require("./tts");
 
-var _utilities = require('./utilities');
+var _utilities = require("./utilities");
 
-var _soundObject = require('./soundObject');
+var _soundObject = require("./soundObject");
 
-var _keycodes = require('./keycodes');
+var _keycodes = require("./keycodes");
 
-var _stateMachine = require('./stateMachine');
+var _stateMachine = require("./stateMachine");
 
-var _input = require('./input.js');
+var _input = require("./input.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var lang = exports.lang = 0;
+var ttsVoice = exports.ttsVoice = undefined;
+var ttsRate = exports.ttsRate = undefined;
+let achs = ["fw", "fl", "idle", "dl", "dw", "w1", "w5", "w10", "w25", "w50", "usepinky", "lactions", "fingr", "bulk", "intro", "slotswin", "frust", "evils", "catslots", "robber"];
 var editing = exports.editing = false;
 //import {SoundPool} from './soundPool';
 
@@ -6717,6 +6709,7 @@ document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
 	//checkPack(false,true);
 	//return;
+	console.log(process.platform);
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -7192,8 +7185,6 @@ async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		//await strings.check(2);
-		data.beatcoins = 1000000;
-		_stateMachine.st.setState(2);
 		return;
 	}
 	booter();
@@ -8118,7 +8109,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],43:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":7,"./menu":6,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":12,"./tts":11,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],25:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');
@@ -8295,5 +8286,5 @@ function hmrAccept(bundle, id) {
   });
 }
 
-},{}]},{},[43,1])
+},{}]},{},[25,1])
 //# sourceMappingURL=/main.map

@@ -11,8 +11,7 @@ import {pack, packdir, rebuildHashes, downloadPacks} from './main';
 import {Menu} from './menu';
 export async function mainMenu() {
 const fs=require('fs');
-	speech.webTTS=true;
-	const items = new Array();
+		const items = new Array();
 	items.push(new MenuItem(0, strings.get( 'mStart')));
 	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
 	

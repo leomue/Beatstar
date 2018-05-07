@@ -2,7 +2,6 @@ import {Howl, Howler,Spatial} from './howler';
 import {KeyboardInput} from './input';
 import {KeyEvent} from './keycodes';
 import {utils} from './utilities';
-import {speech} from './tts';
 const isElectron = true;
 let playOnceTimer;
 class SoundObjectItem {
@@ -320,8 +319,7 @@ toDestroy.push(i);
 			for (var i = 0; i < toDestroy.length; i++) {
 				if (that.oneShotSounds[i].playing == false) {
 				that.oneShotSounds.splice(toDestroy[i], 1);
-									speech.speak('destroyed.' + toDestroy[i]);
-				}
+													}
 			}
 		 });
 	}

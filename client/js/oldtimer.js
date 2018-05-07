@@ -1,5 +1,4 @@
 'use strict';
-import {speech} from './tts'
 class OldTimer {
 	constructor() {
 		this.elapsed;
@@ -32,7 +31,6 @@ class OldTimer {
 		this.started = true;
 	}
 restart() {
-//speech.speak("restarted");
 		this.lastTime = performance.now();
 		this.pauseWhen = 0;
 		this.paused = false;

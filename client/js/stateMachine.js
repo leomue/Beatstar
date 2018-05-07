@@ -2,7 +2,6 @@
 let event = new KeyboardInput();
 
 import {KeyboardInput} from './input';
-import {speech} from './tts';
 import {credits,listenPack,checkPack, learnPack, browsePacks} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
