@@ -160,11 +160,12 @@ this.timer.stop();
 this.setupLevel();
 return;
 		}
-		this.action = utils.randomInt(1, this.actions);
+		if (!this.rev) this.action = utils.randomInt(1, this.actions);
+				if (this.rev) this.action = utils.randomInt(2, this.actions);
 		this.actionCompleted = false;
 		so.directory = '';
-	if (!rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
-		if (rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
+	if (!this.rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
+		if (this.rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
 	so.directory = './sounds/';
 	//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
@@ -342,8 +343,8 @@ this.doScore();
 		}
 		if (keys.length == 1 && keys[0] == this.keys[this.action]) {
 			so.directory = '';
-	if (!rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
-		if (rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
+	if (!this.rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
+		if (this.rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
 	so.directory = './sounds/';
 	this.actionCompleted = true;
 	this.calculateScore();

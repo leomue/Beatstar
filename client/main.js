@@ -1,4 +1,4 @@
-process.env.HMR_PORT=52221;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=55548;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -128,7 +128,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],20:[function(require,module,exports) {
+},{}],18:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3759,7 +3759,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":20,"./input":3,"./keycodes":15,"./utilities":13}],18:[function(require,module,exports) {
+},{"./howler":18,"./input":3,"./keycodes":15,"./utilities":13}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3850,7 +3850,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":20,"./soundObject.js":14}],12:[function(require,module,exports) {
+},{"./howler":18,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3985,7 +3985,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":18,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./soundSource.js":17,"./soundObject.js":14}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4029,7 +4029,7 @@ var speech = new TTS(false);
 if (process.platform == 'darwin') speech.webTTS = true;
 exports.TTS = TTS;
 exports.speech = speech;
-},{"./utilities":13,"./main":1}],7:[function(require,module,exports) {
+},{"./utilities":13,"./main":1}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4169,7 +4169,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":11}],9:[function(require,module,exports) {
+},{"./tts":12}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4200,9 +4200,9 @@ class ScrollingText {
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
 		this.currentLine = 0;
-		this.sndOpen = _soundObject.so.create('UI/textOpen');
-		this.sndContinue = _soundObject.so.create('UI/textScroll');
-		this.sndClose = _soundObject.so.create('UI/textClose');
+		this.sndOpen = _soundObject.so.create('ui/textOpen');
+		this.sndContinue = _soundObject.so.create('ui/textScroll');
+		this.sndClose = _soundObject.so.create('ui/textClose');
 		const id = document.getElementById('touchArea');
 		// This.hammer = new Hammer(id);
 		this.init();
@@ -4283,7 +4283,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = _tts.speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":11}],10:[function(require,module,exports) {
+},{"./keycodes":15,"./soundObject":14,"./tts":12}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4303,10 +4303,40 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			tuthighlow: `Welcome to higher or lower!
+This is the typical higher or lower game. You will get a card, and you will have to guess whether the next card will be higher or lower than the one you got.
+The values are ace, numbers 2 to 10, jack, queen, king.
+Each time you get a card right, you will get more beatcoins, but if you lose you will not get anything!
+Good luck!`,
+			tutfootball: "This game is self explanatory. Just follow the audio instructions!",
+			tutdouble: "This game is 100% random and it is based purely on a 50/50 chance. Will you win or lose? Let's find out!",
+			tutcode: `Welcome to beat the code!
+In this game, you will have to break a series of codes which use the sounds from your pack.
+To play the game, you use the normal keys you would use during the game tab, space, enter and backspace.
+You will first hear an announcement saying the number of keys in the code. Then, you can start figuring out the code by pressing keys.
+For example, if you press space and hear this,
+!code_wrong
+it means that the key you pressed was the wrong one.
+However, if you hear this,
+!code_ok
+it means that the key was ok. So the code begins with space.
+If you then press the tab key and hear the code wrong sound, you need to begin the code again by pressing space.
+You know that the first key is space and the second one is not tab, so try guessing other keys until the code is complete.
+Each time you get a code right, the number of keys in the code will increase as well as the amount of time you have to discover it.
+Keys can repeat, but all of them will always be present.
+For example, it is not possible for a code to be tab enter space enter tab, but it could be tab tab space enter backspace.
+A word of caution:
+If your pack uses the arrow keys as actions, the game will be a lot harder because these will be included in the code as well, so keep it in mind if you want to play much harder games!
+Have fun!`,
+			mAchTuts: "Achievement spoilers",
+			mRev: "Beat Reverse",
 			football: "soccer kick",
 			achfw: "Premier League Team",
+			achhfw: "Obtained by winning a game of football kick",
 			achfl: "Bad loser: You suck!",
+			achhfl: "Obtained by losing at football kick",
 			achidle: "Pay attention",
+			achhidle: "Pause the game (press p while playing) for more than 60 seconds",
 			saveFeature: `Congratulations, you have unlocked the saved games feature!
 Press the s key for save during a game to save its current state so that you can continue later.
 Note that this is not like the old insurance. The state is only saved until you win or fail, and you will destroy your save if you play minigames, buy packs or safeguards.
@@ -4314,7 +4344,9 @@ Have fun!`,
 			saved: "Game saved!",
 			killSave: "This will destroy your save file for the pack %1 at level %2. Continue?",
 			achdl: "Loser times 2",
+			achhdl: "Lose at double or nothing",
 			achdw: "winner times 2!",
+			achhdw: "Win at double or nothing",
 			double: "Double or nothing",
 			newach: "You have obtained the achievement: %1",
 			achMenu: "Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
@@ -4322,20 +4354,32 @@ Have fun!`,
 			mAch: "Browse achievements",
 			//the following are achievements
 			achw1: "beat newbie",
+			achhw1: "Win a pack",
 			achw5: "it's time for a beer",
+			achhw5: "beat 5 different packs",
 			achw10: "time for another beer",
+			achhw10: "Beat 10 different soundpacks.",
 			achw25: "25 makes 7",
+			achhw25: "Beat 25 different packs.",
 			achw50: "addicted to beatstar",
+			achhw50: "Beat 50 different packs",
 			achusepinky: "Just using my pinky",
+			achhusepinky: "Win a soundpack without using any safeguards",
 			achlactions: "Go learn the actions",
+			achhlactions: "Fail at level 1",
 			achfingr: "Rhythmical fingers",
+			achhfingr: "Stay on beat for more than 5 levels",
 			achbulk: "Vicious downloader",
+			achhbulk: "Click on download all uninstalled packs",
 			achintro: "Get to work",
 			achslotwin: "Slots winner",
+			achhslotwin: "get 3 in a row at beat slots",
 			achfrust: "Frustration unavoidable",
-			achevils: "slots are evil and I can prove it",
+			achhfrust: "Get 2 in a row + a different sound in beat slots",
 			achcatslots: "Slots catastrophe",
+			achhcatslots: "get 3 different sounds in slots",
 			achrobber: "Bank robber",
+			achhrobber: "Crack more than 4 codes in beat the code",
 			collect: "Collect beatcoins and leave",
 			highlow: "Higher or lower",
 			hw: "Welcome to high or low!",
@@ -4415,16 +4459,15 @@ This game uses the action sounds from your pack to play a 3 wheel slot machine.
 If the pack you are currently playing has more than 5 actions, don't worry only the first 5 will be used.
 The first thing you will need to do is place a bet. The minimum is 5000 beatcoins. When you place a bet, those beatcoins will be deducted from your current beatcoins.
 Once you have done that, a wheel will spin, and 3 action sounds will play.
-But this is not a normal slots! This game is evil and, if you lose, the rest of your beatcoins will not be left alone.
-If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
+Si suenan 3 sonidos diferentes, perderás aún más monedas, basándote en las monedas que te quedan y en la apuesta que hiciste. No pasará nada si tienes 0.
 !slot_lose_2
-If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
+Si consigues 2 del mismo tipo y 1 de otro tipo, conseguirás tu apuesta de vuelta pero nada más.
 !slot_lose_1
-If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
+Si los 2 primeros son del mismo tipo, hay una pequeña oportunidad para que consigas el sonido de stop. Si esto pasa conseguirás alrededor del 25% de tu apuesta.
 !slot_lose_3
-However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
+Sin embargo, si consigues 3 iguales, ganarás tu apuesta, + casi el doble de lo que jugaste!
 !slot_win_3
-Have fun playing evil slots!`,
+Disfruta!`,
 			"mFound": "Found %1 new packs: what do you wish to do?",
 			mGames: "minigames",
 			mGameTuts: "Minigame tutorials",
@@ -4487,11 +4530,57 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			tuthighlow: `Bienvenido a la carta más alta!
+Este es el típico juego de cartas. Tienes una carta y tendrás que adivinar si la próxima será más alta o más baja que la anterior.
+Los valores son: El as, números 2 a 10, la sota, la reina, y el rey.
+Cada carta que aciertes, ganarás más monedas, pero si pierdes y te arriegas no ganarás nada!
+Suerte!`,
+
+			tutdouble: "Este juego es 100% aleatorio y hay una oportunidad del 50/50. Ganarás o perderás? A ver a ver...",
+			tutfootball: "Este juego se explica por sí solo. Escucha las instrucciones durante el juego!",
+			tutcode: `Bienvenido a rompecódigos!
+En este juego, tendrás que romper unos códigos que usan los sonidos de tu pack.
+Para jugar, se utilizan las teclas que usas normalmente durante el juego (espacio, tab, enter y retroceso).
+Primero escucharás el número de teclas que hay en el código. Entonces podrás comenzar a descubrir el código pulsando teclas.
+Por ejemplo, si pulsas espacio y oyes esto:
+!code_wrong
+Significa que la tecla que pulsaste no era la correcta.
+Sin embargo, si oyes esto:
+!code_ok
+Significa que es correcta. Así pues, el código comienza con espacio.
+Si luego pulsas tabulador y oyes el sonido de incorrecto, sabes que la segunda tecla no es el tabulador. Tendrás que pulsar entonces la primera tecla del código, ya que cuando fallas tienes que volver a empezar con el principio del código.
+Sabrás que la primera es el espacio y la segunda no es el tabulador, así que intenta con otras teclas hasta que completes el código.
+Cada vez que consigas un código correcto, el número de teclas y el tiempo que tienes para descubrirlas se incrementa. Las teclas pueden repetirse en cualquier momento, pero todas estarán siempre presentes.
+Es decir, no es posible que un código sea espacio tab enter espacio espacio, pero sí espacio tab retroceso espacio enter.
+Cuidado!
+Si tu pack utiliza las flechas como acciones, ten cuidado porque también se incluirán en el código así que tenlo en cuenta si quieres jugar con códigos mucho más difíciles!
+Disfruta!!`,
+			tutslot: `Bienvenidos!
+El tragaperras de las tinieblas, es un juego muy maléfico.
+Este juego usa los sonidos del pack com una máquina de 3 ruedas.
+Si el pack que tienes tiene más de 5 sonidos de acción, solo se usan los primeros 5.
+Lo primero que debes hacer es apostar. La apuesta mínima son 5000. Cuando hayas apostado, se descontarán de tus monedas.
+Cuando hayas hecho esto, empezará a sonar una especie de rueda y se reproducirán 3 sonidos de acciones.
+If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
+!slot_lose_2
+If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
+!slot_lose_1
+If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
+!slot_lose_3
+However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
+!slot_win_3
+Have fun playing evil slots!`,
+
+			mAchTuts: "Spoilers para logros",
+			mRev: "beatrevés",
 			football: "Lanzamiento de penaltis",
 			doublecash: "El mínimo para jugar son 5000 monedas. Lo siento!",
 			achfw: "Equipo de primera",
+			achhfw: "Gana un partido de penaltis",
 			achfl: "Equipo de segunda",
+			achhfl: "Pierde un partido de penaltis",
 			achidle: "Te has quedao empanao!",
+			achhidle: "Pausa el juego (pulsa la p) y déjalo pausado 60 segundos",
 			saveFeature: `Felicidades, has desbloqueado la opción guardar juego!
 		Pulsa la s (de save, guardar en inglés) durante un juego para guardar el estado y el nivel actuales para que puedas continuar después.
 Ten en cuenta que esto no es como el antiguo seguro, el estado se guarda solo hasta que ganes o falles. se perderá el juego si compras packs, antifallos o juegas algún minijuego.
@@ -4499,26 +4588,40 @@ A disfrutar!`,
 			saved: "Guardado!",
 			killSave: "Esto eliminará tu juego guardado para el pack %1. Estás en el nivel %2. Continuar?",
 			achdl: "Doble perdedor",
+			achhdl: "Pierde en doble o nada",
 			achdw: "Doble ganador!",
+			achhdw: "Gana en doble o nada",
 			double: "Doble o nada",
 			newach: "Has obtenido el logro: %1!",
 			noach: "No tienes logros... qué raro!",
 			mAch: "Ver tus logros",
 			achw1: "Novatillo",
+			achhw1: "Gana tu primer pack",
 			achw5: "Una cervecita",
+			achhw5: "Gana 5 packs",
 			achw10: "Otra cervecita",
+			achhw10: "Gana en 10 packs",
 			achw25: "25 son 7",
+			achhw25: "Gana 25 packs diferentes",
 			achw50: "Beatadicto",
+			achhw50: "Gana 50 packs diferentes",
 			achusepinky: "Sin fallos",
+			achhusepinky: "Gana un pack sin usar antifallos",
 			achlactions: "Vete a aprender las acciones",
+			achhlactions: "Falla en el nivel 1",
 			achfingr: "Al ritmo",
+			achhfingr: "Mantén el ritmo durante 5 niveles o más.",
 			achbulk: "Descargador Viciosillo",
+			achhbulk: "Utiliza la opción descargar todos los packs no instalados",
 			achintro: "A trabajar!",
 			achslotwin: "Ganador afortunado",
+			achhslotwin: "Gana en el juego de tragaperras",
 			achfrust: "Frustración inevitable",
-			achevils: "Los tragaperras son malbados y lo puedo demostrar",
+			achhfrust: "Pierde con 2 ruedas iguales en el tragaperras",
 			achcatslots: "tragaperras catastrófico",
+			achhcatslots: "Pierde con 3 ruedas distintas en el tragaperras",
 			achrobber: "Ladrón de bancos",
+			achhrobber: "Consigue 4 o más códigos en el rompecódigos",
 			highlow: "La carta más alta",
 			hw: "Bienvenido a la carta más alta!",
 			yourCard: "Tu carta es el %1",
@@ -4694,7 +4797,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1,"./utilities":13,"./tts":11,"./scrollingText":9}],6:[function(require,module,exports) {
+},{"./main":1,"./utilities":13,"./tts":12,"./scrollingText":9}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4728,6 +4831,8 @@ class Menu {
 		this.first = true;
 		this.cursor = 0;
 		this.name = name;
+		let dir = _soundObject.so.directory;
+		_soundObject.so.directory = "./sounds/";
 		this.sndKeyChar = _soundObject.so.create('ui/keyChar');
 		this.sndKeyDelete = _soundObject.so.create('ui/keyDelete');
 		this.sndSliderLeft = _soundObject.so.create('ui/menuSliderLeft');
@@ -4738,6 +4843,7 @@ class Menu {
 		this.sndOpen = _soundObject.so.create('ui/menuOpen');
 		this.sndSelector = _soundObject.so.create('ui/menuSelector');
 		this.sndWrap = _soundObject.so.create('ui/menuWrap');
+		_soundObject.so.directory = dir;
 		this.selectCallback = null;
 		if (typeof music !== 'undefined') {
 			this.music = music;
@@ -4989,7 +5095,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":11,"./soundObject.js":14,"./menuItem":7,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
+},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5082,7 +5188,7 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":7,"./menu":6}],21:[function(require,module,exports) {
+},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],20:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5186,7 +5292,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Var os=require('os');
 class Game {
-	constructor(creds) {
+	constructor(creds, mode = 1) {
 
 		this.totalScore = [];
 		this.volume = 1;
@@ -5214,11 +5320,13 @@ class Game {
 		this.input.init();
 		this.levels = null;
 		var that = this;
-		this.setup(creds);
+		this.setup(creds, mode);
 	}
 
-	async setup(creds) {
+	async setup(creds, mode) {
 		this.forceLevel = 1;
+		if (mode == 1) this.rev = false;
+		if (mode == 2) this.rev = true;
 		if (typeof _main.data.save.pack !== "undefined") {
 			if (_main.data.save.pack != _main.pack) {
 				let answer = await questionSync("killSave", [_main.data.save.pack, _main.data.save.level]);
@@ -5322,10 +5430,12 @@ class Game {
 			this.setupLevel();
 			return;
 		}
-		this.action = _utilities.utils.randomInt(1, this.actions);
+		if (!this.rev) this.action = _utilities.utils.randomInt(1, this.actions);
+		if (this.rev) this.action = _utilities.utils.randomInt(2, this.actions);
 		this.actionCompleted = false;
 		_soundObject.so.directory = '';
-		this.pool.playStatic(_main.packdir + 'a' + this.action, 0);
+		if (!this.rev) this.pool.playStatic(_main.packdir + 'a' + this.action, 0);
+		if (this.rev) this.pool.playStatic(_main.packdir + 'o' + this.action, 0);
 		_soundObject.so.directory = './sounds/';
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
@@ -5500,7 +5610,8 @@ class Game {
 		}
 		if (keys.length == 1 && keys[0] == this.keys[this.action]) {
 			_soundObject.so.directory = '';
-			this.pool.playStatic(_main.packdir + 'o' + this.action, 0);
+			if (!this.rev) this.pool.playStatic(_main.packdir + 'o' + this.action, 0);
+			if (this.rev) this.pool.playStatic(_main.packdir + 'a' + this.action, 0);
 			_soundObject.so.directory = './sounds/';
 			this.actionCompleted = true;
 			this.calculateScore();
@@ -5694,7 +5805,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./strings":10,"./tts":11,"./main":1,"./oldtimer":4,"./soundHandler":12,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5926,18 +6037,17 @@ async function playSlots() {
 																} else if (wheels[2] == 1) {
 																				let lose = _soundObject.so.create("slot_lose_3");
 																				lose.play();
+																				let capcash = myBet;
+																				if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
+																				let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(15, 25), capcash));
+																				console.log("perc" + perc);
+																				_main.data.beatcoins -= perc;
 																				lose.sound.once("end", async function () {
-																								await (0, _main.getAch)("evils");
-																								let capcash = myBet;
-																								console.log(capcash);
-																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
-																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(15, 25), capcash));
-																								console.log("perc" + perc);
 																								(0, _main.addCash)(0, perc, function () {
 																												_soundObject.so.kill(function () {
 																																_stateMachine.st.setState(2);
 																												});
-																								});
+																								}, true);
 																				});
 																} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
 																				let lose = _soundObject.so.create("slot_lose_1");
@@ -5945,9 +6055,7 @@ async function playSlots() {
 																				lose.sound.once("end", async function () {
 																								await (0, _main.getAch)("frust");
 																								let capcash = myBet;
-																								console.log(capcash);
 																								let perc = capcash;
-																								console.log("perc" + perc);
 																								(0, _main.addCash)(perc, 0, function () {
 																												_soundObject.so.kill(function () {
 																																_stateMachine.st.setState(2);
@@ -6575,7 +6683,7 @@ async function playFootball() {
 				});
 				return;
 }
-},{"./main":1,"./oldtimer":4,"./soundHandler":12,"./menuItem":7,"./menu":6,"./scrollingText":9,"./strings":10,"./tts":11,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6693,7 +6801,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var lang = exports.lang = 0;
 var ttsVoice = exports.ttsVoice = undefined;
 var ttsRate = exports.ttsRate = undefined;
-let achs = ["fw", "fl", "idle", "dl", "dw", "w1", "w5", "w10", "w25", "w50", "usepinky", "lactions", "fingr", "bulk", "intro", "slotswin", "frust", "evils", "catslots", "robber"];
+let achs = ["fw", "fl", "idle", "dl", "dw", "w1", "w5", "w10", "w25", "w50", "usepinky", "lactions", "fingr", "bulk", "intro", "slotwin", "frust", "catslots", "robber"];
 var editing = exports.editing = false;
 //import {SoundPool} from './soundPool';
 
@@ -7613,17 +7721,17 @@ function booter() {
 			(0, _menuHandler.mainMenu)();
 		}
 }
-async function addCashSync(c1, c2 = 0, callback) {
+async function addCashSync(c1, c2 = 0, simulate = false) {
 	return new Promise((resolve, reject) => {
 		addCash(c1, c2, function () {
 			resolve("ok");
-		});
+		}, simulate);
 	});
 }
-async function addCash(c1, c2 = 0, callback) {
+async function addCash(c1, c2 = 0, callback, simulate = false) {
 	let coinCap = -1;
 	let cash = Math.ceil(c1 - c2);
-	data.beatcoins += cash;
+	if (!simulate) data.beatcoins += cash;
 	save();
 	let positive = true;
 	let time = 370;
@@ -8096,6 +8204,7 @@ async function browseAch() {
 	for (let i in data.ach) {
 		items.push(new _menuItem.MenuItem(data.ach[i], _strings.strings.get("ach" + data.ach[i])));
 	}
+	items.push(new _menuItem.MenuItem(-1, _strings.strings.get("mAchTuts")));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get("mBack")));
 	let acm = new _menu.Menu(_strings.strings.get("achMenu"), items, _soundObject.so.create("ach_music"));
 	let exit = false;
@@ -8109,6 +8218,17 @@ async function browseAch() {
 					resolve();
 					exit = true;
 					return;
+				} else if (s.selected == -1) {
+					for (let i in achs) {
+						if (!data.ach.hasOwnProperty(achs[i])) {
+							await new _scrollingText.ScrollingText(_strings.strings.get("ach" + achs[i]) + ": " + _strings.strings.get("achh" + achs[i]));
+						}
+					}
+					acm.destroy();
+					_stateMachine.st.setState(2);
+					resolve();
+					exit = true;
+					return;
 				}
 				await getAch(s.selected, true);
 				resolve();
@@ -8116,7 +8236,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":7,"./menu":6,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":12,"./tts":11,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],26:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],26:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var global = (1, eval)('this');

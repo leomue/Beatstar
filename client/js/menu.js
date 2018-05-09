@@ -14,6 +14,8 @@ class Menu {
 		this.first=true;
 		this.cursor = 0;
 		this.name = name;
+		let dir=so.directory;
+		so.directory="./sounds/";
 		this.sndKeyChar = so.create('ui/keyChar');
 		this.sndKeyDelete = so.create('ui/keyDelete');
 		this.sndSliderLeft = so.create('ui/menuSliderLeft');
@@ -24,6 +26,7 @@ class Menu {
 		this.sndOpen = so.create('ui/menuOpen');
 		this.sndSelector = so.create('ui/menuSelector');
 		this.sndWrap = so.create('ui/menuWrap');
+				so.directory=dir;
 		this.selectCallback = null;
 		if (typeof music !== 'undefined') {
 			this.music = music;

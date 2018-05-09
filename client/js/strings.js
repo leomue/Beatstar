@@ -7,11 +7,40 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+tuthighlow:`Welcome to higher or lower!
+This is the typical higher or lower game. You will get a card, and you will have to guess whether the next card will be higher or lower than the one you got.
+The values are ace, numbers 2 to 10, jack, queen, king.
+Each time you get a card right, you will get more beatcoins, but if you lose you will not get anything!
+Good luck!`,
+tutfootball:"This game is self explanatory. Just follow the audio instructions!",
+tutdouble:"This game is 100% random and it is based purely on a 50/50 chance. Will you win or lose? Let's find out!",
+tutcode:`Welcome to beat the code!
+In this game, you will have to break a series of codes which use the sounds from your pack.
+To play the game, you use the normal keys you would use during the game tab, space, enter and backspace.
+You will first hear an announcement saying the number of keys in the code. Then, you can start figuring out the code by pressing keys.
+For example, if you press space and hear this,
+!code_wrong
+it means that the key you pressed was the wrong one.
+However, if you hear this,
+!code_ok
+it means that the key was ok. So the code begins with space.
+If you then press the tab key and hear the code wrong sound, you need to begin the code again by pressing space.
+You know that the first key is space and the second one is not tab, so try guessing other keys until the code is complete.
+Each time you get a code right, the number of keys in the code will increase as well as the amount of time you have to discover it.
+Keys can repeat, but all of them will always be present.
+For example, it is not possible for a code to be tab enter space enter tab, but it could be tab tab space enter backspace.
+A word of caution:
+If your pack uses the arrow keys as actions, the game will be a lot harder because these will be included in the code as well, so keep it in mind if you want to play much harder games!
+Have fun!`,
+mAchTuts:"Achievement spoilers",
 	mRev:"Beat Reverse",
 football:"soccer kick",
 achfw:"Premier League Team",
+achhfw:"Obtained by winning a game of football kick",
 achfl:"Bad loser: You suck!",
+achhfl:"Obtained by losing at football kick",
 achidle:"Pay attention",
+achhidle:"Pause the game (press p while playing) for more than 60 seconds",
 saveFeature:`Congratulations, you have unlocked the saved games feature!
 Press the s key for save during a game to save its current state so that you can continue later.
 Note that this is not like the old insurance. The state is only saved until you win or fail, and you will destroy your save if you play minigames, buy packs or safeguards.
@@ -19,7 +48,9 @@ Have fun!`,
 saved:"Game saved!",
 killSave:"This will destroy your save file for the pack %1 at level %2. Continue?",
 achdl:"Loser times 2",
+achhdl:"Lose at double or nothing",
 achdw:"winner times 2!",
+achhdw:"Win at double or nothing",
 double:"Double or nothing",
 newach:"You have obtained the achievement: %1",
 achMenu:"Achievements: Use arrows to browse your achievements and enter to play one. You can interrupt a playing achievement by pressing q.",
@@ -27,20 +58,32 @@ noach:"You have no achievements yet. Go get some!",
 mAch:"Browse achievements",
 //the following are achievements
 achw1:"beat newbie",
+achhw1:"Win a pack",
 achw5:"it's time for a beer",
+achhw5:"beat 5 different packs",
 achw10:"time for another beer",
+achhw10:"Beat 10 different soundpacks.",
 achw25:"25 makes 7",
+achhw25:"Beat 25 different packs.",
 achw50:"addicted to beatstar",
+achhw50:"Beat 50 different packs",
 achusepinky:"Just using my pinky",
+achhusepinky:"Win a soundpack without using any safeguards",
 achlactions:"Go learn the actions",
+achhlactions:"Fail at level 1",
 achfingr:"Rhythmical fingers",
+achhfingr:"Stay on beat for more than 5 levels",
 achbulk:"Vicious downloader",
+achhbulk:"Click on download all uninstalled packs",
 achintro:"Get to work",
 achslotwin:"Slots winner",
+achhslotwin:"get 3 in a row at beat slots",
 achfrust:"Frustration unavoidable",
-achevils:"slots are evil and I can prove it",
+achhfrust:"Get 2 in a row + a different sound in beat slots",
 achcatslots:"Slots catastrophe",
+achhcatslots:"get 3 different sounds in slots",
 achrobber:"Bank robber",
+achhrobber:"Crack more than 4 codes in beat the code",
 collect:"Collect beatcoins and leave",
 highlow:"Higher or lower",
 hw:"Welcome to high or low!",
@@ -120,16 +163,15 @@ This game uses the action sounds from your pack to play a 3 wheel slot machine.
 If the pack you are currently playing has more than 5 actions, don't worry only the first 5 will be used.
 The first thing you will need to do is place a bet. The minimum is 5000 beatcoins. When you place a bet, those beatcoins will be deducted from your current beatcoins.
 Once you have done that, a wheel will spin, and 3 action sounds will play.
-But this is not a normal slots! This game is evil and, if you lose, the rest of your beatcoins will not be left alone.
-If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
+Si suenan 3 sonidos diferentes, perderás aún más monedas, basándote en las monedas que te quedan y en la apuesta que hiciste. No pasará nada si tienes 0.
 !slot_lose_2
-If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
+Si consigues 2 del mismo tipo y 1 de otro tipo, conseguirás tu apuesta de vuelta pero nada más.
 !slot_lose_1
-If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
+Si los 2 primeros son del mismo tipo, hay una pequeña oportunidad para que consigas el sonido de stop. Si esto pasa conseguirás alrededor del 25% de tu apuesta.
 !slot_lose_3
-However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
+Sin embargo, si consigues 3 iguales, ganarás tu apuesta, + casi el doble de lo que jugaste!
 !slot_win_3
-Have fun playing evil slots!`,
+Disfruta!`,
 			"mFound":"Found %1 new packs: what do you wish to do?",
 			mGames:"minigames",
 			mGameTuts:"Minigame tutorials",
@@ -192,12 +234,57 @@ Have fun playing evil slots!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		tuthighlow:`Bienvenido a la carta más alta!
+Este es el típico juego de cartas. Tienes una carta y tendrás que adivinar si la próxima será más alta o más baja que la anterior.
+Los valores son: El as, números 2 a 10, la sota, la reina, y el rey.
+Cada carta que aciertes, ganarás más monedas, pero si pierdes y te arriegas no ganarás nada!
+Suerte!`,
+
+		tutdouble:"Este juego es 100% aleatorio y hay una oportunidad del 50/50. Ganarás o perderás? A ver a ver...",
+		tutfootball:"Este juego se explica por sí solo. Escucha las instrucciones durante el juego!",
+		tutcode:`Bienvenido a rompecódigos!
+En este juego, tendrás que romper unos códigos que usan los sonidos de tu pack.
+Para jugar, se utilizan las teclas que usas normalmente durante el juego (espacio, tab, enter y retroceso).
+Primero escucharás el número de teclas que hay en el código. Entonces podrás comenzar a descubrir el código pulsando teclas.
+Por ejemplo, si pulsas espacio y oyes esto:
+!code_wrong
+Significa que la tecla que pulsaste no era la correcta.
+Sin embargo, si oyes esto:
+!code_ok
+Significa que es correcta. Así pues, el código comienza con espacio.
+Si luego pulsas tabulador y oyes el sonido de incorrecto, sabes que la segunda tecla no es el tabulador. Tendrás que pulsar entonces la primera tecla del código, ya que cuando fallas tienes que volver a empezar con el principio del código.
+Sabrás que la primera es el espacio y la segunda no es el tabulador, así que intenta con otras teclas hasta que completes el código.
+Cada vez que consigas un código correcto, el número de teclas y el tiempo que tienes para descubrirlas se incrementa. Las teclas pueden repetirse en cualquier momento, pero todas estarán siempre presentes.
+Es decir, no es posible que un código sea espacio tab enter espacio espacio, pero sí espacio tab retroceso espacio enter.
+Cuidado!
+Si tu pack utiliza las flechas como acciones, ten cuidado porque también se incluirán en el código así que tenlo en cuenta si quieres jugar con códigos mucho más difíciles!
+Disfruta!!`,
+		tutslot:`Bienvenidos!
+El tragaperras de las tinieblas, es un juego muy maléfico.
+Este juego usa los sonidos del pack com una máquina de 3 ruedas.
+Si el pack que tienes tiene más de 5 sonidos de acción, solo se usan los primeros 5.
+Lo primero que debes hacer es apostar. La apuesta mínima son 5000. Cuando hayas apostado, se descontarán de tus monedas.
+Cuando hayas hecho esto, empezará a sonar una especie de rueda y se reproducirán 3 sonidos de acciones.
+If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
+!slot_lose_2
+If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
+!slot_lose_1
+If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
+!slot_lose_3
+However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
+!slot_win_3
+Have fun playing evil slots!`,
+
+		mAchTuts:"Spoilers para logros",
 			mRev:"beatrevés",
 		football:"Lanzamiento de penaltis",
 		doublecash:"El mínimo para jugar son 5000 monedas. Lo siento!",
 		achfw:"Equipo de primera",
+		achhfw:"Gana un partido de penaltis",
 		achfl:"Equipo de segunda",
+		achhfl:"Pierde un partido de penaltis",
 		achidle:"Te has quedao empanao!",
+		achhidle:"Pausa el juego (pulsa la p) y déjalo pausado 60 segundos",
 		saveFeature:`Felicidades, has desbloqueado la opción guardar juego!
 		Pulsa la s (de save, guardar en inglés) durante un juego para guardar el estado y el nivel actuales para que puedas continuar después.
 Ten en cuenta que esto no es como el antiguo seguro, el estado se guarda solo hasta que ganes o falles. se perderá el juego si compras packs, antifallos o juegas algún minijuego.
@@ -205,26 +292,40 @@ A disfrutar!`,
 saved:"Guardado!",
 killSave:"Esto eliminará tu juego guardado para el pack %1. Estás en el nivel %2. Continuar?",
 achdl:"Doble perdedor",
+achhdl:"Pierde en doble o nada",
 achdw:"Doble ganador!",
+achhdw:"Gana en doble o nada",
 double:"Doble o nada",
 newach:"Has obtenido el logro: %1!",
 noach:"No tienes logros... qué raro!",
 mAch:"Ver tus logros",
 achw1:"Novatillo",
+achhw1:"Gana tu primer pack",
 achw5:"Una cervecita",
+achhw5:"Gana 5 packs",
 achw10:"Otra cervecita",
+achhw10:"Gana en 10 packs",
 achw25:"25 son 7",
+achhw25:"Gana 25 packs diferentes",
 achw50:"Beatadicto",
+achhw50:"Gana 50 packs diferentes",
 achusepinky:"Sin fallos",
+achhusepinky:"Gana un pack sin usar antifallos",
 achlactions:"Vete a aprender las acciones",
+achhlactions:"Falla en el nivel 1",
 achfingr:"Al ritmo",
+achhfingr:"Mantén el ritmo durante 5 niveles o más.",
 achbulk:"Descargador Viciosillo",
+achhbulk:"Utiliza la opción descargar todos los packs no instalados",
 achintro:"A trabajar!",
 achslotwin:"Ganador afortunado",
+achhslotwin:"Gana en el juego de tragaperras",
 achfrust:"Frustración inevitable",
-achevils:"Los tragaperras son malbados y lo puedo demostrar",
+achhfrust:"Pierde con 2 ruedas iguales en el tragaperras",
 achcatslots:"tragaperras catastrófico",
+achhcatslots:"Pierde con 3 ruedas distintas en el tragaperras",
 achrobber:"Ladrón de bancos",
+achhrobber:"Consigue 4 o más códigos en el rompecódigos",
 highlow:"La carta más alta",
 hw:"Bienvenido a la carta más alta!",
 yourCard:"Tu carta es el %1",

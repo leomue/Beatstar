@@ -1,7 +1,1 @@
-remember to encrypt the fucking savefile
-no more insurance, just save files. and most actions delete your save file.
 get a soundPool setting to load sounds using html5 if they are non looping and stationary.
-beat memory is next
-make tutorial for beat the code
-achievements to record: frust, evils, bulk.
-see if i can figure out to make slots affect your cash right when you lose and then display it silently because people can cheat.

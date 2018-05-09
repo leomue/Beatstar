@@ -106,18 +106,17 @@ st.setState(2);
 else if (wheels[2]==1) {
 let lose=so.create("slot_lose_3");
 lose.play();
-lose.sound.once("end",async function() {
-await getAch("evils");
 let capcash=myBet;
-console.log(capcash);
 if (capcash>data.beatcoins) capcash=data.beatcoins;
 let perc=Math.ceil(utils.percentOf(utils.randomInt(15,25),capcash));
 console.log("perc"+perc);
+data.beatcoins-=perc;
+lose.sound.once("end",async function() {
 addCash(0,perc,function() {
 so.kill(function() {
 st.setState(2);
 });
-});
+},true);
 });
 }
 else if (wheels[0]==wheels[1] || wheels[1]==wheels[2] || wheels[0]==wheels[2]) {
@@ -126,9 +125,7 @@ lose.play();
 lose.sound.once("end",async function() {
 await getAch("frust");
 let capcash=myBet;
-console.log(capcash);
 let perc=capcash;
-console.log("perc"+perc);
 addCash(perc,0,function() {
 so.kill(function() {
 st.setState(2);

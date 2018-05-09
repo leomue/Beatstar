@@ -2,7 +2,7 @@ export var lang = 0;
 export var ttsVoice;
 export var ttsRate;
 let achs=[
-"fw","fl","idle","dl","dw","w1","w5","w10","w25","w50","usepinky","lactions","fingr","bulk","intro","slotswin","frust","evils","catslots","robber",
+"fw","fl","idle","dl","dw","w1","w5","w10","w25","w50","usepinky","lactions","fingr","bulk","intro","slotwin","frust","catslots","robber",
 ];
 export var editing=false;
 import {OldTimer} from './oldtimer';
@@ -954,17 +954,17 @@ mainMenu();
 				mainMenu();
 		}
 		}
-		export async function addCashSync(c1,c2=0,callback) {
+		export async function addCashSync(c1,c2=0,simulate=false) {
 		return new Promise((resolve,reject)=>{
 		addCash(c1,c2,function() {
 		resolve("ok");
-});
+},simulate);
 });
 		}
-		export async function addCash(c1,c2=0,callback) {
+		export async function addCash(c1,c2=0,callback,simulate=false) {
 		let coinCap=-1;
 		let cash=Math.ceil(c1-c2);
-					data.beatcoins+=cash;
+					if (!simulate) data.beatcoins+=cash;
 					save();
 let positive=true;
 let time=370;
@@ -1446,6 +1446,7 @@ let items=[];
 for (let i in data.ach) {
 items.push(new MenuItem(data.ach[i],strings.get("ach"+data.ach[i])));
 }
+items.push(new MenuItem(-1,strings.get("mAchTuts")));
 items.push(new MenuItem(0,strings.get("mBack")));
 let acm=new Menu(strings.get("achMenu"),items,so.create("ach_music"));
 let exit=false;
@@ -1454,6 +1455,18 @@ await utils.sleep(8);
 await new Promise((resolve,reject) => {
 acm.run(async s=> {
 if (s.selected==0) {
+acm.destroy();
+st.setState(2);
+resolve();
+exit=true;
+return;
+}
+else if (s.selected==-1) {
+for (let i in achs) {
+if (!data.ach.hasOwnProperty(achs[i])) {
+await new ScrollingText(strings.get("ach"+achs[i])+": "+strings.get("achh"+achs[i]));
+}
+}
 acm.destroy();
 st.setState(2);
 resolve();
