@@ -1,17 +1,20 @@
 'use strict';
-
+import {utils} from './utilities';
+import {speech} from './tts';
 import {so} from './soundObject';
-import {browseAch,editPack,minituts,minigames,buySafeguards,data} from './main';
+import {ttsRate,browseAch,editPack,minituts,minigames,buySafeguards,data} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
 import {MenuItem} from './menuItem';
 import {pack, packdir, rebuildHashes, downloadPacks} from './main';
-
+import {KeyboardInput} from './input.js';
+import {KeyEvent} from './keycodes';
 import {Menu} from './menu';
 export async function mainMenu() {
 const fs=require('fs');
 		const items = new Array();
+if (speech.webTTS) items.push(new MenuItem(32,strings.get("mRate")));
 	items.push(new MenuItem(0, strings.get( 'mStart')));
 		items.push(new MenuItem(13, strings.get( 'mRev')));
 	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
@@ -40,6 +43,9 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 		so.directory = './sounds/';
 		mainMenu.destroy();
 		switch (s.selected) {
+			case 32:
+			changeRate();
+			break;
 			case 0: st.setState(3); break;
 			case 1: st.setState(4); break;
 			case 2:
@@ -74,4 +80,24 @@ title:strings.get("selectPack"),
 			break;
 		}
 	});
+}
+export async function changeRate() {
+	let rate=speech.rate;
+	let inp=new KeyboardInput();
+	inp.init();
+	strings.speak("rating");
+	while (!inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+	await utils.sleep(5);	
+	if (inp.isJustPressed(KeyEvent.DOM_VK_RIGHT)) {
+rate=rate+0.25;
+speech.rate=rate;
+		strings.speak("newRate");
+	}
+	if (inp.isJustPressed(KeyEvent.DOM_VK_LEFT)) {
+rate=rate-0.25;
+speech.rate=rate;
+		strings.speak("newRate");
+	}
+}
+st.setState(2);
 }

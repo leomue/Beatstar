@@ -7,6 +7,9 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+	newRate:"This is a text to speech rate test. Please press enter when done",
+	rating:"Press right and left arrow keys to change the rate. Press enter when done",
+	mRate:"Change speech rate",
 tuthighlow:`Welcome to higher or lower!
 This is the typical higher or lower game. You will get a card, and you will have to guess whether the next card will be higher or lower than the one you got.
 The values are ace, numbers 2 to 10, jack, queen, king.
@@ -234,6 +237,9 @@ Disfruta!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			newRate:"Esta es una prueba de la velocidad de la voz. Por favor, pulsa enter cuando hayas terminado",
+			rating:"Pulsa las flechas izquierda y derecha para cambiar la velocidad. Pulsa Enter cuando hayas terminado.",
+			mRate:"Cambiar velocidad de la voz",
 		tuthighlow:`Bienvenido a la carta más alta!
 Este es el típico juego de cartas. Tienes una carta y tendrás que adivinar si la próxima será más alta o más baja que la anterior.
 Los valores son: El as, números 2 a 10, la sota, la reina, y el rey.

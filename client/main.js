@@ -1,4 +1,4 @@
-process.env.HMR_PORT=55548;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=50368;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -7,7 +7,7 @@ process.env.HMR_PORT=55548;process.env.HMR_HOSTNAME="localhost";// modules are d
 // orig method which is the require for previous bundles
 
 // eslint-disable-next-line no-global-assign
-parcelRequire = (function (modules, cache, entry) {
+parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
   var nodeRequire = typeof require === 'function' && require;
@@ -45,7 +45,7 @@ parcelRequire = (function (modules, cache, entry) {
 
       var module = cache[name] = new newRequire.Module(name);
 
-      modules[name][0].call(module.exports, localRequire, module, module.exports);
+      modules[name][0].call(module.exports, localRequire, module, module.exports, this);
     }
 
     return cache[name].exports;
@@ -75,9 +75,30 @@ parcelRequire = (function (modules, cache, entry) {
     newRequire(entry[i]);
   }
 
+  if (entry.length) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(entry[entry.length - 1]);
+
+    // CommonJS
+    if (typeof exports === "object" && typeof module !== "undefined") {
+      module.exports = mainExports;
+
+    // RequireJS
+    } else if (typeof define === "function" && define.amd) {
+     define(function () {
+       return mainExports;
+     });
+
+    // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+
   // Override the current require with this new one
   return newRequire;
-})({4:[function(require,module,exports) {
+})({5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -128,7 +149,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],18:[function(require,module,exports) {
+},{}],34:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3031,7 +3052,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],3:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3165,7 +3186,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{}],15:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 
 'use strict';
 
@@ -3292,7 +3313,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],13:[function(require,module,exports) {
+},{}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3392,7 +3413,7 @@ class GameUtils {
 
 }
 var utils = exports.utils = new GameUtils();
-},{}],14:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3759,7 +3780,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":18,"./input":3,"./keycodes":15,"./utilities":13}],17:[function(require,module,exports) {
+},{"./howler":34,"./input":4,"./keycodes":16,"./utilities":14}],33:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3850,7 +3871,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":18,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":34,"./soundObject.js":15}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3985,7 +4006,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":17,"./soundObject.js":14}],12:[function(require,module,exports) {
+},{"./soundSource.js":33,"./soundObject.js":15}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4003,13 +4024,14 @@ class TTS {
 	constructor(webTTS = false) {
 		this.synth = window.speechSynthesis;
 		this.webTTS = webTTS;
+		this.rate = 1;
 	}
 
 	async speak(text) {
 		if (this.webTTS) {
 			const utterThis = new SpeechSynthesisUtterance(text);
 			if (typeof _main.ttsVoice !== "undefined") utterThis.voice = _main.ttsVoice;
-			if (typeof _main.ttsRate !== "undefined") utterThis.rate = _main.ttsRate;
+			utterThis.rate = this.rate;
 			this.synth.cancel();
 			await _utilities.utils.sleep(150);
 			this.synth.speak(utterThis);
@@ -4029,7 +4051,7 @@ var speech = new TTS(false);
 if (process.platform == 'darwin') speech.webTTS = true;
 exports.TTS = TTS;
 exports.speech = speech;
-},{"./utilities":13,"./main":1}],6:[function(require,module,exports) {
+},{"./utilities":14,"./main":1}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4169,7 +4191,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":12}],9:[function(require,module,exports) {
+},{"./tts":13}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4283,7 +4305,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = _tts.speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":12}],10:[function(require,module,exports) {
+},{"./keycodes":16,"./soundObject":15,"./tts":13}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4303,6 +4325,9 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			newRate: "This is a text to speech rate test. Please press enter when done",
+			rating: "Press right and left arrow keys to change the rate. Press enter when done",
+			mRate: "Change speech rate",
 			tuthighlow: `Welcome to higher or lower!
 This is the typical higher or lower game. You will get a card, and you will have to guess whether the next card will be higher or lower than the one you got.
 The values are ace, numbers 2 to 10, jack, queen, king.
@@ -4530,6 +4555,9 @@ Disfruta!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			newRate: "Esta es una prueba de la velocidad de la voz. Por favor, pulsa enter cuando hayas terminado",
+			rating: "Pulsa las flechas izquierda y derecha para cambiar la velocidad. Pulsa Enter cuando hayas terminado.",
+			mRate: "Cambiar velocidad de la voz",
 			tuthighlow: `Bienvenido a la carta más alta!
 Este es el típico juego de cartas. Tienes una carta y tendrás que adivinar si la próxima será más alta o más baja que la anterior.
 Los valores son: El as, números 2 a 10, la sota, la reina, y el rey.
@@ -4797,7 +4825,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1,"./utilities":13,"./tts":12,"./scrollingText":9}],7:[function(require,module,exports) {
+},{"./main":1,"./utilities":14,"./tts":13,"./scrollingText":10}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5095,13 +5123,18 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
+},{"./utilities":14,"./strings":11,"./tts":13,"./soundObject.js":15,"./menuItem":7,"./keycodes":16,"./input":4}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.mainMenu = mainMenu;
+exports.changeRate = changeRate;
+
+var _utilities = require('./utilities');
+
+var _tts = require('./tts');
 
 var _soundObject = require('./soundObject');
 
@@ -5113,11 +5146,16 @@ var _strings = require('./strings');
 
 var _menuItem = require('./menuItem');
 
+var _input = require('./input.js');
+
+var _keycodes = require('./keycodes');
+
 var _menu = require('./menu');
 
 async function mainMenu() {
 	const fs = require('fs');
 	const items = new Array();
+	if (_tts.speech.webTTS) items.push(new _menuItem.MenuItem(32, _strings.strings.get("mRate")));
 	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
 	items.push(new _menuItem.MenuItem(13, _strings.strings.get('mRev')));
 	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
@@ -5146,6 +5184,9 @@ async function mainMenu() {
 		_soundObject.so.directory = './sounds/';
 		mainMenu.destroy();
 		switch (s.selected) {
+			case 32:
+				changeRate();
+				break;
 			case 0:
 				_stateMachine.st.setState(3);break;
 			case 1:
@@ -5188,7 +5229,27 @@ async function mainMenu() {
 		}
 	});
 }
-},{"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./menu":7}],20:[function(require,module,exports) {
+async function changeRate() {
+	let rate = _tts.speech.rate;
+	let inp = new _input.KeyboardInput();
+	inp.init();
+	_strings.strings.speak("rating");
+	while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+		await _utilities.utils.sleep(5);
+		if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
+			rate = rate + 0.25;
+			_tts.speech.rate = rate;
+			_strings.strings.speak("newRate");
+		}
+		if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
+			rate = rate - 0.25;
+			_tts.speech.rate = rate;
+			_strings.strings.speak("newRate");
+		}
+	}
+	_stateMachine.st.setState(2);
+}
+},{"./utilities":14,"./tts":13,"./soundObject":15,"./main":1,"./stateMachine":17,"./strings":11,"./menuItem":7,"./input.js":4,"./keycodes":16,"./menu":8}],36:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5240,7 +5301,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],19:[function(require,module,exports) {
+},{}],35:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5805,7 +5866,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":11,"./tts":13,"./main":1,"./oldtimer":5,"./soundHandler":12,"./utilities":14,"./soundObject":15,"./stateMachine":17,"./timer":36,"./scrollingText":10,"./input.js":4,"./keycodes.js":16}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5894,7 +5955,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":19}],2:[function(require,module,exports) {
+},{"./input":4,"./main":1,"./menuHandler":9,"./soundObject":15,"./keycodes":16,"./game":35}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6683,7 +6744,7 @@ async function playFootball() {
 				});
 				return;
 }
-},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":5,"./soundHandler":12,"./menuItem":7,"./menu":8,"./scrollingText":10,"./strings":11,"./tts":13,"./utilities":14,"./soundObject":15,"./keycodes":16,"./input":4,"./stateMachine":17}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6722,7 +6783,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
+},{"./keycodes":16,"./main":1,"./scrollingText":10}],1:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6800,7 +6861,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lang = exports.lang = 0;
 var ttsVoice = exports.ttsVoice = undefined;
-var ttsRate = exports.ttsRate = undefined;
+var ttsRate = exports.ttsRate = 1;
 let achs = ["fw", "fl", "idle", "dl", "dw", "w1", "w5", "w10", "w25", "w50", "usepinky", "lactions", "fingr", "bulk", "intro", "slotwin", "frust", "catslots", "robber"];
 var editing = exports.editing = false;
 //import {SoundPool} from './soundPool';
@@ -8236,10 +8297,9 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],26:[function(require,module,exports) {
+},{"./oldtimer":5,"./minis.js":3,"./player":6,"./menuItem":7,"./menu":8,"./menuHandler":9,"./scrollingText":10,"./strings":11,"./soundHandler":12,"./tts":13,"./utilities":14,"./soundObject":15,"./keycodes":16,"./stateMachine":17,"./input.js":4}],37:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
-var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
 
 function Module(moduleName) {
@@ -8263,10 +8323,10 @@ module.bundle.Module = Module;
 
 var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = process.env.HMR_HOSTNAME || location.hostname;
+  var hostname = 'localhost' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + process.env.HMR_PORT + '/');
-  ws.onmessage = function(event) {
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50368' + '/');
+  ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
@@ -8279,13 +8339,15 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
           hmrAccept(global.parcelRequire, asset.id);
         }
       });
+      // Clear the console after HMR
+      console.clear();
     }
 
     if (data.type === 'reload') {
       ws.close();
       ws.onclose = function () {
         location.reload();
-      }
+      };
     }
 
     if (data.type === 'error-resolved') {
@@ -8322,17 +8384,9 @@ function createErrorOverlay(data) {
   message.innerText = data.error.message;
   stackTrace.innerText = data.error.stack;
 
-  overlay.innerHTML = (
-    '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' +
-      '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' +
-      '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' +
-      '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' +
-      '<pre>' + stackTrace.innerHTML + '</pre>' +
-    '</div>'
-  );
+  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
 
   return overlay;
-
 }
 
 function getParents(bundle, id) {
@@ -8347,7 +8401,7 @@ function getParents(bundle, id) {
   for (k in modules) {
     for (d in modules[k][1]) {
       dep = modules[k][1][d];
-      if (dep === id || (Array.isArray(dep) && dep[dep.length - 1] === id)) {
+      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
         parents.push(+k);
       }
     }
@@ -8409,9 +8463,8 @@ function hmrAccept(bundle, id) {
   }
 
   return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id)
+    return hmrAccept(global.parcelRequire, id);
   });
 }
-
-},{}]},{},[26,1])
+},{}]},{},[37,1], null)
 //# sourceMappingURL=/main.map

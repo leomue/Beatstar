@@ -6,13 +6,14 @@ class TTS {
 	constructor(webTTS = false) {
 		this.synth = window.speechSynthesis;
 		this.webTTS = webTTS;
+		this.rate=1;
 	}
 
 	async speak(text) {
 		if (this.webTTS) {
 					const utterThis = new SpeechSynthesisUtterance(text);
 						if (typeof ttsVoice!=="undefined") utterThis.voice=ttsVoice;
-			if (typeof ttsRate!=="undefined") utterThis.rate=ttsRate;
+utterThis.rate=this.rate;
 			this.synth.cancel();
 			await utils.sleep(150);
 			this.synth.speak(utterThis);

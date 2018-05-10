@@ -1,6 +1,6 @@
 export var lang = 0;
 export var ttsVoice;
-export var ttsRate;
+export var ttsRate=1;
 let achs=[
 "fw","fl","idle","dl","dw","w1","w5","w10","w25","w50","usepinky","lactions","fingr","bulk","intro","slotwin","frust","catslots","robber",
 ];
