@@ -1,8 +1,9 @@
 'use strict';
 import {utils} from './utilities';
+import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
-import {ttsRate,browseAch,editPack,minituts,minigames,buySafeguards,data} from './main';
+import {save,data,browseAch,editPack,minituts,minigames,buySafeguards} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -14,6 +15,8 @@ import {Menu} from './menu';
 export async function mainMenu() {
 const fs=require('fs');
 		const items = new Array();
+		if (speech.webTTS) items.push(new MenuItem(33,strings.get("mReader")));
+				if (!speech.webTTS) items.push(new MenuItem(34,strings.get("mSapi")));
 if (speech.webTTS) items.push(new MenuItem(32,strings.get("mRate")));
 	items.push(new MenuItem(0, strings.get( 'mStart')));
 		items.push(new MenuItem(13, strings.get( 'mRev')));
@@ -39,13 +42,23 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 	mainMenu.sndChoose.unload();
 	mainMenu.sndChoose = so.create(packdir + 'select');
 }
-	mainMenu.run(s => {
+	mainMenu.run(async s => {
 		so.directory = './sounds/';
 		mainMenu.destroy();
 		switch (s.selected) {
 			case 32:
 			changeRate();
 			break;
+			case 33:
+				if (process.platform=='darwin') await new ScrollingText(strings.get("macwarning"));
+			speech.webTTS=false;
+			st.setState(2);
+			break;
+			case 34:
+			speech.webTTS=true;
+			st.setState(2);
+			break;
+
 			case 0: st.setState(3); break;
 			case 1: st.setState(4); break;
 			case 2:
@@ -99,5 +112,7 @@ speech.rate=rate;
 		strings.speak("newRate");
 	}
 }
+data.rate=speech.rate;
+save();
 st.setState(2);
 }

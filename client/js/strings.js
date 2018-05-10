@@ -7,9 +7,63 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+	macwarning:"Warning: On a mac, please press vo left arrow followed by vo right arrow, or you will have no speech.",
+	mSapi:"Use text to speech for the game",
+	mReader:"Use your screen reader for the game",
+
 	newRate:"This is a text to speech rate test. Please press enter when done",
 	rating:"Press right and left arrow keys to change the rate. Press enter when done",
 	mRate:"Change speech rate",
+
+tutslot:`Welcome!
+Evil slots is very evil indeed.
+This game uses the action sounds from your pack to play a 3 wheel slot machine.
+If the pack you are currently playing has more than 5 actions, don't worry only the first 5 will be used.
+The first thing you will need to do is place a bet. The minimum is 5000 beatcoins. When you place a bet, those beatcoins will be deducted from your current beatcoins.
+Once you have done that, a wheel will spin, and 3 action sounds will play.
+If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
+!slot_lose_2
+If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
+!slot_lose_1
+If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
+!slot_lose_3
+However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
+!slot_win_3
+Have fun playing evil slots!`,
+
+introQuestion:"Do you want a quick tutorial?",
+introTut:`Welcome to the beatstar tutorial!
+I will explain to you how to play beatstar.
+It is a very simple game, although very adictive and fun!
+In this game, your rhythm skills will be tested as well as your ability to react quickly.
+Each soundpack consists of levels divided in different music segments.
+You will hear a sound, and you will have to press a different key depending on the sound you heard.
+Each pack usually has 5 different sounds, with some other packs having more, which are actions for the arrow keys.
+There is also a sound which indicates that you need to stay quiet and not press any key.
+For example, on the default soundpack, when you hear this sound, it means that you should press tab.
+!a3
+You need to press the tab key when the time is right.
+!o3
+This is the sound for the tab key.
+To find out when the right time would be, think of the game having different cycles.
+A cycle is the time between one action sound and the other, and the right time is always 50% of a cycle.
+You know the length of a cycle because at the beginning of each level there is always a silent cycle.
+Let me show you with a sound.
+!tutorial
+As you could hear from this sound, I waited half a cycle to press the tab key. This will earn me the highest possible score for that action!
+Did you hear the little horn sound and that I didn't press any key?
+The horn sound, in this pack, is the quiet action, also called freeze or stop action.
+It means that if you press any key, you will fail!
+!cling
+Did you hear this cling?
+!cling
+Keep this cling in your head because, the higher pitched this cling is, the better was your score for that action.
+At the end of each level, you earn beatcoins based on your performance. Beatcoins are used to unlock more packs and minigames.
+If you find that you cannot beat the higher levels, try buying some safeguards before playing. Safeguards are free fails, which means that failing will have no effect once for each safeguard.
+The game can be paused by pressing p and you can quit the game at any time by pressing q.
+You can exit most menus in the game by pressing either left arrow or q.
+When you are bored of the default pack, you should go to the download packs option and... Maybe download everything?
+Have fun!`,
 tuthighlow:`Welcome to higher or lower!
 This is the typical higher or lower game. You will get a card, and you will have to guess whether the next card will be higher or lower than the one you got.
 The values are ace, numbers 2 to 10, jack, queen, king.
@@ -97,7 +151,7 @@ lower:"Lower",
 
 card:"%1 of %2",
 K:"king",
-		K:"queen",
+		Q:"queen",
 A:"ace",
 		J:"jack",
 		cspades:"spades",
@@ -160,21 +214,6 @@ lang:"English",
 langs:"Select your language",
 codescracked:"You managed to crack %1 codes, with %2 different actions!",
 mEdit:"Pack Editor",
-tutslot:`Welcome!
-Evil slots is very evil indeed.
-This game uses the action sounds from your pack to play a 3 wheel slot machine.
-If the pack you are currently playing has more than 5 actions, don't worry only the first 5 will be used.
-The first thing you will need to do is place a bet. The minimum is 5000 beatcoins. When you place a bet, those beatcoins will be deducted from your current beatcoins.
-Once you have done that, a wheel will spin, and 3 action sounds will play.
-Si suenan 3 sonidos diferentes, perderás aún más monedas, basándote en las monedas que te quedan y en la apuesta que hiciste. No pasará nada si tienes 0.
-!slot_lose_2
-Si consigues 2 del mismo tipo y 1 de otro tipo, conseguirás tu apuesta de vuelta pero nada más.
-!slot_lose_1
-Si los 2 primeros son del mismo tipo, hay una pequeña oportunidad para que consigas el sonido de stop. Si esto pasa conseguirás alrededor del 25% de tu apuesta.
-!slot_lose_3
-Sin embargo, si consigues 3 iguales, ganarás tu apuesta, + casi el doble de lo que jugaste!
-!slot_win_3
-Disfruta!`,
 			"mFound":"Found %1 new packs: what do you wish to do?",
 			mGames:"minigames",
 			mGameTuts:"Minigame tutorials",
@@ -237,15 +276,68 @@ Disfruta!`,
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			macwarning:"Atención: En un mac, por favor pulsa control opción  flecha izquierda seguido de control opción derecha o no tendrás voz.",
+			mReader:"Usar tu lector de pantalla para el juego",
+			mSapi:"Usar tts para el juego",
 			newRate:"Esta es una prueba de la velocidad de la voz. Por favor, pulsa enter cuando hayas terminado",
 			rating:"Pulsa las flechas izquierda y derecha para cambiar la velocidad. Pulsa Enter cuando hayas terminado.",
 			mRate:"Cambiar velocidad de la voz",
+
+				tutslot:`Bienvenidos!
+El tragaperras de las tinieblas, es un juego muy maléfico.
+Este juego usa los sonidos del pack com una máquina de 3 ruedas.
+Si el pack que tienes tiene más de 5 sonidos de acción, solo se usan los primeros 5.
+Lo primero que debes hacer es apostar. La apuesta mínima son 5000. Cuando hayas apostado, se descontarán de tus monedas.
+Cuando hayas hecho esto, empezará a sonar una especie de rueda y se reproducirán 3 sonidos de acciones.
+Si suenan 3 sonidos diferentes, perderás aún más monedas, basándote en las monedas que te quedan y en la apuesta que hiciste. No pasará nada si tienes 0.
+!slot_lose_2
+Si consigues 2 del mismo tipo y 1 de otro tipo, conseguirás tu apuesta de vuelta pero nada más.
+!slot_lose_1
+Si los 2 primeros son del mismo tipo, hay una pequeña oportunidad para que consigas el sonido de stop. Si esto pasa conseguirás alrededor del 25% de tu apuesta.
+!slot_lose_3
+Sin embargo, si consigues 3 iguales, ganarás tu apuesta, + casi el doble de lo que jugaste!
+!slot_win_3
+Disfruta!`,
+
+		introQuestion:"Quieres un mini tutorial?",
+introTut:`Bienvenido al tutorial de beatstar!
+Voy a contarte cómo jugar a este gran juego.
+Es un juego bastante simple, pero es muy adictivo y divertido!
+En este juego, vamos a probar tus abilidades rítmicas así como tu velocidad de reacción.
+Cada pack consiste en distintos niveles musicales.
+Escucharás un sonido y deberás pulsar una tecla diferente dependiendo del sonido que escuchaste.
+Cada pack tiene 5 sonidos, algunos tienen más de 5 que son acciones para las flechas.
+También hay un sonido que indica que debes quedarte quieto, no pulsar ninguna tecla.
+Por ejemplo, en el pack por defecto, este sonido indica que debes pulsar tabulador.
+!a3
+Deberás pulsar tabulador cuando llegue el tiempo adecuado.
+!o3
+Este es el sonido del tabulador.
+Para saber cuándo hay que pulsar las teclas, piensa en que el juego tiene distintos ciclos.
+Un ciclo es el tiempo entre un sonido de acción y el siguiente.
+Sabes lo que tarda un ciclo porque al principo de cada nivel hay siempre un ciclo de silencio.
+Déjame mostrártelo con un sonido.
+!tutorial
+Tal y como acabas de escuchar, he esperado medio ciclo a pulsar el tabulador en cada una de las acciones, porque eso me da la máxima puntuación!
+Has oído el sonido del pitido y que no he pulsado ninguna tecla?
+En este pack, este sonido es la acción de quieto, también se le llama congelar o stop.
+Significa que si pulsas alguna tecla, fallarás.
+!cling
+Has oído esta campanita?
+!cling
+Estate atento a este sonido porque, cuanto más alto sea el tono de este sonido, más puntuación has conseguido!
+Al final de cada nivel, conseguirás monedas dependiendo de tu rendimiento. Las monedas se utilizan para comprar packs, minijuegos y antifallos.
+Si ves que no puedes ganar los niveles más altos, puedes comprar antifallos. Los antifallos son como vidas, es decir que por cada antifallo, podrás fallar una vez sin perder.
+El juego se puede pausar con la p, y puedes salir del juego con la q.
+Para salir de la mayoría de los menús, puedes pulsar la flecha izquierda o la q.
+Cuando te aburras del pack por defecto, podrías utilizar la opción descargar packs... y bajarlos todos!
+Disfruta!`,
+
 		tuthighlow:`Bienvenido a la carta más alta!
 Este es el típico juego de cartas. Tienes una carta y tendrás que adivinar si la próxima será más alta o más baja que la anterior.
 Los valores son: El as, números 2 a 10, la sota, la reina, y el rey.
 Cada carta que aciertes, ganarás más monedas, pero si pierdes y te arriegas no ganarás nada!
 Suerte!`,
-
 		tutdouble:"Este juego es 100% aleatorio y hay una oportunidad del 50/50. Ganarás o perderás? A ver a ver...",
 		tutfootball:"Este juego se explica por sí solo. Escucha las instrucciones durante el juego!",
 		tutcode:`Bienvenido a rompecódigos!
@@ -265,22 +357,6 @@ Es decir, no es posible que un código sea espacio tab enter espacio espacio, pe
 Cuidado!
 Si tu pack utiliza las flechas como acciones, ten cuidado porque también se incluirán en el código así que tenlo en cuenta si quieres jugar con códigos mucho más difíciles!
 Disfruta!!`,
-		tutslot:`Bienvenidos!
-El tragaperras de las tinieblas, es un juego muy maléfico.
-Este juego usa los sonidos del pack com una máquina de 3 ruedas.
-Si el pack que tienes tiene más de 5 sonidos de acción, solo se usan los primeros 5.
-Lo primero que debes hacer es apostar. La apuesta mínima son 5000. Cuando hayas apostado, se descontarán de tus monedas.
-Cuando hayas hecho esto, empezará a sonar una especie de rueda y se reproducirán 3 sonidos de acciones.
-If you get 3 of different types, you lose beatcoins based on your bet and how much you still have. If you have 0, of course nothing will happen.
-!slot_lose_2
-If you get 2 of the same type and 1 of a different type, you will get your bet back, but nothing more.
-!slot_lose_1
-If the first 2 are of the same type, there is a small chance that the third one will be the quiet action (the action of the pack where you must not press any key). If this happens you will get around 25% of your bet back. Because I am evil.
-!slot_lose_3
-However, if you get 3 of the same type, you will win your bet + 80 to 100 percent of the original bet!
-!slot_win_3
-Have fun playing evil slots!`,
-
 		mAchTuts:"Spoilers para logros",
 			mRev:"beatrevés",
 		football:"Lanzamiento de penaltis",

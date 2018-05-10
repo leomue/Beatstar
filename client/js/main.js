@@ -297,7 +297,6 @@ clearTimeout(timeout);
 		if (browsePosition > browseArray.length - 1) {
 			browsePosition = 0;
 		}
-speech.speak(browsePosition);
 if (lang == 1) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
 }
@@ -502,9 +501,15 @@ counter++;
 		while (introing) {
 		await utils.sleep(10);
 		}
+		let tut=await questionSync("introQuestion");
+		if (tut) {
+		await new ScrollingText(strings.get("introTut"));
+		}
+
 	}
 	pack = data.pack;
 	lang=data.lang;
+	if (typeof data.rate!=="undefined") speech.rate=data.rate;
 	if (!changeBoot) {
 	boot=false;
 	credits=true;
