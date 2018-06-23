@@ -1,6 +1,6 @@
 {
   "name": "beatstar",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Beatstar JS",
   "main": "./client/index.js",
   "scripts": {
@@ -25,11 +25,11 @@
     "express": "^4.16.2",
     "fs-walk": "0.0.2",
     "hash-files": "^1.1.1",
-    "howler": "^2.0.12",
+    "howler": "^2.0.13",
     "http-server": "^0.11.1",
     "jquery": "^3.3.1",
-    "parcel-bundler": "^1.8.1",
+    "parcel-bundler": "^1.9.2",
     "s": "^0.1.1",
-    "tone": "^13.1.5"
+    "tone": "^13.2.0"
   }
 }

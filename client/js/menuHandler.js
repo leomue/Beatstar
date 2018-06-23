@@ -3,7 +3,7 @@ import {utils} from './utilities';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
-import {save,data,browseAch,editPack,minituts,minigames,buySafeguards} from './main';
+import {version,version2,save,data,browseAch,editPack,minituts,minigames,buySafeguards} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -15,10 +15,13 @@ import {Menu} from './menu';
 export async function mainMenu() {
 const fs=require('fs');
 		const items = new Array();
+			items.push(new MenuItem(0, strings.get( 'mStart')));
+			if (version2!="" && version!=version2) {
+				items.push(new MenuItem(-1000,strings.get("newUpdate",[version,version2])));
+			}
 		if (speech.webTTS) items.push(new MenuItem(33,strings.get("mReader")));
 				if (!speech.webTTS) items.push(new MenuItem(34,strings.get("mSapi")));
 if (speech.webTTS) items.push(new MenuItem(32,strings.get("mRate")));
-	items.push(new MenuItem(0, strings.get( 'mStart')));
 		items.push(new MenuItem(13, strings.get( 'mRev')));
 	items.push(new MenuItem(8, strings.get( 'mSafeguards',[data.safeguards])));
 	

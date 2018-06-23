@@ -1,4 +1,4 @@
-process.env.HMR_PORT=51453;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=49505;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -149,7 +149,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],19:[function(require,module,exports) {
+},{}],20:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3654,9 +3654,9 @@ class SoundObject {
 		this.sounds.push(returnObject);
 		return returnObject;
 	}
-
 	enqueue(file) {
 		file = this.directory + file + this.extension;
+		console.log(file);
 		this.queue.push(file);
 		this.queueLength = this.queue.length;
 	}
@@ -3686,10 +3686,16 @@ class SoundObject {
 				this.handleQueue();
 				return;
 			}
-			this.sounds.push(new SoundObjectItem(this.queue[0], () => {
-				that.handleQueue();
-			}, 1));
-			this.queue.splice(0, 1);
+			console.log(this.queue[0]);
+			try {
+				this.sounds.push(new SoundObjectItem(this.queue[0], () => {
+					that.handleQueue();
+				}, 1));
+			} catch (err) {
+				console.log("error");
+			} finally {
+				this.queue.splice(0, 1);
+			}
 		} else {
 			this.loadingQueue = false;
 			if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
@@ -3780,7 +3786,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":19,"./input":3,"./keycodes":15,"./utilities":13}],18:[function(require,module,exports) {
+},{"./howler":20,"./input":3,"./keycodes":15,"./utilities":13}],19:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3871,7 +3877,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":19,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":20,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4006,7 +4012,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":18,"./soundObject.js":14}],12:[function(require,module,exports) {
+},{"./soundSource.js":19,"./soundObject.js":14}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4033,7 +4039,7 @@ class TTS {
 			if (typeof _main.ttsVoice !== "undefined") utterThis.voice = _main.ttsVoice;
 			utterThis.rate = this.rate;
 			this.synth.cancel();
-			await _utilities.utils.sleep(150);
+			if (process.platform != 'darwin') await _utilities.utils.sleep(150);
 			this.synth.speak(utterThis);
 		} else {
 			document.getElementById('speech').innerHTML = '';
@@ -4325,6 +4331,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
+			newUpdate: "There is a new version available! You have version %1, version %2 is available.",
 			macwarning: "Warning: On a mac, please press vo left arrow followed by vo right arrow, or you will have no speech.",
 			mSapi: "Use text to speech for the game",
 			mReader: "Use your screen reader for the game",
@@ -4594,6 +4601,7 @@ You can upload your pack via the website by making a zip file of the pack's fold
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			newUpdate: "Hay una nueva versión disponible! Tienes la %1 y la %2 está disponible.",
 			macwarning: "Atención: En un mac, por favor pulsa control opción  flecha izquierda seguido de control opción derecha o no tendrás voz.",
 			mReader: "Usar tu lector de pantalla para el juego",
 			mSapi: "Usar tts para el juego",
@@ -5233,10 +5241,13 @@ var _menu = require('./menu');
 async function mainMenu() {
 	const fs = require('fs');
 	const items = new Array();
+	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
+	if (_main.version2 != "" && _main.version != _main.version2) {
+		items.push(new _menuItem.MenuItem(-1000, _strings.strings.get("newUpdate", [_main.version, _main.version2])));
+	}
 	if (_tts.speech.webTTS) items.push(new _menuItem.MenuItem(33, _strings.strings.get("mReader")));
 	if (!_tts.speech.webTTS) items.push(new _menuItem.MenuItem(34, _strings.strings.get("mSapi")));
 	if (_tts.speech.webTTS) items.push(new _menuItem.MenuItem(32, _strings.strings.get("mRate")));
-	items.push(new _menuItem.MenuItem(0, _strings.strings.get('mStart')));
 	items.push(new _menuItem.MenuItem(13, _strings.strings.get('mRev')));
 	items.push(new _menuItem.MenuItem(8, _strings.strings.get('mSafeguards', [_main.data.safeguards])));
 
@@ -5341,7 +5352,7 @@ async function changeRate() {
 	(0, _main.save)();
 	_stateMachine.st.setState(2);
 }
-},{"./utilities":13,"./scrollingText":9,"./tts":12,"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./input.js":3,"./keycodes":15,"./menu":7}],20:[function(require,module,exports) {
+},{"./utilities":13,"./scrollingText":9,"./tts":12,"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./input.js":3,"./keycodes":15,"./menu":7}],21:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5531,7 +5542,7 @@ class Game {
 				_soundObject.so.enqueue(_main.packdir + 'a' + i);
 				this.actions = i;
 			}
-			if (_fs2.default.existsSync(_main.packdir + 'o' + i + '.ogg')) {
+			if (_fs2.default.existsSync(_main.packdir + 'o' + i + '.ogg') && i != 1) {
 				_soundObject.so.enqueue(_main.packdir + 'o' + i);
 			}
 		}
@@ -5958,7 +5969,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":20,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6881,7 +6892,7 @@ exports.Player = Player;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.packdir = exports.data = exports.pack = exports.langs = exports.mangle = exports.actionKeys = exports.minis = exports.credits = exports.editing = exports.ttsRate = exports.ttsVoice = exports.lang = undefined;
+exports.packdir = exports.data = exports.pack = exports.langs = exports.mangle = exports.actionKeys = exports.minis = exports.credits = exports.editing = exports.ttsRate = exports.ttsVoice = exports.lang = exports.version2 = exports.version = exports.gameID = undefined;
 exports.learnPack = learnPack;
 exports.browsePacks = browsePacks;
 exports.rebuildHashes = rebuildHashes;
@@ -6951,6 +6962,10 @@ var _input = require("./input.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var gameID = exports.gameID = "beat";
+var version = exports.version = "2.5";
+var version2 = exports.version2 = "";
+
 var lang = exports.lang = 0;
 var ttsVoice = exports.ttsVoice = undefined;
 var ttsRate = exports.ttsRate = 1;
@@ -6975,9 +6990,12 @@ var data = exports.data = '';
 var packdir = exports.packdir = _os2.default.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-	//checkPack(false,true);
-	//return;
-	console.log(process.platform);
+	let prom = new Promise((resolve, reject) => {
+		fetch('http://oriolgomez.com/versions.php?id=' + gameID).then(event => event.text()).then(data => {
+			exports.version2 = version2 = data;
+			resolve(data);
+		});
+	});
 	_stateMachine.st.setState(1);
 }
 function proceed() {
@@ -7457,6 +7475,8 @@ async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		//await strings.check(2);
+		data.beatcoins = 1000000;
+		save();
 		return;
 	}
 	booter();
@@ -8393,7 +8413,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],21:[function(require,module,exports) {
+},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var OldModule = module.bundle.Module;
@@ -8421,7 +8441,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = 'localhost' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51453' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49505' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -8562,5 +8582,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[21,1], null)
+},{}]},{},[22,1], null)
 //# sourceMappingURL=/main.map

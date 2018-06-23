@@ -106,7 +106,7 @@ so.enqueue(packdir + 'fail');
 		so.enqueue(packdir + 'a' + i);
 		this.actions = i;
 			}
-			if (fs.existsSync(packdir + 'o' + i + '.ogg')) {
+			if (fs.existsSync(packdir + 'o' + i + '.ogg') && i!=1) {
 		so.enqueue(packdir + 'o' + i);
 			}
 		}

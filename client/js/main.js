@@ -1,3 +1,7 @@
+export var gameID="beat";
+export var version="2.5";
+export var version2="";
+
 export var lang = 0;
 export var ttsVoice;
 export var ttsRate=1;
@@ -44,9 +48,14 @@ export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-//checkPack(false,true);
-//return;
-console.log(process.platform);
+let prom=new Promise((resolve,reject)=> {
+fetch('http://oriolgomez.com/versions.php?id='+gameID)
+						 .then(event => event.text())
+			.then(data => {
+				version2=data;
+				resolve(data);
+			});
+});
              	st.setState(1);
 }
 function proceed() {
@@ -533,7 +542,9 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			//await strings.check(2);
-																																																																						return;
+			data.beatcoins=1000000;
+			save();
+														return;
 																			}
 	booter();
 }

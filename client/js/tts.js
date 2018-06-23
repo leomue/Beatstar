@@ -15,7 +15,7 @@ class TTS {
 						if (typeof ttsVoice!=="undefined") utterThis.voice=ttsVoice;
 utterThis.rate=this.rate;
 			this.synth.cancel();
-			await utils.sleep(150);
+	if (process.platform!='darwin') await utils.sleep(150);
 			this.synth.speak(utterThis);
 		} else {
 			document.getElementById('speech').innerHTML = '';

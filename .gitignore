@@ -4,3 +4,4 @@ dist
 packs
 .cache
 client/main.*
+translation_*

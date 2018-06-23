@@ -227,9 +227,9 @@ class SoundObject {
 										this.sounds.push(returnObject);
 								return returnObject;
 	}
-
 	enqueue(file) {
 		file = this.directory + file + this.extension;
+		console.log(file);
 		this.queue.push(file);
 		this.queueLength = this.queue.length;
 	}
@@ -259,10 +259,18 @@ class SoundObject {
 				this.handleQueue();
 				return;
 			}
+			console.log(this.queue[0]);
+			try {
 			this.sounds.push(new SoundObjectItem(this.queue[0], (() => {
  that.handleQueue();
 			}), 1));
+			}
+			catch(err) {
+				console.log("error");
+			}
+			finally {
 			this.queue.splice(0, 1);
+			}
 		} else {
 			this.loadingQueue = false;
 								if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {

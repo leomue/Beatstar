@@ -7,6 +7,7 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+	newUpdate:"There is a new version available! You have version %1, version %2 is available.",
 	macwarning:"Warning: On a mac, please press vo left arrow followed by vo right arrow, or you will have no speech.",
 	mSapi:"Use text to speech for the game",
 	mReader:"Use your screen reader for the game",
@@ -276,6 +277,7 @@ mEdit:"Pack Editor",
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+			newUpdate:"Hay una nueva versión disponible! Tienes la %1 y la %2 está disponible.",
 			macwarning:"Atención: En un mac, por favor pulsa control opción  flecha izquierda seguido de control opción derecha o no tendrás voz.",
 			mReader:"Usar tu lector de pantalla para el juego",
 			mSapi:"Usar tts para el juego",
