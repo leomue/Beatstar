@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49505;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=51425;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -70,6 +70,11 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   newRequire.modules = modules;
   newRequire.cache = cache;
   newRequire.parent = previousRequire;
+  newRequire.register = function (id, exports) {
+    modules[id] = [function (require, module) {
+      module.exports = exports;
+    }, {}];
+  };
 
   for (var i = 0; i < entry.length; i++) {
     newRequire(entry[i]);
@@ -98,7 +103,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({4:[function(require,module,exports) {
+})({5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -149,7 +154,7 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],20:[function(require,module,exports) {
+},{}],47:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3052,7 +3057,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],3:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3186,134 +3191,132 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{}],15:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-if (typeof KeyEvent === 'undefined') {
-	var KeyEvent = {
-		DOM_VK_CANCEL: 3,
-		DOM_VK_HELP: 6,
-		DOM_VK_BACK_SPACE: 8,
-		DOM_VK_TAB: 9,
-		DOM_VK_CLEAR: 12,
-		DOM_VK_RETURN: 13,
-		DOM_VK_ENTER: 14,
-		DOM_VK_SHIFT: 16,
-		DOM_VK_CONTROL: 17,
-		DOM_VK_ALT: 18,
-		DOM_VK_PAUSE: 19,
-		DOM_VK_CAPS_LOCK: 20,
-		DOM_VK_ESCAPE: 27,
-		DOM_VK_SPACE: 32,
-		DOM_VK_PAGE_UP: 33,
-		DOM_VK_PAGE_DOWN: 34,
-		DOM_VK_END: 35,
-		DOM_VK_HOME: 36,
-		DOM_VK_LEFT: 37,
-		DOM_VK_UP: 38,
-		DOM_VK_RIGHT: 39,
-		DOM_VK_DOWN: 40,
-		DOM_VK_PRINTSCREEN: 44,
-		DOM_VK_INSERT: 45,
-		DOM_VK_DELETE: 46,
-		DOM_VK_0: 48,
-		DOM_VK_1: 49,
-		DOM_VK_2: 50,
-		DOM_VK_3: 51,
-		DOM_VK_4: 52,
-		DOM_VK_5: 53,
-		DOM_VK_6: 54,
-		DOM_VK_7: 55,
-		DOM_VK_8: 56,
-		DOM_VK_9: 57,
-		DOM_VK_SEMICOLON: 59,
-		DOM_VK_EQUALS: 61,
-		DOM_VK_A: 65,
-		DOM_VK_B: 66,
-		DOM_VK_C: 67,
-		DOM_VK_D: 68,
-		DOM_VK_E: 69,
-		DOM_VK_F: 70,
-		DOM_VK_G: 71,
-		DOM_VK_H: 72,
-		DOM_VK_I: 73,
-		DOM_VK_J: 74,
-		DOM_VK_K: 75,
-		DOM_VK_L: 76,
-		DOM_VK_M: 77,
-		DOM_VK_N: 78,
-		DOM_VK_O: 79,
-		DOM_VK_P: 80,
-		DOM_VK_Q: 81,
-		DOM_VK_R: 82,
-		DOM_VK_S: 83,
-		DOM_VK_T: 84,
-		DOM_VK_U: 85,
-		DOM_VK_V: 86,
-		DOM_VK_W: 87,
-		DOM_VK_X: 88,
-		DOM_VK_Y: 89,
-		DOM_VK_Z: 90,
-		DOM_VK_CONTEXT_MENU: 93,
-		DOM_VK_NUMPAD0: 96,
-		DOM_VK_NUMPAD1: 97,
-		DOM_VK_NUMPAD2: 98,
-		DOM_VK_NUMPAD3: 99,
-		DOM_VK_NUMPAD4: 100,
-		DOM_VK_NUMPAD5: 101,
-		DOM_VK_NUMPAD6: 102,
-		DOM_VK_NUMPAD7: 103,
-		DOM_VK_NUMPAD8: 104,
-		DOM_VK_NUMPAD9: 105,
-		DOM_VK_MULTIPLY: 106,
-		DOM_VK_ADD: 107,
-		DOM_VK_SEPARATOR: 108,
-		DOM_VK_SUBTRACT: 109,
-		DOM_VK_DECIMAL: 110,
-		DOM_VK_DIVIDE: 111,
-		DOM_VK_F1: 112,
-		DOM_VK_F2: 113,
-		DOM_VK_F3: 114,
-		DOM_VK_F4: 115,
-		DOM_VK_F5: 116,
-		DOM_VK_F6: 117,
-		DOM_VK_F7: 118,
-		DOM_VK_F8: 119,
-		DOM_VK_F9: 120,
-		DOM_VK_F10: 121,
-		DOM_VK_F11: 122,
-		DOM_VK_F12: 123,
-		DOM_VK_F13: 124,
-		DOM_VK_F14: 125,
-		DOM_VK_F15: 126,
-		DOM_VK_F16: 127,
-		DOM_VK_F17: 128,
-		DOM_VK_F18: 129,
-		DOM_VK_F19: 130,
-		DOM_VK_F20: 131,
-		DOM_VK_F21: 132,
-		DOM_VK_F22: 133,
-		DOM_VK_F23: 134,
-		DOM_VK_F24: 135,
-		DOM_VK_NUM_LOCK: 144,
-		DOM_VK_SCROLL_LOCK: 145,
-		DOM_VK_COMMA: 188,
-		DOM_VK_PERIOD: 190,
-		DOM_VK_SLASH: 191,
-		DOM_VK_BACK_QUOTE: 192,
-		DOM_VK_OPEN_BRACKET: 219,
-		DOM_VK_BACK_SLASH: 220,
-		DOM_VK_CLOSE_BRACKET: 221,
-		DOM_VK_QUOTE: 222,
-		DOM_VK_META: 224
-	};
-}
+var KeyEvent = {
+	DOM_VK_CANCEL: 3,
+	DOM_VK_HELP: 6,
+	DOM_VK_BACK_SPACE: 8,
+	DOM_VK_TAB: 9,
+	DOM_VK_CLEAR: 12,
+	DOM_VK_RETURN: 13,
+	DOM_VK_ENTER: 14,
+	DOM_VK_SHIFT: 16,
+	DOM_VK_CONTROL: 17,
+	DOM_VK_ALT: 18,
+	DOM_VK_PAUSE: 19,
+	DOM_VK_CAPS_LOCK: 20,
+	DOM_VK_ESCAPE: 27,
+	DOM_VK_SPACE: 32,
+	DOM_VK_PAGE_UP: 33,
+	DOM_VK_PAGE_DOWN: 34,
+	DOM_VK_END: 35,
+	DOM_VK_HOME: 36,
+	DOM_VK_LEFT: 37,
+	DOM_VK_UP: 38,
+	DOM_VK_RIGHT: 39,
+	DOM_VK_DOWN: 40,
+	DOM_VK_PRINTSCREEN: 44,
+	DOM_VK_INSERT: 45,
+	DOM_VK_DELETE: 46,
+	DOM_VK_0: 48,
+	DOM_VK_1: 49,
+	DOM_VK_2: 50,
+	DOM_VK_3: 51,
+	DOM_VK_4: 52,
+	DOM_VK_5: 53,
+	DOM_VK_6: 54,
+	DOM_VK_7: 55,
+	DOM_VK_8: 56,
+	DOM_VK_9: 57,
+	DOM_VK_SEMICOLON: 59,
+	DOM_VK_EQUALS: 61,
+	DOM_VK_A: 65,
+	DOM_VK_B: 66,
+	DOM_VK_C: 67,
+	DOM_VK_D: 68,
+	DOM_VK_E: 69,
+	DOM_VK_F: 70,
+	DOM_VK_G: 71,
+	DOM_VK_H: 72,
+	DOM_VK_I: 73,
+	DOM_VK_J: 74,
+	DOM_VK_K: 75,
+	DOM_VK_L: 76,
+	DOM_VK_M: 77,
+	DOM_VK_N: 78,
+	DOM_VK_O: 79,
+	DOM_VK_P: 80,
+	DOM_VK_Q: 81,
+	DOM_VK_R: 82,
+	DOM_VK_S: 83,
+	DOM_VK_T: 84,
+	DOM_VK_U: 85,
+	DOM_VK_V: 86,
+	DOM_VK_W: 87,
+	DOM_VK_X: 88,
+	DOM_VK_Y: 89,
+	DOM_VK_Z: 90,
+	DOM_VK_CONTEXT_MENU: 93,
+	DOM_VK_NUMPAD0: 96,
+	DOM_VK_NUMPAD1: 97,
+	DOM_VK_NUMPAD2: 98,
+	DOM_VK_NUMPAD3: 99,
+	DOM_VK_NUMPAD4: 100,
+	DOM_VK_NUMPAD5: 101,
+	DOM_VK_NUMPAD6: 102,
+	DOM_VK_NUMPAD7: 103,
+	DOM_VK_NUMPAD8: 104,
+	DOM_VK_NUMPAD9: 105,
+	DOM_VK_MULTIPLY: 106,
+	DOM_VK_ADD: 107,
+	DOM_VK_SEPARATOR: 108,
+	DOM_VK_SUBTRACT: 109,
+	DOM_VK_DECIMAL: 110,
+	DOM_VK_DIVIDE: 111,
+	DOM_VK_F1: 112,
+	DOM_VK_F2: 113,
+	DOM_VK_F3: 114,
+	DOM_VK_F4: 115,
+	DOM_VK_F5: 116,
+	DOM_VK_F6: 117,
+	DOM_VK_F7: 118,
+	DOM_VK_F8: 119,
+	DOM_VK_F9: 120,
+	DOM_VK_F10: 121,
+	DOM_VK_F11: 122,
+	DOM_VK_F12: 123,
+	DOM_VK_F13: 124,
+	DOM_VK_F14: 125,
+	DOM_VK_F15: 126,
+	DOM_VK_F16: 127,
+	DOM_VK_F17: 128,
+	DOM_VK_F18: 129,
+	DOM_VK_F19: 130,
+	DOM_VK_F20: 131,
+	DOM_VK_F21: 132,
+	DOM_VK_F22: 133,
+	DOM_VK_F23: 134,
+	DOM_VK_F24: 135,
+	DOM_VK_NUM_LOCK: 144,
+	DOM_VK_SCROLL_LOCK: 145,
+	DOM_VK_COMMA: 188,
+	DOM_VK_PERIOD: 190,
+	DOM_VK_SLASH: 191,
+	DOM_VK_BACK_QUOTE: 192,
+	DOM_VK_OPEN_BRACKET: 219,
+	DOM_VK_BACK_SLASH: 220,
+	DOM_VK_CLOSE_BRACKET: 221,
+	DOM_VK_QUOTE: 222,
+	DOM_VK_META: 224
+};
 exports.KeyEvent = KeyEvent;
-},{}],13:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3323,8 +3326,8 @@ class GameUtils {
 	progressPan(current, max) {
 		return (current * 200 / max - 100) / 100;
 	}
-	progressPitch(current, max) {
-		return current * 200 / max / 100;
+	progressPitch(current, min, max, minPitch, maxPitch) {
+		return current / (min + max) * (maxPitch - minPitch) + minPitch;
 	}
 	distance3D(x1, y1, z1, x2, y2, z2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
@@ -3786,7 +3789,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":20,"./input":3,"./keycodes":15,"./utilities":13}],19:[function(require,module,exports) {
+},{"./howler":47,"./input":4,"./keycodes":16,"./utilities":15}],46:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3877,7 +3880,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":20,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":47,"./soundObject.js":14}],11:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4012,7 +4015,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":19,"./soundObject.js":14}],12:[function(require,module,exports) {
+},{"./soundSource.js":46,"./soundObject.js":14}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4057,7 +4060,7 @@ var speech = new TTS(false);
 if (process.platform == 'darwin') speech.webTTS = true;
 exports.TTS = TTS;
 exports.speech = speech;
-},{"./utilities":13,"./main":1}],6:[function(require,module,exports) {
+},{"./utilities":15,"./main":1}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4197,7 +4200,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":12}],9:[function(require,module,exports) {
+},{"./tts":12}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4311,7 +4314,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = _tts.speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":12}],10:[function(require,module,exports) {
+},{"./keycodes":16,"./soundObject":14,"./tts":12}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4909,7 +4912,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1,"./utilities":13,"./tts":12,"./scrollingText":9}],7:[function(require,module,exports) {
+},{"./main":1,"./utilities":15,"./tts":12,"./scrollingText":10}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5207,7 +5210,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
+},{"./utilities":15,"./strings":13,"./tts":12,"./soundObject.js":14,"./menuItem":7,"./keycodes":16,"./input":4}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5352,7 +5355,7 @@ async function changeRate() {
 	(0, _main.save)();
 	_stateMachine.st.setState(2);
 }
-},{"./utilities":13,"./scrollingText":9,"./tts":12,"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./input.js":3,"./keycodes":15,"./menu":7}],21:[function(require,module,exports) {
+},{"./utilities":15,"./scrollingText":10,"./tts":12,"./soundObject":14,"./main":1,"./stateMachine":17,"./strings":13,"./menuItem":7,"./input.js":4,"./keycodes":16,"./menu":8}],49:[function(require,module,exports) {
 function Timer(callbacks, step) {
 	let last = 0;
 	let active = false;
@@ -5404,7 +5407,7 @@ function Timer(callbacks, step) {
 
 module.exports = Timer;
 
-},{}],17:[function(require,module,exports) {
+},{}],48:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5940,7 +5943,7 @@ class Game {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil((bpm / 2 - Math.abs(bpm / 2 - time)) / (bpm / 2) * 100);
-		this.scoreCounter.pitch = _utilities.utils.progressPitch(score, 100);
+		this.scoreCounter.pitch = _utilities.utils.progressPitch(score, 1, 100, 1.0, 2.0);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
@@ -5969,7 +5972,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":13,"./tts":12,"./main":1,"./oldtimer":5,"./soundHandler":11,"./utilities":15,"./soundObject":14,"./stateMachine":17,"./timer":49,"./scrollingText":10,"./input.js":4,"./keycodes.js":16}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6058,7 +6061,7 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":17}],2:[function(require,module,exports) {
+},{"./input":4,"./main":1,"./menuHandler":9,"./soundObject":14,"./keycodes":16,"./game":48}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6847,7 +6850,7 @@ async function playFootball() {
 				});
 				return;
 }
-},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+},{"./main":1,"./oldtimer":5,"./soundHandler":11,"./menuItem":7,"./menu":8,"./scrollingText":10,"./strings":13,"./tts":12,"./utilities":15,"./soundObject":14,"./keycodes":16,"./input":4,"./stateMachine":17}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6886,7 +6889,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
+},{"./keycodes":16,"./main":1,"./scrollingText":10}],1:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8413,7 +8416,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
+},{"./oldtimer":5,"./minis.js":3,"./player":6,"./menuItem":7,"./menu":8,"./menuHandler":9,"./scrollingText":10,"./strings":13,"./soundHandler":11,"./tts":12,"./utilities":15,"./soundObject":14,"./keycodes":16,"./stateMachine":17,"./input.js":4}],50:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var OldModule = module.bundle.Module;
@@ -8439,13 +8442,15 @@ module.bundle.Module = Module;
 
 var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = 'localhost' || location.hostname;
+  var hostname = process.env.HMR_HOSTNAME || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49505' + '/');
-  ws.onmessage = function (event) {
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + process.env.HMR_PORT + '/');
+  ws.onmessage = function(event) {
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
+      console.clear();
+
       data.assets.forEach(function (asset) {
         hmrApply(global.parcelRequire, asset);
       });
@@ -8455,15 +8460,13 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
           hmrAccept(global.parcelRequire, asset.id);
         }
       });
-      // Clear the console after HMR
-      console.clear();
     }
 
     if (data.type === 'reload') {
       ws.close();
       ws.onclose = function () {
         location.reload();
-      };
+      }
     }
 
     if (data.type === 'error-resolved') {
@@ -8500,9 +8503,17 @@ function createErrorOverlay(data) {
   message.innerText = data.error.message;
   stackTrace.innerText = data.error.stack;
 
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
+  overlay.innerHTML = (
+    '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' +
+      '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' +
+      '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' +
+      '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' +
+      '<pre>' + stackTrace.innerHTML + '</pre>' +
+    '</div>'
+  );
 
   return overlay;
+
 }
 
 function getParents(bundle, id) {
@@ -8517,7 +8528,7 @@ function getParents(bundle, id) {
   for (k in modules) {
     for (d in modules[k][1]) {
       dep = modules[k][1][d];
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+      if (dep === id || (Array.isArray(dep) && dep[dep.length - 1] === id)) {
         parents.push(+k);
       }
     }
@@ -8579,8 +8590,9 @@ function hmrAccept(bundle, id) {
   }
 
   return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id);
+    return hmrAccept(global.parcelRequire, id)
   });
 }
-},{}]},{},[22,1], null)
+
+},{}]},{},[50,1], null)
 //# sourceMappingURL=/main.map
