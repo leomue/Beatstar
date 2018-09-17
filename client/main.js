@@ -1,4 +1,4 @@
-process.env.HMR_PORT=49505;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=49855;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -70,6 +70,11 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   newRequire.modules = modules;
   newRequire.cache = cache;
   newRequire.parent = previousRequire;
+  newRequire.register = function (id, exports) {
+    modules[id] = [function (require, module) {
+      module.exports = exports;
+    }, {}];
+  };
 
   for (var i = 0; i < entry.length; i++) {
     newRequire(entry[i]);
@@ -98,7 +103,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({4:[function(require,module,exports) {
+})({5:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -149,7 +154,59 @@ class OldTimer {
 	}
 }
 exports.OldTimer = OldTimer;
-},{}],20:[function(require,module,exports) {
+},{}],39:[function(require,module,exports) {
+function Timer(callbacks, step) {
+	let last = 0;
+	let active = false;
+	let acc = 0;
+	let tick = 0;
+	let inc = step || 1 / 120;
+	let frameId;
+
+	function onFrame(time) {
+		if (last !== null) {
+			acc += (time - last) / 1000;
+			while (acc > inc) {
+        callbacks.update(inc, tick);
+        tick += 1;
+        acc -= inc;
+			}
+		}
+		last = time;
+    callbacks.render();
+    if (active) {
+    	frameId = requestAnimationFrame(onFrame);
+    }
+	}
+
+	function start() {
+		last = null;
+		active = true;
+		frameId = requestAnimationFrame(onFrame);
+	}
+
+	function stop() {
+		active = false;
+    cancelAnimationFrame(frameId);
+    console.log(frameId);
+	}
+	function change(value) {
+		inc = value || 1 / 120;
+		acc = inc;
+		tick = 0;
+  stop();
+  start();
+	}
+	return {
+		start,
+		stop,
+		change
+	};
+}
+
+module.exports = Timer;
+
+},{}],34:[function(require,module,exports) {
 /*!
  *  howler.js v2.0.9
  *  howlerjs.com
@@ -3052,7 +3109,7 @@ if (typeof exports !== 'undefined') {
 	exports.Howl = Howl;
 }
 
-},{}],3:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3186,7 +3243,7 @@ class KeyboardInput {
 }
 
 exports.KeyboardInput = KeyboardInput;
-},{}],15:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 
 'use strict';
 
@@ -3313,7 +3370,7 @@ if (typeof KeyEvent === 'undefined') {
 	};
 }
 exports.KeyEvent = KeyEvent;
-},{}],13:[function(require,module,exports) {
+},{}],14:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3323,9 +3380,18 @@ class GameUtils {
 	progressPan(current, max) {
 		return (current * 200 / max - 100) / 100;
 	}
-	progressPitch(current, max) {
-		return current * 200 / max / 100;
+	progressPitch(current, min, max, minPitch, maxPitch) {
+		return current / (min + max) * (maxPitch - minPitch) + minPitch;
 	}
+	progressVolume(current, min, max, minVolume, maxVolume) {
+		if (current > max) return 0;
+		return current / (min + max) * (maxVolume - minVolume) + minVolume;
+	}
+	getProportion(current, min, max, minVolume, maxVolume) {
+		if (current > max) return 0;
+		return current / (min + max) * (maxVolume - minVolume) + minVolume;
+	}
+
 	distance3D(x1, y1, z1, x2, y2, z2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
 	}
@@ -3413,7 +3479,7 @@ class GameUtils {
 
 }
 var utils = exports.utils = new GameUtils();
-},{}],14:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3786,7 +3852,7 @@ class SoundObject {
 }
 const so = new SoundObject();
 exports.so = so;
-},{"./howler":20,"./input":3,"./keycodes":15,"./utilities":13}],19:[function(require,module,exports) {
+},{"./howler":34,"./input":4,"./keycodes":16,"./utilities":14}],33:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3877,7 +3943,7 @@ class SoundSource {
 }
 
 exports.SoundSource = SoundSource;
-},{"./howler":20,"./soundObject.js":14}],11:[function(require,module,exports) {
+},{"./howler":34,"./soundObject.js":15}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4012,7 +4078,7 @@ class SoundItem {
 }
 
 exports.SoundHandler = SoundHandler;
-},{"./soundSource.js":19,"./soundObject.js":14}],12:[function(require,module,exports) {
+},{"./soundSource.js":33,"./soundObject.js":15}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4057,7 +4123,7 @@ var speech = new TTS(false);
 if (process.platform == 'darwin') speech.webTTS = true;
 exports.TTS = TTS;
 exports.speech = speech;
-},{"./utilities":13,"./main":1}],6:[function(require,module,exports) {
+},{"./utilities":14,"./main":1}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4197,7 +4263,7 @@ exports.MenuItem = MenuItem;
 exports.SliderItem = SliderItem;
 exports.SelectorItem = SelectorItem;
 exports.MenuTypes = MenuTypes;
-},{"./tts":12}],9:[function(require,module,exports) {
+},{"./tts":13}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4311,7 +4377,7 @@ class ScrollingText {
 }
 exports.ScrollingText = ScrollingText;
 exports.speech = _tts.speech;
-},{"./keycodes":15,"./soundObject":14,"./tts":12}],10:[function(require,module,exports) {
+},{"./keycodes":16,"./soundObject":15,"./tts":13}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4550,7 +4616,7 @@ You can upload your pack via the website by making a zip file of the pack's fold
 			buygame: "Do  you want to buy %1 for %2 beatcoins?",
 			bet: "Please place your bet with the left and right arrow keys and press enter when you have decided.",
 			nogame: "You don't have the required %1 beatcoins for this game, you only have %2.",
-			mainmenu: "main menu",
+			mainmenu: "main menu: arrow keys to select options, page up and page down raise and lower the music volume.",
 			mSelect: "Please select",
 			mSafeSelect: "Please select, with the right and left arrow keys, how many safeguards you want to buy and press enter.",
 			level: "Level %1",
@@ -4840,7 +4906,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 			mBrowseUnlocked: 'Cambiar a otro pack comprado',
 			mHashes: 'Reconstruir base de datos de packs',
 			codescracked: "Has podido desbloquear %1 códigos, con %2 acciones diferentes!",
-			mainmenu: "menú principal",
+			mainmenu: "menú principal: flechas arriba y abajo para seleccionar opciones, avanzar y retroceder página para subir y bajar la música",
 			mSelect: "Por favor selecciona",
 			mSafeSelect: "Por favor selecciona, con las flechas izquierda y derecha, cuántos antifallos quieres y pulsa enter.",
 			mSafeguards: "Comprar antifallos (ahora %1)",
@@ -4909,7 +4975,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 	}
 }
 var strings = exports.strings = new Strings();
-},{"./main":1,"./utilities":13,"./tts":12,"./scrollingText":9}],7:[function(require,module,exports) {
+},{"./main":1,"./utilities":14,"./tts":13,"./scrollingText":10}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5207,7 +5273,7 @@ class Menu {
 	}
 }
 exports.Menu = Menu;
-},{"./utilities":13,"./strings":10,"./tts":12,"./soundObject.js":14,"./menuItem":6,"./keycodes":15,"./input":3}],8:[function(require,module,exports) {
+},{"./utilities":14,"./strings":9,"./tts":13,"./soundObject.js":15,"./menuItem":7,"./keycodes":16,"./input":4}],9:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5352,59 +5418,7 @@ async function changeRate() {
 	(0, _main.save)();
 	_stateMachine.st.setState(2);
 }
-},{"./utilities":13,"./scrollingText":9,"./tts":12,"./soundObject":14,"./main":1,"./stateMachine":16,"./strings":10,"./menuItem":6,"./input.js":3,"./keycodes":15,"./menu":7}],21:[function(require,module,exports) {
-function Timer(callbacks, step) {
-	let last = 0;
-	let active = false;
-	let acc = 0;
-	let tick = 0;
-	let inc = step || 1 / 120;
-	let frameId;
-
-	function onFrame(time) {
-		if (last !== null) {
-			acc += (time - last) / 1000;
-			while (acc > inc) {
-        callbacks.update(inc, tick);
-        tick += 1;
-        acc -= inc;
-			}
-		}
-		last = time;
-    callbacks.render();
-    if (active) {
-    	frameId = requestAnimationFrame(onFrame);
-    }
-	}
-
-	function start() {
-		last = null;
-		active = true;
-		frameId = requestAnimationFrame(onFrame);
-	}
-
-	function stop() {
-		active = false;
-    cancelAnimationFrame(frameId);
-    console.log(frameId);
-	}
-	function change(value) {
-		inc = value || 1 / 120;
-		acc = inc;
-		tick = 0;
-  stop();
-  start();
-	}
-	return {
-		start,
-		stop,
-		change
-	};
-}
-
-module.exports = Timer;
-
-},{}],17:[function(require,module,exports) {
+},{"./utilities":14,"./scrollingText":10,"./tts":13,"./soundObject":15,"./main":1,"./stateMachine":17,"./strings":9,"./menuItem":7,"./input.js":4,"./keycodes":16,"./menu":8}],35:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5969,7 +5983,7 @@ class Game {
 	}
 }
 exports.Game = Game;
-},{"./strings":10,"./tts":12,"./main":1,"./oldtimer":4,"./soundHandler":11,"./utilities":13,"./soundObject":14,"./stateMachine":16,"./timer":21,"./scrollingText":9,"./input.js":3,"./keycodes.js":15}],16:[function(require,module,exports) {
+},{"./strings":9,"./tts":13,"./main":1,"./oldtimer":5,"./soundHandler":12,"./utilities":14,"./soundObject":15,"./stateMachine":17,"./timer":39,"./scrollingText":10,"./input.js":4,"./keycodes.js":16}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6058,11 +6072,11 @@ class StateMachine {
 }
 const st = new StateMachine();
 exports.st = st;
-},{"./input":3,"./main":1,"./menuHandler":8,"./soundObject":14,"./keycodes":15,"./game":17}],2:[function(require,module,exports) {
+},{"./input":4,"./main":1,"./menuHandler":9,"./soundObject":15,"./keycodes":16,"./game":35}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-				value: true
+	value: true
 });
 exports.betSync = betSync;
 exports.minibet = minibet;
@@ -6072,8 +6086,13 @@ exports.playDeck = playDeck;
 exports.takeCard = takeCard;
 exports.playDouble = playDouble;
 exports.playFootball = playFootball;
+exports.playPong = playPong;
 
 var _main = require('./main');
+
+var _timer = require('./timer');
+
+var _timer2 = _interopRequireDefault(_timer);
 
 var _deck = require('52-deck');
 
@@ -6111,743 +6130,776 @@ var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+let pongtimer = new _oldtimer.OldTimer();
+
 async function betSync(minBet = 5000, slideBy = 500) {
-				return new Promise((resolve, reject) => {
-								minibet(function (bet) {
-												resolve(bet);
-												return bet;
-								}, minBet, slideBy);
-				});
+	return new Promise((resolve, reject) => {
+		minibet(function (bet) {
+			resolve(bet);
+			return bet;
+		}, minBet, slideBy);
+	});
 }
 function minibet(callbet = null, minBet = 5000, slideBy = 500) {
-				if (_main.data.beatcoins < minBet) {
-								let error = new _scrollingText.ScrollingText(_strings.strings.get("noGameCash", [minBet, _main.data.beatcoins]), "\n", function () {
-												if (typeof callbet !== "undefined") callbet(-1);
-												return;
-								}); //scroll
-				} //if not cash
+	if (_main.data.beatcoins < minBet) {
+		let error = new _scrollingText.ScrollingText(_strings.strings.get("noGameCash", [minBet, _main.data.beatcoins]), "\n", function () {
+			if (typeof callbet !== "undefined") callbet(-1);
+			return;
+		}); //scroll
+	} //if not cash
+	else {
+			//bet start
+			const items = new Array();
+			let slider = new _menuItem.SliderItem(0, _strings.strings.get("bet", []), minBet, _main.data.beatcoins, minBet, slideBy);
+			items.push(slider);
+			items.push(new _menuItem.MenuItem(1, _strings.strings.get("ok")));
+			items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
+			_soundObject.so.directory = './sounds/';
+			let dm = new _menu.Menu(_strings.strings.get("bet"), items);
+			let myBet = 0;
+			dm.run(s => {
+				_soundObject.so.directory = './sounds/';
+				myBet = s.items[0].value;
+				dm.destroy();
+				if (s.selected == 2) {
+					if (typeof callbet !== "undefined") callbet(myBet);
+				} //option 2
 				else {
-												//bet start
-												const items = new Array();
-												let slider = new _menuItem.SliderItem(0, _strings.strings.get("bet", []), minBet, _main.data.beatcoins, minBet, slideBy);
-												items.push(slider);
-												items.push(new _menuItem.MenuItem(1, _strings.strings.get("ok")));
-												items.push(new _menuItem.MenuItem(2, _strings.strings.get("mBack")));
-												_soundObject.so.directory = './sounds/';
-												let dm = new _menu.Menu(_strings.strings.get("bet"), items);
-												let myBet = 0;
-												dm.run(s => {
-																_soundObject.so.directory = './sounds/';
-																myBet = s.items[0].value;
-																dm.destroy();
-																if (s.selected == 2) {
-																				if (typeof callbet !== "undefined") callbet(myBet);
-																} //option 2
-																else {
-																								(0, _main.addCash)(0, myBet, function () {
-																												if (typeof callbet !== "undefined") callbet(myBet);
-																								});
-																				} //not option 2
-												}); //menu callback
-												//bet end
-								} //enough cash
+						(0, _main.addCash)(0, myBet, function () {
+							if (typeof callbet !== "undefined") callbet(myBet);
+						});
+					} //not option 2
+			}); //menu callback
+			//bet end
+		} //enough cash
 } //function
 async function playSlots() {
-				let myBet;
-				minibet(function (bet) {
-								if (bet <= 0) {
-												_stateMachine.st.setState(2);
-												return;
-								}
-								myBet = bet;
-								//slots
-								_soundObject.so.directory = "./sounds/";
-								let loop = _soundObject.so.create("slot_wheel", true);
-								let wheel;
-								let counter = 0;
-								loop.play();
-								let wheels = [];
-								let myInt = setInterval(() => {
-												if (counter < 3) {
-																_soundObject.so.directory = "";
-																wheels[counter] = _utilities.utils.randomInt(2, 5);
-																if (counter == 2 && wheels[0] == wheels[1]) {
-																				let void_random;
-																				void_random = _utilities.utils.randomInt(1, 10);
-																				if (void_random == 1) wheels[2] = 1;
-																}
-																wheel = _soundObject.so.create(_main.packdir + "a" + wheels[counter]);
-																wheel.play();
-																counter++;
-												} else {
-																clearInterval(myInt);
-																loop.stop();
-																_soundObject.so.directory = "./sounds/";
-																if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
-																				let win = _soundObject.so.create("slot_win_" + _utilities.utils.randomInt(1, 4));
-																				win.play();
-																				win.sound.once("end", async () => {
-																								await (0, _main.getAch)("slotwin");
-																								let capcash = myBet;
-																								console.log(capcash);
-																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(80, 100), capcash) + myBet);
-																								console.log("perc" + perc);
-																								(0, _main.addCash)(perc, 0, function () {
-																												_soundObject.so.kill(function () {
-																																_stateMachine.st.setState(2);
-																												});
-																								});
-																				});
-																} else if (wheels[2] == 1) {
-																				let lose = _soundObject.so.create("slot_lose_3");
-																				lose.play();
-																				let capcash = myBet;
-																				if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
-																				let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(15, 25), capcash));
-																				console.log("perc" + perc);
-																				_main.data.beatcoins -= perc;
-																				lose.sound.once("end", async function () {
-																								(0, _main.addCash)(0, perc, function () {
-																												_soundObject.so.kill(function () {
-																																_stateMachine.st.setState(2);
-																												});
-																								}, true);
-																				});
-																} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
-																				let lose = _soundObject.so.create("slot_lose_1");
-																				lose.play();
-																				lose.sound.once("end", async function () {
-																								await (0, _main.getAch)("frust");
-																								let capcash = myBet;
-																								let perc = capcash;
-																								(0, _main.addCash)(perc, 0, function () {
-																												_soundObject.so.kill(function () {
-																																_stateMachine.st.setState(2);
-																												});
-																								});
-																				});
-																} else {
-																				let lose = _soundObject.so.create("slot_lose_2");
-																				lose.play();
-																				lose.sound.once("end", async function () {
-																								await (0, _main.getAch)("catslots");
-																								let capcash = myBet;
-																								if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
-																								console.log(capcash);
-																								let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(20, 60), capcash));
-																								console.log("perc" + perc);
-																								(0, _main.addCash)(0, perc, function () {
-																												_soundObject.so.kill(function () {
-																																_stateMachine.st.setState(2);
-																												});
-																								});
-																				});
-																}
-												} //counter
-								}, _utilities.utils.randomInt(2500, 3100));
-				}, 2500, 500);
+	let myBet;
+	minibet(function (bet) {
+		if (bet <= 0) {
+			_stateMachine.st.setState(2);
+			return;
+		}
+		myBet = bet;
+		//slots
+		_soundObject.so.directory = "./sounds/";
+		let loop = _soundObject.so.create("slot_wheel", true);
+		let wheel;
+		let counter = 0;
+		loop.play();
+		let wheels = [];
+		let myInt = setInterval(() => {
+			if (counter < 3) {
+				_soundObject.so.directory = "";
+				wheels[counter] = _utilities.utils.randomInt(2, 5);
+				if (counter == 2 && wheels[0] == wheels[1]) {
+					let void_random;
+					void_random = _utilities.utils.randomInt(1, 10);
+					if (void_random == 1) wheels[2] = 1;
+				}
+				wheel = _soundObject.so.create(_main.packdir + "a" + wheels[counter]);
+				wheel.play();
+				counter++;
+			} else {
+				clearInterval(myInt);
+				loop.stop();
+				_soundObject.so.directory = "./sounds/";
+				if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
+					let win = _soundObject.so.create("slot_win_" + _utilities.utils.randomInt(1, 4));
+					win.play();
+					win.sound.once("end", async () => {
+						await (0, _main.getAch)("slotwin");
+						let capcash = myBet;
+						console.log(capcash);
+						let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(80, 100), capcash) + myBet);
+						console.log("perc" + perc);
+						(0, _main.addCash)(perc, 0, function () {
+							_soundObject.so.kill(function () {
+								_stateMachine.st.setState(2);
+							});
+						});
+					});
+				} else if (wheels[2] == 1) {
+					let lose = _soundObject.so.create("slot_lose_3");
+					lose.play();
+					let capcash = myBet;
+					if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
+					let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(15, 25), capcash));
+					console.log("perc" + perc);
+					_main.data.beatcoins -= perc;
+					lose.sound.once("end", async function () {
+						(0, _main.addCash)(0, perc, function () {
+							_soundObject.so.kill(function () {
+								_stateMachine.st.setState(2);
+							});
+						}, true);
+					});
+				} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
+					let lose = _soundObject.so.create("slot_lose_1");
+					lose.play();
+					lose.sound.once("end", async function () {
+						await (0, _main.getAch)("frust");
+						let capcash = myBet;
+						let perc = capcash;
+						(0, _main.addCash)(perc, 0, function () {
+							_soundObject.so.kill(function () {
+								_stateMachine.st.setState(2);
+							});
+						});
+					});
+				} else {
+					let lose = _soundObject.so.create("slot_lose_2");
+					lose.play();
+					lose.sound.once("end", async function () {
+						await (0, _main.getAch)("catslots");
+						let capcash = myBet;
+						if (capcash > _main.data.beatcoins) capcash = _main.data.beatcoins;
+						console.log(capcash);
+						let perc = Math.ceil(_utilities.utils.percentOf(_utilities.utils.randomInt(20, 60), capcash));
+						console.log("perc" + perc);
+						(0, _main.addCash)(0, perc, function () {
+							_soundObject.so.kill(function () {
+								_stateMachine.st.setState(2);
+							});
+						});
+					});
+				}
+			} //counter
+		}, _utilities.utils.randomInt(2500, 3100));
+	}, 2500, 500);
 }
 function sop() {
-				_soundObject.so.directory = _main.packdir + "/";
+	_soundObject.so.directory = _main.packdir + "/";
 }
 function sos() {
-				_soundObject.so.directory = "./sounds/";
+	_soundObject.so.directory = "./sounds/";
 }
 async function playCode() {
-				const fs = require('fs');
-				let pool = new _soundHandler.SoundHandler();
-				let actions = 0;
-				for (let i = 1; i <= 10; i++) {
-								if (fs.existsSync(_main.packdir + 'a' + i + '.ogg')) {
-												actions = i;
-								}
+	const fs = require('fs');
+	let pool = new _soundHandler.SoundHandler();
+	let actions = 0;
+	for (let i = 1; i <= 10; i++) {
+		if (fs.existsSync(_main.packdir + 'a' + i + '.ogg')) {
+			actions = i;
+		}
+	}
+	let time = new _oldtimer.OldTimer();
+	let allowed = 42000;
+	let ticker;
+	let music;
+	sos();
+	ticker = _soundObject.so.create("codetick");
+	sop();
+	let playing = true;
+	let level = 0;
+	let crackedcodes = 0;
+	let acode = [];
+	let actionsa = [];
+	let curkeys = [];
+	for (let i = 2; i <= actions; i++) {
+		actionsa.push("a" + i);
+	}
+	let go;
+	let input = new _input.KeyboardInput();
+	input.init();
+	let fumbled = false;
+	sos();
+	go = _soundObject.so.create("codego");
+	let tick = true;
+	while (playing) {
+		await _utilities.utils.sleep(5);
+		level++;
+		allowed = 35000 + actions * 500;
+		acode.splice();
+		acode = actionsa;
+		if (level + actions - 1 > actions) {
+			let more = level - 1;
+			for (let i = 1; i <= more; i++) {
+				acode.push("a" + _utilities.utils.randomInt(2, actions));
+			}
+		}
+		acode = _utilities.utils.shuffle(acode);
+		let counter = 0;
+		sos();
+		if (!fumbled) {
+			_tts.speech.speak(_strings.strings.get("level", [level]));
+			await _utilities.utils.sleep(700);
+			_tts.speech.speak(_strings.strings.get("codes", [acode.length]));
+			await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1250));
+			go.play();
+			sop();
+			time.reset();
+		}
+		while (time.elapsed < allowed && playing) {
+			await _utilities.utils.sleep(5);
+			if (time.elapsed % 1000 <= 10 && tick) {
+				let formula = (allowed - time.elapsed) / 1000;
+				ticker.pitch = (120 - formula) / 100;
+				tick = false;
+				ticker.play();
+			} //ticker sound
+			else {
+					tick = true;
 				}
-				let time = new _oldtimer.OldTimer();
-				let allowed = 42000;
-				let ticker;
-				let music;
+			input.justPressedEventCallback = function (evt) {
+				if (evt == _keycodes.KeyEvent.DOM_VK_Q) playing = false;
+				if (_main.actionKeys.includes(evt)) {
+					if (evt == _main.actionKeys[acode[counter].substr(1)]) {
+						sop();
+						pool.playStatic(acode[counter], 0);
+						sos();
+						pool.playStatic("code_ok", 0);
+						sop();
+						counter++;
+					} else {
+						counter = 0;
+						sos();
+						pool.playStatic("code_wrong", 0);
+						sop();
+					}
+				} //is in array
+			};
+			if (counter == acode.length) {
 				sos();
-				ticker = _soundObject.so.create("codetick");
+				input.justPressedEventCallback = null;
+				pool.playStatic("code_complete", 0);
 				sop();
-				let playing = true;
-				let level = 0;
-				let crackedcodes = 0;
-				let acode = [];
-				let actionsa = [];
-				let curkeys = [];
-				for (let i = 2; i <= actions; i++) {
-								actionsa.push("a" + i);
-				}
-				let go;
-				let input = new _input.KeyboardInput();
-				input.init();
-				let fumbled = false;
-				sos();
-				go = _soundObject.so.create("codego");
-				let tick = true;
-				while (playing) {
-								await _utilities.utils.sleep(5);
-								level++;
-								allowed = 35000 + actions * 500;
-								acode.splice();
-								acode = actionsa;
-								if (level + actions - 1 > actions) {
-												let more = level - 1;
-												for (let i = 1; i <= more; i++) {
-																acode.push("a" + _utilities.utils.randomInt(2, actions));
-												}
-								}
-								acode = _utilities.utils.shuffle(acode);
-								let counter = 0;
-								sos();
-								if (!fumbled) {
-												_tts.speech.speak(_strings.strings.get("level", [level]));
-												await _utilities.utils.sleep(700);
-												_tts.speech.speak(_strings.strings.get("codes", [acode.length]));
-												await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1250));
-												go.play();
-												sop();
-												time.reset();
-								}
-								while (time.elapsed < allowed && playing) {
-												await _utilities.utils.sleep(5);
-												if (time.elapsed % 1000 <= 10 && tick) {
-																let formula = (allowed - time.elapsed) / 1000;
-																ticker.pitch = (120 - formula) / 100;
-																tick = false;
-																ticker.play();
-												} //ticker sound
-												else {
-																				tick = true;
-																}
-												input.justPressedEventCallback = function (evt) {
-																if (evt == _keycodes.KeyEvent.DOM_VK_Q) playing = false;
-																if (_main.actionKeys.includes(evt)) {
-																				if (evt == _main.actionKeys[acode[counter].substr(1)]) {
-																								sop();
-																								pool.playStatic(acode[counter], 0);
-																								sos();
-																								pool.playStatic("code_ok", 0);
-																								sop();
-																								counter++;
-																				} else {
-																								counter = 0;
-																								sos();
-																								pool.playStatic("code_wrong", 0);
-																								sop();
-																				}
-																} //is in array
-												};
-												if (counter == acode.length) {
-																sos();
-																input.justPressedEventCallback = null;
-																pool.playStatic("code_complete", 0);
-																sop();
-																await _utilities.utils.sleep(600);
-																ticker.stop();
-																crackedcodes++;
-																time.restart();
-																acode.splice();
-																break;
-												} //code cracked
-								} //while allowed
-								if (time.elapsed >= allowed) {
-												input.justPressedEventCallback = null;
-												sos();
-												let fumble;
-												fumbled = true;
-												playing = false;
-												fumble = _soundObject.so.create("fumble");
-												fumble.play();
-												await _utilities.utils.sleep(400);
-								} //allowed
-				} //while playing
-				let newsafe = _utilities.utils.randomInt(0, level - 1);
-				new _scrollingText.ScrollingText(_strings.strings.get("codescracked", [crackedcodes, actions]), "\n", async function () {
-								if (crackedcodes >= 3) await (0, _main.getAch)("robber");
-								(0, _main.safeget)(newsafe, function () {
-												_soundObject.so.kill(() => {
-																input.justPressedEventCallback = null;
-																_stateMachine.st.setState(2);
-												});
-								});
-				});
+				await _utilities.utils.sleep(600);
+				ticker.stop();
+				crackedcodes++;
+				time.restart();
+				acode.splice();
+				break;
+			} //code cracked
+		} //while allowed
+		if (time.elapsed >= allowed) {
+			input.justPressedEventCallback = null;
+			sos();
+			let fumble;
+			fumbled = true;
+			playing = false;
+			fumble = _soundObject.so.create("fumble");
+			fumble.play();
+			await _utilities.utils.sleep(400);
+		} //allowed
+	} //while playing
+	let newsafe = _utilities.utils.randomInt(0, level - 1);
+	new _scrollingText.ScrollingText(_strings.strings.get("codescracked", [crackedcodes, actions]), "\n", async function () {
+		if (crackedcodes >= 3) await (0, _main.getAch)("robber");
+		(0, _main.safeget)(newsafe, function () {
+			_soundObject.so.kill(() => {
+				input.justPressedEventCallback = null;
+				_stateMachine.st.setState(2);
+			});
+		});
+	});
 } //function
 async function playDeck() {
-				let deck = (0, _deck.shuffle)((0, _deck.newDecks)(1));
-				_soundObject.so.directory = "./sounds/";
-				let snd = _soundObject.so.create("hl_intro");
-				let bet = await betSync(1500, 500);
-				_tts.speech.speak(bet);
-				if (bet <= 0) {
-								_soundObject.so.kill(() => {
-												_stateMachine.st.setState(2);
-								});
-								return;
+	let deck = (0, _deck.shuffle)((0, _deck.newDecks)(1));
+	_soundObject.so.directory = "./sounds/";
+	let snd = _soundObject.so.create("hl_intro");
+	let bet = await betSync(1500, 500);
+	_tts.speech.speak(bet);
+	if (bet <= 0) {
+		_soundObject.so.kill(() => {
+			_stateMachine.st.setState(2);
+		});
+		return;
+	}
+	_strings.strings.speak("hw");
+	await snd.playSync();
+	let card;
+	let value;
+	let pool = new _soundHandler.SoundHandler();
+	let cardO;
+	let first = true;
+	let firstBet = bet;
+	bet = 0;
+	_soundObject.so.directory = "./sounds/";
+	let take = _soundObject.so.create("hl_card");
+	while (bet != -1) {
+		await _utilities.utils.sleep(8);
+		await new Promise((resolve, reject) => {
+			cardO = takeCard(deck);
+			take.playSync();
+			deck.splice(0, 1);
+			card = cardO[1];
+			value = cardO[0].value;
+			//question
+			let answer = false;
+			let items = new Array();
+			items.push(new _menuItem.MenuItem(0, _strings.strings.get("nextCard", [card, bet])));
+			if (value < 13) items.push(new _menuItem.MenuItem(0, _strings.strings.get("higher")));
+			if (value > 1) items.push(new _menuItem.MenuItem(1, _strings.strings.get("lower")));
+			if (!first) {
+				items.push(new _menuItem.MenuItem(2, _strings.strings.get("collect")));
+			} else {
+				first = false;
+			}
+			_soundObject.so.directory = './sounds/';
+			let dm = new _menu.Menu(_strings.strings.get("nextCard", [card, bet]), items);
+			_tts.speech.speak("ok");
+			dm.run(async s => {
+				_soundObject.so.directory = './sounds/';
+				switch (s.selected) {
+					case 0:
+						dm.destroy();
+						answer = true;
+						break;
+					case 1:
+						dm.destroy();
+						answer = false;
+						break;
+					case 2:
+						dm.destroy();
+						await (0, _main.addCashSync)(bet, 0);
+						_stateMachine.st.setState(2);
+						resolve();
+						bet = -1;
+						return;
 				}
-				_strings.strings.speak("hw");
-				await snd.playSync();
-				let card;
-				let value;
-				let pool = new _soundHandler.SoundHandler();
-				let cardO;
-				let first = true;
-				let firstBet = bet;
-				bet = 0;
-				_soundObject.so.directory = "./sounds/";
-				let take = _soundObject.so.create("hl_card");
-				while (bet != -1) {
-								await _utilities.utils.sleep(8);
-								await new Promise((resolve, reject) => {
-												cardO = takeCard(deck);
-												take.playSync();
-												deck.splice(0, 1);
-												card = cardO[1];
-												value = cardO[0].value;
-												//question
-												let answer = false;
-												let items = new Array();
-												items.push(new _menuItem.MenuItem(0, _strings.strings.get("nextCard", [card, bet])));
-												if (value < 13) items.push(new _menuItem.MenuItem(0, _strings.strings.get("higher")));
-												if (value > 1) items.push(new _menuItem.MenuItem(1, _strings.strings.get("lower")));
-												if (!first) {
-																items.push(new _menuItem.MenuItem(2, _strings.strings.get("collect")));
-												} else {
-																first = false;
-												}
-												_soundObject.so.directory = './sounds/';
-												let dm = new _menu.Menu(_strings.strings.get("nextCard", [card, bet]), items);
-												_tts.speech.speak("ok");
-												dm.run(async s => {
-																_soundObject.so.directory = './sounds/';
-																switch (s.selected) {
-																				case 0:
-																								dm.destroy();
-																								answer = true;
-																								break;
-																				case 1:
-																								dm.destroy();
-																								answer = false;
-																								break;
-																				case 2:
-																								dm.destroy();
-																								await (0, _main.addCashSync)(bet, 0);
-																								_stateMachine.st.setState(2);
-																								resolve();
-																								bet = -1;
-																								return;
-																}
-																let nextCard = takeCard(deck);
-																await _utilities.utils.sleep(_utilities.utils.randomInt(1000, 1900));
-																_tts.speech.speak(nextCard[1] + "!");
-																await _utilities.utils.sleep(_utilities.utils.randomInt(400, 800));
-																if (nextCard[0].value < value && !answer) {
-																				bet = bet + firstBet;
-																				pool.playStatic("hl_right", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
-																				pool.playStatic("hl_crowdwin", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
-																				resolve();
-																				return;
-																} else if (nextCard[0].value > value && answer) {
-																				bet = bet + firstBet;
-																				pool.playStatic("hl_right", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
-																				pool.playStatic("hl_crowdwin", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
-																				resolve();
-																				return;
-																} else if (nextCard[0].value == value) {
-																				pool.playStatic("hl_equal", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
-																				pool.playStatic("hl_crowdequal", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
-																				resolve();
-																				return;
-																} else {
-																				pool.playStatic("hl_wrong", 0);
-																				await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
-																				pool.playStatic("hl_crowdlose", 0);
-																				await _utilities.utils.sleep(3400);
-																				_stateMachine.st.setState(2);
-																				resolve();
-																				bet = -1;
-																				return;
-																}
-												}); //menu
-								}); //promise
+				let nextCard = takeCard(deck);
+				await _utilities.utils.sleep(_utilities.utils.randomInt(1000, 1900));
+				_tts.speech.speak(nextCard[1] + "!");
+				await _utilities.utils.sleep(_utilities.utils.randomInt(400, 800));
+				if (nextCard[0].value < value && !answer) {
+					bet = bet + firstBet;
+					pool.playStatic("hl_right", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+					pool.playStatic("hl_crowdwin", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
+					resolve();
+					return;
+				} else if (nextCard[0].value > value && answer) {
+					bet = bet + firstBet;
+					pool.playStatic("hl_right", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+					pool.playStatic("hl_crowdwin", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
+					resolve();
+					return;
+				} else if (nextCard[0].value == value) {
+					pool.playStatic("hl_equal", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+					pool.playStatic("hl_crowdequal", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(800, 1600));
+					resolve();
+					return;
+				} else {
+					pool.playStatic("hl_wrong", 0);
+					await _utilities.utils.sleep(_utilities.utils.randomInt(100, 300));
+					pool.playStatic("hl_crowdlose", 0);
+					await _utilities.utils.sleep(3400);
+					_stateMachine.st.setState(2);
+					resolve();
+					bet = -1;
+					return;
 				}
+			}); //menu
+		}); //promise
+	}
 }
 function takeCard(deck) {
-				let card = deck[0];
-				if (card.text == "J") card.value = 11;
-				if (card.text == "Q") card.value = 12;
-				if (card.text == "K") card.value = 13;
-				let str = _strings.strings.get("card", [_strings.strings.get(card.text), _strings.strings.get("c" + card.suite)]);
-				console.log(str);
-				return [card, str];
+	let card = deck[0];
+	if (card.text == "J") card.value = 11;
+	if (card.text == "Q") card.value = 12;
+	if (card.text == "K") card.value = 13;
+	let str = _strings.strings.get("card", [_strings.strings.get(card.text), _strings.strings.get("c" + card.suite)]);
+	console.log(str);
+	return [card, str];
 }
 async function playDouble() {
-				if (_main.data.beatcoins < 5000) {
-								await new _scrollingText.ScrollingText(_strings.strings.get("doublecash"));
-								_stateMachine.st.setState(2);
-								return;
-				}
-				let answer = await (0, _main.questionSync)("dq", [_main.data.beatcoins]);
-				if (!answer) {
-								_stateMachine.st.setState(2);
-								return;
-				}
-				let old = _main.data.beatcoins;
-				_soundObject.so.directory = "./sounds/";
-				let snd = _soundObject.so.create("doub_intro");;
-				await snd.playSync();
-				await (0, _main.addCashSync)(0, _main.data.beatcoins);
-				let rand = _utilities.utils.randomInt(1, 2);
-				let win = false;
-				if (rand == 1) win = true;
-				sos();
-				if (!win) {
-								snd = _soundObject.so.create("doub_loser");
-								await snd.playSync();
-								await (0, _main.getAch)("dl");
-				} else if (win) {
-								snd = _soundObject.so.create("doub_winner");
-								await snd.playSync();
-								await (0, _main.addCashSync)(old * 2);
-								await (0, _main.getAch)("dw");
-				}
-				_stateMachine.st.setState(2);
+	if (_main.data.beatcoins < 5000) {
+		await new _scrollingText.ScrollingText(_strings.strings.get("doublecash"));
+		_stateMachine.st.setState(2);
+		return;
+	}
+	let answer = await (0, _main.questionSync)("dq", [_main.data.beatcoins]);
+	if (!answer) {
+		_stateMachine.st.setState(2);
+		return;
+	}
+	let old = _main.data.beatcoins;
+	_soundObject.so.directory = "./sounds/";
+	let snd = _soundObject.so.create("doub_intro");;
+	await snd.playSync();
+	await (0, _main.addCashSync)(0, _main.data.beatcoins);
+	let rand = _utilities.utils.randomInt(1, 2);
+	let win = false;
+	if (rand == 1) win = true;
+	sos();
+	if (!win) {
+		snd = _soundObject.so.create("doub_loser");
+		await snd.playSync();
+		await (0, _main.getAch)("dl");
+	} else if (win) {
+		snd = _soundObject.so.create("doub_winner");
+		await snd.playSync();
+		await (0, _main.addCashSync)(old * 2);
+		await (0, _main.getAch)("dw");
+	}
+	_stateMachine.st.setState(2);
 }
 
 async function playFootball() {
-				_soundObject.so.directory = "./sounds/" + _main.lang + "/";
-				let dir = _soundObject.so.directory;
-				let loc;
-				let kick;
-				let st1 = 0;
-				let st2 = 0;
-				let sp;
-				let bg;
-				bg = _soundObject.so.create("bw_background", true);
-				bg.loop = true;
-				bg.play();
-				let team1 = _utilities.utils.randomInt(1, 10);
-				let team2 = _utilities.utils.randomInt(1, 10);
-				while (team2 == team1) {
-								team2 = _utilities.utils.randomInt(1, 10);
+	_soundObject.so.directory = "./sounds/" + _main.lang + "/";
+	let dir = _soundObject.so.directory;
+	let loc;
+	let kick;
+	let st1 = 0;
+	let st2 = 0;
+	let sp;
+	let bg;
+	bg = _soundObject.so.create("bw_background", true);
+	bg.loop = true;
+	bg.play();
+	let team1 = _utilities.utils.randomInt(1, 10);
+	let team2 = _utilities.utils.randomInt(1, 10);
+	while (team2 == team1) {
+		team2 = _utilities.utils.randomInt(1, 10);
+	}
+	bg.volume = 0.7;
+	sp = _soundObject.so.create("bw_intro" + _utilities.utils.randomInt(1, 3));
+	await sp.playSync();
+	sp = _soundObject.so.create("bw_team_" + team1 + "_1");
+	await sp.playSync();
+	sp = _soundObject.so.create("bw_vs");
+	await sp.playSync();
+	sp = _soundObject.so.create("bw_team_" + team2 + "_2");
+	await sp.playSync();
+	let turn = team1;
+	let inp = new _input.KeyboardInput();
+	inp.init();
+	while (st1 < 5 && st2 < 5) {
+		let counter = 2;
+		sp = _soundObject.so.create("bw_turn");
+		await sp.playSync();
+		sp = _soundObject.so.create("bw_team_" + turn + "_2");
+		await sp.playSync();
+		if (turn == team1) {
+			sp = _soundObject.so.create("bw_where");
+			await sp.playSync();
+			while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
+					counter -= 1;
+					if (counter < 1) counter = 1;
+					if (counter == 1) {
+						loc = _soundObject.so.create("bw_left");
+						loc.pan = -80 / 100;
+						loc.play();
+					}
+					if (counter == 2) {
+						loc = _soundObject.so.create("bw_center");
+						loc.pan = 0;
+						loc.play();
+					}
+					if (counter == 3) {
+						loc = _soundObject.so.create("bw_right");
+						loc.pan = 0.8;
+						loc.play();
+					}
+				}
+				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
+					counter += 1;
+					if (counter > 3) counter = 3;
+					if (counter == 1) {
+						loc = _soundObject.so.create("bw_left");
+						loc.pan = -80 / 100;
+						loc.play();
+					}
+					if (counter == 2) {
+						loc = _soundObject.so.create("bw_center");
+						loc.pan = 0;
+						loc.play();
+					}
+					if (counter == 3) {
+						loc = _soundObject.so.create("bw_right");
+						loc.pan = 80 / 100;
+						loc.play();
+					}
+				}
+				await _utilities.utils.sleep(5);
+			}
+			let saving = _utilities.utils.randomInt(1, 3);
+			bg.volume = 0.3;
+			kick = _soundObject.so.create("bw_chuta" + _utilities.utils.randomInt(1, 4));
+			if (counter == 1) kick.pan = -80 / 100;
+			if (counter == 2) kick.pan = 0;
+			if (counter == 3) kick.pan = 80 / 100;
+			kick.play();
+			await _utilities.utils.sleep(220);
+			let saved;
+			if (counter == saving) {
+				saved = _soundObject.so.create("bw_parar" + _utilities.utils.randomInt(1, 3));
+				if (saving == 1) saved.pan = -80 / 100;
+				if (saving == 2) saved.pan = 0;
+				if (saving == 3) saved.pan = 80 / 100;
+				saved.play();
+				await _utilities.utils.sleep(300);
+			} else {
+				saved = _soundObject.so.create("bw_portero" + _utilities.utils.randomInt(1, 2));
+				if (saving == 1) saved.pan = -80 / 100;
+				if (saving == 2) saved.pan = 0;
+				if (saving == 3) saved.pan = 80 / 100;
+				saved.play();
+				await _utilities.utils.sleep(200);
+			}
+			if (counter == saving) {
+				sp = _soundObject.so.create("bw_paradon" + _utilities.utils.randomInt(1, 3));
+				sp.play();
+				let crowd;
+				crowd = _soundObject.so.create("bw_mal" + _utilities.utils.randomInt(1, 3));
+				await crowd.playSync();
+				while (sp.playing) {
+					await _utilities.utils.sleep(5);
 				}
 				bg.volume = 0.7;
-				sp = _soundObject.so.create("bw_intro" + _utilities.utils.randomInt(1, 3));
+				await _utilities.utils.sleep(700);
+			} //counter saving
+			else {
+					let falta = _utilities.utils.randomInt(1, 4);
+					if (falta == 1) {
+						let falta;
+						falta = _soundObject.so.create("bw_falta" + _utilities.utils.randomInt(1, 7));
+						if (counter == 1) falta.pan = -80 / 100;
+						if (counter == 3) falta.pan = 80 / 100;
+						if (counter == 2) falta.pan = 0;
+						falta.play();
+						await _utilities.utils.sleep(400);
+						sp = _soundObject.so.create("bw_falton" + _utilities.utils.randomInt(1, 4));
+						sp.play();
+						let crowd;
+						crowd = _soundObject.so.create("bw_cfalta" + _utilities.utils.randomInt(1, 3));
+						await crowd.playSync();
+						while (sp.playing) {
+							await _utilities.utils.sleep(5);
+						}
+						await _utilities.utils.sleep(400);
+					} else {
+						st1 += 1;
+						sp = _soundObject.so.create("bw_sgol" + _utilities.utils.randomInt(1, 7));
+						sp.play();
+						let crowd;
+						crowd = _soundObject.so.create("bw_gol" + _utilities.utils.randomInt(1, 6));
+						await crowd.playSync();
+						while (sp.playing) {
+							await _utilities.utils.sleep(5);
+						}
+						bg.volume = 0.6;
+						sp = _soundObject.so.create("bw_marc" + _utilities.utils.randomInt(1, 3));
+						await sp.playSync();
+						sp = _soundObject.so.create("bw_team_" + team1 + "_2");
+						await sp.playSync();
+						sp = _soundObject.so.create("bw_" + st1 + "_1");
+						await sp.playSync();
+						sp = _soundObject.so.create("bw_team_" + team2 + "_1");
+						await sp.playSync();
+						sp = _soundObject.so.create("bw_" + st2 + "_2");
+						await sp.playSync();
+					} //falta
+				} //counter not saving
+			turn = team2;
+		} //my turn
+		else {
+				//second turn
+				sp = _soundObject.so.create("bw_dwhere");
 				await sp.playSync();
-				sp = _soundObject.so.create("bw_team_" + team1 + "_1");
-				await sp.playSync();
-				sp = _soundObject.so.create("bw_vs");
-				await sp.playSync();
-				sp = _soundObject.so.create("bw_team_" + team2 + "_2");
-				await sp.playSync();
-				let turn = team1;
-				let inp = new _input.KeyboardInput();
-				inp.init();
-				while (st1 < 5 && st2 < 5) {
-								let counter = 2;
-								sp = _soundObject.so.create("bw_turn");
-								await sp.playSync();
-								sp = _soundObject.so.create("bw_team_" + turn + "_2");
-								await sp.playSync();
-								if (turn == team1) {
-												sp = _soundObject.so.create("bw_where");
-												await sp.playSync();
-												while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
-																if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
-																				counter -= 1;
-																				if (counter < 1) counter = 1;
-																				if (counter == 1) {
-																								loc = _soundObject.so.create("bw_left");
-																								loc.pan = -80 / 100;
-																								loc.play();
-																				}
-																				if (counter == 2) {
-																								loc = _soundObject.so.create("bw_center");
-																								loc.pan = 0;
-																								loc.play();
-																				}
-																				if (counter == 3) {
-																								loc = _soundObject.so.create("bw_right");
-																								loc.pan = 0.8;
-																								loc.play();
-																				}
-																}
-																if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
-																				counter += 1;
-																				if (counter > 3) counter = 3;
-																				if (counter == 1) {
-																								loc = _soundObject.so.create("bw_left");
-																								loc.pan = -80 / 100;
-																								loc.play();
-																				}
-																				if (counter == 2) {
-																								loc = _soundObject.so.create("bw_center");
-																								loc.pan = 0;
-																								loc.play();
-																				}
-																				if (counter == 3) {
-																								loc = _soundObject.so.create("bw_right");
-																								loc.pan = 80 / 100;
-																								loc.play();
-																				}
-																}
-																await _utilities.utils.sleep(5);
-												}
-												let saving = _utilities.utils.randomInt(1, 3);
-												bg.volume = 0.3;
-												kick = _soundObject.so.create("bw_chuta" + _utilities.utils.randomInt(1, 4));
-												if (counter == 1) kick.pan = -80 / 100;
-												if (counter == 2) kick.pan = 0;
-												if (counter == 3) kick.pan = 80 / 100;
-												kick.play();
-												await _utilities.utils.sleep(220);
-												let saved;
-												if (counter == saving) {
-																saved = _soundObject.so.create("bw_parar" + _utilities.utils.randomInt(1, 3));
-																if (saving == 1) saved.pan = -80 / 100;
-																if (saving == 2) saved.pan = 0;
-																if (saving == 3) saved.pan = 80 / 100;
-																saved.play();
-																await _utilities.utils.sleep(300);
-												} else {
-																saved = _soundObject.so.create("bw_portero" + _utilities.utils.randomInt(1, 2));
-																if (saving == 1) saved.pan = -80 / 100;
-																if (saving == 2) saved.pan = 0;
-																if (saving == 3) saved.pan = 80 / 100;
-																saved.play();
-																await _utilities.utils.sleep(200);
-												}
-												if (counter == saving) {
-																sp = _soundObject.so.create("bw_paradon" + _utilities.utils.randomInt(1, 3));
-																sp.play();
-																let crowd;
-																crowd = _soundObject.so.create("bw_mal" + _utilities.utils.randomInt(1, 3));
-																await crowd.playSync();
-																while (sp.playing) {
-																				await _utilities.utils.sleep(5);
-																}
-																bg.volume = 0.7;
-																await _utilities.utils.sleep(700);
-												} //counter saving
-												else {
-																				let falta = _utilities.utils.randomInt(1, 4);
-																				if (falta == 1) {
-																								let falta;
-																								falta = _soundObject.so.create("bw_falta" + _utilities.utils.randomInt(1, 7));
-																								if (counter == 1) falta.pan = -80 / 100;
-																								if (counter == 3) falta.pan = 80 / 100;
-																								if (counter == 2) falta.pan = 0;
-																								falta.play();
-																								await _utilities.utils.sleep(400);
-																								sp = _soundObject.so.create("bw_falton" + _utilities.utils.randomInt(1, 4));
-																								sp.play();
-																								let crowd;
-																								crowd = _soundObject.so.create("bw_cfalta" + _utilities.utils.randomInt(1, 3));
-																								await crowd.playSync();
-																								while (sp.playing) {
-																												await _utilities.utils.sleep(5);
-																								}
-																								await _utilities.utils.sleep(400);
-																				} else {
-																								st1 += 1;
-																								sp = _soundObject.so.create("bw_sgol" + _utilities.utils.randomInt(1, 7));
-																								sp.play();
-																								let crowd;
-																								crowd = _soundObject.so.create("bw_gol" + _utilities.utils.randomInt(1, 6));
-																								await crowd.playSync();
-																								while (sp.playing) {
-																												await _utilities.utils.sleep(5);
-																								}
-																								bg.volume = 0.6;
-																								sp = _soundObject.so.create("bw_marc" + _utilities.utils.randomInt(1, 3));
-																								await sp.playSync();
-																								sp = _soundObject.so.create("bw_team_" + team1 + "_2");
-																								await sp.playSync();
-																								sp = _soundObject.so.create("bw_" + st1 + "_1");
-																								await sp.playSync();
-																								sp = _soundObject.so.create("bw_team_" + team2 + "_1");
-																								await sp.playSync();
-																								sp = _soundObject.so.create("bw_" + st2 + "_2");
-																								await sp.playSync();
-																				} //falta
-																} //counter not saving
-												turn = team2;
-								} //my turn
-								else {
-																//second turn
-																sp = _soundObject.so.create("bw_dwhere");
-																await sp.playSync();
-																while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
-																				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
-																								counter -= 1;
-																								if (counter < 1) counter = 1;
-																								if (counter == 1) {
-																												loc = _soundObject.so.create("bw_left");
-																												loc.pan = -80 / 100;
-																												loc.play();
-																								}
-																								if (counter == 2) {
-																												loc = _soundObject.so.create("bw_center");
-																												loc.pan = 0;
-																												loc.play();
-																								}
-																								if (counter == 3) {
-																												loc = _soundObject.so.create("bw_right");
-																												loc.pan = 80 / 100;
-																												loc.play();
-																								}
-																				}
-																				if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
-																								counter += 1;
-																								if (counter > 3) counter = 3;
-																								if (counter == 1) {
-																												loc = _soundObject.so.create("bw_left");
-																												loc.pan = -80 / 100;
-																												loc.play();
-																								}
-																								if (counter == 2) {
+				while (!inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RETURN)) {
+					if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_LEFT)) {
+						counter -= 1;
+						if (counter < 1) counter = 1;
+						if (counter == 1) {
+							loc = _soundObject.so.create("bw_left");
+							loc.pan = -80 / 100;
+							loc.play();
+						}
+						if (counter == 2) {
+							loc = _soundObject.so.create("bw_center");
+							loc.pan = 0;
+							loc.play();
+						}
+						if (counter == 3) {
+							loc = _soundObject.so.create("bw_right");
+							loc.pan = 80 / 100;
+							loc.play();
+						}
+					}
+					if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_RIGHT)) {
+						counter += 1;
+						if (counter > 3) counter = 3;
+						if (counter == 1) {
+							loc = _soundObject.so.create("bw_left");
+							loc.pan = -80 / 100;
+							loc.play();
+						}
+						if (counter == 2) {
 
-																												loc = _soundObject.so.create("bw_center");
-																												loc.pan = 0;
-																												loc.play();
-																								}
-																								if (counter == 3) {
-																												loc = _soundObject.so.create("bw_right");
-																												loc.pan = 80 / 100;
-																												loc.play();
-																								}
-																				}
-																				await _utilities.utils.sleep(5);
-																}
-																sp = _soundObject.so.create("bw_prepara" + _utilities.utils.randomInt(1, 4));
-																await sp.playSync();
-																await _utilities.utils.sleep(_utilities.utils.randomInt(2000, 3800));
-																let saving = _utilities.utils.randomInt(1, 3);
-																bg.volume = 0.3;
-																kick = _soundObject.so.create("bw_chuta" + _utilities.utils.randomInt(1, 4));
-																if (saving == 1) kick.pan = -80 / 100;
-																if (saving == 2) kick.pan = 0;
-																if (saving == 3) kick.pan = 80 / 100;
-																kick.play();
-																await _utilities.utils.sleep(220);
-																let saved;
-																if (counter == saving) {
-																				saved = _soundObject.so.create("bw_parar" + _utilities.utils.randomInt(1, 3));
-																				if (saving == 1) saved.pan = -80 / 100;
-																				if (saving == 2) saved.pan = 0 / 100;
-																				if (saving == 3) saved.pan = 80 / 100;
-																				saved.play();
-																				await _utilities.utils.sleep(300);
-																} else {
-																				saved = _soundObject.so.create("bw_portero" + _utilities.utils.randomInt(1, 2));
-																				if (counter == 1) saved.pan = -80 / 100;
-																				if (counter == 2) saved.pan = 0 / 100;
-																				if (counter == 3) saved.pan = 80 / 100;
-																				saved.play();
-																				await _utilities.utils.sleep(200);
-																}
-																if (counter == saving) {
-																				if (typeof _main.data.safeguards === "undefined") _main.data.safeguards = 0;
-																				_main.data.safeguards += 1;
-																				(0, _main.save)();
-																				sp = _soundObject.so.create("bw_paradon" + _utilities.utils.randomInt(1, 3));
-																				sp.play();
-																				let crowd;
-																				crowd = _soundObject.so.create("bw_mal" + _utilities.utils.randomInt(1, 3));
-																				await crowd.playSync();
-																				while (sp.playing) {
-																								await _utilities.utils.sleep(5);
-																				}
-																				bg.volume = 0.7;
-																				await _utilities.utils.sleep(700);
-																} //counter saving
-																else {
-																								let falta = _utilities.utils.randomInt(1, 4);
-																								if (falta == 1) {
-																												let falta;
-																												falta = _soundObject.so.create("bw_falta" + _utilities.utils.randomInt(1, 7));
-																												if (counter == 1) falta.pan = -80 / 100;
-																												if (counter == 3) falta.pan = 80 / 100;
-																												if (counter == 2) falta.pan = 0 / 100;
-																												falta.play();
-																												await _utilities.utils.sleep(400);
-																												sp = _soundObject.so.create("bw_falton" + _utilities.utils.randomInt(1, 4));
-																												sp.play();
-																												let crowd;
-																												crowd = _soundObject.so.create("bw_cfalta" + _utilities.utils.randomInt(1, 3));
-																												await crowd.playSync();
-																												while (sp.playing) {
-																																await _utilities.utils.sleep(5);
-																												}
-																												await _utilities.utils.sleep(400);
-																								} else {
-																												st2 += 1;
-																												sp = _soundObject.so.create("bw_sgol" + _utilities.utils.randomInt(1, 7));
-																												sp.play();
-																												let crowd;
-																												crowd = _soundObject.so.create("bw_gol" + _utilities.utils.randomInt(1, 6));
-																												await crowd.playSync();
-																												while (sp.playing) {
-																																await _utilities.utils.sleep(5);
-																												}
-																												bg.volume = 0.7;
-																												sp = _soundObject.so.create("bw_marc" + _utilities.utils.randomInt(1, 3));
-																												await sp.playSync();
-																												sp = _soundObject.so.create("bw_team_" + team1 + "_2");
-																												await sp.playSync();
-																												sp = _soundObject.so.create("bw_" + st1 + "_1");
-																												await sp.playSync();
-																												sp = _soundObject.so.create("bw_team_" + team2 + "_1");
-																												await sp.playSync();
-																												sp = _soundObject.so.create("bw_" + st2 + "_2");
-																												await sp.playSync();
-																								} //falta
-																				} //counter not saving
-																turn = team1;
-												} //second turn
-								if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_ESCAPE)) {
-												_soundObject.so.kill(function () {
-																_stateMachine.st.setState(2);
-												});
-												return;
-								}
-								await _utilities.utils.sleep(5);
+							loc = _soundObject.so.create("bw_center");
+							loc.pan = 0;
+							loc.play();
+						}
+						if (counter == 3) {
+							loc = _soundObject.so.create("bw_right");
+							loc.pan = 80 / 100;
+							loc.play();
+						}
+					}
+					await _utilities.utils.sleep(5);
 				}
-				//winning
+				sp = _soundObject.so.create("bw_prepara" + _utilities.utils.randomInt(1, 4));
+				await sp.playSync();
+				await _utilities.utils.sleep(_utilities.utils.randomInt(2000, 3800));
+				let saving = _utilities.utils.randomInt(1, 3);
 				bg.volume = 0.3;
-				sp = _soundObject.so.create("bw_ganador");
-				await sp.playSync();
-				await _utilities.utils.sleep(_utilities.utils.randomInt(500, 1200));
-				if (st1 == 5) sp = _soundObject.so.create("bw_team_" + team1 + "_2");
-				if (st2 == 5) sp = _soundObject.so.create("bw_team_" + team2 + "_2");
-				await sp.playSync();
-				let bg2 = _soundObject.so.create("bw_ganar");
-				bg2.volume = 0.4;
-				bg.stop();
-				bg2.loop = true;
-				bg2.play();
-				let himno;
-				if (st1 == 5) himno = _soundObject.so.create("bw_himno" + team1);
-				if (st2 == 5) himno = _soundObject.so.create("bw_himno" + team2);
-				await himno.playSync();
-				bg.stop();
-				bg2.stop();
-				sp.stop();
-				himno.stop();
-				if (st2 == 5) (0, _main.getAch)("fl");
-				if (st1 == 5) (0, _main.getAch)("fw");
-				_soundObject.so.kill(function () {
-								_stateMachine.st.setState(2);
-				});
-				return;
+				kick = _soundObject.so.create("bw_chuta" + _utilities.utils.randomInt(1, 4));
+				if (saving == 1) kick.pan = -80 / 100;
+				if (saving == 2) kick.pan = 0;
+				if (saving == 3) kick.pan = 80 / 100;
+				kick.play();
+				await _utilities.utils.sleep(220);
+				let saved;
+				if (counter == saving) {
+					saved = _soundObject.so.create("bw_parar" + _utilities.utils.randomInt(1, 3));
+					if (saving == 1) saved.pan = -80 / 100;
+					if (saving == 2) saved.pan = 0 / 100;
+					if (saving == 3) saved.pan = 80 / 100;
+					saved.play();
+					await _utilities.utils.sleep(300);
+				} else {
+					saved = _soundObject.so.create("bw_portero" + _utilities.utils.randomInt(1, 2));
+					if (counter == 1) saved.pan = -80 / 100;
+					if (counter == 2) saved.pan = 0 / 100;
+					if (counter == 3) saved.pan = 80 / 100;
+					saved.play();
+					await _utilities.utils.sleep(200);
+				}
+				if (counter == saving) {
+					if (typeof _main.data.safeguards === "undefined") _main.data.safeguards = 0;
+					_main.data.safeguards += 1;
+					(0, _main.save)();
+					sp = _soundObject.so.create("bw_paradon" + _utilities.utils.randomInt(1, 3));
+					sp.play();
+					let crowd;
+					crowd = _soundObject.so.create("bw_mal" + _utilities.utils.randomInt(1, 3));
+					await crowd.playSync();
+					while (sp.playing) {
+						await _utilities.utils.sleep(5);
+					}
+					bg.volume = 0.7;
+					await _utilities.utils.sleep(700);
+				} //counter saving
+				else {
+						let falta = _utilities.utils.randomInt(1, 4);
+						if (falta == 1) {
+							let falta;
+							falta = _soundObject.so.create("bw_falta" + _utilities.utils.randomInt(1, 7));
+							if (counter == 1) falta.pan = -80 / 100;
+							if (counter == 3) falta.pan = 80 / 100;
+							if (counter == 2) falta.pan = 0 / 100;
+							falta.play();
+							await _utilities.utils.sleep(400);
+							sp = _soundObject.so.create("bw_falton" + _utilities.utils.randomInt(1, 4));
+							sp.play();
+							let crowd;
+							crowd = _soundObject.so.create("bw_cfalta" + _utilities.utils.randomInt(1, 3));
+							await crowd.playSync();
+							while (sp.playing) {
+								await _utilities.utils.sleep(5);
+							}
+							await _utilities.utils.sleep(400);
+						} else {
+							st2 += 1;
+							sp = _soundObject.so.create("bw_sgol" + _utilities.utils.randomInt(1, 7));
+							sp.play();
+							let crowd;
+							crowd = _soundObject.so.create("bw_gol" + _utilities.utils.randomInt(1, 6));
+							await crowd.playSync();
+							while (sp.playing) {
+								await _utilities.utils.sleep(5);
+							}
+							bg.volume = 0.7;
+							sp = _soundObject.so.create("bw_marc" + _utilities.utils.randomInt(1, 3));
+							await sp.playSync();
+							sp = _soundObject.so.create("bw_team_" + team1 + "_2");
+							await sp.playSync();
+							sp = _soundObject.so.create("bw_" + st1 + "_1");
+							await sp.playSync();
+							sp = _soundObject.so.create("bw_team_" + team2 + "_1");
+							await sp.playSync();
+							sp = _soundObject.so.create("bw_" + st2 + "_2");
+							await sp.playSync();
+						} //falta
+					} //counter not saving
+				turn = team1;
+			} //second turn
+		if (inp.isJustPressed(_keycodes.KeyEvent.DOM_VK_ESCAPE)) {
+			_soundObject.so.kill(function () {
+				_stateMachine.st.setState(2);
+			});
+			return;
+		}
+		await _utilities.utils.sleep(5);
+	}
+	//winning
+	bg.volume = 0.3;
+	sp = _soundObject.so.create("bw_ganador");
+	await sp.playSync();
+	await _utilities.utils.sleep(_utilities.utils.randomInt(500, 1200));
+	if (st1 == 5) sp = _soundObject.so.create("bw_team_" + team1 + "_2");
+	if (st2 == 5) sp = _soundObject.so.create("bw_team_" + team2 + "_2");
+	await sp.playSync();
+	let bg2 = _soundObject.so.create("bw_ganar");
+	bg2.volume = 0.4;
+	bg.stop();
+	bg2.loop = true;
+	bg2.play();
+	let himno;
+	if (st1 == 5) himno = _soundObject.so.create("bw_himno" + team1);
+	if (st2 == 5) himno = _soundObject.so.create("bw_himno" + team2);
+	await himno.playSync();
+	bg.stop();
+	bg2.stop();
+	sp.stop();
+	himno.stop();
+	if (st2 == 5) (0, _main.getAch)("fl");
+	if (st1 == 5) (0, _main.getAch)("fw");
+	_soundObject.so.kill(function () {
+		_stateMachine.st.setState(2);
+	});
+	return;
 }
-},{"./main":1,"./oldtimer":4,"./soundHandler":11,"./menuItem":6,"./menu":7,"./scrollingText":9,"./strings":10,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./input":3,"./stateMachine":16}],5:[function(require,module,exports) {
+
+async function playPong() {
+	let sp = _soundObject.so.create("pong_beep");
+	sp.play();
+	await _utilities.utils.sleep(1000);
+	sp.play();
+	await _utilities.utils.sleep(1000);
+	sp.play();
+	await _utilities.utils.sleep(1000);
+	let locate = _soundObject.so.create("pong_loop");
+	const fs = require('fs');
+	let actions = 0;
+	for (let i = 1; i <= 10; i++) {
+		if (fs.existsSync(_main.packdir + 'a' + i + '.ogg')) {
+			actions = i;
+		}
+	}
+	pongtimer.restart();
+	let gametimer = (0, _timer2.default)({ update(dt) {
+			pongloop(dt, actions);
+		}, render() {
+			pongrender();
+		} }, 1);
+}
+function pongrender() {}
+function pongloop(dt, actions) {
+
+	let random = _utilities.utils.randomInt(2, actions);
+	let pool = new _soundHandler.SoundHandler();
+	pool.playStatic(_main.packdir + "a" + random, 0);
+}
+},{"./main":1,"./timer":39,"./oldtimer":5,"./soundHandler":12,"./menuItem":7,"./menu":8,"./scrollingText":10,"./strings":9,"./tts":13,"./utilities":14,"./soundObject":15,"./keycodes":16,"./input":4,"./stateMachine":17}],6:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6886,7 +6938,7 @@ class Player {
 	}
 }
 exports.Player = Player;
-},{"./keycodes":15,"./main":1,"./scrollingText":9}],1:[function(require,module,exports) {
+},{"./keycodes":16,"./main":1,"./scrollingText":10}],1:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7412,7 +7464,7 @@ function question(text, localizedValues = [], callback = null) {
 		}
 	});
 }
-async function checkPack(changeBoot = true, debug = false) {
+async function checkPack(changeBoot = true, debug = true) {
 	exports.editing = editing = false;
 	const fs = require('fs');
 	try {
@@ -7475,8 +7527,7 @@ async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		//await strings.check(2);
-		data.beatcoins = 1000000;
-		save();
+		(0, _minis.playPong)();
 		return;
 	}
 	booter();
@@ -8413,7 +8464,7 @@ async function browseAch() {
 		});
 	}
 }
-},{"./oldtimer":4,"./minis.js":2,"./player":5,"./menuItem":6,"./menu":7,"./menuHandler":8,"./scrollingText":9,"./strings":10,"./soundHandler":11,"./tts":12,"./utilities":13,"./soundObject":14,"./keycodes":15,"./stateMachine":16,"./input.js":3}],22:[function(require,module,exports) {
+},{"./oldtimer":5,"./minis.js":3,"./player":6,"./menuItem":7,"./menu":8,"./menuHandler":9,"./scrollingText":10,"./strings":9,"./soundHandler":12,"./tts":13,"./utilities":14,"./soundObject":15,"./keycodes":16,"./stateMachine":17,"./input.js":4}],41:[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 
 var OldModule = module.bundle.Module;
@@ -8439,13 +8490,15 @@ module.bundle.Module = Module;
 
 var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = 'localhost' || location.hostname;
+  var hostname = process.env.HMR_HOSTNAME || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49505' + '/');
-  ws.onmessage = function (event) {
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + process.env.HMR_PORT + '/');
+  ws.onmessage = function(event) {
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
+      console.clear();
+
       data.assets.forEach(function (asset) {
         hmrApply(global.parcelRequire, asset);
       });
@@ -8455,15 +8508,13 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
           hmrAccept(global.parcelRequire, asset.id);
         }
       });
-      // Clear the console after HMR
-      console.clear();
     }
 
     if (data.type === 'reload') {
       ws.close();
       ws.onclose = function () {
         location.reload();
-      };
+      }
     }
 
     if (data.type === 'error-resolved') {
@@ -8500,9 +8551,17 @@ function createErrorOverlay(data) {
   message.innerText = data.error.message;
   stackTrace.innerText = data.error.stack;
 
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
+  overlay.innerHTML = (
+    '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' +
+      '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' +
+      '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' +
+      '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' +
+      '<pre>' + stackTrace.innerHTML + '</pre>' +
+    '</div>'
+  );
 
   return overlay;
+
 }
 
 function getParents(bundle, id) {
@@ -8517,7 +8576,7 @@ function getParents(bundle, id) {
   for (k in modules) {
     for (d in modules[k][1]) {
       dep = modules[k][1][d];
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+      if (dep === id || (Array.isArray(dep) && dep[dep.length - 1] === id)) {
         parents.push(+k);
       }
     }
@@ -8579,8 +8638,9 @@ function hmrAccept(bundle, id) {
   }
 
   return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id);
+    return hmrAccept(global.parcelRequire, id)
   });
 }
-},{}]},{},[22,1], null)
+
+},{}]},{},[41,1], null)
 //# sourceMappingURL=/main.map

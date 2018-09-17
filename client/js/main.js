@@ -11,7 +11,7 @@ let achs=[
 export var editing=false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
+import {playPong,playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
@@ -478,7 +478,7 @@ callback(answer);
 }
 });
 }
-export async function checkPack(changeBoot=true,debug=false) {
+export async function checkPack(changeBoot=true,debug=true) {
 editing=false;
 const fs=require('fs');
 	try {
@@ -542,8 +542,7 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			//await strings.check(2);
-			data.beatcoins=1000000;
-			save();
+			playPong();
 														return;
 																			}
 	booter();

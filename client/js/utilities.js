@@ -3,9 +3,18 @@ class GameUtils {
 progressPan(current, max) {
 return ((current*200/max)-100)/100;
 }
-progressPitch(current,max) {
-return ((current*200/max))/100;
+progressPitch(current,min,max,minPitch,maxPitch) {
+return (current/(min+max))*(maxPitch-minPitch)+minPitch;
 }
+progressVolume(current,min,max,minVolume,maxVolume) {
+if (current>max) return 0;
+return (current/(min+max))*(maxVolume-minVolume)+minVolume;
+}
+getProportion(current,min,max,minVolume,maxVolume) {
+if (current>max) return 0;
+return (current/(min+max))*(maxVolume-minVolume)+minVolume;
+}
+
 	distance3D(x1, y1, z1, x2, y2, z2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) +
 (y2 - y1) * (y2 - y1) +
@@ -93,4 +102,4 @@ return size;
 }
 
 }
-export var utils = new GameUtils();
+export var utils=new GameUtils();

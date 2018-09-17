@@ -1,4 +1,7 @@
 import {lang,questionSync,getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+let pongtimer=new OldTimer();
+
+import Timer from './timer';
 import {shuffle,newDeck,newDecks} from '52-deck';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
@@ -757,3 +760,32 @@ st.setState(2);
 return;
 }
 
+export async function playPong() {
+let sp=so.create("pong_beep");
+	sp.play();
+	await utils.sleep(1000);
+	sp.play();
+	await utils.sleep(1000);
+	sp.play();
+	await utils.sleep(1000);
+let locate=so.create("pong_loop");
+							const fs=require('fs');
+let actions = 0;
+for (let i = 1; i <= 10; i++) {
+	if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
+		actions = i;
+	}
+}
+pongtimer.restart();
+let gametimer = Timer({update(dt) {
+ pongloop(dt,actions);
+}, render() {pongrender();}}, 1);
+}
+function pongrender() {
+}
+function pongloop(dt,actions) {
+
+let random=utils.randomInt(2,actions);
+let pool=new SoundHandler();
+pool.playStatic(packdir+"a"+random,0);
+}
