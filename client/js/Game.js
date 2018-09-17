@@ -307,6 +307,12 @@ this.doScore();
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_C)) {
 		speech.speak(this.cash);
 		}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_V)) {
+		speech.speak(data.safeguards);
+		}
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_L)) {
+		speech.speak(this.level);
+		}
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
 	this.save();
 	return;
@@ -510,7 +516,7 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
-				this.scoreCounter.pitch=utils.progressPitch(score,100);
+				this.scoreCounter.pitch=utils.progressPitch(score,1,100,1.0,2.0);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
