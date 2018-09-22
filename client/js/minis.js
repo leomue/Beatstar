@@ -54,7 +54,7 @@ let error=new ScrollingText(strings.get("noGameCash",[minBet,data.beatcoins]),"\
 															myBet=s.items[0].value;
 								dm.destroy();
 								if (s.selected==2) {
-							if (typeof callbet!=="undefined") callbet(myBet);
+							if (typeof callbet!=="undefined") callbet(0);
                }//option 2
 else {
 addCash(0,myBet,function() {
@@ -300,6 +300,7 @@ so.directory="./sounds/";
 let snd=so.create("hl_intro");
 let bet=await betSync(1500,500);
 speech.speak(bet);
+return;
 				if (bet<=0) {
 				so.kill(()=> {
 				st.setState(2);
@@ -831,6 +832,8 @@ end.play();
 end.sound.once("end",async ()=> {
 pin.justPressedEventCallback=null;
 await new ScrollingText(strings.get("pongend",[pongright,pongmiss]));
+if (pongright==0 && pongmiss>0) await getAch("pongfail");
+if (pongright>25) await getAch("pongfire");
 let cashToAdd=0;
 cashToAdd+=pongright*60;
 cashToAdd-=pongmiss*70;

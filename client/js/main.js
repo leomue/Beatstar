@@ -6,7 +6,7 @@ export var lang = 0;
 export var ttsVoice;
 export var ttsRate=1;
 let achs=[
-"fw","fl","idle","dl","dw","w1","w5","w10","w25","w50","usepinky","lactions","fingr","bulk","intro","slotwin","frust","catslots","robber",
+"fw","fl","idle","dl","dw","w1","w5","w10","w25","w50","usepinky","lactions","fingr","bulk","intro","slotwin","frust","catslots","robber","pongfire","pongfail",
 ];
 export var editing=false;
 import {OldTimer} from './oldtimer';
@@ -22,7 +22,7 @@ code:10000,
 highlow:15000,
 double:10000,
 football:12000,
-react:12000,
+react:14000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -543,8 +543,7 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			//await strings.check(2);
-			playPong();
-														return;
+						return;
 																			}
 	booter();
 }

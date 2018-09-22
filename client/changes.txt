@@ -1,0 +1,7 @@
+Version 3.0:
+- Added a new minigame, react
+- Added  achievements for react.
+- Added explanation for the page up and down keys for the music.
+- Moved screen reader option below start game.
+- Make new version available menu option launch the oriolgomez.com website.
+- Fixed a possible exploit in betting games.

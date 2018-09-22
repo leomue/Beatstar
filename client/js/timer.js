@@ -31,10 +31,9 @@ function Timer(callbacks, step) {
 	function stop() {
 		active = false;
     cancelAnimationFrame(frameId);
-    console.log(frameId);
-	}
+    	}
 	function change(value) {
-		inc = value || 1 / 120;
+		inc = value || 1 / 60;
 		acc = inc;
 		tick = 0;
   stop();
