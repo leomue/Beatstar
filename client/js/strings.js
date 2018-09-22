@@ -9,6 +9,7 @@ class Strings {
 this.strings[1] = {
 	newUpdate:"There is a new version available! You have version %1, version %2 is available.",
 	macwarning:"Warning: On a mac, please press vo left arrow followed by vo right arrow, or you will have no speech.",
+	pongend:"You got %1 keys and missed %2.",
 	mSapi:"Use text to speech for the game",
 	mReader:"Use your screen reader for the game",
 
@@ -541,6 +542,7 @@ f3music:"Los niveles del juego (se requieren al menos 3 para que un pack se cons
 			sTuts:"Selecciona un minijuego para ver la ayuda",
 			cost:"Precio",
 			slot:"tragamonedas de las tinieblas",
+			pongend:"Has conseguido %1 teclas, con %2 fallos.",
 			
 		};
 	

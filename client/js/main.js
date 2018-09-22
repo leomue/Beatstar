@@ -1,5 +1,5 @@
 export var gameID="beat";
-export var version="2.5";
+export var version="3.0";
 export var version2="";
 
 export var lang = 0;
@@ -22,6 +22,7 @@ code:10000,
 highlow:15000,
 double:10000,
 football:12000,
+react:12000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -478,7 +479,7 @@ callback(answer);
 }
 });
 }
-export async function checkPack(changeBoot=true,debug=true) {
+export async function checkPack(changeBoot=true,debug=false) {
 editing=false;
 const fs=require('fs');
 	try {
@@ -1179,6 +1180,7 @@ data.save={}; save();
 				}
 				else if (name=="double") {playDouble() }
 				else if (name=="football") playFootball();
+								else if (name=="react") playPong();
 				else {
 				st.setState(2);
 				}

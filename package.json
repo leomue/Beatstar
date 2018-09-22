@@ -5,7 +5,7 @@
   "main": "./client/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "parcel watch ./client/js/main.js -d ./client --target=electron",
+    "watch": "parcel watch ./client/js/main.js -d ./client --target=electron --no-hmr",
     "build": "parcel build ./client/js/main.js -d ./client --target=electron",
     "start-client": "electron ./client",
     "start": "http-server ./client"
@@ -22,13 +22,13 @@
     "audiobuffer-to-wav": "^1.0.0",
     "cryptr": "^3.0.0",
     "download-file-sync": "^1.0.4",
-    "express": "^4.16.2",
+    "express": "^4.16.3",
     "fs-walk": "0.0.2",
     "hash-files": "^1.1.1",
-    "howler": "^2.0.13",
+    "howler": "^2.0.15",
     "http-server": "^0.11.1",
     "jquery": "^3.3.1",
     "s": "^0.1.1",
-    "tone": "^13.2.0"
+    "tone": "^13.3.9"
   }
 }

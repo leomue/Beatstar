@@ -1,6 +1,13 @@
 import {lang,questionSync,getAch,addCashSync,safeget,pack,packdir,actionKeys,save,question,addCash,data} from './main';
+let gametimer;
+let pongnotify;
+let pongmusic;
+let pongpool = new SoundHandler();
 let pongtimer=new OldTimer();
-
+let current=1;
+let ps;
+let pin=new KeyboardInput();
+pin.init();
 import Timer from './timer';
 import {shuffle,newDeck,newDecks} from '52-deck';
 import {OldTimer} from './oldtimer';
@@ -761,31 +768,95 @@ return;
 }
 
 export async function playPong() {
+sos();
+pongnotify=false;
 let sp=so.create("pong_beep");
 	sp.play();
-	await utils.sleep(1000);
+	await utils.sleep(500);
 	sp.play();
-	await utils.sleep(1000);
+	await utils.sleep(500);
 	sp.play();
-	await utils.sleep(1000);
-let locate=so.create("pong_loop");
+	await utils.sleep(500);
 							const fs=require('fs');
 let actions = 0;
+pongmusic=so.create("pong_music");
+pongmusic.loop=true;
+pongmusic.volume=0.8;
+pongmusic.pitch=1;
+pongmusic.play();
 for (let i = 1; i <= 10; i++) {
 	if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
 		actions = i;
 	}
 }
-pongtimer.restart();
-let gametimer = Timer({update(dt) {
+gametimer = Timer({update(dt) {
  pongloop(dt,actions);
-}, render() {pongrender();}}, 1);
+}, render() {pongrender();}}, 1/60);
+pongtimer.restart();
+current=1;
+gametimer.start();
+pongright=0;
+time=2100;
+pongmiss=0;
 }
+var time=1000;
+let pongright=0;
+let pongmiss=0;
 function pongrender() {
 }
 function pongloop(dt,actions) {
-
-let random=utils.randomInt(2,actions);
-let pool=new SoundHandler();
-pool.playStatic(packdir+"a"+random,0);
+if (current<2) {
+current=utils.randomInt(2,actions);
+sop();
+ps=so.create("a"+current);
+sos();
+ps.play();
+}
+else {
+if (pongtimer.elapsed>=time/2 && !pongnotify) {
+pongnotify=true;
+ps.pitch+=0.07;
+ps.play();
+}
+else if (pongtimer.elapsed>=time) {
+pin.justPressedEventCallback=null;
+pin.justPressedEventCallback=null;
+ps.stop();
+pongmusic.sound.fade(1,0,300);
+pongpool.playStatic("pong_end",0);
+pongtimer.restart();
+gametimer.stop();
+let end=so.create("pong_endbgm");
+end.play();
+end.sound.once("end",async ()=> {
+pin.justPressedEventCallback=null;
+await new ScrollingText(strings.get("pongend",[pongright,pongmiss]));
+let cashToAdd=0;
+cashToAdd+=pongright*60;
+cashToAdd-=pongmiss*70;
+if (cashToAdd<0) cashToAdd=0;
+await addCashSync(cashToAdd);
+so.kill(()=> {
+st.setState(2);
+});
+});
+}
+pin.justPressedEventCallback=(evt)=> {
+if (event.which!=actionKeys[current]) {
+pongpool.playStatic("pong_fail",0);
+pongmiss++;
+time-=25;
+}
+if (event.which==actionKeys[current]) {
+pongpool.playStatic("pong_bell",0);
+time-=30;
+current=1;
+pongnotify=false;
+ps.stop();
+pongmusic.pitch+=0.01;
+pongright+=1;
+pongtimer.restart();
+}
+};
+}
 }

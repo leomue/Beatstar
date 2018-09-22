@@ -1,4 +1,7 @@
 'use strict';
+
+			const electron = require('electron')
+						const remote = electron.remote
 import {utils} from './utilities';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
@@ -78,9 +81,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 			case 9: minigames(); break;
 			case 10: minituts(); break;
 			case 11:
-			const electron = require('electron')
-const remote = electron.remote
-const {dialog} = require('electron').remote
+			const {dialog} = require('electron').remote
 let stuff=dialog.showOpenDialog({
 title:strings.get("selectPack"),
     properties: ['openDirectory']
@@ -93,6 +94,11 @@ title:strings.get("selectPack"),
 			break;
 			case 13:
 			st.setState(21);
+			break;
+			case -1000:
+						const {shell} = require('electron').remote
+			shell.openExternal('http://oriolgomez.com')
+			st.setState(2);
 			break;
 		}
 	});
