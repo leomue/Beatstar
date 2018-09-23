@@ -7,6 +7,15 @@ class Strings {
 	constructor() {
 		this.strings = {};
 this.strings[1] = {
+//new English
+combo:"Combo x%1!  + %2 points!",
+goLate:"Too late! You have %1 turns left.",
+goLater:"Too late, you pressed enter at %1 seconds. You have %2 turns left.",
+goEarly:"Too early! you pressed enter at %1 seconds. You have %2 turns left.",
+goExact:"Very good! You pressed at exactly 3 seconds. 1 extra turn + 1000 points!",
+goOk:"ok, not bad. You pressed enter at %1 seconds. You get %2 points! You have %3 turns left.",
+goOver:"Game over! You scored %1 points, in %2 turns. Do you think you can do better next time?",
+goIntro:"Are you ready to play ready set go? When you hear the countdown, press enter when you think 3 seconds have passed!",
 	newUpdate:"There is a new version available! You have version %1, version %2 is available.",
 	macwarning:"Warning: On a mac, please press vo left arrow followed by vo right arrow, or you will have no speech.",
 	pongend:"You got %1 keys and missed %2.",
@@ -95,6 +104,7 @@ mAchTuts:"Achievement spoilers",
 	mRev:"Beat Reverse",
 football:"soccer kick",
 react:"Quick tap",
+gogame:"Ready set go!",
 achfw:"Premier League Team",
 achhfw:"Obtained by winning a game of football kick",
 achfl:"Bad loser: You suck!",
@@ -283,6 +293,15 @@ mEdit:"Pack Editor",
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
+		//new Spanish
+		combo:"Combo x%1! +%2 puntos!",
+		goOver:"Has terminado! Has conseguido %1 puntos, en %2 turnos. Lo harás mejor la próxima vez?",
+		goLate:"Demasiado tarde! Te quedan %1 turnos.",
+				goLater:"Demasiado tarde! Has pulsado enter a los %1 segundos... Te quedan %2 turnos.",
+				goEarly:"Demasiado pronto! has pulsado enter a los %1 segundos... Te quedan %2 turnos.",
+				goOk:"Bueno, ok. Has pulsado a los %1 segundos. Ganas %2 puntos! Te quedan %3 turnos.",
+				goExact:"Bien! Has pulsado a los 3 segundos exactos! Turno extra y 1000 puntos!",
+		goIntro:"Preparado para jugar a preparados listos ya? cuando oigas el contador, pulsa enter a la de tres!",
 			newUpdate:"Hay una nueva versión disponible! Tienes la %1 y la %2 está disponible.",
 			macwarning:"Atención: En un mac, por favor pulsa control opción  flecha izquierda seguido de control opción derecha o no tendrás voz.",
 			mReader:"Usar tu lector de pantalla para el juego",
@@ -369,6 +388,7 @@ Disfruta!!`,
 			mRev:"beatrevés",
 		football:"Lanzamiento de penaltis",
 		react:"Reacciona",
+		gogame:"Preparados listos ya!",
 		doublecash:"El mínimo para jugar son 5000 monedas. Lo siento!",
 		achfw:"Equipo de primera",
 		achhfw:"Gana un partido de penaltis",

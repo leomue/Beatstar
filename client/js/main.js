@@ -11,7 +11,7 @@ let achs=[
 export var editing=false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playPong,playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
+import {playGo,playPong,playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
 //import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 let boot=false;
@@ -23,6 +23,7 @@ highlow:15000,
 double:10000,
 football:12000,
 react:14000,
+gogame:18000,
 }
 import {Player} from './player';
 import {SliderItem,MenuItem} from './menuItem';
@@ -479,7 +480,7 @@ callback(answer);
 }
 });
 }
-export async function checkPack(changeBoot=true,debug=false) {
+export async function checkPack(changeBoot=true,debug=true) {
 editing=false;
 const fs=require('fs');
 	try {
@@ -543,6 +544,7 @@ downloadPacks(['default']);
 	}
 			if (debug) {
 			//await strings.check(2);
+			await playGo();
 						return;
 																			}
 	booter();
@@ -1180,6 +1182,7 @@ data.save={}; save();
 				else if (name=="double") {playDouble() }
 				else if (name=="football") playFootball();
 								else if (name=="react") playPong();
+																else if (name=="gogame") playGo();
 				else {
 				st.setState(2);
 				}

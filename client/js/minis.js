@@ -300,7 +300,6 @@ so.directory="./sounds/";
 let snd=so.create("hl_intro");
 let bet=await betSync(1500,500);
 speech.speak(bet);
-return;
 				if (bet<=0) {
 				so.kill(()=> {
 				st.setState(2);
@@ -861,5 +860,142 @@ pongright+=1;
 pongtimer.restart();
 }
 };
+}
+}
+export async function playGo() {
+let going=new GoGame();
+await going.init();
+}
+class GoGame {
+constructor() {
+this.inp=new KeyboardInput();
+this.inp.init();
+this.combo=0;
+this.score=0;
+this.turns=5;
+this.maxTurns=5;
+var that=this;
+this.timer = Timer({update(dt) {
+ //this.update();
+},render() {
+ that.loop();
+ }});
+this.pool=new SoundHandler();
+this.time=new OldTimer();
+this.notify=0;
+this.curscore=0;
+this.beep=so.create("go_count");
+this.beep2=so.create("go_count");
+this.beep2.playbackRate=1.4;
+}
+async init() {
+await new ScrollingText(strings.get("goIntro"));
+this.time.restart();
+this.timer.start();
+}
+update() {
+}
+loop() {
+if (this.inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
+this.elapsedTime=this.time.elapsed;
+if (this.elapsedTime>=2000 && this.elapsedTime<2011) this.elapsedTime=2000;
+console.log("time "+this.elapsedTime);
+if (this.elapsedTime<=1950) {
+let timeDisplay=this.elapsedTime/1000;
+timeDisplay=timeDisplay.toFixed(2);
+this.pool.playStatic("go_early",0);
+this.combo=0;
+this.timer.stop();
+this.score+=this.curscore;
+new ScrollingText(strings.get("goEarly",[timeDisplay,this.turns-1]),"\n",()=> {
+this.newTurn();
+});
+}
+else if (this.elapsedTime==2000) {
+this.curscore=1000;
+this.pool.playStatic("go_exact",0);
+this.turns++;
+this.maxTurns++;
+this.combo++;
+this.timer.stop();
+new ScrollingText(strings.get("goExact",[this.turns-1]),"\n",async ()=> {
+if (this.combo>1) {
+this.pool.playStatic("go_combo",0);
+await new ScrollingText(strings.get("combo",[this.combo,this.curscore*this.combo]))
+this.curscore=this.curscore+(this.curscore*this.combo);
+
+}
+this.score+=this.curscore;
+this.newTurn();
+});
+}
+else if (this.elapsedTime>1950 && this.elapsedTime<2000) {
+let timeDisplay=this.elapsedTime/1000;
+timeDisplay=timeDisplay.toFixed(2);
+let scoreFormula=Math.round(2000-this.elapsedTime);
+this.curscore=scoreFormula;
+this.pool.playStatic("go_ok",0);
+this.combo++;
+this.timer.stop();
+new ScrollingText(strings.get("goOk",[timeDisplay,this.curscore,this.turns-1]),"\n",async ()=> {
+if (this.combo>1) {
+this.pool.playStatic("go_combo",0);
+await new ScrollingText(strings.get("combo",[this.combo,this.curscore*this.combo]))
+this.curscore=this.curscore+(this.curscore*this.combo);
+
+}
+this.score+=this.curscore;
+this.newTurn();
+});
+}
+else if (this.elapsedTime>2000 && this.elapsedTime<2050) {
+let timeDisplay=this.elapsedTime/1000;
+timeDisplay=timeDisplay.toFixed(2);
+let scoreFormula=Math.round(this.elapsedTime-2000);
+this.combo++;
+this.curscore=scoreFormula;
+this.pool.playStatic("go_ok",0);
+this.timer.stop();
+new ScrollingText(strings.get("goOk",[timeDisplay,this.curscore,this.turns-1]),"\n",async () => {
+if (this.combo>1) {
+this.pool.playStatic("go_combo",0);
+await new ScrollingText(strings.get("combo",[this.combo,this.curscore*this.combo]))
+this.curscore=this.curscore+(this.curscore*this.combo);
+}
+this.score+=this.curscore;
+this.newTurn();
+});
+}
+}//enter pressed
+if (this.time.elapsed>=0 && this.notify==0) {
+this.notify++;
+this.beep.play();
+}
+else if (this.time.elapsed>=1000 && this.notify==1) {
+this.beep2.play();
+this.notify++;
+}
+else if (this.time.elapsed>=2050 && this.notify==2) {
+this.pool.playStatic("go_late",0);
+this.combo=0;
+this.timer.stop();
+new ScrollingText(strings.get("goLate",[this.turns-1]),"\n",()=> {
+this.newTurn();
+});
+}
+}
+newTurn() {
+this.curscore=0;
+this.turns--;
+this.notify=0;
+if (this.turns<1) {
+new ScrollingText(strings.get("goOver",[this.score,this.maxTurns]),"\n",()=> {
+st.setState(2);
+});
+}
+else {
+this.time.restart();
+this.timer.start();
+}
 }
 }
