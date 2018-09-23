@@ -1,2 +1,3 @@
 Make tutorial for react and gogame
 achievements for goGame
+fix the scoring mechanism.

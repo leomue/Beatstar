@@ -863,6 +863,7 @@ pongtimer.restart();
 }
 }
 export async function playGo() {
+sos();
 let going=new GoGame();
 await going.init();
 }
@@ -933,7 +934,7 @@ this.newTurn();
 else if (this.elapsedTime>1950 && this.elapsedTime<2000) {
 let timeDisplay=this.elapsedTime/1000;
 timeDisplay=timeDisplay.toFixed(2);
-let scoreFormula=Math.round(2000-this.elapsedTime);
+let scoreFormula=Math.round(100-(2000-this.elapsedTime));
 this.curscore=scoreFormula;
 this.pool.playStatic("go_ok",0);
 this.combo++;
@@ -952,7 +953,7 @@ this.newTurn();
 else if (this.elapsedTime>2000 && this.elapsedTime<2050) {
 let timeDisplay=this.elapsedTime/1000;
 timeDisplay=timeDisplay.toFixed(2);
-let scoreFormula=Math.round(this.elapsedTime-2000);
+let scoreFormula=Math.round(100-(this.elapsedTime-2000));
 this.combo++;
 this.curscore=scoreFormula;
 this.pool.playStatic("go_ok",0);
@@ -991,7 +992,11 @@ this.turns--;
 this.notify=0;
 if (this.turns<1) {
 new ScrollingText(strings.get("goOver",[this.score,this.maxTurns]),"\n",()=> {
+addCash(this.score,0,()=> {
+so.kill(()=> {
 st.setState(2);
+});
+});
 });
 }
 else {
