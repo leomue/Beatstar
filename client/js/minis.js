@@ -897,21 +897,11 @@ update() {
 }
 loop() {
 if (this.inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
+this.pool.playStatic("go_shoot",0);
 this.elapsedTime=this.time.elapsed;
 if (this.elapsedTime>=2000 && this.elapsedTime<2011) this.elapsedTime=2000;
 console.log("time "+this.elapsedTime);
-if (this.elapsedTime<=1950) {
-let timeDisplay=this.elapsedTime/1000;
-timeDisplay=timeDisplay.toFixed(2);
-this.pool.playStatic("go_early",0);
-this.combo=0;
-this.timer.stop();
-this.score+=this.curscore;
-new ScrollingText(strings.get("goEarly",[timeDisplay,this.turns-1]),"\n",()=> {
-this.newTurn();
-});
-}
-else if (this.elapsedTime==2000) {
+if (this.elapsedTime==2000) {
 this.curscore=1000;
 this.pool.playStatic("go_exact",0);
 this.turns++;
@@ -926,6 +916,17 @@ this.curscore=this.curscore+(this.curscore*this.combo);
 
 }
 this.score+=this.curscore;
+this.newTurn();
+});
+}
+else if (this.elapsedTime<=1950) {
+let timeDisplay=this.elapsedTime/1000;
+timeDisplay=timeDisplay.toFixed(2);
+this.pool.playStatic("go_early",0);
+this.combo=0;
+this.timer.stop();
+this.score+=this.curscore;
+new ScrollingText(strings.get("goEarly",[timeDisplay,this.turns-1]),"\n",()=> {
 this.newTurn();
 });
 }
