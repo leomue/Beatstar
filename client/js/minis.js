@@ -869,6 +869,9 @@ await going.init();
 }
 class GoGame {
 constructor() {
+this.th1=1980;
+this.th2=2015;
+this.th3=2020;
 this.inp=new KeyboardInput();
 this.inp.init();
 this.combo=0;
@@ -900,10 +903,10 @@ loop() {
 if (this.inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 this.pool.playStatic("go_shoot",0);
 this.elapsedTime=this.time.elapsed;
-if (this.elapsedTime>=2000 && this.elapsedTime<2011) this.elapsedTime=2000;
+if (this.elapsedTime>=2000 && this.elapsedTime<2008) this.elapsedTime=2000;
 console.log("time "+this.elapsedTime);
 if (this.elapsedTime==2000) {
-this.curscore=1000;
+this.curscore=2000;
 this.pool.playStatic("go_exact",0);
 this.turns++;
 this.maxTurns++;
@@ -920,9 +923,9 @@ this.score+=this.curscore;
 this.newTurn();
 });
 }
-else if (this.elapsedTime<=1950) {
+else if (this.elapsedTime<=this.th1) {
 let timeDisplay=this.elapsedTime/1000;
-timeDisplay=timeDisplay.toFixed(2);
+timeDisplay=timeDisplay.toFixed(3);
 this.pool.playStatic("go_early",0);
 this.combo=0;
 this.timer.stop();
@@ -931,10 +934,10 @@ new ScrollingText(strings.get("goEarly",[timeDisplay,this.turns-1]),"\n",()=> {
 this.newTurn();
 });
 }
-else if (this.elapsedTime>1950 && this.elapsedTime<2000) {
+else if (this.elapsedTime>this.th1 && this.elapsedTime<this.th2) {
 let timeDisplay=this.elapsedTime/1000;
-timeDisplay=timeDisplay.toFixed(2);
-let scoreFormula=Math.round(100-(2000-this.elapsedTime));
+timeDisplay=timeDisplay.toFixed(3);
+let scoreFormula=Math.round(100-(2000-this.elapsedTime))*8;
 this.curscore=scoreFormula;
 this.pool.playStatic("go_ok",0);
 this.combo++;
@@ -950,10 +953,10 @@ this.score+=this.curscore;
 this.newTurn();
 });
 }
-else if (this.elapsedTime>2000 && this.elapsedTime<2050) {
+else if (this.elapsedTime>this.th2 && this.elapsedTime<this.th3) {
 let timeDisplay=this.elapsedTime/1000;
-timeDisplay=timeDisplay.toFixed(2);
-let scoreFormula=Math.round(100-(this.elapsedTime-2000));
+timeDisplay=timeDisplay.toFixed(3);
+let scoreFormula=Math.round(100-(this.elapsedTime-2000))*8;
 this.combo++;
 this.curscore=scoreFormula;
 this.pool.playStatic("go_ok",0);
@@ -977,7 +980,7 @@ else if (this.time.elapsed>=1000 && this.notify==1) {
 this.beep2.play();
 this.notify++;
 }
-else if (this.time.elapsed>=2050 && this.notify==2) {
+else if (this.time.elapsed>=this.th3 && this.notify==2) {
 this.pool.playStatic("go_late",0);
 this.combo=0;
 this.timer.stop();
@@ -992,7 +995,7 @@ this.turns--;
 this.notify=0;
 if (this.turns<1) {
 new ScrollingText(strings.get("goOver",[this.score,this.maxTurns]),"\n",()=> {
-addCash(this.score,0,()=> {
+addCash(Math.ceil(this.score/2),0,()=> {
 so.kill(()=> {
 st.setState(2);
 });

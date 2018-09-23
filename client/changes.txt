@@ -1,4 +1,6 @@
 Version 3.0 September 2018
+- Added first letter navigation in the main menu.
+- Explained in the main menu that you can use page up and down to control music volume as well as first letter navigation.
 - Added a new minigame, react
 - Added  achievements for react.
 - Added explanation for the page up and down keys for the music.
@@ -6,3 +8,4 @@ Version 3.0 September 2018
 - Make new version available menu option launch the oriolgomez.com website.
 - Fixed a possible exploit in betting games.
 - New minigame, ready set go.
+- fixed scoring in the new ready set go minigame

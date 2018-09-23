@@ -480,7 +480,7 @@ callback(answer);
 }
 });
 }
-export async function checkPack(changeBoot=true,debug=true) {
+export async function checkPack(changeBoot=true,debug=false) {
 editing=false;
 const fs=require('fs');
 	try {
