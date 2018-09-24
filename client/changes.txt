@@ -9,3 +9,4 @@ Version 3.0 September 2018
 - Fixed a possible exploit in betting games.
 - New minigame, ready set go.
 - fixed scoring in the new ready set go minigame
+- Added a bunch of soundspacks that were uploaded, please keep uploading new content!

@@ -871,7 +871,7 @@ class GoGame {
 constructor() {
 this.th1=1980;
 this.th2=2015;
-this.th3=2020;
+this.th3=2025;
 this.inp=new KeyboardInput();
 this.inp.init();
 this.combo=0;
@@ -903,7 +903,7 @@ loop() {
 if (this.inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 this.pool.playStatic("go_shoot",0);
 this.elapsedTime=this.time.elapsed;
-if (this.elapsedTime>=2000 && this.elapsedTime<2008) this.elapsedTime=2000;
+if (this.elapsedTime>=2000 && this.elapsedTime<2006) this.elapsedTime=2000;
 console.log("time "+this.elapsedTime);
 if (this.elapsedTime==2000) {
 this.curscore=2000;
