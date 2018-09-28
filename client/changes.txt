@@ -1,3 +1,6 @@
+Version 3.1 October 2018
+TTS Speech now stops when an option in the main menu is selected.
+
 Version 3.0 September 2018
 - Added first letter navigation in the main menu.
 - Explained in the main menu that you can use page up and down to control music volume as well as first letter navigation.

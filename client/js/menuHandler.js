@@ -49,6 +49,7 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 	mainMenu.sndChoose = so.create(packdir + 'select');
 }
 	mainMenu.run(async s => {
+		speech.stop();
 		so.directory = './sounds/';
 		mainMenu.destroy();
 		switch (s.selected) {

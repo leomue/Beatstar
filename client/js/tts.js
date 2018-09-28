@@ -28,6 +28,9 @@ utterThis.rate=this.rate;
 	setWebTTS(tts) {
 		this.webTTS = tts;
 	}
+	stop() {
+		if (this.webTTS) this.synth.cancel();
+	}
 } // End class
 	var speech = new TTS(false);
 	if (process.platform=='darwin') speech.webTTS=true;
