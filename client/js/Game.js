@@ -307,7 +307,7 @@ this.doScore();
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_C)) {
 		speech.speak(this.cash);
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_V)) {
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_G)) {
 		speech.speak(data.safeguards);
 		}
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_L)) {
