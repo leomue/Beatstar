@@ -8,6 +8,7 @@ class Strings {
 		this.strings = {};
 this.strings[1] = {
 //new English
+need5:"Sorry but you need to have unlocked at least 5 packs before you can play this game.",
 combo:"Combo x%1!  + %2 points!",
 goLate:"Too late! You have %1 turns left.",
 goLater:"Too late, you pressed enter at %1 seconds. You have %2 turns left.",
@@ -294,6 +295,7 @@ mEdit:"Pack Editor",
 		};
 		this.strings[2] = {
 		//new Spanish
+		need5:"Vaya, necesitarás desbloquear al menos 5 packs para poder jugar a este juego.",
 		combo:"Combo x%1! +%2 puntos!",
 		goOver:"Has terminado! Has conseguido %1 puntos, en %2 turnos. Lo harás mejor la próxima vez?",
 		goLate:"Demasiado tarde! Te quedan %1 turnos.",

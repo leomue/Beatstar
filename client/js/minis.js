@@ -1008,3 +1008,22 @@ this.timer.start();
 }
 }
 }
+export async function playQuestions() {
+	let q=new QuestionsGame();
+}
+class QuestionsGame {
+	constructor() {
+		this.packs=0;
+		for (let i in data.unlocks) {
+			if (data.unlocks[i].level>1) this.packs++;
+	}
+			speech.speak(this.packs);
+			if (this.packs<5) {
+				new ScrollingText(strings.get("need5"),"\n",()=> {
+					st.setState(2);
+				});
+			}
+			
+			
+				}
+}
