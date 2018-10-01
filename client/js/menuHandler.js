@@ -47,6 +47,7 @@ items.push(new MenuItem(7, strings.get('mBrowseIncompleted')));
 items.push(new MenuItem(4, strings.get('mDownload')));
 items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level])));
 items.push(new MenuItem(10, strings.get('mGameTuts',)));
+items.push(new MenuItem(1234, strings.get('mLang',)));
 items.push(new MenuItem(3, strings.get('mHashes')));
 so.directory = './sounds/';
 const mainMenu = new Menu(strings.get('mainmenu'), items);
@@ -61,6 +62,9 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 		so.directory = './sounds/';
 		mainMenu.destroy();
 		switch (s.selected) {
+			case 1234:
+			languageSelect();
+			break;
 			case 32:
 			changeRate();
 				break;
@@ -135,4 +139,25 @@ export async function changeRate() {
 	data.rate = speech.rate;
 save();
 st.setState(2);
+}
+export function languageSelect() {
+		let str = '';
+		for (const i in strings.strings) {
+			str += strings.strings[i].langs + '. ';
+		}
+
+		const items = [];
+		let counter = 1;
+		for (const i in strings.strings) {
+items.push(new MenuItem(counter, strings.strings[i].lang));
+counter++;
+		}
+		const lm = new Menu(str, items);
+		lm.run(s => {
+			lang = s.selected;
+			data.lang = lang;
+			save();
+			st.setState(2);
+		lm.destroy();
+		});	
 }

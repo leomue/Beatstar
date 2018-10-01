@@ -1120,6 +1120,7 @@ class QuestionsGame {
 		}
 		this.songs = {};
 		this.correct = 0;
+		sos();
 		this.wrong = 0;
 		this.good = so.create('gq_ok');
 		this.goodc = so.create('gq_oc');
@@ -1137,6 +1138,7 @@ class QuestionsGame {
 
 	async init() {
 		const os = require('os');
+		sos();
 		const suspense = so.create('gq_intro');
 suspense.play();
 await utils.sleep(1500);
@@ -1163,7 +1165,7 @@ for (let i = 0; i < 10; i++) {
 					sndd.loop = true;
 			sndd.play();
 			this.options = utils.shuffle(this.options);
-			so.directory = '';
+			sos();
 			const choice = new Menu(strings.get('pq'), this.options);
 			const result = await choice.runSync();
 sndd.stop();

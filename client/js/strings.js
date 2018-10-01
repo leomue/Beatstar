@@ -9,6 +9,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			// New English
+			mLang:"Change language",
 			gq_end: 'Game over! I hope you had fun. You got %1 right and %2 wrong. Wanna try again?',
 			gq_welcome: 'Welcome to pack quizz!\nAre you ready to find out how much you know about your unlocked soundpacks?',
 			pq: 'Which pack do you think this level belongs to?',
@@ -300,6 +301,7 @@ You can upload your pack via the website by making a zip file of the pack's fold
 		};
 		this.strings[2] = {
 		// New Spanish
+		mLang:"Cambiar Idioma",
 			gq_end: 'Juego terminado! Espero que te hayas divertido. Has adivinado %1 y %2 estaban mal. ¿Quieres intentarlo de nuevo?',
 			gq_welcome: 'Bienvenido a preguntas de packs!\nEstás listo para averiguar cuánto sabes de tus packs desbloqueados?',
 			pq: 'A qué pack crees que pertenece este nivel?',
