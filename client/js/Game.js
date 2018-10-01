@@ -3,8 +3,8 @@ import fs from 'fs';
 import {strings} from './strings';
 import os from 'os';
 import {speech} from './tts';
-import {addCash,data,actionKeys} from './main';
-import {getAch,pack, packdir,save} from './main';
+import {addCash, data, actionKeys} from './main';
+import {getAch, pack, packdir, save} from './main';
 import $ from 'jquery';
 import {OldTimer} from './oldtimer';
 // Var os=require('os');
@@ -19,20 +19,18 @@ import {KeyboardInput} from './input.js';
 import {KeyEvent} from './keycodes.js';
 
 class Game {
-	constructor(creds,mode=1) {
-	
-	this.totalScore=[];
-	this.volume=1;
-	this.totalAverage=[];
-	this.cash=0;
-	so.directory="./sounds/",
-	this.scoreAverage=[];
-	this.levelAverage=[];
-	this.scoreCounter=so.create("cling");
-	so.directory="";
+	constructor(creds, mode = 1) {
+		this.totalScore = [];
+		this.volume = 1;
+		this.totalAverage = [];
+		this.cash = 0;
+		so.directory = './sounds/',
+		this.scoreAverage = [];
+		this.levelAverage = [];
+		this.scoreCounter = so.create('cling');
+		so.directory = '';
 		this.canPause = true;
-		
-		
+
 		this.actionCompleted = false;
 		this.toDestroy = new Array();
 		this.scoreTimer = new OldTimer();
@@ -49,29 +47,33 @@ class Game {
 		this.input.init();
 		this.levels = null;
 		var that = this;
-		this.setup(creds,mode);
+		this.setup(creds, mode);
 	}
 
-	async setup(creds,mode) {
-this.forceLevel=1;
-if (mode==1) this.rev=false;
-if (mode==2) this.rev=true;
-	if (typeof data.save.pack!=="undefined") {
-	if (data.save.pack!=pack) {
-let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
-if (!answer) {
+	async setup(creds, mode) {
+		this.forceLevel = 1;
+		if (mode == 1) {
+			this.rev = false;
+		}
+		if (mode == 2) {
+			this.rev = true;
+		}
+		if (typeof data.save.pack !== 'undefined') {
+			if (data.save.pack != pack) {
+				const answer = await questionSync('killSave', [data.save.pack, data.save.level]);
+				if (!answer) {
 st.setState(2);
 return;
-}//answer
-data.save={}; save();
-}//pack not equal
-else {
-this.forceLevel=data.save.level;
-}//it's the same pack
-}//if save exists
-	this.credits=creds;
-	this.getscore=0;
-	this.safeuse=false;
+				}// Answer
+				data.save = {}; save();
+			}// Pack not equal
+			else {
+				this.forceLevel = data.save.level;
+			}// It's the same pack
+		}// If save exists
+		this.credits = creds;
+		this.getscore = 0;
+		this.safeuse = false;
 		if (fs.existsSync(packdir + 'bpm.txt')) {
 			this.fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 		} else {
@@ -80,23 +82,24 @@ this.forceLevel=data.save.level;
 			}));
 		}
 		this.bpms = this.fileData.split(',');
-		so.directory="./sounds/";
-		this.safe=so.create("safe");
-		so.directory="";
+		so.directory = './sounds/';
+		this.safe = so.create('safe');
+		so.directory = '';
 		this.levels = this.bpms.length - 1;
 		if (this.bpms[this.levels] == '') {
 			this.levels--;
 		}
-		this.level=this.forceLevel-1;
+		this.level = this.forceLevel - 1;
 		this.level++;
-				data.save={}; save();
-		so.directory="./sounds/";
-		so.enqueue("safe");
+		data.save = {}; save();
+		so.directory = './sounds/';
+		so.enqueue('safe');
 		so.directory = '';
 		if (fs.existsSync(packdir + 'nlevel.ogg')) {
 so.enqueue(packdir + 'nlevel');
-}
-if (fs.existsSync(packdir + 'win.ogg')) {so.enqueue(packdir + 'win');
+		}
+		if (fs.existsSync(packdir + 'win.ogg')) {
+so.enqueue(packdir + 'win');
 		}
 		if (fs.existsSync(packdir + 'fail.ogg')) {
 so.enqueue(packdir + 'fail');
@@ -106,7 +109,7 @@ so.enqueue(packdir + 'fail');
 		so.enqueue(packdir + 'a' + i);
 		this.actions = i;
 			}
-			if (fs.existsSync(packdir + 'o' + i + '.ogg') && i!=1) {
+			if (fs.existsSync(packdir + 'o' + i + '.ogg') && i != 1) {
 		so.enqueue(packdir + 'o' + i);
 			}
 		}
@@ -131,21 +134,23 @@ so.loadQueue();
 			return;
 		}
 		if (!this.actionCompleted && this.action > 1) {
-if (data.safeguards<=0) {
+			if (data.safeguards <= 0) {
 this.fail(true);
 return;
-}
-else {
-data.safeguards--;
-this.safeuse=true;
-this.currentAction--;
+			}
+
+			data.safeguards--;
+			this.safeuse = true;
+			this.currentAction--;
 save();
-	this.actionCompleted=true;
-if (data.safeguards>3) this.safe.pitch=1;
-if (data.safeguards<=3) this.safe.pitch=1.5;
+this.actionCompleted = true;
+if (data.safeguards > 3) {
+	this.safe.pitch = 1;
+}
+if (data.safeguards <= 3) {
+	this.safe.pitch = 1.5;
+}
   this.safe.play();
-  	}
-				
 		}
 		this.currentAction++;
 		// Action and level checks go here
@@ -154,50 +159,65 @@ if (data.safeguards<=3) this.safe.pitch=1.5;
 	so.destroy(packdir + this.level + 'music');
 		so.destroy(packdir + 'pre' + this.level);
 		so.directory = './sounds/';
-		
+
 		this.level++;
 this.timer.stop();
 this.setupLevel();
 return;
 		}
-		if (!this.rev) this.action = utils.randomInt(1, this.actions);
-				if (this.rev) this.action = utils.randomInt(2, this.actions);
+		if (!this.rev) {
+			this.action = utils.randomInt(1, this.actions);
+		}
+		if (this.rev) {
+			this.action = utils.randomInt(2, this.actions);
+		}
 		this.actionCompleted = false;
 		so.directory = '';
-	if (!this.rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
-		if (this.rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
-	so.directory = './sounds/';
-	//		If (this.action==1) this.actionCompleted=true;//freeze
+		if (!this.rev) {
+this.pool.playStatic(packdir + 'a' + this.action, 0);
+		}
+		if (this.rev) {
+this.pool.playStatic(packdir + 'o' + this.action, 0);
+		}
+		so.directory = './sounds/';
+		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
+
 	async doScore() {
-	if (this.getscore>=6) await getAch("fingr");	
-	addCash(this.cash,0,function() {
+		if (this.getscore >= 6) {
+			await getAch('fingr');
+		}
+	addCash(this.cash, 0, () => {
 	st.setState(2);
 	});
 	}
 
-	async fail(skipGuards=false) {
-	if (data.safeguards>=1 && !skipGuards) {
-	data.safeguards--;
-	this.safeuse=true;
+	async fail(skipGuards = false) {
+		if (data.safeguards >= 1 && !skipGuards) {
+			data.safeguards--;
+			this.safeuse = true;
 	save();
-	this.actionCompleted=true;
+	this.actionCompleted = true;
 	this.currentAction--;
-if (data.safeguards>3) this.safe.pitch=1;
-if (data.safeguards<=3) this.safe.pitch=1.4;
-  this.safe.play();
-	return;
+	if (data.safeguards > 3) {
+		this.safe.pitch = 1;
 	}
-				this.timer.stop();
-		const snd = this.music;
-		so.directory = '';
-		const failsound = this.pool.playStatic(packdir + 'fail', 0);
-		so.directory = './sounds/';
-		for (let i = snd.playbackRate; i > 0; i -= 0.05) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
+	if (data.safeguards <= 3) {
+		this.safe.pitch = 1.4;
+	}
+  this.safe.play();
+  return;
 		}
+				this.timer.stop();
+				const snd = this.music;
+				so.directory = '';
+				const failsound = this.pool.playStatic(packdir + 'fail', 0);
+				so.directory = './sounds/';
+				for (let i = snd.playbackRate; i > 0; i -= 0.05) {
+					snd.playbackRate = i;
+					await utils.sleep(30);
+				}
 		snd.unload();
 		while (this.pool.staticSounds[failsound].sound.playing) {
 			await utils.sleep(10);
@@ -207,98 +227,101 @@ if (data.safeguards<=3) this.safe.pitch=1.4;
 		}
 		so.resetQueue();
 so.resetQueuedInstance();
-var that=this;
-if (this.level==1) await getAch("lactions");
+const that = this;
+if (this.level == 1) {
+	await getAch('lactions');
+}
 so.kill(() => {
-if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
-let input=new KeyboardInput();
+	if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
+		const input = new KeyboardInput();
 input.init();
-			so.directory = '';
-let bootSound = so.create(packdir + 'credits');
+so.directory = '';
+const bootSound = so.create(packdir + 'credits');
 bootSound.play();
-bootSound.sound.once("end",function() {
-input.justPressedEventCallback=null;
+bootSound.sound.once('end', () => {
+	input.justPressedEventCallback = null;
 that.doScore();
 });
-			so.directory = './sounds/';
-			
-input.justPressedEventCallback=function(evt) {
-bootSound.sound.off("end");
+so.directory = './sounds/';
+
+input.justPressedEventCallback = function (evt) {
+bootSound.sound.off('end');
 bootSound.stop();
 bootSound.destroy();
-input.justPressedEventCallback=null;
+input.justPressedEventCallback = null;
 that.doScore();
-}
-		}//if file exists
-		else {
+};
+	}// If file exists
+	else {
 		that.doScore();
-		}
-		
+	}
 });
 	}
 
 	async quit() {
 						this.timer.stop();
-		const snd = this.music;
-		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
-		}
+						const snd = this.music;
+						for (let i = snd.playbackRate; i > 0; i -= 0.045) {
+							snd.playbackRate = i;
+							await utils.sleep(30);
+						}
 				snd.unload();
 				so.resetQueue();
 so.resetQueuedInstance();
-var that=this;
+const that = this;
 so.kill(() => {
-if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
-console.log("found credits");
-let input=new KeyboardInput();
+	if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
+console.log('found credits');
+const input = new KeyboardInput();
 input.init();
-			so.directory = '';
-let bootSound = so.create(packdir + 'credits');
+so.directory = '';
+const bootSound = so.create(packdir + 'credits');
 bootSound.play();
-bootSound.sound.once("end",function() {
-input.justPressedEventCallback=null;
+bootSound.sound.once('end', () => {
+	input.justPressedEventCallback = null;
 that.doScore();
 });
-			so.directory = './sounds/';
-			
-input.justPressedEventCallback=function(evt) {
-bootSound.sound.off("end");
+so.directory = './sounds/';
+
+input.justPressedEventCallback = function (evt) {
+bootSound.sound.off('end');
 bootSound.stop();
 bootSound.destroy();
-input.justPressedEventCallback=null;
+input.justPressedEventCallback = null;
 that.doScore();
-}
-		}//if file exists
-		else {
+};
+	}// If file exists
+	else {
 		that.doScore();
-		}
-		
-
+	}
 });
-			}
-async save() {
-if (!data.allowSave) return;
-						this.timer.stop();
-		const snd = this.music;
-		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
+	}
+
+	async save() {
+		if (!data.allowSave) {
+			return;
 		}
+						this.timer.stop();
+						const snd = this.music;
+						for (let i = snd.playbackRate; i > 0; i -= 0.045) {
+							snd.playbackRate = i;
+							await utils.sleep(30);
+						}
 				snd.unload();
 				so.resetQueue();
 so.resetQueuedInstance();
-var that=this;
+const that = this;
 so.kill(async () => {
-data.save={
-"pack":pack,
-"level":this.level,
-}
+	data.save = {
+		pack,
+		level: this.level
+	};
 save();
-await new ScrollingText("saved");
+await new ScrollingText('saved');
 this.doScore();
 });
-}
+	}
+
 	render() {
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_Q)) {
 	this.quit();
@@ -317,20 +340,20 @@ this.doScore();
 	this.save();
 	return;
 		}
-				if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
+		if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
 		this.pause();
 		return;
 		}
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_PAGE_UP)) {
-		this.volume+=0.08;
-		this.music.volume=this.volume;
-		return;
+			this.volume += 0.08;
+			this.music.volume = this.volume;
+			return;
 		}
 		if (this.input.isJustPressed(KeyEvent.DOM_VK_PAGE_DOWN)) {
-		this.volume-=0.08;
-		this.music.volume=this.volume;
+			this.volume -= 0.08;
+			this.music.volume = this.volume;
 		}
-		
+
 				this.handleKeys();
 	}
 
@@ -349,10 +372,14 @@ this.doScore();
 		}
 		if (keys.length == 1 && keys[0] == this.keys[this.action]) {
 			so.directory = '';
-	if (!this.rev) this.pool.playStatic(packdir + 'o' + this.action, 0);
-		if (this.rev) this.pool.playStatic(packdir + 'a' + this.action, 0);
-	so.directory = './sounds/';
-	this.actionCompleted = true;
+			if (!this.rev) {
+this.pool.playStatic(packdir + 'o' + this.action, 0);
+			}
+			if (this.rev) {
+this.pool.playStatic(packdir + 'a' + this.action, 0);
+			}
+			so.directory = './sounds/';
+			this.actionCompleted = true;
 	this.calculateScore();
 	return;
 		}
@@ -360,68 +387,82 @@ this.doScore();
 						this.fail();
 		}
 	}
-	
-	async setupLevel() {
-	if (this.level>1 && this.level!=this.forceLevel) {
-	//avg
-	this.actionPercentage=Math.ceil(utils.percentOf(this.numberOfActions*this.level,utils.averageInt(this.levelAverage)));
-	if (utils.averageInt(this.scoreAverage)>90) {
-	this.getscore++;
-	this.cash+=utils.averageInt(this.levelAverage);
-	}
-		if (utils.averageInt(this.scoreAverage)<90) this.getscore--;
-				this.cash+=(utils.averageInt(this.levelAverage)+utils.averageInt(this.levelAverage)+this.actionPercentage);
-			}
-	this.scoreAverage=[];
-	this.levelAverage=[];
-	if (this.level>this.levels) {
-				if (fs.existsSync(packdir + 'win.ogg')) {
-									so.directory = '';
 
-			this.winSound = so.create(packdir + 'win');
+	async setupLevel() {
+		if (this.level > 1 && this.level != this.forceLevel) {
+			// Avg
+			this.actionPercentage = Math.ceil(utils.percentOf(this.numberOfActions * this.level, utils.averageInt(this.levelAverage)));
+			if (utils.averageInt(this.scoreAverage) > 90) {
+				this.getscore++;
+				this.cash += utils.averageInt(this.levelAverage);
+			}
+			if (utils.averageInt(this.scoreAverage) < 90) {
+				this.getscore--;
+			}
+			this.cash += (utils.averageInt(this.levelAverage) + utils.averageInt(this.levelAverage) + this.actionPercentage);
+		}
+		this.scoreAverage = [];
+		this.levelAverage = [];
+		if (this.level > this.levels) {
+			if (fs.existsSync(packdir + 'win.ogg')) {
+				so.directory = '';
+
+				this.winSound = so.create(packdir + 'win');
 			this.winSound.play();
-while (this.winSound.playing==true) {
-			await utils.sleep(5);
-						if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+			while (this.winSound.playing == true) {
+				await utils.sleep(5);
+				if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
 		this.winSound.stop();
-			}//key
-		}//while
-		}//if file exists
-		if (!this.safeuse) await getAch("usepinky");
-		data.unlocks[pack]["win"]=true;
-		let wins=0;
-		for (let i in data.unlocks) {
-		if (data.unlocks[i].win) {
-		wins++;
-		}
-		}
-		console.log("wins"+wins);
-		if (wins==1) {
-		await getAch("w1");
-		so.directory="./sounds/";
-		let snd=so.create("saveUnlock");
-		await snd.playSync();
-		data.allowSave=true;
+				}// Key
+			}// While
+			}// If file exists
+			if (!this.safeuse) {
+				await getAch('usepinky');
+			}
+			data.unlocks[pack].win = true;
+			let wins = 0;
+			for (const i in data.unlocks) {
+				if (data.unlocks[i].win) {
+					wins++;
+				}
+			}
+		console.log('wins' + wins);
+		if (wins == 1) {
+			await getAch('w1');
+			so.directory = './sounds/';
+			const snd = so.create('saveUnlock');
+			await snd.playSync();
+			data.allowSave = true;
 		save();
-		await new ScrollingText(strings.get("saveFeature"));
+		await new ScrollingText(strings.get('saveFeature'));
 		}
-				if (wins==5) await getAch("w5");
-								if (wins==10) await getAch("w10");
-																if (wins==25) await getAch("w25");
-																																if (wins==50) await getAch("w50");
-										let that2=this;
+		if (wins == 5) {
+			await getAch('w5');
+		}
+		if (wins == 10) {
+			await getAch('w10');
+		}
+		if (wins == 25) {
+			await getAch('w25');
+		}
+		if (wins == 50) {
+			await getAch('w50');
+		}
+		const that2 = this;
 				so.resetQueue();
 so.resetQueuedInstance();
-//get some kind of reward if you win, but only if the pack has enough levels
-if (this.levels>9) this.cash+=(this.cash*2);
+// Get some kind of reward if you win, but only if the pack has enough levels
+if (this.levels > 9) {
+	this.cash += (this.cash * 2);
+}
 						so.kill(() => {
 				that2.doScore();
-});
-return;
-	}//winning
+						});
+						return;
+		}// Winning
 		this.canPause = true;
-		if (data.unlocks[pack]["level"]<this.level) {
-		data.unlocks[pack]["level"]=this.level;
+		if (data.unlocks[pack].level < this.level) {
+			data.unlocks[pack].level = this.level;
 				save();
 		}
 		this.playing = false;
@@ -432,7 +473,7 @@ return;
 this.preSound.play();
 this.playing = true;
 		}
-		if (fs.existsSync(packdir + 'nlevel.ogg') && !this.playing && this.level > 1 && this.level!=this.forceLevel) {
+		if (fs.existsSync(packdir + 'nlevel.ogg') && !this.playing && this.level > 1 && this.level != this.forceLevel) {
 			so.directory = '';
 			this.preSound = so.create(packdir + 'nlevel');
 			so.directory = './sounds/';
@@ -450,26 +491,27 @@ this.playing = true;
 		}
 		so.directory = '';
 		const that = this;
-		this.music = so.create(packdir + this.level + 'music',false);
+		this.music = so.create(packdir + this.level + 'music', false);
 		this.music.loop = true;
-		this.music.volume=this.volume;
+		this.music.volume = this.volume;
 		so.directory = './sounds/';
 this.music.play();
-	this.music.sound.once("play",()=> {
+	this.music.sound.once('play', () => {
 		this.timer.change(that.bpms[that.level] / 1000.0);
 	});
-	if (!this.playing && this.level > 1 && this.level!=this.forceLevel) {
+	if (!this.playing && this.level > 1 && this.level != this.forceLevel) {
 									this.queueLevels();
 	}
 	this.action = 0;
 	this.actionCompleted = false;
 	this.currentAction = 0;
 	if (!this.playing && this.level > 1) {
-		//this.currentAction++;
+		// This.currentAction++;
 	}
 	this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
-	this.forceLevel=0;
+	this.forceLevel = 0;
 	}
+
 	unload() {
 	}
 
@@ -477,7 +519,7 @@ this.music.play();
 		if (!this.canPause) {
 			return;
 		}
-		let idle=new OldTimer();
+		const idle = new OldTimer();
 		this.canPause = false;
 		const snd = this.music;
 this.timer.stop();
@@ -491,10 +533,10 @@ for (let i = snd.playbackRate; i > 0; i -= 0.05) {
 		idle.reset();
 		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
 			await utils.sleep(10);
-			
-					if (idle.elapsed>=60000) {
-		await getAch("idle");
-		}
+
+			if (idle.elapsed >= 60000) {
+				await getAch('idle');
+			}
 		}
 		this.unpause();
 	}
@@ -516,17 +558,17 @@ for (let i = snd.playbackRate; i <= 1; i += 0.05) {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
-				this.scoreCounter.pitch=utils.progressPitch(score,1,100,1.0,2.0);
+		this.scoreCounter.pitch = utils.progressPitch(score, 1, 100, 1.0, 2.0);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
 		this.scoreAverage.push(score);
 		const mod = Math.ceil((3500 * score) / bpm);
-this.score += mod;
+		this.score += mod;
 this.levelAverage.push(mod);
 	}
 
 	queueLevels() {
-			let levelLimit = this.level + 1;
+		let levelLimit = this.level + 1;
 		if (this.levels < levelLimit) {
 			levelLimit = this.levels;
 		}
@@ -537,10 +579,10 @@ this.levelAverage.push(mod);
 		so.enqueue(packdir + 'pre' + i);
 																}
 		}
-		if (this.level > 1 && this.level!=this.forceLevel) {
+		if (this.level > 1 && this.level != this.forceLevel) {
 			so.setQueueCallback(0);
 		so.loadQueue();
-				so.directory = './sounds/';
+		so.directory = './sounds/';
 		}
 	}
 }

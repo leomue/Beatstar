@@ -11,11 +11,11 @@ import {KeyboardInput} from './input';
 class Menu {
 	constructor(name, menuData, music) {
 		this.menuData = menuData;
-		this.first=true;
+		this.first = true;
 		this.cursor = 0;
 		this.name = name;
-		let dir=so.directory;
-		so.directory="./sounds/";
+		const dir = so.directory;
+		so.directory = './sounds/';
 		this.sndKeyChar = so.create('ui/keyChar');
 		this.sndKeyDelete = so.create('ui/keyDelete');
 		this.sndSliderLeft = so.create('ui/menuSliderLeft');
@@ -26,7 +26,7 @@ class Menu {
 		this.sndOpen = so.create('ui/menuOpen');
 		this.sndSelector = so.create('ui/menuSelector');
 		this.sndWrap = so.create('ui/menuWrap');
-				so.directory=dir;
+		so.directory = dir;
 		this.selectCallback = null;
 		if (typeof music !== 'undefined') {
 			this.music = music;
@@ -37,36 +37,32 @@ class Menu {
 
 	nextItem() {
 		if (!this.first) {
-		if (this.cursor < this.menuData.length - 1) {
+			if (this.cursor < this.menuData.length - 1) {
 		this.sndMove.play();
 		this.cursor++;
-										}
-															else {
+			} else {
 					this.sndWrap.play();
-					this.cursor=0;
-					}
-					}
-				else {
+					this.cursor = 0;
+			}
+		} else {
 				this.sndMove.play();
-				this.first=false;
+				this.first = false;
 		}
-		
+
 		this.menuData[this.cursor].speak();
 	}
 
 	previousItem() {
-	if (this.first) {
-	this.first=false;
+		if (this.first) {
+			this.first = false;
 	this.sndMove.play();
-	}
+		}
 		if (this.cursor > 0) {
 		this.sndMove.play();
-			this.cursor--;
-		}
-		else {
-		this.cursor=this.menuData.length-1;
+		this.cursor--;
+		} else {
+			this.cursor = this.menuData.length - 1;
 		this.sndWrap.play();
-					
 		}
 				this.menuData[this.cursor].speak();
 	}
@@ -97,26 +93,25 @@ class Menu {
 		if (this.menuData[this.cursor].type == MenuTypes.EDIT) {
 			this.menuData[this.cursor].addChar(String.fromCharCode(char));
 			this.sndKeyChar.play();
-		}
-		else {
-		//char navigation code
-		for (let i=this.cursor+1;i<this.menuData.length;i++) {
-		if (this.menuData[i].name.toLowerCase().substr(0,1)==String.fromCharCode(char).toLowerCase()) {
-		this.cursor=i;
+		} else {
+		// Char navigation code
+			for (let i = this.cursor + 1; i < this.menuData.length; i++) {
+				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
+					this.cursor = i;
 		this.menuData[this.cursor].speak();
-		this.first=false;
-				return;
-		}
-		}
-		for (let i=0;i<this.menuData.length;i++) {
-		console.log("ran second loop");
-				if (this.menuData[i].name.toLowerCase().substr(0,1)==String.fromCharCode(char).toLowerCase()) {
-		this.cursor=i;
+		this.first = false;
+		return;
+				}
+			}
+			for (let i = 0; i < this.menuData.length; i++) {
+		console.log('ran second loop');
+		if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
+			this.cursor = i;
 		this.menuData[this.cursor].speak();
-		this.first=false;
+		this.first = false;
 		return;
 		}
-		}
+			}
 		}
 	}
 
@@ -153,10 +148,10 @@ this.music.unload();
 			await utils.sleep(50);
 		}
 		this.music.unload();
-		//this.destroy();
+		// This.destroy();
 	}
 
-destroy() {
+	destroy() {
 			$(document).off('keydown');
 		$(document).off('keypress');
 		// This.hammer.destroy();
@@ -201,13 +196,22 @@ destroy() {
 		}
 	}
 
+	async runSync() {
+		return new Promise((resolve, reject) => {
+	this.run(s => {
+	resolve(s.selected);
+	this.destroy();
+	});
+		});
+	}
+
 	run(callback) {
 		if (typeof this.music === 'object') {
 			this.music.volume = 0.5;
 			this.music.loop = true;
 	this.music.play();
 		} else if (typeof this.music === 'string') {
-					this.music = so.create(this.music,true);
+			this.music = so.create(this.music, true);
 			this.music.volume = 0.5;
 			this.music.loop = true;
 	this.music.play();
@@ -258,10 +262,10 @@ destroy() {
 		for (let i = 0; i < this.menuData.length; i++) {
 			let addItem = null;
 			if (this.menuData[i].type == MenuTypes.SLIDER) {
-										addItem = {
+				addItem = {
 					id: this.menuData[i].id,
-					value: this.menuData[i].currentValue,
-					//name: this.menuData[i].options[this.menuData[i].currentValue]
+					value: this.menuData[i].currentValue
+					// Name: this.menuData[i].options[this.menuData[i].currentValue]
 				};
 			}
 			if (this.menuData[i].type == MenuTypes.EDIT) {
@@ -289,11 +293,13 @@ destroy() {
 		this.sndChoose.play();
 		$(document).off('keydown');
 		$(document).off('keypress');
-		this.musicDuration=0;
-		this.musicDuration=this.sndChoose.duration
-		
-		if (this.musicDuration>3000) this.musicDuration=3000;
-						if (typeof this.music !== 'undefined') {
+		this.musicDuration = 0;
+		this.musicDuration = this.sndChoose.duration;
+
+		if (this.musicDuration > 3000) {
+			this.musicDuration = 3000;
+		}
+		if (typeof this.music !== 'undefined') {
 this.fade();
 		}
 		const that = this;

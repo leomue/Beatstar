@@ -8,7 +8,7 @@ class KeyboardInput {
 		this.chars = [];
 		this.justReleased = [];
 		this.justPressedEventCallback = null;
-		this.charEventCallback=null;
+		this.charEventCallback = null;
 	}
 
 	init() {
@@ -38,15 +38,14 @@ this.justPressedEventCallback(event.which);
 	}
 
 	handleChar(char) {
-	if (char.which<48 || char.which > 122) {
-	return; 
-	}
+		if (char.which < 48 || char.which > 122) {
+			return;
+		}
 		if (String.fromCharCode(char.which) != '') {
 			this.chars += String.fromCharCode(char.which);
 			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
 this.charEventCallback(String.fromCharCode(char.which));
 			}
-
 		}
 	}
 
@@ -96,7 +95,7 @@ this.charEventCallback(String.fromCharCode(char.which));
 	}
 
 	keysPressed() {
-			const kd = [];
+		const kd = [];
 	this.justPressed.forEach((v, i) => {
 		if (v) {
 	kd.push(i);

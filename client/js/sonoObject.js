@@ -197,8 +197,9 @@ class SoundObject {
 		}
 		return returnObject;
 	}
-load(file) {
-const fs=require('fs');
+
+	load(file) {
+		const fs = require('fs');
 		file = this.directory + file + this.extension;
 		if (fs.exists(file)) {
 		this.queue.push(file);
@@ -206,7 +207,6 @@ const fs=require('fs');
 		}
 	}
 
-	
 	enqueue(file) {
 		file = this.directory + file + this.extension;
 		this.queue.push(file);
@@ -299,7 +299,7 @@ toDestroy.push(i);
 			for (var i = 0; i < toDestroy.length; i++) {
 				if (that.oneShotSounds[i].playing == false) {
 				that.oneShotSounds.splice(toDestroy[i], 1);
-													}
+				}
 			}
 		 });
 	}

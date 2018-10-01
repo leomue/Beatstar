@@ -2,7 +2,7 @@
 let event = new KeyboardInput();
 
 import {KeyboardInput} from './input';
-import {credits,listenPack,checkPack, learnPack, browsePacks} from './main';
+import {credits, listenPack, checkPack, learnPack, browsePacks} from './main';
 import {Menu} from './menuHandler';
 import $ from 'jquery';
 import {so} from './soundObject';
@@ -29,7 +29,7 @@ class StateMachine {
 			that.setState(2);
 	});
 	$(document).keydown(event => {
-		if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which==KeyEvent.DOM_VK_RETURN) {
+		if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
 						intro.unload();
 					$(document).off('keydown');
 			that.setState(20);
@@ -40,35 +40,29 @@ class StateMachine {
 			event = null;
 checkPack();
 this.state = state;
-		} 
-		else if (state == 21) {
-			this.currentState = new Game(credits,2);
+		} else if (state == 21) {
+			this.currentState = new Game(credits, 2);
 			this.state = state;
-		} 
-
-		else if (state == 3) {
+		} else if (state == 3) {
 			this.currentState = new Game(credits);
 			this.state = state;
-		} 
-		else if (state == 20) {
+		} else if (state == 20) {
 			event = null;
 checkPack(false);
 this.state = state;
-		}
-		else if (state == 4) {
+		} else if (state == 4) {
  learnPack();
+		} else if (state == 7) {
+ listenPack();
 		}
-		else if (state==7) { listenPack(); }
 		// New states
 		else if (state == 5) {
 browsePacks();
 this.state = state;
-		}
-		else if (state == 6) {
+		} else if (state == 6) {
 browsePacks(2);
 this.state = state;
-		}
-		else if (state == 8) {
+		} else if (state == 8) {
 browsePacks(3);
 this.state = state;
 		}

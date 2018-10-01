@@ -1,16 +1,17 @@
-import {Howl, Howler,Spatial} from './howler';
+import {Howl, Howler, Spatial} from './howler';
 import {KeyboardInput} from './input';
 import {KeyEvent} from './keycodes';
 import {utils} from './utilities';
+
 const isElectron = true;
 let playOnceTimer;
 class SoundObjectItem {
-	constructor(file, callback = 0, tag = 0,stream=false) {
+	constructor(file, callback = 0, tag = 0, stream = false) {
 		const that = this;
 		this.fileName = file;
 		this.sound = new Howl({
 			src: file,
-			html5:stream,
+			html5: stream,
 			onload() {
  that.doneLoading();
 			}
@@ -46,30 +47,29 @@ class SoundObjectItem {
 	play() {
 		this.sound.play();
 	}
-	
-playSync() {
-let inp=new KeyboardInput();
+
+	playSync() {
+		const inp = new KeyboardInput();
 inp.init();
  this.sound.play();
- inp.justPressedEventCallback=((evt)=> {
- if (evt==KeyEvent.DOM_VK_Q || evt==KeyEvent.DOM_VK_X) {
+ inp.justPressedEventCallback = (evt => {
+ 	if (evt == KeyEvent.DOM_VK_Q || evt == KeyEvent.DOM_VK_X) {
  this.sound.stop();
- inp.justPressedEventCallback=null;
- }
+ inp.justPressedEventCallback = null;
+ 	}
  });
- return new Promise((resolve,reject)=>{
- this.sound.once("end",()=> {
- this.sound.unload();
-   resolve("ok");
-   inp.justPressedEventCallback=null;
- });//end
-  this.sound.once("stop",()=> {
- this.sound.unload();
-  resolve("ok");
-  inp.justPressedEventCallback=null;
- });//stop
- });//promise
+ return new Promise((resolve, reject) => {
+ this.sound.once('end', () => {
+   resolve('ok');
+   inp.justPressedEventCallback = null;
+ });// End
+  this.sound.once('stop', () => {
+  resolve('ok');
+  inp.justPressedEventCallback = null;
+  });// Stop
+ });// Promise
 	}
+
 	stop() {
 		this.sound.stop();
 	}
@@ -91,9 +91,10 @@ inp.init();
 	}
 
 	set volume(v) {
-			return this.sound.volume(v);
+		return this.sound.volume(v);
 	}
-get pan() {
+
+	get pan() {
 		return this.sound.stereo();
 	}
 
@@ -104,17 +105,27 @@ get pan() {
 	set loop(v) {
 		return this.sound.loop(v);
 	}
-get active() {
-if (this.sound.state()=="unloaded") return false;
-if (this.sound.state()=="loaded") return true;
-if (this.sound.state()=="loading") return true;
-}
+
+	get active() {
+		if (this.sound.state() == 'unloaded') {
+			return false;
+		}
+		if (this.sound.state() == 'loaded') {
+			return true;
+		}
+		if (this.sound.state() == 'loading') {
+			return true;
+		}
+	}
+
 	get loop() {
 		return this.sound.loop();
 	}
+
 	get playing() {
 		return this.sound.playing();
 	}
+
 	get playbackRate() {
 		return this.sound.rate();
 	}
@@ -122,7 +133,8 @@ if (this.sound.state()=="loading") return true;
 	set playbackRate(v) {
 		return this.sound.rate(v);
 	}
-get pitch() {
+
+	get pitch() {
 		return this.sound.rate();
 	}
 
@@ -135,7 +147,7 @@ get pitch() {
 	}
 
 	get duration() {
-		return this.sound.duration()*1000;
+		return this.sound.duration() * 1000;
 	}
 
 	get position() {
@@ -217,16 +229,17 @@ class SoundObject {
 		this.statusCallback = null;
 	}
 
-	create(file,stream=false) {
+	create(file, stream = false) {
 		file = this.directory + file + this.extension;
 		let returnObject = null;
 		const that = this;
 		returnObject = new SoundObjectItem(file, (() => {
  that.doneLoading();
-		}),0,stream);
+		}), 0, stream);
 										this.sounds.push(returnObject);
-								return returnObject;
+										return returnObject;
 	}
+
 	enqueue(file) {
 		file = this.directory + file + this.extension;
 		console.log(file);
@@ -264,18 +277,16 @@ class SoundObject {
 			this.sounds.push(new SoundObjectItem(this.queue[0], (() => {
  that.handleQueue();
 			}), 1));
-			}
-			catch(err) {
-				console.log("error");
-			}
-			finally {
+			} catch (err) {
+				console.log('error');
+			} finally {
 			this.queue.splice(0, 1);
 			}
 		} else {
 			this.loadingQueue = false;
-								if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
+			if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
 					this.queueCallback();
-				}
+			}
 		}
 	}
 
@@ -327,7 +338,7 @@ toDestroy.push(i);
 			for (var i = 0; i < toDestroy.length; i++) {
 				if (that.oneShotSounds[i].playing == false) {
 				that.oneShotSounds.splice(toDestroy[i], 1);
-													}
+				}
 			}
 		 });
 	}
@@ -337,12 +348,12 @@ toDestroy.push(i);
 		const filename = this.directory + file + this.extension;
 		while (!noMore) {
 			const found = this.findSoundIndex(filename);
-														if (found == -1) {
-								noMore = true;
-							} else {
+			if (found == -1) {
+				noMore = true;
+			} else {
 											this.sounds[found].sound.unload();
 																							this.sounds.splice(found, 1);
-																			}
+			}
 		}
 		if (callback != 0) {
 callback();

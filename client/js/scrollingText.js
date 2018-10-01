@@ -3,13 +3,14 @@ import $ from 'jquery';
 import {KeyEvent} from './keycodes';
 import {so} from './soundObject';
 import {speech} from './tts';
-	if (runningText == undefined) {
+
+if (runningText == undefined) {
 	var runningText = 0;
 }
 class ScrollingText {
 	constructor(text, delimiter = '\n', callback = 0) {
-			this.callback = callback;
-		
+		this.callback = callback;
+
 		this.text = text;
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
@@ -20,12 +21,12 @@ class ScrollingText {
 		const id = document.getElementById('touchArea');
 		// This.hammer = new Hammer(id);
 		this.init();
-		if (this.callback==0) {
-				return this.prom=new Promise((resolve,reject)=> { 
-				this.res=resolve;
-		});
-				}
+		if (this.callback == 0) {
+			return this.prom = new Promise((resolve, reject) => {
+				this.res = resolve;
+			});
 		}
+	}
 
 	init() {
 		const that = this;
@@ -63,15 +64,14 @@ class ScrollingText {
 	}
 
 	readCurrentLine() {
-	if (this.splitText[this.currentLine][0]=="!") {
-	let str=this.splitText[this.currentLine].substr(1);
-	let snd=so.create(str,true);
+		if (this.splitText[this.currentLine][0] == '!') {
+			const str = this.splitText[this.currentLine].substr(1);
+			const snd = so.create(str, true);
 	snd.play();
-	snd.sound.once("end",()=> {
+	snd.sound.once('end', () => {
 	this.advance();
 	});
-		}
-	else {
+		} else {
 		speech.speak(this.splitText[this.currentLine]);
 		}
 	}
@@ -90,8 +90,7 @@ document.removeEventListener('keydown', this.handleKeys);
 //			This.hammer.unload();
 if (this.callback != 0) {
 this.callback();
-}
-else {
+} else {
 this.res();
 }
 		}

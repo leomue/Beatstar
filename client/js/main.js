@@ -1,32 +1,34 @@
-export var gameID="beat";
-export var version="3.0";
-export var version2="";
+export var gameID = 'beat';
+export var version = '3.0';
+export var version2 = '';
 
 export var lang = 0;
 export var ttsVoice;
-export var ttsRate=1;
-let achs=[
-"fw","fl","idle","dl","dw","w1","w5","w10","w25","w50","usepinky","lactions","fingr","bulk","intro","slotwin","frust","catslots","robber","pongfire","pongfail",
+export var ttsRate = 1;
+const achs = [
+	'fw', 'fl', 'idle', 'dl', 'dw', 'w1', 'w5', 'w10', 'w25', 'w50', 'usepinky', 'lactions', 'fingr', 'bulk', 'intro', 'slotwin', 'frust', 'catslots', 'robber', 'pongfire', 'pongfail'
 ];
-export var editing=false;
+export var editing = false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
-import {playQuestions,playGo,playPong,playFootball,playDouble,playDeck,playCode,playSlots} from './minis.js';
-//import {SoundPool} from './soundPool';
+import {playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
+// Import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
-let boot=false;
-export var credits=false;
-export let minis={
-slot:8500,
-code:10000,
-highlow:15000,
-double:10000,
-football:12000,
-react:14000,
-gogame:18000,
-}
+
+let boot = false;
+export var credits = false;
+export const minis = {
+	slot: 8500,
+	code: 10000,
+	highlow: 15000,
+	double: 10000,
+	football: 12000,
+	react: 14000,
+	gogame: 18000,
+	gq: 35000
+};
 import {Player} from './player';
-import {SliderItem,MenuItem} from './menuItem';
+import {SliderItem, MenuItem} from './menuItem';
 import {Menu} from './menu';
 import walk from 'fs-walk';
 import os from 'os';
@@ -39,10 +41,10 @@ import {utils} from './utilities';
 import {so} from './soundObject';
 import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
+
 export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT];
 export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
-
 
 export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
@@ -50,14 +52,14 @@ export var data = '';
 export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-let prom=new Promise((resolve,reject)=> {
-fetch('http://oriolgomez.com/versions.php?id='+gameID)
+	const prom = new Promise((resolve, reject) => {
+fetch('http://oriolgomez.com/versions.php?id=' + gameID)
 						 .then(event => event.text())
-			.then(data => {
-				version2=data;
+	.then(data => {
+		version2 = data;
 				resolve(data);
-			});
-});
+	});
+	});
              	st.setState(1);
 }
 function proceed() {
@@ -69,8 +71,8 @@ function proceed() {
 // St.setState(1);
 // document.removeEventListener("DOMContentLoaded",setup);
 export async function learnPack() {
-so.directory="";
-const fs=require('fs');
+	so.directory = '';
+	const fs = require('fs');
 	const pool = new SoundHandler();
 	let actions = 0;
 	for (let i = 1; i <= 10; i++) {
@@ -78,7 +80,7 @@ const fs=require('fs');
 			actions = i;
 		}
 	}
-	speech.speak(strings.get( 'mActions', [actions]));
+	speech.speak(strings.get('mActions', [actions]));
 	const event = new KeyboardInput();
 				event.init();
 				so.directory = '';
@@ -117,15 +119,15 @@ pool.playStatic(packdir + 'a' + 1, 0);
 				st.setState(2);
 }
 export async function browsePacks(browsing = 1) {
-if (typeof data.save.pack!=="undefined") {
-let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
-if (!answer) {
+	if (typeof data.save.pack !== 'undefined') {
+		const answer = await questionSync('killSave', [data.save.pack, data.save.level]);
+		if (!answer) {
 st.setState(2);
 return;
-}
-data.save={}; save();
-}
-const fs=require('fs');
+		}
+		data.save = {}; save();
+	}
+	const fs = require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks/hashes.db')) {
 		var error = 0;
 		if (lang == 1) {
@@ -162,32 +164,28 @@ const fs=require('fs');
 	if (browsing > 0) {
 packs.forEach((i, v) => {
 	if (fs.existsSync(os.homedir() + '/beatpacks/' + i.name + '/bpm.txt')) {
-if (browsing==1) {
-if (typeof data.unlocks[i.name]==="undefined") {
+		if (browsing == 1) {
+			if (typeof data.unlocks[i.name] === 'undefined') {
 browseArray.push(i);
-}
-
-}
-else if (browsing==2) {
-if (typeof data.unlocks[i.name]!=="undefined") {
+			}
+		} else if (browsing == 2) {
+			if (typeof data.unlocks[i.name] !== 'undefined') {
 browseArray.push(i);
-}
-}
-else if (browsing==3) {
-if (typeof data.unlocks[i.name]!=="undefined" && !data.unlocks[i.name]["win"]) {
+			}
+		} else if (browsing == 3) {
+			if (typeof data.unlocks[i.name] !== 'undefined' && !data.unlocks[i.name].win) {
 browseArray.push(i);
-}
-}
-
+			}
+		}
 	}
 });
 	}
 	so.directory = '';
 	if (browseArray.length === 0) {
-	so.directory="./sounds/";
-		new ScrollingText(strings.get( 'nopacks'), '\n', function(){
+		so.directory = './sounds/';
+		new ScrollingText(strings.get('nopacks'), '\n', (() => {
 		st.setState(2);
-		});
+		}));
 		return;
 	}
 browseArray.sort((a, b) => {
@@ -214,87 +212,86 @@ const exitNow = 0;
 while (!event.isJustPressed(KeyEvent.DOM_VK_LEFT) && browsing > 0) {
 // Enter
 	if (event.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-	if (browsePosition==-1) {
+		if (browsePosition == -1) {
 	st.setState(2);
 	return;
-	}
+		}
 		if (typeof snd !== 'undefined') {
 snd.destroy();
 		}
 		if (timeout != -1) {
 clearTimeout(timeout);
 		}
-if (browsing > 0) {
-if (browsing==1) {
-let price=browseArray[browsePosition].levels*500;
-if (data.beatcoins<price) {
-new ScrollingText(strings.get("packno",[price]),"\n",function() { st.setState(2); });
-}
-else {
-question("packprice",[price],function(answer) {
-if (!answer) {
+		if (browsing > 0) {
+			if (browsing == 1) {
+				const price = browseArray[browsePosition].levels * 500;
+				if (data.beatcoins < price) {
+					new ScrollingText(strings.get('packno', [price]), '\n', (() => {
+ st.setState(2);
+					}));
+				} else {
+question('packprice', [price], answer => {
+	if (!answer) {
 st.setState(2);
 return;
-}
-else if (answer) {
-so.directory="./sounds/";
-let snd=so.create("buypack");
+	} if (answer) {
+		so.directory = './sounds/';
+		const snd = so.create('buypack');
 snd.play();
-snd.sound.once("end",function() {
-addCash(0,price,function() {
-pack = browseArray[browsePosition].name;
-		boot=false;
-		credits=true;
-	data.pack = pack;
-	if (typeof data.unlocks[pack]==="undefined") {
-	data.unlocks[pack]={ 
-			"level":0,
-						"fails":0,
-			"win":false,
-			"average":0,
-					};//object
-					}//unlocks undefined
-						packdir = os.homedir() + '/beatpacks/' + pack + '/';
-	boot=false;
-	credits=true;
-	so.directory = './sounds/';
-save();
-so.kill(() => {
-st.setState(20);
-});//kill
-});//cash
-});//sound callback
-}//answer
-
-});//question callback);
-}//we have enough
-return;
-}
-else {
+snd.sound.once('end', () => {
+addCash(0, price, () => {
 	pack = browseArray[browsePosition].name;
-		boot=false;
-		credits=true;
+	boot = false;
+	credits = true;
 	data.pack = pack;
-	if (typeof data.unlocks[pack]==="undefined") {
-	data.unlocks[pack]={ 
-			"level":0,
-			"fails":0,
-			"win":false,
-			"average":0,
-					};//object
-					}//unlocks undefined
-						packdir = os.homedir() + '/beatpacks/' + pack + '/';
-	boot=false;
-	credits=true;
+	if (typeof data.unlocks[pack] === 'undefined') {
+		data.unlocks[pack] = {
+			level: 0,
+			fails: 0,
+			win: false,
+			average: 0
+		};// Object
+	}// Unlocks undefined
+	packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	boot = false;
+	credits = true;
 	so.directory = './sounds/';
 save();
 so.kill(() => {
 st.setState(20);
-});//kill
-}//if browsing more than 1
-}//if browsing more than 0
-return;
-			//}
+});// Kill
+});// Cash
+});// Sound callback
+	}// Answer
+});// Question callback);
+				}// We have enough
+				return;
+			}
+
+			pack = browseArray[browsePosition].name;
+			boot = false;
+			credits = true;
+			data.pack = pack;
+			if (typeof data.unlocks[pack] === 'undefined') {
+				data.unlocks[pack] = {
+					level: 0,
+					fails: 0,
+					win: false,
+					average: 0
+				};// Object
+			}// Unlocks undefined
+			packdir = os.homedir() + '/beatpacks/' + pack + '/';
+			boot = false;
+			credits = true;
+			so.directory = './sounds/';
+save();
+so.kill(() => {
+st.setState(20);
+});// Kill
+// if browsing more than 1
+		}// If browsing more than 0
+		return;
+		// }
 	}
 	// Down arrow
 	if (event.isJustPressed(KeyEvent.DOM_VK_DOWN)) {
@@ -308,16 +305,16 @@ clearTimeout(timeout);
 		if (browsePosition > browseArray.length - 1) {
 			browsePosition = 0;
 		}
-if (lang == 1) {
+		if (lang == 1) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
-}
-if (lang == 2) {
+		}
+		if (lang == 2) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
-}
-timeout = setTimeout(() => {
-	snd = so.create(browseArray[browsePosition].preview);
+		}
+		timeout = setTimeout(() => {
+			snd = so.create(browseArray[browsePosition].preview);
 snd.play();
-}, 1000);
+		}, 1000);
 	}
 	var chars = event.getChars();
 	if (chars != '') {
@@ -385,10 +382,10 @@ st.setState(2);
 });
 }
 export async function rebuildHashes(silent = false) {
-const fs=require('fs');
+	const fs = require('fs');
 	let corrupts = '';
 	// Var walk=require('fs-walk');
-		let newHash = 0;
+	let newHash = 0;
 	const packs = new Array();
 	so.directory = '';
 walk.dirsSync(os.homedir() + '/beatpacks', (pb, pf, stat, next) => {
@@ -421,7 +418,7 @@ let write = JSON.stringify(packs);
 write = mangle.encrypt(write);
 fs.writeFileSync(os.homedir() + '/beatpacks/hashes.db', write);
 if (silent) {
-return packs;
+	return packs;
 }
 if (corrupts != '') {
 	if (lang == 1) {
@@ -446,124 +443,125 @@ st.setState(2);
 st.setState(2);
 }
 }
-export async function questionSync(text,localizedValues=[]) {
-return new Promise((resolve,reject)=> {
-question(text,localizedValues,function(answer) {
+export async function questionSync(text, localizedValues = []) {
+	return new Promise((resolve, reject) => {
+question(text, localizedValues, answer => {
 resolve(answer);
 });
-});
+	});
 }
-export function question(text,localizedValues=[],callback=null) {
-let answer=false;
-let items=new Array();
-			items.push(new MenuItem(0,strings.get(text,localizedValues)));
-	items.push(new MenuItem(0,strings.get("yes",)));
-	items.push(new MenuItem(1,strings.get("no",)));
+export function question(text, localizedValues = [], callback = null) {
+	let answer = false;
+	const items = new Array();
+			items.push(new MenuItem(0, strings.get(text, localizedValues)));
+	items.push(new MenuItem(0, strings.get('yes',)));
+	items.push(new MenuItem(1, strings.get('no',)));
+	so.directory = './sounds/';
+	const dm = new Menu(strings.get(text, localizedValues), items);
+	so.directory = '';
+					dm.run(s => {
+		console.log('ok');
 		so.directory = './sounds/';
-			let dm=new Menu(strings.get(text,localizedValues),items);
-			so.directory = '';
-					dm.run(s=>{
-		console.log("ok");
-						so.directory = './sounds/';
-												switch(s.selected) {
-							case 0:
+		switch (s.selected) {
+			case 0:
 							dm.destroy();
-answer=true;
-			break;
+				answer = true;
+				break;
 			case 1:
 			dm.destroy();
-answer=false;
-break;
-}
-if (typeof callback!=="undefined") {
+				answer = false;
+				break;
+		}
+		if (typeof callback !== 'undefined') {
 callback(answer);
+		}
+					});
 }
-});
-}
-export async function checkPack(changeBoot=true,debug=true) {
-editing=false;
-const fs=require('fs');
+export async function checkPack(changeBoot = true, debug = false) {
+	editing = false;
+	const fs = require('fs');
 	try {
 		data = JSON.parse(mangle.decrypt(fs.readFileSync(os.homedir() + '/beatpacks/save.dat')));
 	} catch (err) {
 		data = new Player();
-				let introing=true;
-		let str="";
-		for (let i in strings.strings) {
-		str+=strings.strings[i].langs+". ";
-		}
-		
-		let items=[];
-		let counter=1;
-				for (let i in strings.strings) {
-items.push(new MenuItem(counter,strings.strings[i].lang));
-counter++;
-		}
-		let lm=new Menu(str,items);
-		lm.run((s)=> {
-		lang=s.selected;
-		data.lang=lang;
-		lm.destroy();
-						new ScrollingText(strings.get("intro"),"\n",async function() {
-						await getAch("intro");
-		introing=false;
-		});
-		});
-		while (introing) {
-		await utils.sleep(10);
-		}
-		let tut=await questionSync("introQuestion");
-		if (tut) {
-		await new ScrollingText(strings.get("introTut"));
+		let introing = true;
+		let str = '';
+		for (const i in strings.strings) {
+			str += strings.strings[i].langs + '. ';
 		}
 
+		const items = [];
+		let counter = 1;
+		for (const i in strings.strings) {
+items.push(new MenuItem(counter, strings.strings[i].lang));
+counter++;
+		}
+		const lm = new Menu(str, items);
+		lm.run(s => {
+			lang = s.selected;
+			data.lang = lang;
+		lm.destroy();
+		new ScrollingText(strings.get('intro'), '\n', (async () => {
+			await getAch('intro');
+			introing = false;
+		}));
+		});
+		while (introing) {
+			await utils.sleep(10);
+		}
+		const tut = await questionSync('introQuestion');
+		if (tut) {
+			await new ScrollingText(strings.get('introTut'));
+		}
 	}
 	pack = data.pack;
-	lang=data.lang;
-	if (typeof data.rate!=="undefined") speech.rate=data.rate;
-	if (!changeBoot) {
-	boot=false;
-	credits=true;
+	lang = data.lang;
+	if (typeof data.rate !== 'undefined') {
+		speech.rate = data.rate;
 	}
-		if (changeBoot) {
-		boot=true;
-		credits=false;
-		}
+	if (!changeBoot) {
+		boot = false;
+		credits = true;
+	}
+	if (changeBoot) {
+		boot = true;
+		credits = false;
+	}
 	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 	actionKeys = data.actionKeys;
 save();
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	pack = 'default';
-		packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	packdir = os.homedir() + '/beatpacks/' + pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
-	const text = new ScrollingText(strings.get( 'packError'), '\n', (() => {
+	const text = new ScrollingText(strings.get('packError'), '\n', (() => {
 downloadPacks(['default']);
 	}));
 	return;
-	}
-			if (debug) {
-			//await strings.check(2);
+}
+if (debug) {
+			// Await strings.check(2);
 			playQuestions();
-						return;
-																			}
+			return;
+}
 	booter();
 }
-var download = function(url, dest, cb) {
-const http=require('http');
-const fs=require('fs');
-  var file = fs.createWriteStream(dest);
-  var request = http.get(url, function(response) {
+const download = function (url, dest, cb) {
+	const http = require('http');
+	const fs = require('fs');
+	const file = fs.createWriteStream(dest);
+	const request = http.get(url, response => {
     response.pipe(file);
-    file.on('finish', function() {
+    file.on('finish', () => {
       file.close();
       cb();
     });
-  });
-}
+	});
+};
 export async function downloadPacks(arr = []) {
-const fs=require('fs');
-		if (arr.length == 0) {
+	const fs = require('fs');
+	if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
 		let localHashes;
@@ -572,7 +570,7 @@ const fs=require('fs');
 						 .then(event => event.text())
 			.then(data => {
 				remoteHashes = JSON.parse(mangle.decrypt(data));
-console.log("remote"+remoteHashes.length);
+console.log('remote' + remoteHashes.length);
 			});
 		// Ok
 		const browseArray = [];
@@ -581,74 +579,75 @@ console.log("remote"+remoteHashes.length);
 			remoteHashes.forEach((i, v) => {
 				let shouldPush = false;
 				for (let l = 0; l < localHashes.length; l++) {
-	if (i.name == localHashes[l].name && i.hash == localHashes[l].hash) {
+					if (i.name == localHashes[l].name && i.hash == localHashes[l].hash) {
 						shouldPush = false;
 						break;
 					} else {
-											shouldPush = true;
+						shouldPush = true;
 					}
-					}
+				}
 				if (shouldPush) {
 									browseArray.push(i);
 									size += i.hash;
-				}
-				else {
+				} else {
 				}
 			});
 		// Create downloader menu here
-		if (browseArray.length<1) {
-			new ScrollingText(strings.get("nodown"),"\n",function() {st.setState(2)});
-			return;
-		}
-			const downloadSelections = new Array();
-let sizeS;
-			size = size / 1024 / 1024;
-			sizeS="mb"
-		if (size>1024) {
-			size=size/1024
-			sizeS="gb";
-		}
-			size=size.toFixed(2);
-//			console.log("size: "+size+sizeS+" "+browseArray.length+" packs");
-			const items=new Array();
-			items.push(new MenuItem(-1,strings.get("mFound",[browseArray.length])));
-	items.push(new MenuItem(0,strings.get("mDownloadAll",[size,sizeS])));
-		items.push(new MenuItem(1,strings.get("mDownloadList",[browseArray.length])));
-		items.push(new MenuItem(2,strings.get("mBack")));
-		so.directory = './sounds/';
-					let dm=new Menu(strings.get("mSelect"),items);
-			so.directory = '';
-			let anotherSelected=false;
-		dm.run(async s=>{
-						so.directory = './sounds/';
-						switch(s.selected) {
-							case 0:
-							dm.destroy();
-							//anotherSelected=true;
-							let dls=new Array();
-							await getAch("bulk");
-							browseArray.forEach(function(i) {
-								dls.push(i.name);
-			});
-										downloadPacks(dls);
-			break;
-			case 2:
-			dm.destroy();
-			anotherSelected=true;
+			if (browseArray.length === 0) {
+				new ScrollingText(strings.get('nodown'), '\n', (() => {
 st.setState(2);
-break;
-case 1:
+				}));
+				return;
+			}
+			const downloadSelections = new Array();
+			let sizeS;
+			size = size / 1024 / 1024;
+			sizeS = 'mb';
+			if (size > 1024) {
+				size /= 1024;
+				sizeS = 'gb';
+			}
+			size = size.toFixed(2);
+		//			Console.log("size: "+size+sizeS+" "+browseArray.length+" packs");
+			const items = new Array();
+			items.push(new MenuItem(-1, strings.get('mFound', [browseArray.length])));
+	items.push(new MenuItem(0, strings.get('mDownloadAll', [size, sizeS])));
+		items.push(new MenuItem(1, strings.get('mDownloadList', [browseArray.length])));
+		items.push(new MenuItem(2, strings.get('mBack')));
+		so.directory = './sounds/';
+		const dm = new Menu(strings.get('mSelect'), items);
+		so.directory = '';
+		let anotherSelected = false;
+		dm.run(async s => {
+			so.directory = './sounds/';
+			switch (s.selected) {
+				case 0:
+							dm.destroy();
+					// AnotherSelected=true;
+					const dls = new Array();
+					await getAch('bulk');
+							browseArray.forEach(i => {
+								dls.push(i.name);
+							});
+										downloadPacks(dls);
+					break;
+				case 2:
+			dm.destroy();
+					anotherSelected = true;
+st.setState(2);
+					break;
+				case 1:
 dm.destroy();
-//browse menu start
-let timeout = -1;
-		let browsePosition = -1;
-		browseArray.forEach((i)=> {
-		i.selected=false;
-		});//forEach
-var selected=[];
-so.directory="./sounds/";
-let snds=so.create("ui/selected");
-so.directory = '';
+					// Browse menu start
+					const timeout = -1;
+					let browsePosition = -1;
+		browseArray.forEach(i => {
+			i.selected = false;
+		});// ForEach
+					var selected = [];
+					so.directory = './sounds/';
+					const snds = so.create('ui/selected');
+					so.directory = '';
 browseArray.sort((a, b) => {
 	const nameA = a.name.toLowerCase();
 	const nameB = b.name.toLowerCase();
@@ -660,107 +659,116 @@ browseArray.sort((a, b) => {
 	}
 	return 0;
 });
-let event = new KeyboardInput();
+					const event = new KeyboardInput();
 event.init();
 
-let snd;
-if (lang == 1) {
+					let snd;
+					if (lang == 1) {
 speech.speak('ready. Browsing ' + browseArray.length + ' downloadable packs. Press arrows to move, space to select, p to preview, q to exit, enter to start download, or the first letter of a packs name to move to it.');
-}
-if (lang == 2) {
+					}
+					if (lang == 2) {
 speech.speak('listo. tienes ' + browseArray.length + ' packs disponibles. Pulsa flechas para moverte, p para previsualizar, espacio para seleccionar, q para salir, enter para empezar descarga, o pulsa la primera letra del nombre de un pack para moverte a él.');
-}
-let browsing=1;
-let size=0;
-event.justPressedEventCallback=function(evt){
-//space
-if (evt==KeyEvent.DOM_VK_SPACE) {
-if (browsePosition!=-1) {
-if (browseArray[browsePosition].selected) {
-browseArray[browsePosition].selected=false;
-size-=browseArray[browsePosition].hash;
-}
-else if (browseArray[browsePosition].selected==false) {
-browseArray[browsePosition].selected=true;
+					}
+					let browsing = 1;
+					let size = 0;
+					event.justPressedEventCallback = function (evt) {
+						// Space
+						if (evt == KeyEvent.DOM_VK_SPACE) {
+							if (browsePosition != -1) {
+								if (browseArray[browsePosition].selected) {
+									browseArray[browsePosition].selected = false;
+									size -= browseArray[browsePosition].hash;
+								} else if (browseArray[browsePosition].selected == false) {
+									browseArray[browsePosition].selected = true;
 snds.play();
-size+=browseArray[browsePosition].hash;
-}
-let sizeS;
-let dSize;
-if (size<=0) sizeS="bytes";
-			dSize = size / 1024 / 1024;
+size += browseArray[browsePosition].hash;
+								}
+								let sizeS;
+								let dSize;
+								if (size <= 0) {
+									sizeS = 'bytes';
+								}
+								dSize = size / 1024 / 1024;
 			console.log(dSize);
-			sizeS="mb"
-		if (dSize>1024) {
-			dSize=size/1024
-			sizeS="gb";
-		}
-		if (size<=0) sizeS="bytes";
-		dSize=Math.ceil(dSize);
-			speech.speak(dSize+" "+sizeS+" total");
-}
-}
-//Enter
-	if (evt==KeyEvent.DOM_VK_RETURN) {
-	if (browsing==0) return
+			sizeS = 'mb';
+			if (dSize > 1024) {
+				dSize = size / 1024;
+				sizeS = 'gb';
+			}
+			if (size <= 0) {
+				sizeS = 'bytes';
+			}
+			dSize = Math.ceil(dSize);
+			speech.speak(dSize + ' ' + sizeS + ' total');
+							}
+						}
+						// Enter
+						if (evt == KeyEvent.DOM_VK_RETURN) {
+							if (browsing == 0) {
+								return;
+							}
 		selected.splice();
-	browseArray.forEach((i)=> {
-	if (i.selected) {
+	browseArray.forEach(i => {
+		if (i.selected) {
 	selected.push(i.name);
 		}
 	});
-	if (selected.length>0) {
+	if (selected.length > 0) {
 		if (typeof snd !== 'undefined') {
 snd.destroy();
 		}
-						browsing=0;
-						event.justPressedEventCallback=null;
-						event.charEventCallback=null;
+		browsing = 0;
+		event.justPressedEventCallback = null;
+		event.charEventCallback = null;
 						downloadPacks(selected);
-						
-												return;
-		}
+
+						return;
 	}
-	// Down arrow
-	if (evt==KeyEvent.DOM_VK_DOWN) {
-		if (typeof snd !== 'undefined') {
+						}
+						// Down arrow
+						if (evt == KeyEvent.DOM_VK_DOWN) {
+							if (typeof snd !== 'undefined') {
 snd.destroy();
-		}
-		browsePosition++;
-		if (browsePosition > browseArray.length - 1) {
-			browsePosition = 0;
-		}
-		if (browseArray[browsePosition].selected) { snds.stop(); snds.play(); }
-if (lang == 1) {
+							}
+							browsePosition++;
+							if (browsePosition > browseArray.length - 1) {
+								browsePosition = 0;
+							}
+							if (browseArray[browsePosition].selected) {
+ snds.stop(); snds.play();
+							}
+							if (lang == 1) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
-}
-if (lang == 2) {
+							}
+							if (lang == 2) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
-}
-	}
-	// Up arrow
-	if (evt==KeyEvent.DOM_VK_UP) {
-		if (typeof snd !== 'undefined') {
+							}
+						}
+						// Up arrow
+						if (evt == KeyEvent.DOM_VK_UP) {
+							if (typeof snd !== 'undefined') {
 snd.destroy();
-		}
-		browsePosition--;
-		if (browsePosition < 0) {
-			browsePosition = browseArray.length - 1;
-		}
-		if (browseArray[browsePosition].selected) { snds.stop(); snds.play(); }
-				if (lang == 1) {
+							}
+							browsePosition--;
+							if (browsePosition < 0) {
+								browsePosition = browseArray.length - 1;
+							}
+							if (browseArray[browsePosition].selected) {
+ snds.stop(); snds.play();
+							}
+							if (lang == 1) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
-		}
-		if (lang == 2) {
+							}
+							if (lang == 2) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
-		}
-			}
-};
-		// First letter
-				event.charEventCallback=function(char) {
-						var stop = false;
+							}
+						}
+					};
+					// First letter
+					event.charEventCallback = function (char) {
+						let stop = false;
 browseArray.forEach((v, i) => {
-	let str = v.name.toLowerCase();
+	const str = v.name.toLowerCase();
 	if (str.slice(0, 1) == char) {
 		if (!stop) {
 			browsePosition = i;
@@ -771,730 +779,765 @@ browseArray.forEach((v, i) => {
 if (typeof snd !== 'undefined') {
 snd.destroy();
 }
-if (browseArray[browsePosition].selected) { snds.stop(); snds.play(); }
+if (browseArray[browsePosition].selected) {
+ snds.stop(); snds.play();
+}
 if (lang == 1) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' levels.');
 }
 if (lang == 2) {
 speech.speak(browseArray[browsePosition].name + '. ' + browseArray[browsePosition].levels + ' niveles.');
 }
-	}
-	//browse menu end
-		return;
-	}
-			});
-	if (anotherSelected) return;
-	}
-	else if (arr.length > 0) {
+					};
+	// Browse menu end
+			}
+		});
+		if (anotherSelected) {}
+	} else if (arr.length > 0) {
 		so.directory = './sounds/';
 		const prog = so.create('progress');
-var toDownload = [];
-	speech.speak(strings.get( 'dling', [i + 1, arr.length]));
-	let percent=0;
-let prevPercent=0;
+		const toDownload = [];
+	speech.speak(strings.get('dling', [i + 1, arr.length]));
+	let percent = 0;
+	let prevPercent = 0;
 	for (let i = 0; i < arr.length; i++) {
-		var name = arr[i];
-		//toDownload[name] = [];
-		percent=Math.floor(utils.percent(i, arr.length));
-				if (percent>prevPercent+20) {
-		prevPercent=percent;
-		if (arr.length>5) speech.speak(strings.get("retrieving")+percent+"%"); //speak only if getting a few packs, getting 1 or 2 is fast.
-}
-		
+		const name = arr[i];
+		// ToDownload[name] = [];
+		percent = Math.floor(utils.percent(i, arr.length));
+		if (percent > prevPercent + 20) {
+			prevPercent = percent;
+			if (arr.length > 5) {
+speech.speak(strings.get('retrieving') + percent + '%');
+			} // Speak only if getting a few packs, getting 1 or 2 is fast.
+		}
+
 								 await fetch(' http://oriolgomez.com/beatpacks/index.php?p=' + arr[i])
 						 .then(event => event.text())
 			.then(data => {
-const datas = data.split('\n');
+				const datas = data.split('\n');
 datas.forEach(i => {
 	if (i != '') {
 toDownload.push(i);
-		
 	}
 });
 			});
 						 		}// End for loop
 	let dir = os.homedir() + '/beatpacks/';
 	let url = 'http://oriolgomez.com/beatpacks/';
-	var dlCounter=0;
-	var dests=[];
+	const dlCounter = 0;
+	const dests = [];
 	for (var i in toDownload) {
-	var ii=i;
-			i=toDownload[i];
-			if (i=="") continue;
-						dir = os.homedir() + '/beatpacks/';
-	var dirsplit=i.split("/");
-						if (fs.existsSync(dir + i)) {
-																		console.log("unlink"+dir+i);
+		const ii = i;
+		i = toDownload[i];
+		if (i == '') {
+			continue;
+		}
+		dir = os.homedir() + '/beatpacks/';
+		const dirsplit = i.split('/');
+		if (fs.existsSync(dir + i)) {
+																		console.log('unlink' + dir + i);
 		fs.unlinkSync(dir + i);
 		}
-		if (!fs.existsSync(dir+dirsplit[0])) {
-fs.mkdirSync(dir+dirsplit[0]);
-			}
-											dir = os.homedir() + '/beatpacks/'+i;
-			url = 'http://oriolgomez.com/beatpacks/'+i;
-toDownload[ii]=url;
+		if (!fs.existsSync(dir + dirsplit[0])) {
+fs.mkdirSync(dir + dirsplit[0]);
+		}
+		dir = os.homedir() + '/beatpacks/' + i;
+		url = 'http://oriolgomez.com/beatpacks/' + i;
+		toDownload[ii] = url;
 dests.push(dir);
-			}
-						console.log("going to start download");
-						speech.speak(strings.get("dfiles",[toDownload.length]));
-						percent=0;
-prevPercent=0;
-						let currentIndex=0;
-												let event=new KeyboardInput();
+	}
+						console.log('going to start download');
+						speech.speak(strings.get('dfiles', [toDownload.length]));
+						percent = 0;
+						prevPercent = 0;
+						let currentIndex = 0;
+						const event = new KeyboardInput();
 						event.init();
-						event.justPressedEventCallback=function() {
-																		percent=utils.percent(currentIndex, toDownload.length).toFixed(1);
-										speech.speak(percent+"%");
-																				console.log(percent+"%");
-										};
-																																																												var threads = 3;
-require('async').eachOfLimit(toDownload, threads, function(fileUrl, index,next){
-		  download(fileUrl, dests[index],next);
-		  
-		  currentIndex=index;
-		  		    
-		  		  }, function() {
-		     		     	speech.speak(strings.get( 'dlingdone'));
-	console.log("exiting function");
+						event.justPressedEventCallback = function () {
+							percent = utils.percent(currentIndex, toDownload.length).toFixed(1);
+										speech.speak(percent + '%');
+																				console.log(percent + '%');
+						};
+						const threads = 3;
+require('async').eachOfLimit(toDownload, threads, (fileUrl, index, next) => {
+		  download(fileUrl, dests[index], next);
+
+		  currentIndex = index;
+		  		  }, () => {
+		     		     	speech.speak(strings.get('dlingdone'));
+	console.log('exiting function');
 	rebuildHashes(true);
-	event.justPressedEventCallback=null;
+	event.justPressedEventCallback = null;
 	so.directory = './sounds/';
 	st.setState(2);
-			     })
-			     
-				}// If length > 1
+			     });
+	}// If length > 1
 }
 export function save() {
-const fs=require('fs');
+	const fs = require('fs');
 	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
 fs.mkdirSync(os.homedir() + '/beatpacks');
 	}
 	let write = JSON.stringify(data);
-write=mangle.encrypt(write);
+	write = mangle.encrypt(write);
 fs.writeFileSync(os.homedir() + '/beatpacks/save.dat', write);
 }
 export function listenPack() {
-const fs=require('fs');
-let inp=new KeyboardInput();
+	const fs = require('fs');
+	const inp = new KeyboardInput();
 inp.init();
-let pos=0;
+let pos = 0;
 let fileData;
 let bpms;
 let mus;
 let levels;
-so.directory="./sounds/";
-let lock=so.create("locked");
-so.directory="";
-let unlocked=data.unlocks[pack]["level"]
-if (unlocked==0) unlocked=1; //first level is always unlocked even if you haven't played it
-	if (fs.existsSync(packdir + 'bpm.txt')) {
-			fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
-		} else {
-			const error = new ScrollingText('There was an error loading the pack ' + pack + '.', '\n', (() => {
+so.directory = './sounds/';
+const lock = so.create('locked');
+so.directory = '';
+let unlocked = data.unlocks[pack].level;
+if (unlocked == 0) {
+	unlocked = 1;
+} // First level is always unlocked even if you haven't played it
+if (fs.existsSync(packdir + 'bpm.txt')) {
+	fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
+} else {
+	const error = new ScrollingText('There was an error loading the pack ' + pack + '.', '\n', (() => {
 				st.setState(2);
-							}));
-							return;
-		}
-		bpms = fileData.split(',');
-		levels = bpms.length - 1;
-				if (bpms[levels] == '') {
-			levels--;
-		}
-		speech.speak(strings.get("mListen",[unlocked]));
-		inp.justPressedEventCallback=function(evt) {
+	}));
+	return;
+}
+bpms = fileData.split(',');
+levels = bpms.length - 1;
+if (bpms[levels] == '') {
+	levels--;
+}
+		speech.speak(strings.get('mListen', [unlocked]));
+		inp.justPressedEventCallback = function (evt) {
 				lock.stop();
-if (typeof mus!=="undefined") mus.destroy();
+				if (typeof mus !== 'undefined') {
+mus.destroy();
+				}
 
-		if (evt==KeyEvent.DOM_VK_LEFT) {
-		inp.justPressedEventCallback=null;
+				if (evt == KeyEvent.DOM_VK_LEFT) {
+					inp.justPressedEventCallback = null;
 		st.setState(2);
-		return;
-		}
-		//down
-		else if (evt==KeyEvent.DOM_VK_DOWN) {
-pos++;
-		if (pos > levels) {
-		pos = 1;
-		}
-		if (pos>unlocked) {
+				}
+				// Down
+				else if (evt == KeyEvent.DOM_VK_DOWN) {
+					pos++;
+					if (pos > levels) {
+						pos = 1;
+					}
+					if (pos > unlocked) {
 		lock.play();
-		}
-		else {
-		mus=so.create(packdir + pos + 'music',true);
-		mus.loop=true;
+					} else {
+						mus = so.create(packdir + pos + 'music', true);
+						mus.loop = true;
 		mus.play();
-		}
-		}
-				//up
-		else if (evt==KeyEvent.DOM_VK_UP) {
-pos--;
-		if (pos <= 0) {
-		pos=levels;
-		}
-		if (pos>unlocked) {
+					}
+				}
+				// Up
+				else if (evt == KeyEvent.DOM_VK_UP) {
+					pos--;
+					if (pos <= 0) {
+						pos = levels;
+					}
+					if (pos > unlocked) {
 		lock.play();
-		}
-		else {
-		mus=so.create(packdir + pos + 'music',true);
-		mus.loop=true;
+					} else {
+						mus = so.create(packdir + pos + 'music', true);
+						mus.loop = true;
 		mus.play();
-		}
-		}
-		}//callback
-		}
-		export function booter() {
-		if (!data.safeguards) data.safeguards=0;
+					}
+				}
+		};// Callback
+}
+export function booter() {
+	if (!data.safeguards) {
+		data.safeguards = 0;
+	}
 		save();
-		const fs=require('fs');
-				if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
-boot=true;
-let input=new KeyboardInput();
+		const fs = require('fs');
+		if (fs.existsSync(packdir + 'boot.ogg') && !boot) {
+			boot = true;
+			const input = new KeyboardInput();
 input.init();
-			so.directory = '';
-let bootSound = so.create(packdir + 'boot');
+so.directory = '';
+const bootSound = so.create(packdir + 'boot');
 bootSound.play();
-bootSound.sound.once("end",function() {
-input.justPressedEventCallback=null;
+bootSound.sound.once('end', () => {
+	input.justPressedEventCallback = null;
 mainMenu();
 });
-			so.directory = './sounds/';
-			
-input.justPressedEventCallback=function(evt) {
-bootSound.sound.off("end");
+so.directory = './sounds/';
+
+input.justPressedEventCallback = function (evt) {
+bootSound.sound.off('end');
 bootSound.stop();
 bootSound.destroy();
-input.justPressedEventCallback=null;
+input.justPressedEventCallback = null;
 mainMenu();
-}
-		}//if file exists
+};
+		}// If file exists
 		else {
 				mainMenu();
 		}
-		}
-		export async function addCashSync(c1,c2=0,simulate=false) {
-		return new Promise((resolve,reject)=>{
-		addCash(c1,c2,function() {
-		resolve("ok");
-},simulate);
-});
-		}
-		export async function addCash(c1,c2=0,callback,simulate=false) {
-		let coinCap=-1;
-		let cash=Math.ceil(c1-c2);
-					if (!simulate) data.beatcoins+=cash;
-					save();
-let positive=true;
-let time=370;
-if (cash<0) positive=false;
-cash=Math.abs(cash);
-so.directory="./sounds/";
-let snd;
-if (cash>500000) { coinCap=100000; }
-else if (cash<=500000 && cash>100001) { coinCap=1000; }
-else if (cash<=100000 && cash>10001) { coinCap=500; }
-else if (cash<=10000 && cash>501) { coinCap=500; }
-else if (cash<=500 && cash>101) { coinCap=100; }
-else if (cash<=100 && cash>11) { coinCap=10; }
-else if (cash<=10 && cash>0) { 
-coinCap=1;
 }
-if (coinCap!=-1) {
-if (!positive && cash>=1000) coinCap=1000; //yeah, you hear lose sound every 1k.
-if (positive) {
-snd=so.create("morecash"+coinCap);
-speech.speak(strings.get("youwin",[cash]));
-}//positive
-else if (!positive) {
-snd=so.create("lesscash");
-speech.speak(strings.get("youlose",[cash]));
-}//negative
-await utils.sleep(400);
-if (cash>=coinCap) {
+export async function addCashSync(c1, c2 = 0, simulate = false) {
+	return new Promise((resolve, reject) => {
+		addCash(c1, c2, () => {
+		resolve('ok');
+		}, simulate);
+	});
+}
+export async function addCash(c1, c2 = 0, callback, simulate = false) {
+	let coinCap = -1;
+	let cash = Math.ceil(c1 - c2);
+	if (!simulate) {
+		data.beatcoins += cash;
+	}
+					save();
+					let positive = true;
+					let time = 370;
+					if (cash < 0) {
+						positive = false;
+					}
+					cash = Math.abs(cash);
+					so.directory = './sounds/';
+					let snd;
+					if (cash > 500000) {
+						coinCap = 100000;
+					} else if (cash <= 500000 && cash > 100001) {
+						coinCap = 1000;
+					} else if (cash <= 100000 && cash > 10001) {
+						coinCap = 500;
+					} else if (cash <= 10000 && cash > 501) {
+						coinCap = 500;
+					} else if (cash <= 500 && cash > 101) {
+						coinCap = 100;
+					} else if (cash <= 100 && cash > 11) {
+						coinCap = 10;
+					} else if (cash <= 10 && cash > 0) {
+						coinCap = 1;
+					}
+					if (coinCap != -1) {
+						if (!positive && cash >= 1000) {
+							coinCap = 1000;
+						} // Yeah, you hear lose sound every 1k.
+						if (positive) {
+							snd = so.create('morecash' + coinCap);
+speech.speak(strings.get('youwin', [cash]));
+						}// Positive
+						else if (!positive) {
+							snd = so.create('lesscash');
+speech.speak(strings.get('youlose', [cash]));
+						}// Negative
+						await utils.sleep(400);
+						if (cash >= coinCap) {
 snd.play();
-cash-=coinCap;
-let count=0;
-for (let i=cash;i>=coinCap; i-=coinCap) {
-time-=15;
-if (time<80) time=80;
-}//for
-for (let i=cash;i>=coinCap; i-=coinCap) {
-count++;
-setTimeout(function() {
+cash -= coinCap;
+let count = 0;
+for (let i = cash; i >= coinCap; i -= coinCap) {
+	time -= 15;
+	if (time < 80) {
+		time = 80;
+	}
+}// For
+for (let i = cash; i >= coinCap; i -= coinCap) {
+	count++;
+setTimeout(() => {
 snd.play();
-},time*count);
-}//for
-so.directory="";
-if (typeof callback!=="undefined") {
-setTimeout(function() {
+}, time * count);
+}// For
+so.directory = '';
+if (typeof callback !== 'undefined') {
+setTimeout(() => {
 callback();
-},time*(count+4));
-}//if callback undefined
-}//if greater than coin cap
-		}//coinCap -1
-		else {
-if (typeof callback!=="undefined") {
+}, time * (count + 4));
+}// If callback undefined
+						}// If greater than coin cap
+					}// CoinCap -1
+					else {
+						if (typeof callback !== 'undefined') {
 callback();
-}//callback undefined
-		}//else
-				}//function
-				export async function buySafeguards() {
-				if (typeof data.save.pack!=="undefined") {
-let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
-if (!answer) {
+						}// Callback undefined
+					}// Else
+}// Function
+export async function buySafeguards() {
+	if (typeof data.save.pack !== 'undefined') {
+		const answer = await questionSync('killSave', [data.save.pack, data.save.level]);
+		if (!answer) {
 st.setState(2);
 return;
-}
-data.save={}; save();
-}
-				if (typeof data.safeguards==="undefined") data.safeguards=0;
-				let cash=data.beatcoins;
-				if (cash>100000) cash=100000;
-				let price=700;
-				let max=0;
-				let buying=0;
-				if (cash<price) {
-let error=new ScrollingText(strings.get("noGuardCash",[price,data.beatcoins]),"\n",function() {
+		}
+		data.save = {}; save();
+	}
+	if (typeof data.safeguards === 'undefined') {
+		data.safeguards = 0;
+	}
+	let cash = data.beatcoins;
+	if (cash > 100000) {
+		cash = 100000;
+	}
+	const price = 700;
+	let max = 0;
+	let buying = 0;
+	if (cash < price) {
+		const error = new ScrollingText(strings.get('noGuardCash', [price, data.beatcoins]), '\n', (() => {
 				st.setState(2);
-				});
-				}
-				else {
-				for (let i=cash;i>=price;i-=price) {
-				max++;
-				}
-				if (max>0) {
-				//menu
-				const items=new Array();
-let slider=new SliderItem(0,strings.get("safequestion",[price,data.beatcoins,max]),1,max,Math.floor(max/2));
+		}));
+	} else {
+		for (let i = cash; i >= price; i -= price) {
+			max++;
+		}
+		if (max > 0) {
+			// Menu
+			const items = new Array();
+			const slider = new SliderItem(0, strings.get('safequestion', [price, data.beatcoins, max]), 1, max, Math.floor(max / 2));
 items.push(slider);
-			items.push(new MenuItem(1,strings.get("buy",)));
-		items.push(new MenuItem(2,strings.get("mBack",)));
-				
+			items.push(new MenuItem(1, strings.get('buy',)));
+		items.push(new MenuItem(2, strings.get('mBack',)));
+
 		so.directory = './sounds/';
-			let dm=new Menu(strings.get("mSafeSelect"),items);
-						so.directory = '';
-		dm.run(s=>{
-		//console.log(s.items);
-								so.directory = './sounds/';
-															buying=s.items[0].value;
+		const dm = new Menu(strings.get('mSafeSelect'), items);
+		so.directory = '';
+		dm.run(s => {
+		// Console.log(s.items);
+			so.directory = './sounds/';
+			buying = s.items[0].value;
 																																													dm.destroy();
-if (s.selected==2) {
+																																													if (s.selected == 2) {
 							st.setState(2);
-               }
-																					else {
-																					data.safeguards+=buying;
+																																													} else {
+																																														data.safeguards += buying;
 							save();
-let snd=so.create("safebuy")
-snd.sound.once("end",function() {
+							const snd = so.create('safebuy');
+snd.sound.once('end', () => {
 st.setState(2);
 });
-							addCash(0,buying*price,function(){
+							addCash(0, buying * price, () => {
 							snd.play();
 							});
-}							
-});
-}
-else {
+																																													}
+		});
+		} else {
 st.setState(2);
+		}
+	}
 }
-				}
-				}
-				export async function minigames() {
-				if (typeof data.save.pack!=="undefined") {
-let answer=await questionSync("killSave",[data.save.pack,data.save.level]);
-if (!answer) {
+export async function minigames() {
+	if (typeof data.save.pack !== 'undefined') {
+		const answer = await questionSync('killSave', [data.save.pack, data.save.level]);
+		if (!answer) {
 st.setState(2);
 return;
-}
-data.save={}; save();
-}
-								if (typeof data.minis==="undefined") {
-				data.minis={}
+		}
+		data.save = {}; save();
+	}
+	if (typeof data.minis === 'undefined') {
+		data.minis = {};
 				save();
-				}
-				let items=[];
-				let str="";
-				let counter=-1;
-				let name="";
-				for (var i in minis) {
-				if (minis.hasOwnProperty(i)) {
-								str="";
-				counter++;
-				str+=strings.get(i)+", ";
-				if (typeof data.minis[i]==="undefined") {
-				str+=strings.get("cost")+": "+minis[i];
-				}//type undefined
-				else {
-				str+=strings.get("unlocked");
-				}
-				items.push(new MenuItem(i,str));
+	}
+	const items = [];
+	let str = '';
+	let counter = -1;
+	let name = '';
+	for (const i in minis) {
+		if (minis.hasOwnProperty(i)) {
+			str = '';
+			counter++;
+			str += strings.get(i) + ', ';
+			if (typeof data.minis[i] === 'undefined') {
+				str += strings.get('cost') + ': ' + minis[i];
+			}// Type undefined
+			else {
+				str += strings.get('unlocked');
+			}
+				items.push(new MenuItem(i, str));
 				console.log(str);
-				}//own property
-				}//for
-				items.push(new MenuItem("-1",strings.get("mBack")));
-				so.directory="./sounds/";
-				let mm=new Menu(strings.get("sGames"),items,so.create("minimusic"));
-				mm.run(function(s) {
+		}// Own property
+	}// For
+				items.push(new MenuItem('-1', strings.get('mBack')));
+				so.directory = './sounds/';
+				const mm = new Menu(strings.get('sGames'), items, so.create('minimusic'));
+				mm.run(s => {
 				mm.destroy();
-				if (s.selected=="-1") {
+				if (s.selected == '-1') {
 				st.setState(2);
 				return;
-								}
-								else {
-								name=s.selected;
-								if (typeof data.minis[name]==="undefined") {
-								if (data.beatcoins>=minis[name]) {
-								question("buygame",[strings.get(name),minis[name]],function(answer) {
-								if (!answer) {
+				}
+
+				name = s.selected;
+				if (typeof data.minis[name] === 'undefined') {
+					if (data.beatcoins >= minis[name]) {
+								question('buygame', [strings.get(name), minis[name]], answer => {
+									if (!answer) {
 								st.setState(2);
-								return;
-								}
-								else {
-								addCash(0,minis[name],function() {
-								data.minis[name]=true;
+									} else {
+								addCash(0, minis[name], () => {
+									data.minis[name] = true;
 								save();
 								runGame(name);
-																});
-								}
 								});
-								}
-								else {
-								new ScrollingText(strings.get("nogame",[minis[name],data.beatcoins]),"\n",function() {
+									}
+								});
+					} else {
+						new ScrollingText(strings.get('nogame', [minis[name], data.beatcoins]), '\n', (() => {
 								st.setState(2);
-								});
-								}
-								}
-								else {
+						}));
+					}
+				} else {
 								runGame(name);
-								}//it is unlocked
-								}//else
+				}// It is unlocked
+					// else
 				});
-				}//function
-				export function runGame(name) {
-				if (name=="slot") {
+}// Function
+export function runGame(name) {
+	if (name == 'slot') {
 				playSlots();
-				}
-				else if (name=="code") {
+	} else if (name == 'code') {
 				playCode();
-				}
-				else if (name=="highlow") {
+	} else if (name == 'highlow') {
 				playDeck();
-				}
-				else if (name=="double") {playDouble() }
-				else if (name=="football") playFootball();
-								else if (name=="react") playPong();
-																else if (name=="gogame") playGo();
-				else {
+	} else if (name == 'double') {
+playDouble();
+	} else if (name == 'football') {
+playFootball();
+	} else if (name == 'react') {
+playPong();
+	} else if (name == 'gogame') {
+playGo();
+	} else if (name == 'gq') {
+playQuestions();
+	} else {
 				st.setState(2);
-				}
-																				}
-																				
-																				//tutorials
-																				export function minituts() {
-				if (typeof data.minis==="undefined") {
-				data.minis={}
+	}
+}
+
+// Tutorials
+export function minituts() {
+	if (typeof data.minis === 'undefined') {
+		data.minis = {};
 				save();
-				}
-				let items=[];
-				let str="";
-				let counter=-1;
-				let name="";
-				for (var i in minis) {
-				if (minis.hasOwnProperty(i)) {
-								str="";
-				counter++;
-				str+=strings.get(i)+", ";
-				items.push(new MenuItem(i,str));
+	}
+	const items = [];
+	let str = '';
+	let counter = -1;
+	const name = '';
+	for (const i in minis) {
+		if (minis.hasOwnProperty(i)) {
+			str = '';
+			counter++;
+			str += strings.get(i) + ', ';
+				items.push(new MenuItem(i, str));
 				console.log(str);
-				}//own property
-				}//for
-				items.push(new MenuItem("-1",strings.get("mBack")));
-				so.directory="./sounds/";
-				let mm=new Menu(strings.get("sTuts"),items,so.create("minitut",true));
-				mm.run(function(s) {
+		}// Own property
+	}// For
+				items.push(new MenuItem('-1', strings.get('mBack')));
+				so.directory = './sounds/';
+				const mm = new Menu(strings.get('sTuts'), items, so.create('minitut', true));
+				mm.run(s => {
 				mm.destroy();
-				if (s.selected=="-1") {
+				if (s.selected == '-1') {
 				st.setState(2);
 				return;
-								}
-								else {
-								runTut(s.selected);
-								}
-				});
-				
 				}
-				function runTut(name) {
-new ScrollingText(strings.get("tut"+name),"\n",function() {
+
+								runTut(s.selected);
+				});
+}
+function runTut(name) {
+	new ScrollingText(strings.get('tut' + name), '\n', (() => {
 st.setState(2);
-});
-			}
-			export function safeget(amount,callback) {
-			if (amount>0) {
-			data.safeguards+=amount;
+	}));
+}
+export function safeget(amount, callback) {
+	if (amount > 0) {
+		data.safeguards += amount;
 			save();
-			new ScrollingText(strings.get("safeget",[amount]),"\n",function() {
+			new ScrollingText(strings.get('safeget', [amount]), '\n', (() => {
 			callback();
-			});
-			}
-			else {
+			}));
+	} else {
 			callback();
-			}
-			}
-			export async function editPack(path) {
-			if (typeof path==="undefined" || path=="") {
+	}
+}
+export async function editPack(path) {
+	if (typeof path === 'undefined' || path == '') {
 			st.setState(2);
 			return;
-			}
-			await utils.sleep(1000);
+	}
+	await utils.sleep(1000);
 			console.log(path);
-						path+="/"
-						const fs=require('fs');
-						const checkFiles=["a1","a2","a3","a4","a5","o2","o3","o4","o5","1music","2music","3music","fail","name","loop","select","win"];
-			const optionalFiles=["boot","credits","nlevel","pre1","a6","o6","a7","o7","o8","a8","a9","o9"]
-									let str="";
-						
-			checkFiles.forEach(function(i,index) {
-			if (!fs.existsSync(path+i+".ogg")) {
-if (str=="") str=strings.get("missingFiles");
-			str+="\n"+i+".ogg: "+strings.get("f"+i);
-			}
+			path += '/';
+			const fs = require('fs');
+			const checkFiles = ['a1', 'a2', 'a3', 'a4', 'a5', 'o2', 'o3', 'o4', 'o5', '1music', '2music', '3music', 'fail', 'name', 'loop', 'select', 'win'];
+			const optionalFiles = ['boot', 'credits', 'nlevel', 'pre1', 'a6', 'o6', 'a7', 'o7', 'o8', 'a8', 'a9', 'o9'];
+			let str = '';
+
+			checkFiles.forEach((i, index) => {
+				if (!fs.existsSync(path + i + '.ogg')) {
+					if (str == '') {
+						str = strings.get('missingFiles');
+					}
+					str += '\n' + i + '.ogg: ' + strings.get('f' + i);
+				}
 			});
-			if (str!="") {
-			new ScrollingText(str,"\n",function() {
+			if (str != '') {
+				new ScrollingText(str, '\n', (() => {
 			st.setState(2);
-			});
-			return;
+				}));
+				return;
 			}
-												str="";
-			optionalFiles.forEach(function(i,index) {
-			if (!fs.existsSync(path+i+".ogg")) {
-			if (str=="") str=strings.get("missingOptional");
-			str+="\n"+i+".ogg: "+strings.get("f"+i);
-			}
+			str = '';
+			optionalFiles.forEach((i, index) => {
+				if (!fs.existsSync(path + i + '.ogg')) {
+					if (str == '') {
+						str = strings.get('missingOptional');
+					}
+					str += '\n' + i + '.ogg: ' + strings.get('f' + i);
+				}
 			});
-			if (str!="") {
-			new ScrollingText(str,"\n",function() {
+			if (str != '') {
+				new ScrollingText(str, '\n', (() => {
 			editPackDefinite(path);
-			});
-			}
-			else {
+				}));
+			} else {
 			editPackDefinite(path);
 			}
-			}
-			async function editPackDefinite(path) {
-			const fs=require('fs');
-			so.directory=path;
-						let levels=3;
-			let stop=false;
-			while (!stop) {
-			if (fs.existsSync(path+levels+"music.ogg")) {
+}
+async function editPackDefinite(path) {
+	const fs = require('fs');
+	so.directory = path;
+	let levels = 3;
+	let stop = false;
+	while (!stop) {
+		if (fs.existsSync(path + levels + 'music.ogg')) {
 			levels++;
-			}
-			else {
-			levels--;
-			stop=true;
-			}
-			}
-			console.log("music levels"+levels);
-			let fileLevels=[];
-			if (fs.existsSync(path+'bpm.txt')) {
-let fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
-		fileLevels=fileData.split(',');
-						if (fileLevels[fileLevels.length-1]=="") {
-			fileLevels.splice(fileLevels.length-1,1);
-					}
 		} else {
-				fileLevels.push("0");
-					}
-			let str="";
-			for (let i=0;i<fileLevels.length;i++) {
-			str+=fileLevels[i]+",";
+			levels--;
+			stop = true;
+		}
+	}
+			console.log('music levels' + levels);
+			let fileLevels = [];
+			if (fs.existsSync(path + 'bpm.txt')) {
+				const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
+				fileLevels = fileData.split(',');
+				if (fileLevels[fileLevels.length - 1] == '') {
+			fileLevels.splice(fileLevels.length - 1, 1);
+				}
+			} else {
+				fileLevels.push('0');
+			}
+			let str = '';
+			for (let i = 0; i < fileLevels.length; i++) {
+				str += fileLevels[i] + ',';
 			}
 			console.log(str);
-						so.directory="./sounds/"
-			console.log("levels"+fileLevels.length);
-			let items=[];
-items.push(new MenuItem(-2,strings.get("mPackTut")));
-items.push(new MenuItem(0,strings.get("startOver")));
-let continuing=false;
-if (levels>fileLevels.length-1) {
-items.push(new MenuItem(-3,strings.get("contPack",[fileLevels.length])));
+			so.directory = './sounds/';
+			console.log('levels' + fileLevels.length);
+			const items = [];
+items.push(new MenuItem(-2, strings.get('mPackTut')));
+items.push(new MenuItem(0, strings.get('startOver')));
+let continuing = false;
+if (levels > fileLevels.length - 1) {
+items.push(new MenuItem(-3, strings.get('contPack', [fileLevels.length])));
 }
-for (let i=1;i<fileLevels.length;i++) {
-items.push(new MenuItem(i,strings.get("level",[i])));
+for (let i = 1; i < fileLevels.length; i++) {
+items.push(new MenuItem(i, strings.get('level', [i])));
 }
-items.push(new MenuItem(-1,strings.get("mBack")));
-let start=-1;
+items.push(new MenuItem(-1, strings.get('mBack')));
+let start = -1;
 
-let limit=levels;
-let mm=new Menu(strings.get("mSelectEdit"),items);
-mm.run(async s=> {
-start=s.selected;
+let limit = levels;
+const mm = new Menu(strings.get('mSelectEdit'), items);
+mm.run(async s => {
+	start = s.selected;
 mm.destroy();
-if (start==-1) {
+if (start == -1) {
 st.setState(2);
 return;
 }
-if (start==-2) {
-new ScrollingText(strings.get("packtut"),"\n",()=>{
+if (start == -2) {
+	new ScrollingText(strings.get('packtut'), '\n', () => {
 editPackDefinite(path);
-});//tutorial
-return;
+	});// Tutorial
+	return;
 }
-if (start==-3) {
-continuing=true;
-start=fileLevels.length;
-limit=levels;
+if (start == -3) {
+	continuing = true;
+	start = fileLevels.length;
+	limit = levels;
 }
-if (start>0 && !continuing) limit=start;
-if (start==0) start++;
-let timer=new OldTimer();
-let pos=so.create("positive");
-let pool=new SoundHandler();
-let arr=[];
-let inp=new KeyboardInput();
+if (start > 0 && !continuing) {
+	limit = start;
+}
+if (start == 0) {
+	start++;
+}
+const timer = new OldTimer();
+const pos = so.create('positive');
+const pool = new SoundHandler();
+let arr = [];
+const inp = new KeyboardInput();
 inp.init();
-let space=so.create("pbeep",true);
-so.directory=path;
+const space = so.create('pbeep', true);
+so.directory = path;
 let music;
-let mCounter=0;
-let escaping=false;
-for (let i=start;i<=limit;i++) {
-mCounter=i;
-arr=[];
+let mCounter = 0;
+let escaping = false;
+for (let i = start; i <= limit; i++) {
+	mCounter = i;
+	arr = [];
 timer.restart();
-if (typeof music!=="undefined") music.stop();
-music=so.create(i+"music");
-speech.speak(strings.get("level",[i]));
-music.loop=true;
-music.volume=0.5;
-music.play();
-while (arr.length<10 && !escaping) {
-await utils.sleep(5);
-if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(KeyEvent.DOM_VK_Q)) {
-i=limit+1;
-escaping=true;
-break;
+if (typeof music !== 'undefined') {
+music.stop();
 }
-if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
+music = so.create(i + 'music');
+speech.speak(strings.get('level', [i]));
+music.loop = true;
+music.volume = 0.5;
+music.play();
+while (arr.length < 10 && !escaping) {
+	await utils.sleep(5);
+	if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(KeyEvent.DOM_VK_Q)) {
+		i = limit + 1;
+		escaping = true;
+		break;
+	}
+	if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
 arr.push(timer.elapsed);
 timer.restart();
 space.play();
 speech.speak(arr.length);
-}//if
-}//while
-console.log("avg"+utils.averageInt(arr,1));
-if (!escaping) fileLevels[i]=utils.averageInt(arr,1);
-let cont=false;
+	}// If
+}// While
+console.log('avg' + utils.averageInt(arr, 1));
+if (!escaping) {
+	fileLevels[i] = utils.averageInt(arr, 1);
+}
+let cont = false;
 music.seek(0);
 timer.restart();
 while (!cont && !escaping) {
-await utils.sleep(5);
-if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(KeyEvent.DOM_VK_Q)) {
-i=limit+1;
-cont=true;
-break;
-}
-if (timer.elapsed>=fileLevels[i]) {
+	await utils.sleep(5);
+	if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE) || inp.isJustPressed(KeyEvent.DOM_VK_Q)) {
+		i = limit + 1;
+		cont = true;
+		break;
+	}
+	if (timer.elapsed >= fileLevels[i]) {
 timer.restart();
 space.play();
-}//timer elapsed
-if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
-arr=[];
-break;
-}
-if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
-arr=[];
-i--;
-break;
-}
-}//second while
-}//limit for
-so.directory="./sounds/";
+	}// Timer elapsed
+	if (inp.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+		arr = [];
+		break;
+	}
+	if (inp.isJustPressed(KeyEvent.DOM_VK_SPACE)) {
+		arr = [];
+		i--;
+		break;
+	}
+}// Second while
+}// Limit for
+so.directory = './sounds/';
 pos.play();
 music.stop();
-//write shit
-if (fs.existsSync(path+"bpm.txt")) fs.unlinkSync(path+"bpm.txt");
-let str="";
-for (let i=0;i<fileLevels.length;i++) {
-if (fileLevels[i]!="") {
-str+=fileLevels[i]+",";
+// Write shit
+if (fs.existsSync(path + 'bpm.txt')) {
+fs.unlinkSync(path + 'bpm.txt');
 }
+let str = '';
+for (let i = 0; i < fileLevels.length; i++) {
+	if (fileLevels[i] != '') {
+		str += fileLevels[i] + ',';
+	}
 }
-fs.writeFileSync(path+"bpm.txt",str);
-pos.sound.once("end",()=> {
-so.kill(()=> {
+fs.writeFileSync(path + 'bpm.txt', str);
+pos.sound.once('end', () => {
+so.kill(() => {
 st.setState(2);
-});//kill call
+});// Kill call
 });
-});//menu callback
-			}//function
-export async function getAch(name,forcePlay=false) {
-const fs=require('fs');
-if (typeof data.ach==="undefined") data.ach={}
-if (!data.ach[name] || forcePlay) {
-data.ach[name]=name;
+});// Menu callback
+}// Function
+export async function getAch(name, forcePlay = false) {
+	const fs = require('fs');
+	if (typeof data.ach === 'undefined') {
+		data.ach = {};
+	}
+	if (!data.ach[name] || forcePlay) {
+		data.ach[name] = name;
 save();
 let snd;
-let old=so.directory;
-so.directory="./sounds/";
-//if (fs.existsSync("sounds/"+lang+"/ach"+name+".ogg")) {
-snd=so.create(lang+"/ach"+name);
-//}
-/*else if (fs.existsSync("sounds/"+"1"+"/ach"+name+".ogg")) {
+const old = so.directory;
+so.directory = './sounds/';
+// If (fs.existsSync("sounds/"+lang+"/ach"+name+".ogg")) {
+snd = so.create(lang + '/ach' + name);
+// }
+/* else if (fs.existsSync("sounds/"+"1"+"/ach"+name+".ogg")) {
 snd=so.create("1"+"/ach"+name);
 }
 else {
 console.log("sounds/"+lang+"/ach"+name+".ogg");
 }
 */
-if (typeof snd!=="undefined") await snd.playSync();
-if (!forcePlay) await new ScrollingText(strings.get("newach",[strings.get("ach"+name)]));
-so.directory=old;
-return true;
+if (typeof snd !== 'undefined') {
+	await snd.playSync();
 }
-return false;
+if (!forcePlay) {
+	await new ScrollingText(strings.get('newach', [strings.get('ach' + name)]));
+}
+so.directory = old;
+return true;
+	}
+	return false;
 }
 export async function browseAch() {
-if (typeof data.ach==="undefined") data.ach={}
-if (utils.objSize(data.ach)<1) {
-await new ScrollingText(strings.get("noach"));
+	if (typeof data.ach === 'undefined') {
+		data.ach = {};
+	}
+	if (utils.objSize(data.ach) < 1) {
+		await new ScrollingText(strings.get('noach'));
 st.setState(2);
 return;
-}
-let items=[];
-for (let i in data.ach) {
-items.push(new MenuItem(data.ach[i],strings.get("ach"+data.ach[i])));
-}
-items.push(new MenuItem(-1,strings.get("mAchTuts")));
-items.push(new MenuItem(0,strings.get("mBack")));
-let acm=new Menu(strings.get("achMenu"),items,so.create("ach_music"));
-let exit=false;
+	}
+	const items = [];
+	for (const i in data.ach) {
+items.push(new MenuItem(data.ach[i], strings.get('ach' + data.ach[i])));
+	}
+items.push(new MenuItem(-1, strings.get('mAchTuts')));
+items.push(new MenuItem(0, strings.get('mBack')));
+const acm = new Menu(strings.get('achMenu'), items, so.create('ach_music'));
+let exit = false;
 while (!exit) {
-await utils.sleep(8);
-await new Promise((resolve,reject) => {
-acm.run(async s=> {
-if (s.selected==0) {
+	await utils.sleep(8);
+	await new Promise((resolve, reject) => {
+acm.run(async s => {
+	if (s.selected == 0) {
 acm.destroy();
 st.setState(2);
 resolve();
-exit=true;
+exit = true;
 return;
-}
-else if (s.selected==-1) {
-for (let i in achs) {
-if (!data.ach.hasOwnProperty(achs[i])) {
-await new ScrollingText(strings.get("ach"+achs[i])+": "+strings.get("achh"+achs[i]));
-}
-}
+	}
+	if (s.selected == -1) {
+		for (const i in achs) {
+			if (!data.ach.hasOwnProperty(achs[i])) {
+				await new ScrollingText(strings.get('ach' + achs[i]) + ': ' + strings.get('achh' + achs[i]));
+			}
+		}
 acm.destroy();
 st.setState(2);
 resolve();
-exit=true;
+exit = true;
 return;
-}
-await getAch(s.selected,true);
+	}
+	await getAch(s.selected, true);
 resolve();
 });
-});
+	});
 }
 }
