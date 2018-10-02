@@ -1,7 +1,7 @@
 export var gameID = 'beat';
-export var version = '3.0';
+let changedLang=false;
+export var version ="3.5.0";
 export var version2 = '';
-
 export var lang = 0;
 export var ttsVoice;
 export var ttsRate = 1;
@@ -32,7 +32,7 @@ import {SliderItem, MenuItem} from './menuItem';
 import {Menu} from './menu';
 import walk from 'fs-walk';
 import os from 'os';
-import {mainMenu} from './menuHandler';
+import {changeDir,mainMenu} from './menuHandler';
 import {ScrollingText} from './scrollingText';
 import {strings} from './strings';
 import {SoundHandler} from './soundHandler';
@@ -48,8 +48,9 @@ import {KeyboardInput} from './input.js';
 
 export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
+export var packDirectory = os.homedir() + '/beatpacks/';
 export var data = '';
-export var packdir = os.homedir() + '/beatpacks/' + pack + '/';
+export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
 	const prom = new Promise((resolve, reject) => {
@@ -128,7 +129,7 @@ return;
 		data.save = {}; save();
 	}
 	const fs = require('fs');
-	if (!fs.existsSync(os.homedir() + '/beatpacks/hashes.db')) {
+	if (!fs.existsSync(packDirectory+'hashes.db')) {
 		var error = 0;
 		if (lang == 1) {
 			error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a few seconds...', '\n', (() => {
@@ -143,7 +144,7 @@ return;
 		return;
 	}
 	try {
-		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(os.homedir() + '/beatpacks/hashes.db')));
+		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'hashes.db')));
 	} catch (err) {
 		var error = 0;
 		if (lang == 1) {
@@ -163,7 +164,7 @@ return;
 	let browsePosition = -1;
 	if (browsing > 0) {
 packs.forEach((i, v) => {
-	if (fs.existsSync(os.homedir() + '/beatpacks/' + i.name + '/bpm.txt')) {
+	if (fs.existsSync(packDirectory+i.name+'/bpm.txt')) {
 		if (browsing == 1) {
 			if (typeof data.unlocks[i.name] === 'undefined') {
 browseArray.push(i);
@@ -252,7 +253,7 @@ addCash(0, price, () => {
 			average: 0
 		};// Object
 	}// Unlocks undefined
-	packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	packdir = packDirectory + pack + '/';
 	boot = false;
 	credits = true;
 	so.directory = './sounds/';
@@ -280,7 +281,7 @@ st.setState(20);
 					average: 0
 				};// Object
 			}// Unlocks undefined
-			packdir = os.homedir() + '/beatpacks/' + pack + '/';
+			packdir = packDirectory + pack + '/';
 			boot = false;
 			credits = true;
 			so.directory = './sounds/';
@@ -388,7 +389,7 @@ export async function rebuildHashes(silent = false) {
 	let newHash = 0;
 	const packs = new Array();
 	so.directory = '';
-walk.dirsSync(os.homedir() + '/beatpacks', (pb, pf, stat, next) => {
+walk.dirsSync(packdirectory, (pb, pf, stat, next) => {
 	if (!fs.existsSync(pb + '/' + pf + '/bpm.txt')) {
 		corrupts += '\n' + pf;
 		return; // Discard non packs
@@ -416,7 +417,7 @@ packs.push(temp);
 so.directory = './sounds/';
 let write = JSON.stringify(packs);
 write = mangle.encrypt(write);
-fs.writeFileSync(os.homedir() + '/beatpacks/hashes.db', write);
+fs.writeFileSync(packDirectory+'hashes.db', write);
 if (silent) {
 	return packs;
 }
@@ -480,8 +481,49 @@ callback(answer);
 export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
+	if (window.localStorage.getItem("path")!=null || fs.existsSync(window.localStorage.getItem("path"))) {
+		packDirectory=window.localStorage.getItem("path");
+		try {
+			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'save.dat')));
+			lang = data.lang;
+			if (typeof data.rate !== 'undefined') {
+					speech.rate = data.rate;
+				}
+		} catch (err) {
+			await changeLang();
+	}
+	}
+	else {
+		if (!changedLang) {
+await changeLang();
+		}
+	}
+	console.log("lang"+lang);
+		if (window.localStorage.getItem("path")==null || !fs.existsSync(window.localStorage.getItem("path"))) {
+			const answer=await questionSync("directoryQuestion");
+			if (answer) {
+				packDirectory=os.homedir()+"/beatpacks/";
+											packdir =packDirectory + pack + '/';
+											window.localStorage.setItem("path",packDirectory);
+			}//answer
+			if (!answer) {
+				let dir=await changeDir();
+				if (typeof dir !== 'undefined' && path != '') {
+					packDirectory=dir;
+					window.localStorage.setItem("path",packDirectory);
+					packdir =packDirectory + pack + '/';
+					
+				}//directory
+		}					//answer change
+
+		}//storage null
+		else {
+			packDirectory=window.localStorage.getItem("path");
+			packdir =packDirectory + pack + '/';
+		}//get it from the saved path
+
 	try {
-		data = JSON.parse(mangle.decrypt(fs.readFileSync(os.homedir() + '/beatpacks/save.dat')));
+		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'save.dat')));
 	} catch (err) {
 		data = new Player();
 		let introing = true;
@@ -497,6 +539,7 @@ items.push(new MenuItem(counter, strings.strings[i].lang));
 counter++;
 		}
 		const lm = new Menu(str, items);
+		if (!changedLang) {
 		lm.run(s => {
 			lang = s.selected;
 			data.lang = lang;
@@ -506,6 +549,15 @@ counter++;
 			introing = false;
 		}));
 		});
+		}
+		else {
+			data.lang = lang;
+		new ScrollingText(strings.get('intro'), '\n', (async () => {
+			await getAch('intro');
+			introing = false;
+		}));
+
+		}
 		while (introing) {
 			await utils.sleep(10);
 		}
@@ -527,7 +579,7 @@ counter++;
 		boot = true;
 		credits = false;
 	}
-	packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	packdir = packDirectory + pack + '/';
 	actionKeys = data.actionKeys;
 save();
 if (!fs.existsSync(packdir + 'bpm.txt')) {
@@ -541,8 +593,8 @@ downloadPacks(['default']);
 	return;
 }
 if (debug) {
+	localStorage.clear();
 			// Await strings.check(2);
-			playQuestions();
 			return;
 }
 	booter();
@@ -1540,4 +1592,25 @@ resolve();
 });
 	});
 }
+}
+export async function changeLang() {
+await new Promise((resolve,reject)=> {
+		let str = '';
+		for (const i in strings.strings) {
+			str += strings.strings[i].langs + '. ';
+		}
+		const items = [];
+		let counter = 1;
+		for (const i in strings.strings) {
+items.push(new MenuItem(counter, strings.strings[i].lang));
+counter++;
+		}
+		const lm = new Menu(str, items);
+		lm.run(s => {
+			changedLang=true;
+			lm.destroy();
+			lang=s.selected;
+			resolve();
+		});
+	});	
 }

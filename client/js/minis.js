@@ -1,4 +1,4 @@
-import {lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data} from './main';
+import {packDirectory,lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data} from './main';
 
 let gametimer;
 let pongnotify;
@@ -1159,7 +1159,7 @@ for (let i = 0; i < 10; i++) {
 							otherOptions++;
 						}
 					}
-					so.directory = os.homedir() + '/beatpacks/' + this.songs[i].pack + '/';
+					so.directory = packDirectory+ this.songs[i].pack + '/';
 					const sndd = so.create(this.songs[i].level + 'music');
 					sndd.volume = 0.4;
 					sndd.loop = true;

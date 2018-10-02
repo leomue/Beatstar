@@ -1,4 +1,5 @@
 'use strict';
+const {dialog} = require('electron').remote;
 
 const electron = require('electron');
 
@@ -7,7 +8,7 @@ import {utils} from './utilities';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
-import {version, version2, save, data, browseAch, editPack, minituts, minigames, buySafeguards} from './main';
+import {checkPack,packDirectory,version, version2, save, data, browseAch, editPack, minituts, minigames, buySafeguards} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -48,6 +49,7 @@ items.push(new MenuItem(4, strings.get('mDownload')));
 items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level])));
 items.push(new MenuItem(10, strings.get('mGameTuts',)));
 items.push(new MenuItem(1234, strings.get('mLang',)));
+items.push(new MenuItem(69, strings.get('mDir',[packDirectory])));
 items.push(new MenuItem(3, strings.get('mHashes')));
 so.directory = './sounds/';
 const mainMenu = new Menu(strings.get('mainmenu'), items);
@@ -95,8 +97,17 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 			case 8: buySafeguards(); break;
 			case 9: minigames(); break;
 			case 10: minituts(); break;
+			case 69:
+			let dir=await changeDir();
+							console.log(dir);
+			if (typeof dir !== 'undefined' && dir != '') {
+				packDirectory=dir+"/";
+				packdir =packDirectory + pack + '/';
+				window.localStorage.setItem("path",packDirectory);
+			}
+			checkPack();
+				break;
 			case 11:
-				const {dialog} = require('electron').remote;
 				const stuff = dialog.showOpenDialog({
 					title: strings.get('selectPack'),
 					properties: ['openDirectory']
@@ -160,4 +171,14 @@ counter++;
 			st.setState(2);
 		lm.destroy();
 		});	
+}
+export async function changeDir() {
+	await new Promise((resolve,reject)=> {
+				const stuff = dialog.showOpenDialog({
+					title: strings.get('selectPath'),
+					properties: ['openDirectory']
+				}, path => {
+  resolve(path);
+				});
+	});
 }

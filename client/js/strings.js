@@ -8,7 +8,10 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
-			// New English
+			//New English
+			mDir:"Packs folder change (currently %1)",
+			selectPath:"Please select the path where your packs are saved:",
+			directoryQuestion:"Wait a second... are you ok with your beatpacks folder being in your user folder? If not, you will be prompted to select a different directory to store your soundpacks. If you already have packs in your user folder and wish to change it, you will need to do that yourself as the game will not do it for you",
 			mLang:"Change language",
 			gq_end: 'Game over! I hope you had fun. You got %1 right and %2 wrong. Wanna try again?',
 			gq_welcome: 'Welcome to pack quizz!\nAre you ready to find out how much you know about your unlocked soundpacks?',
@@ -300,7 +303,10 @@ You can upload your pack via the website by making a zip file of the pack's fold
 			mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
-		// New Spanish
+//new Spanish
+mDir:"Cambiar carpeta de packs (ahora %1)",
+		selectPath:"Por favor dime la carpeta donde guardaremos los packs",
+		directoryQuestion:"Espera! Está bien que guarde los packs de sonido en la carpeta beatpacks de tu carpeta de usuario? Si no, te pediré que busques otra carpeta para guardar los packs. Si ya tienes packs guardados en la carpeta de usuario y quieres cambiar, deberás moverlos tú ya que el juego no lo hace por sí solo",
 		mLang:"Cambiar Idioma",
 			gq_end: 'Juego terminado! Espero que te hayas divertido. Has adivinado %1 y %2 estaban mal. ¿Quieres intentarlo de nuevo?',
 			gq_welcome: 'Bienvenido a preguntas de packs!\nEstás listo para averiguar cuánto sabes de tus packs desbloqueados?',
