@@ -1,4 +1,5 @@
 export var gameID = 'beat';
+export var newPath="";
 let changedLang=false;
 export var version ="3.5.0";
 export var version2 = '';
@@ -48,8 +49,11 @@ import {KeyboardInput} from './input.js';
 
 export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
-export var packDirectory = os.homedir() + '/beatpacks/';
+let packDirectory = os.homedir() + '/beatpacks/';
+module.exports.packDirectory=packDirectory;
+
 export var data = '';
+module.exports.packdir=packdir;
 export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
@@ -481,7 +485,8 @@ callback(answer);
 export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
-	if (window.localStorage.getItem("path")!=null || fs.existsSync(window.localStorage.getItem("path"))) {
+	if (window.localStorage.getItem("path")!=null && fs.existsSync(window.localStorage.getItem("path"))) {
+		console.log("path set to "+window.localStorage.getItem("path"));
 		packDirectory=window.localStorage.getItem("path");
 		try {
 			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'save.dat')));
@@ -507,8 +512,8 @@ await changeLang();
 											window.localStorage.setItem("path",packDirectory);
 			}//answer
 			if (!answer) {
-				let dir=await changeDir();
-				if (typeof dir !== 'undefined' && path != '') {
+let dir=await changeDir();
+				if (typeof dir !== 'undefined' && dir != '') {
 					packDirectory=dir;
 					window.localStorage.setItem("path",packDirectory);
 					packdir =packDirectory + pack + '/';
@@ -568,6 +573,7 @@ counter++;
 	}
 	pack = data.pack;
 	lang = data.lang;
+	save();
 	if (typeof data.rate !== 'undefined') {
 		speech.rate = data.rate;
 	}
@@ -584,7 +590,7 @@ counter++;
 save();
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	pack = 'default';
-	packdir = os.homedir() + '/beatpacks/' + pack + '/';
+	packdir = packDirectory+ pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	const text = new ScrollingText(strings.get('packError'), '\n', (() => {
@@ -927,12 +933,12 @@ require('async').eachOfLimit(toDownload, threads, (fileUrl, index, next) => {
 }
 export function save() {
 	const fs = require('fs');
-	if (!fs.existsSync(os.homedir() + '/beatpacks')) {
-fs.mkdirSync(os.homedir() + '/beatpacks');
+	if (!fs.existsSync(packDirectory)) {
+fs.mkdirSync(packDirectory);
 	}
 	let write = JSON.stringify(data);
 	write = mangle.encrypt(write);
-fs.writeFileSync(os.homedir() + '/beatpacks/save.dat', write);
+fs.writeFileSync(packDirectory+'save.dat', write);
 }
 export function listenPack() {
 	const fs = require('fs');

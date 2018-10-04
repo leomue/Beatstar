@@ -7,7 +7,7 @@ import {so} from './soundObject.js';
 import {MenuTypes, MenuItem} from './menuItem';
 import {KeyEvent} from './keycodes';
 import {KeyboardInput} from './input';
-
+import {packDirectory} from './main';
 class Menu {
 	constructor(name, menuData, music) {
 		this.menuData = menuData;
