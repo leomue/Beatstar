@@ -4,6 +4,7 @@ let changedLang=false;
 export var version ="3.5.0";
 export var version2 = '';
 export var lang = 0;
+module.exports.lang=lang;
 export var ttsVoice;
 export var ttsRate = 1;
 const achs = [
@@ -48,6 +49,7 @@ export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
 
 export var langs = ['', 'english', 'spanish'];
+module.exports.langs=langs;
 export var pack = 'default';
 let packDirectory = os.homedir() + '/beatpacks/';
 module.exports.packDirectory=packDirectory;
@@ -489,7 +491,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 		console.log("path set to "+window.localStorage.getItem("path"));
 		packDirectory=window.localStorage.getItem("path");
 		try {
-			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'save.dat')));
+			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.dat')));
 			lang = data.lang;
 			if (typeof data.rate !== 'undefined') {
 					speech.rate = data.rate;
@@ -516,7 +518,7 @@ let dir=await changeDir();
 				if (typeof dir !== 'undefined' && dir != '') {
 					packDirectory=dir;
 					window.localStorage.setItem("path",packDirectory);
-					packdir =packDirectory + pack + '/';
+					packdir =packDirectory +"/"+ pack + '/';
 					
 				}//directory
 		}					//answer change
@@ -524,11 +526,11 @@ let dir=await changeDir();
 		}//storage null
 		else {
 			packDirectory=window.localStorage.getItem("path");
-			packdir =packDirectory + pack + '/';
+			packdir =packDirectory +"/" +pack + '/';
 		}//get it from the saved path
 
 	try {
-		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'save.dat')));
+		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.dat')));
 	} catch (err) {
 		data = new Player();
 		let introing = true;
@@ -880,7 +882,7 @@ toDownload.push(i);
 });
 			});
 						 		}// End for loop
-	let dir = os.homedir() + '/beatpacks/';
+	let dir = packDirectory;
 	let url = 'http://oriolgomez.com/beatpacks/';
 	const dlCounter = 0;
 	const dests = [];
@@ -890,7 +892,7 @@ toDownload.push(i);
 		if (i == '') {
 			continue;
 		}
-		dir = os.homedir() + '/beatpacks/';
+		dir = packDirectory;
 		const dirsplit = i.split('/');
 		if (fs.existsSync(dir + i)) {
 																		console.log('unlink' + dir + i);
@@ -899,7 +901,7 @@ toDownload.push(i);
 		if (!fs.existsSync(dir + dirsplit[0])) {
 fs.mkdirSync(dir + dirsplit[0]);
 		}
-		dir = os.homedir() + '/beatpacks/' + i;
+		dir = packDirectory + i;
 		url = 'http://oriolgomez.com/beatpacks/' + i;
 		toDownload[ii] = url;
 dests.push(dir);
@@ -938,7 +940,7 @@ fs.mkdirSync(packDirectory);
 	}
 	let write = JSON.stringify(data);
 	write = mangle.encrypt(write);
-fs.writeFileSync(packDirectory+'save.dat', write);
+fs.writeFileSync(packDirectory+'/save.dat', write);
 }
 export function listenPack() {
 	const fs = require('fs');

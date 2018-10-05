@@ -102,8 +102,8 @@ if (fs.existsSync(packdir + 'select.ogg')) {
 let dir=await changeDir();
 console.log("dir"+dir);
 			if (typeof dir !== 'undefined' && dir != '') {
-				main.packDirectory=dir+"/";
-				main.packdir =main.packDirectory + pack + '/';
+				main.packDirectory=dir;
+				main.packdir =main.packDirectory+"/" + pack + '/';
 				window.localStorage.setItem("path",main.packDirectory);
 			}
 			else {
@@ -169,7 +169,7 @@ counter++;
 		}
 		const lm = new Menu(str, items);
 		lm.run(s => {
-			lang = s.selected;
+			main.lang = s.selected;
 			data.lang = lang;
 			save();
 			st.setState(2);
