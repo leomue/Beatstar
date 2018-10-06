@@ -135,7 +135,7 @@ return;
 		data.save = {}; save();
 	}
 	const fs = require('fs');
-	if (!fs.existsSync(packDirectory+'hashes.db')) {
+	if (!fs.existsSync(packDirectory+'/hashes.db')) {
 		var error = 0;
 		if (lang == 1) {
 			error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a few seconds...', '\n', (() => {
@@ -259,7 +259,7 @@ addCash(0, price, () => {
 			average: 0
 		};// Object
 	}// Unlocks undefined
-	packdir = packDirectory + pack + '/';
+	packdir = packDirectory + "/"+pack + "/";
 	boot = false;
 	credits = true;
 	so.directory = './sounds/';
@@ -287,7 +287,7 @@ st.setState(20);
 					average: 0
 				};// Object
 			}// Unlocks undefined
-			packdir = packDirectory + pack + '/';
+			packdir = packDirectory +"/"+ pack + '/';
 			boot = false;
 			credits = true;
 			so.directory = './sounds/';
@@ -395,7 +395,7 @@ export async function rebuildHashes(silent = false) {
 	let newHash = 0;
 	const packs = new Array();
 	so.directory = '';
-walk.dirsSync(packdirectory, (pb, pf, stat, next) => {
+walk.dirsSync(packDirectory, (pb, pf, stat, next) => {
 	if (!fs.existsSync(pb + '/' + pf + '/bpm.txt')) {
 		corrupts += '\n' + pf;
 		return; // Discard non packs
@@ -423,7 +423,7 @@ packs.push(temp);
 so.directory = './sounds/';
 let write = JSON.stringify(packs);
 write = mangle.encrypt(write);
-fs.writeFileSync(packDirectory+'hashes.db', write);
+fs.writeFileSync(packDirectory+'/hashes.db', write);
 if (silent) {
 	return packs;
 }
@@ -587,12 +587,12 @@ counter++;
 		boot = true;
 		credits = false;
 	}
-	packdir = packDirectory + pack + '/';
+	packdir = packDirectory +"/"+ pack + '/';
 	actionKeys = data.actionKeys;
 save();
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	pack = 'default';
-	packdir = packDirectory+ pack + '/';
+	packdir = packDirectory+ '/'+pack + '/';
 }
 if (!fs.existsSync(packdir + 'bpm.txt')) {
 	const text = new ScrollingText(strings.get('packError'), '\n', (() => {
@@ -882,7 +882,7 @@ toDownload.push(i);
 });
 			});
 						 		}// End for loop
-	let dir = packDirectory;
+	let dir = packDirectory+"/";
 	let url = 'http://oriolgomez.com/beatpacks/';
 	const dlCounter = 0;
 	const dests = [];
@@ -892,7 +892,7 @@ toDownload.push(i);
 		if (i == '') {
 			continue;
 		}
-		dir = packDirectory;
+		dir = packDirectory+"/";
 		const dirsplit = i.split('/');
 		if (fs.existsSync(dir + i)) {
 																		console.log('unlink' + dir + i);
@@ -901,7 +901,7 @@ toDownload.push(i);
 		if (!fs.existsSync(dir + dirsplit[0])) {
 fs.mkdirSync(dir + dirsplit[0]);
 		}
-		dir = packDirectory + i;
+		dir = packDirectory +"/"+ i;
 		url = 'http://oriolgomez.com/beatpacks/' + i;
 		toDownload[ii] = url;
 dests.push(dir);
