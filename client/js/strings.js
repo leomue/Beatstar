@@ -9,6 +9,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			noFindFolder:"I can't find your packs folder in %1, you will now be prompted to choose where it is.",
 			mDir:"Packs folder change (currently %1)",
 			selectPath:"Please select the path where your packs are saved:",
 			directoryQuestion:"Wait a second... are you ok with your beatpacks folder being in your user folder? If not, you will be prompted to select a different directory to store your soundpacks. If you already have packs in your user folder and wish to change it, you will need to do that yourself as the game will not do it for you",
@@ -304,6 +305,7 @@ You can upload your pack via the website by making a zip file of the pack's fold
 		};
 		this.strings[2] = {
 //new Spanish
+noFindFolder:"No puedo encontrar tu carpeta de packs en %1, por favor dime dónde está en el cuadro que se te mostrará ahora.",
 mDir:"Cambiar carpeta de packs (ahora %1)",
 		selectPath:"Por favor dime la carpeta donde guardaremos los packs",
 		directoryQuestion:"Espera! Está bien que guarde los packs de sonido en la carpeta beatpacks de tu carpeta de usuario? Si no, te pediré que busques otra carpeta para guardar los packs. Si ya tienes packs guardados en la carpeta de usuario y quieres cambiar, deberás moverlos tú ya que el juego no lo hace por sí solo",

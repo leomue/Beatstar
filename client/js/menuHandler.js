@@ -20,6 +20,7 @@ import {KeyEvent} from './keycodes';
 import {Menu} from './menu';
 
 export async function mainMenu() {
+console.log("menu thinks pack dir is "+main.packDirectory);
 	const fs = require('fs');
 	const items = new Array();
 			items.push(new MenuItem(0, strings.get('mStart')));

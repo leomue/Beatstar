@@ -4,7 +4,7 @@ let changedLang=false;
 export var version ="3.5.0";
 export var version2 = '';
 export var lang = 0;
-module.exports.lang=lang;
+
 export var ttsVoice;
 export var ttsRate = 1;
 const achs = [
@@ -49,13 +49,11 @@ export var mangle = new Cryptr('sdf jkl wer uio');
 import {KeyboardInput} from './input.js';
 
 export var langs = ['', 'english', 'spanish'];
-module.exports.langs=langs;
-export var pack = 'default';
-let packDirectory = os.homedir() + '/beatpacks/';
-module.exports.packDirectory=packDirectory;
 
+export var pack = 'default';
+export let packDirectory = os.homedir() + '/beatpacks';
 export var data = '';
-module.exports.packdir=packdir;
+
 export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
@@ -135,12 +133,14 @@ return;
 		data.save = {}; save();
 	}
 	const fs = require('fs');
-	if (!fs.existsSync(packDirectory+'/hashes.db')) {
-		var error = 0;
+	const path=require('path');
+	console.log(path.join(packDirectory,'hashes.db'))
+		if (!fs.existsSync(path.join(packDirectory,'hashes.db'))) {
+		var error = "";
 		if (lang == 1) {
 			error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a few seconds...', '\n', (() => {
  rebuildHashes();
-			}));
+ 			}));
 		}
 		if (lang == 2) {
 			error = new ScrollingText('Para continuar, debo reconstruir la carpeta de packs. Esto puede tardar unos segundos...', '\n', (() => {
@@ -150,7 +150,7 @@ return;
 		return;
 	}
 	try {
-		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'hashes.db')));
+		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/hashes.db')));
 	} catch (err) {
 		var error = 0;
 		if (lang == 1) {
@@ -170,7 +170,7 @@ return;
 	let browsePosition = -1;
 	if (browsing > 0) {
 packs.forEach((i, v) => {
-	if (fs.existsSync(packDirectory+i.name+'/bpm.txt')) {
+	if (fs.existsSync(packDirectory+'/'+i.name+'/bpm.txt')) {
 		if (browsing == 1) {
 			if (typeof data.unlocks[i.name] === 'undefined') {
 browseArray.push(i);
@@ -487,6 +487,18 @@ callback(answer);
 export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
+	
+	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
+	await changeLang();
+	await new ScrollingText(strings.get("noFindFolder",[window.localStorage.getItem("path")]));
+	let dir=await changeDir();
+				if (typeof dir !== 'undefined' && dir != '') {
+					packDirectory=dir;
+					window.localStorage.setItem("path",packDirectory);
+					packdir =packDirectory +"/"+ pack + '/';
+				
+				}//directory
+}
 	if (window.localStorage.getItem("path")!=null && fs.existsSync(window.localStorage.getItem("path"))) {
 		console.log("path set to "+window.localStorage.getItem("path"));
 		packDirectory=window.localStorage.getItem("path");
@@ -509,8 +521,8 @@ await changeLang();
 		if (window.localStorage.getItem("path")==null || !fs.existsSync(window.localStorage.getItem("path"))) {
 			const answer=await questionSync("directoryQuestion");
 			if (answer) {
-				packDirectory=os.homedir()+"/beatpacks/";
-											packdir =packDirectory + pack + '/';
+				packDirectory=os.homedir()+"/beatpacks";
+											packdir =packDirectory +'/'+ pack + '/';
 											window.localStorage.setItem("path",packDirectory);
 			}//answer
 			if (!answer) {
@@ -1622,3 +1634,7 @@ counter++;
 		});
 	});	
 }
+module.exports.lang=lang;
+module.exports.langs=langs;
+module.exports.packDirectory=packDirectory;
+module.exports.packdir=packdir;

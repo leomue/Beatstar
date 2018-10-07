@@ -104,8 +104,7 @@ class Menu {
 				}
 			}
 			for (let i = 0; i < this.menuData.length; i++) {
-		console.log('ran second loop');
-		if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
+				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
 			this.cursor = i;
 		this.menuData[this.cursor].speak();
 		this.first = false;
