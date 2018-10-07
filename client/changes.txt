@@ -1,4 +1,5 @@
 Version 3.5 October 2018
+You can now relocate your beatstar packs library to an external drive, yay!
 TTS Speech now stops when an option in the main menu is selected.
 Fixed a bad problem with playSync
 Added new minigame pack quizz.
