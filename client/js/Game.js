@@ -118,8 +118,7 @@ so.enqueue(packdir + 'fail');
     					this.timer = Timer({update(dt) {
  that.update(dt);
 		}, render() {
- that.render();
-		}}, this.bpms[this.level] / 1000.0);
+ 		}}, this.bpms[this.level] / 1000.0);
     					so.setQueueCallback(() => {
     					so.directory = './sounds/';
     					that.setupLevel();
@@ -155,11 +154,11 @@ if (data.safeguards <= 3) {
 		this.currentAction++;
 		// Action and level checks go here
 		if (this.currentAction >= this.numberOfActions) {
+			this.input.justPressedEventCallback=null;
 			so.directory = '';
 	so.destroy(packdir + this.level + 'music');
 		so.destroy(packdir + 'pre' + this.level);
 		so.directory = './sounds/';
-
 		this.level++;
 this.timer.stop();
 this.setupLevel();
@@ -212,6 +211,7 @@ this.pool.playStatic(packdir + 'o' + this.action, 0);
 				this.timer.stop();
 				const snd = this.music;
 				so.directory = '';
+				this.input.justPressedEventCallback=null;
 				const failsound = this.pool.playStatic(packdir + 'fail', 0);
 				so.directory = './sounds/';
 				for (let i = snd.playbackRate; i > 0; i -= 0.05) {
@@ -259,6 +259,7 @@ that.doScore();
 	}
 
 	async quit() {
+		this.input.justPressedEventCallback=null;
 						this.timer.stop();
 						const snd = this.music;
 						for (let i = snd.playbackRate; i > 0; i -= 0.045) {
@@ -322,55 +323,53 @@ this.doScore();
 });
 	}
 
-	render() {
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_Q)) {
+	render(key) {
+		if (key==KeyEvent.DOM_VK_Q) {
 	this.quit();
 	return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_C)) {
+		if (key==KeyEvent.DOM_VK_C) {
 		speech.speak(this.cash);
+		return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_G)) {
+		if (key==KeyEvent.DOM_VK_G) {
 		speech.speak(data.safeguards);
+		return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_L)) {
+		if (key==KeyEvent.DOM_VK_L) {
 		speech.speak(this.level);
+		return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_S)) {
+		if (key==KeyEvent.DOM_VK_S) {
 	this.save();
 	return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
+		if (key==KeyEvent.DOM_VK_P) {
 		this.pause();
 		return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_PAGE_UP)) {
+		if (key==KeyEvent.DOM_VK_PAGE_UP) {
 			this.volume += 0.08;
 			this.music.volume = this.volume;
 			return;
 		}
-		if (this.input.isJustPressed(KeyEvent.DOM_VK_PAGE_DOWN)) {
+		if (key==KeyEvent.DOM_VK_PAGE_DOWN) {
 			this.volume -= 0.08;
 			this.music.volume = this.volume;
+			return;
 		}
-
-				this.handleKeys();
+				this.handleKeys(key);
 	}
 
-	handleKeys() {
+	handleKeys(key) {
 		if (this.actionCompleted) {
 			return;
 		}
-		const keys = this.input.keysPressed();
-		if (keys.length > 0 && this.action == 1) {
+		if (this.action == 1) {
 	this.fail();
 	return;
 		}
-		if (keys.length > 1) {
-		this.fail();
-		return;
-		}
-		if (keys.length == 1 && keys[0] == this.keys[this.action]) {
+		if (key == this.keys[this.action]) {
 			so.directory = '';
 			if (!this.rev) {
 this.pool.playStatic(packdir + 'o' + this.action, 0);
@@ -383,7 +382,7 @@ this.pool.playStatic(packdir + 'a' + this.action, 0);
 	this.calculateScore();
 	return;
 		}
-		if (keys.length == 1 && keys[0] != this.keys[this.action]) {
+		if (key != this.keys[this.action]) {
 						this.fail();
 		}
 	}
@@ -406,7 +405,7 @@ this.pool.playStatic(packdir + 'a' + this.action, 0);
 		if (this.level > this.levels) {
 			if (fs.existsSync(packdir + 'win.ogg')) {
 				so.directory = '';
-
+this.input.justPressedEventCallback=null;
 				this.winSound = so.create(packdir + 'win');
 			this.winSound.play();
 			while (this.winSound.playing == true) {
@@ -498,6 +497,9 @@ this.playing = true;
 this.music.play();
 	this.music.sound.once('play', () => {
 		this.timer.change(that.bpms[that.level] / 1000.0);
+		this.input.justPressedEventCallback=(key)=> {
+			this.render(key);
+		};
 	});
 	if (!this.playing && this.level > 1 && this.level != this.forceLevel) {
 									this.queueLevels();
@@ -516,6 +518,7 @@ this.music.play();
 	}
 
 	async pause() {
+		this.input.justPressedEventCallback=null;
 		if (!this.canPause) {
 			return;
 		}
@@ -542,6 +545,9 @@ for (let i = snd.playbackRate; i > 0; i -= 0.05) {
 	}
 
 	async unpause() {
+		this.input.justPressedEventCallback=(key)=> {
+			this.render(key);
+		};
 		const snd = this.music;
 snd.play();
 for (let i = snd.playbackRate; i <= 1; i += 0.05) {
