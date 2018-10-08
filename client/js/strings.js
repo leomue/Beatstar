@@ -9,6 +9,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			selectNewPath:"Select the new path for the packs",
 			noFindFolder:"I can't find your packs folder in %1, you will now be prompted to choose where it is.",
 			mDir:"Packs folder change (currently %1)",
 			selectPath:"Please select the path where your packs are saved:",
@@ -305,6 +306,7 @@ You can upload your pack via the website by making a zip file of the pack's fold
 		};
 		this.strings[2] = {
 //new Spanish
+selectNewPath:"Selecciona una nueva ruta para los packs",
 noFindFolder:"No puedo encontrar tu carpeta de packs en %1, por favor dime dónde está en el cuadro que se te mostrará ahora.",
 mDir:"Cambiar carpeta de packs (ahora %1)",
 		selectPath:"Por favor dime la carpeta donde guardaremos los packs",

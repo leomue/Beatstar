@@ -180,9 +180,10 @@ counter++;
 export async function changeDir() {
 return new Promise((resolve,reject)=> {
 				const stuff = dialog.showOpenDialog({
-					title: strings.get('selectPath'),
+					title: strings.get('selectNewPath'),
 					properties: ['openDirectory']
 				}, path=> {
+					console.log("path"+path);
 					resolve(String(path));
 				});
 	});

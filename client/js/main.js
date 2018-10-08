@@ -487,11 +487,12 @@ callback(answer);
 export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
-	
 	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
 	await changeLang();
+	window.localStorage.clear();
 	await new ScrollingText(strings.get("noFindFolder",[window.localStorage.getItem("path")]));
 	let dir=await changeDir();
+	
 				if (typeof dir !== 'undefined' && dir != '') {
 					packDirectory=dir;
 					window.localStorage.setItem("path",packDirectory);
