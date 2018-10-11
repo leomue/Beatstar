@@ -152,6 +152,7 @@ return;
 	try {
 		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/hashes.db')));
 	} catch (err) {
+		console.log(err);
 		var error = 0;
 		if (lang == 1) {
 			error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...', '\n', (() => {
@@ -489,15 +490,12 @@ export async function checkPack(changeBoot = true, debug = false) {
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
 	await changeLang();
-	window.localStorage.clear();
 	await new ScrollingText(strings.get("noFindFolder",[window.localStorage.getItem("path")]));
 	let dir=await changeDir();
-	
 				if (typeof dir !== 'undefined' && dir != '') {
 					packDirectory=dir;
 					window.localStorage.setItem("path",packDirectory);
 					packdir =packDirectory +"/"+ pack + '/';
-				
 				}//directory
 }
 	if (window.localStorage.getItem("path")!=null && fs.existsSync(window.localStorage.getItem("path"))) {
@@ -510,6 +508,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 					speech.rate = data.rate;
 				}
 		} catch (err) {
+			console.log(err);
 			await changeLang();
 	}
 	}

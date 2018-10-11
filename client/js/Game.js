@@ -518,10 +518,11 @@ this.music.play();
 	}
 
 	async pause() {
-		this.input.justPressedEventCallback=null;
+
 		if (!this.canPause) {
 			return;
 		}
+				this.input.justPressedEventCallback=null;
 		const idle = new OldTimer();
 		this.canPause = false;
 		const snd = this.music;
