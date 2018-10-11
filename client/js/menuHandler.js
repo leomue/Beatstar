@@ -173,8 +173,9 @@ counter++;
 			main.lang = s.selected;
 			data.lang = lang;
 			save();
-			st.setState(2);
+			
 		lm.destroy();
+		st.setState(2);
 		});	
 }
 export async function changeDir() {

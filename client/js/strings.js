@@ -296,7 +296,7 @@ You can upload your pack via the website by making a zip file of the pack's fold
 			nopacks: 'No packs are available. If you think this is a bug, please contact me.',
 			noGuardCash: 'You need %1 beatcoins to buy one safeguard. You have %2.',
 			mBrowse: 'buy new packs (You have %1 beatcoins )',
-			mBrowseIncompleted: 'Browse uncompleted packs',
+			mBrowseIncompleted: 'incompleted packs',
 			mBrowseUnlocked: 'Change to different unlocked pack',
 			youwin: 'You win %1 coins!',
 			youlose: 'You lose %1 coins.',

@@ -1,5 +1,7 @@
 Version 3.5 October 2018
+You can now change the language from the main menu, because why not?
 You can now relocate your beatstar packs library to an external drive, yay!
+It is recommended that your beatpacks folder is either on your internal drive or an ssd external drive.
 TTS Speech now stops when an option in the main menu is selected.
 Fixed a bad problem with playSync
 Added new minigame pack quizz.
