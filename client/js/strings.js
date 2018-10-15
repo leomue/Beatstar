@@ -551,7 +551,7 @@ Puedes subirlo a la web haciendo un archivo zip de la carpeta del pack y envián
 			dlprog: 'descargando pack %1 de %2...',
 			tamperWarning: 'Este pack ha sido modificado y ya no está desbloqueado. Pulsa enter para continuar.',
 			mUnlocked: 'Escuchar la música desbloqueada de este pack (%1 niveles)',
-			mBrowseIncompleted: 'Ver packs comprados no completados',
+			mBrowseIncompleted: 'packs comprados no completados',
 			yes: 'sí',
 			youwin: 'Ganas %1 monedas!',
 			noGuardCash: 'No tienes suficientes monedas. Cada antifallo cuesta %1 y tienes %2.',

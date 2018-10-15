@@ -21,7 +21,8 @@ import {KeyEvent} from './keycodes.js';
 class Game {
 	constructor(creds, mode = 1) {
 		this.totalScore = [];
-		this.volume = 1;
+		this.maxSafeguards=data.safeguards;
+				this.volume = 1;
 		this.totalAverage = [];
 		this.cash = 0;
 		so.directory = './sounds/',
@@ -143,12 +144,7 @@ return;
 			this.currentAction--;
 save();
 this.actionCompleted = true;
-if (data.safeguards > 3) {
-	this.safe.pitch = 1;
-}
-if (data.safeguards <= 3) {
-	this.safe.pitch = 1.5;
-}
+this.safe.pitch=utils.progressPitch(data.safeguards,1,this.maxSafeguards,1.6,0.9);
   this.safe.play();
 		}
 		this.currentAction++;
@@ -199,14 +195,9 @@ this.pool.playStatic(packdir + 'o' + this.action, 0);
 	save();
 	this.actionCompleted = true;
 	this.currentAction--;
-	if (data.safeguards > 3) {
-		this.safe.pitch = 1;
-	}
-	if (data.safeguards <= 3) {
-		this.safe.pitch = 1.4;
-	}
+	this.safe.pitch=utils.progressPitch(data.safeguards,1,this.maxSafeguards,1.6,0.9);
   this.safe.play();
-  return;
+    return;
 		}
 				this.timer.stop();
 				const snd = this.music;

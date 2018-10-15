@@ -1,3 +1,4 @@
 Make tutorial for react and gogame
 achievements for goGame
-code pack quizz
+make an achievement if you fail at the last level.
+change safegaurd sound

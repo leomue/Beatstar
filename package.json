@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "parcel watch ./client/js/main.js -d ./client --target=electron --no-hmr",
     "build": "parcel build ./client/js/main.js -d ./client --target=electron",
-    "start": "electron ./client"
+    "start": "electron ./client",
+    "run": "npm run build; electron ./client"
   },
   "repository": {
     "type": "git",

@@ -6,6 +6,7 @@ TTS Speech now stops when an option in the main menu is selected.
 Fixed a bad problem with playSync
 Added new minigame pack quizz.
 I have been fixing beatstar's functions for catching key presses. Hopefully this will result in much less CPU use and more precise key timings (there used to be some problems with mac computers).
+The safeguard use sound now changesin pitch  depending on how many safeguards you have left. cool.
 
 Version 3.0 September 2018
 - Added first letter navigation in the main menu.
