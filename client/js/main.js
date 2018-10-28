@@ -1,7 +1,9 @@
+' use strict';
 export var gameID = 'beat';
 export var newPath="";
 let changedLang=false;
-export var version ="3.5.0";
+var package=require('../../package.json');
+export var version =package.version;
 export var version2 = '';
 export var lang = 0;
 
