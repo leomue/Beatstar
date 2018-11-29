@@ -196,7 +196,7 @@ this.music.unload();
 	}
 
 	async runSync() {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 	this.run(s => {
 	resolve(s.selected);
 	this.destroy();

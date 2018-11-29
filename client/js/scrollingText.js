@@ -22,7 +22,7 @@ class ScrollingText {
 		// This.hammer = new Hammer(id);
 		this.init();
 		if (this.callback == 0) {
-			return this.prom = new Promise((resolve, reject) => {
+			return this.prom = new Promise((resolve) => {
 				this.res = resolve;
 			});
 		}

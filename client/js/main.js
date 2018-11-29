@@ -59,7 +59,7 @@ export var data = '';
 export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
-	const prom = new Promise((resolve, reject) => {
+	const prom = new Promise((resolve) => {
 fetch('http://oriolgomez.com/versions.php?id=' + gameID)
 						 .then(event => event.text())
 	.then(data => {
@@ -454,7 +454,7 @@ st.setState(2);
 }
 }
 export async function questionSync(text, localizedValues = []) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 question(text, localizedValues, answer => {
 resolve(answer);
 });
@@ -1058,7 +1058,7 @@ mainMenu();
 		}
 }
 export async function addCashSync(c1, c2 = 0, simulate = false) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		addCash(c1, c2, () => {
 		resolve('ok');
 		}, simulate);
@@ -1588,7 +1588,7 @@ const acm = new Menu(strings.get('achMenu'), items, so.create('ach_music'));
 let exit = false;
 while (!exit) {
 	await utils.sleep(8);
-	await new Promise((resolve, reject) => {
+	await new Promise((resolve) => {
 acm.run(async s => {
 	if (s.selected == 0) {
 acm.destroy();
@@ -1616,7 +1616,7 @@ resolve();
 }
 }
 export async function changeLang() {
-await new Promise((resolve,reject)=> {
+await new Promise((resolve)=> {
 		let str = '';
 		for (const i in strings.strings) {
 			str += strings.strings[i].langs + '. ';

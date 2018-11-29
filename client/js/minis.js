@@ -27,7 +27,7 @@ import {st} from './stateMachine';
 import fs from 'fs';
 
 export async function betSync(minBet = 5000, slideBy = 500) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 minibet(bet => {
 resolve(bet);
 return bet;
@@ -328,7 +328,7 @@ if (bet <= 0) {
 				const take = so.create('hl_card');
 				while (bet != -1) {
 					await utils.sleep(8);
-					await new Promise((resolve, reject) => {
+					await new Promise((resolve) => {
 						cardO = takeCard(deck);
 take.playSync();
 deck.splice(0, 1);

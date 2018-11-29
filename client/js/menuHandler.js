@@ -179,7 +179,7 @@ counter++;
 		});	
 }
 export async function changeDir() {
-return new Promise((resolve,reject)=> {
+return new Promise((resolve)=> {
 				const stuff = dialog.showOpenDialog({
 					title: strings.get('selectNewPath'),
 					properties: ['openDirectory']

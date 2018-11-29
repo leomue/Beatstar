@@ -1,0 +1,4 @@
+
+> beatstar@3.5.1 watch /Users/uri/git/beat
+> parcel watch ./client/js/main.js -d ./client --target=electron --no-hmr
+

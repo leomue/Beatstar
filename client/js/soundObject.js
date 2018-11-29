@@ -58,7 +58,7 @@ inp.init();
  inp.justPressedEventCallback = null;
  	}
  });
- return new Promise((resolve, reject) => {
+ return new Promise((resolve) => {
  this.sound.once('end', () => {
    resolve('ok');
    inp.justPressedEventCallback = null;
