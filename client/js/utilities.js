@@ -24,12 +24,12 @@ class GameUtils {
 
 	distance3D(x1, y1, z1, x2, y2, z2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) +
-(y2 - y1) * (y2 - y1) +
-(z2 - z1) * (z2 - z1));
+				(y2 - y1) * (y2 - y1) +
+				(z2 - z1) * (z2 - z1));
 	}
 
 	distance(jx, jy, kx, ky) {
-	// Return Math.hypot(jx-kx, jy-ky)
+		// Return Math.hypot(jx-kx, jy-ky)
 		return Math.sqrt(((jx - kx) * (jx - kx)) + ((jy - ky)) * (jy - ky));
 	}
 
@@ -37,7 +37,7 @@ class GameUtils {
 		let angle = Math.atan2((y2 - y1), (x2 - x1));
 		angle = (angle >= 0) ? 0 : (2 * Math.PI) + angle;
 		return angle;
-	// Return Math.atan2((y2 - y1),(x2 - x1));
+		// Return Math.atan2((y2 - y1),(x2 - x1));
 	}
 
 	isCollide3D(a, b) {
@@ -110,7 +110,7 @@ class GameUtils {
 
 	objSize(obj) {
 		let size = 0,
-			key;
+		    key;
 		for (key in obj) {
 			if (obj.hasOwnProperty(key)) {
 				size++;

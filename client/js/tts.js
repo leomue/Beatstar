@@ -37,7 +37,7 @@ class TTS {
 
 	stop() {
 		if (this.webTTS) {
-this.synth.cancel();
+			this.synth.cancel();
 		}
 	}
 } // End class

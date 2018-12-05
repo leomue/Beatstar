@@ -23,8 +23,8 @@ class ScrollingText {
 		this.init();
 		if (this.callback == 0) {
 			return this.prom = new Promise((resolve) => {
-				this.res = resolve;
-			});
+					this.res = resolve;
+					});
 		}
 	}
 
@@ -67,12 +67,12 @@ class ScrollingText {
 		if (this.splitText[this.currentLine][0] == '!') {
 			const str = this.splitText[this.currentLine].substr(1);
 			const snd = so.create(str, true);
-	snd.play();
-	snd.sound.once('end', () => {
-	this.advance();
-	});
+			snd.play();
+			snd.sound.once('end', () => {
+					this.advance();
+					});
 		} else {
-		speech.speak(this.splitText[this.currentLine]);
+			speech.speak(this.splitText[this.currentLine]);
 		}
 	}
 
@@ -86,13 +86,13 @@ class ScrollingText {
 			this.sndClose.unload();
 			this.sndOpen.unload();
 			this.sndContinue.unload();
-document.removeEventListener('keydown', this.handleKeys);
-//			This.hammer.unload();
-if (this.callback != 0) {
-this.callback();
-} else {
-this.res();
-}
+			document.removeEventListener('keydown', this.handleKeys);
+			//			This.hammer.unload();
+			if (this.callback != 0) {
+				this.callback();
+			} else {
+				this.res();
+			}
 		}
 	}
 }

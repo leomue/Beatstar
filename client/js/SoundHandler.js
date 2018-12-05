@@ -67,7 +67,7 @@ class SoundHandler {
 
 	play(file) {
 		let slot = 0,
-			reuse = 0;
+		    reuse = 0;
 		if (this.reuseSounds) {
 			slot = this.findDynamicSound(file);
 			reuse = true;
@@ -81,10 +81,10 @@ class SoundHandler {
 				this.dynamicSounds[slot] = new SoundItem(file, this.directional);
 			}
 		} else if (reuse == false) {
-				this.dynamicSounds[slot].sound.destroy();
-				this.dynamicSounds[slot] = new SoundItem(file, directional);
+			this.dynamicSounds[slot].sound.destroy();
+			this.dynamicSounds[slot] = new SoundItem(file, directional);
 		}
-				this.dynamicSounds[slot].sound.play();
+		this.dynamicSounds[slot].sound.play();
 	}
 
 	update(position) {
@@ -97,13 +97,13 @@ class SoundHandler {
 
 	destroy() {
 		for (var i = 0; i < this.dynamicSounds.length; i++) {
-		this.dynamicSounds[i].destroy();
-	this.dynamicSounds.splice(i, 1);
+			this.dynamicSounds[i].destroy();
+			this.dynamicSounds.splice(i, 1);
 		}
 
 		for (var i = 0; i < this.staticSounds.length; i++) {
-	this.staticSounds[i].destroy();
-		this.staticSounds.splice(i, 1);
+			this.staticSounds[i].destroy();
+			this.staticSounds.splice(i, 1);
 		}
 	}
 }
@@ -119,7 +119,7 @@ class SoundItem {
 	}
 
 	destroy() {
-	this.sound.destroy();
+		this.sound.destroy();
 	}
 }
 

@@ -38,15 +38,15 @@ class Menu {
 	nextItem() {
 		if (!this.first) {
 			if (this.cursor < this.menuData.length - 1) {
-		this.sndMove.play();
-		this.cursor++;
+				this.sndMove.play();
+				this.cursor++;
 			} else {
-					this.sndWrap.play();
-					this.cursor = 0;
+				this.sndWrap.play();
+				this.cursor = 0;
 			}
 		} else {
-				this.sndMove.play();
-				this.first = false;
+			this.sndMove.play();
+			this.first = false;
 		}
 
 		this.menuData[this.cursor].speak();
@@ -55,16 +55,16 @@ class Menu {
 	previousItem() {
 		if (this.first) {
 			this.first = false;
-	this.sndMove.play();
+			this.sndMove.play();
 		}
 		if (this.cursor > 0) {
-		this.sndMove.play();
-		this.cursor--;
+			this.sndMove.play();
+			this.cursor--;
 		} else {
 			this.cursor = this.menuData.length - 1;
-		this.sndWrap.play();
+			this.sndWrap.play();
 		}
-				this.menuData[this.cursor].speak();
+		this.menuData[this.cursor].speak();
 	}
 
 	increase() {
@@ -94,22 +94,22 @@ class Menu {
 			this.menuData[this.cursor].addChar(String.fromCharCode(char));
 			this.sndKeyChar.play();
 		} else {
-		// Char navigation code
+			// Char navigation code
 			for (let i = this.cursor + 1; i < this.menuData.length; i++) {
 				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
 					this.cursor = i;
-		this.menuData[this.cursor].speak();
-		this.first = false;
-		return;
+					this.menuData[this.cursor].speak();
+					this.first = false;
+					return;
 				}
 			}
 			for (let i = 0; i < this.menuData.length; i++) {
 				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
-			this.cursor = i;
-		this.menuData[this.cursor].speak();
-		this.first = false;
-		return;
-		}
+					this.cursor = i;
+					this.menuData[this.cursor].speak();
+					this.first = false;
+					return;
+				}
 			}
 		}
 	}
@@ -122,7 +122,7 @@ class Menu {
 	}
 
 	handleInput(event) {
-			this.insertCharacter(event.which);
+		this.insertCharacter(event.which);
 	}
 
 	destroySounds() {
@@ -137,7 +137,7 @@ class Menu {
 		this.sndSelector.unload();
 		this.sndWrap.unload();
 		if (typeof this.music !== 'undefined') {
-this.music.unload();
+			this.music.unload();
 		}
 	}
 
@@ -151,19 +151,19 @@ this.music.unload();
 	}
 
 	destroy() {
-			$(document).off('keydown');
+		$(document).off('keydown');
 		$(document).off('keypress');
 		// This.hammer.destroy();
 		const that = this;
 		setTimeout(() => {
- that.destroySounds();
-		}, 500);
+				that.destroySounds();
+				}, 500);
 	}
 
 	handleKeys(event) {
 		switch (event.which) {
 			case KeyEvent.DOM_VK_RETURN:
-					this.select();
+				this.select();
 				break;
 			case KeyEvent.DOM_VK_PAGE_UP:
 				this.music.volume += 0.03;
@@ -172,24 +172,24 @@ this.music.unload();
 				this.music.volume -= 0.03;
 				break;
 			case KeyEvent.DOM_VK_BACK_SPACE:
-					this.removeCharacter();
+				this.removeCharacter();
 				break;
 
 			case KeyEvent.DOM_VK_DOWN:
 
-					this.nextItem();
+				this.nextItem();
 				break;
 			case KeyEvent.DOM_VK_UP:
-					this.previousItem();
+				this.previousItem();
 				break;
 			case KeyEvent.DOM_VK_RIGHT:
 
-						this.increase();
+				this.increase();
 
 				break;
 			case KeyEvent.DOM_VK_LEFT:
 
-						this.decrease();
+				this.decrease();
 
 				break;
 		}
@@ -197,40 +197,40 @@ this.music.unload();
 
 	async runSync() {
 		return new Promise((resolve) => {
-	this.run(s => {
-	resolve(s.selected);
-	this.destroy();
-	});
-		});
+				this.run(s => {
+						resolve(s.selected);
+						this.destroy();
+						});
+				});
 	}
 
 	run(callback) {
 		if (typeof this.music === 'object') {
 			this.music.volume = 0.5;
 			this.music.loop = true;
-	this.music.play();
+			this.music.play();
 		} else if (typeof this.music === 'string') {
 			this.music = so.create(this.music, true);
 			this.music.volume = 0.5;
 			this.music.loop = true;
-	this.music.play();
+			this.music.play();
 		} else {
 		}
 		this.selectCallback = callback;
 		const that = this;
 		$(document).on('keypress', event => {
- that.handleInput(event);
-		});
+				that.handleInput(event);
+				});
 		$(document).on('keydown', event => {
- that.handleKeys(event);
-		});
+				that.handleKeys(event);
+				});
 		/*
-		This.hammer.on("swipeleft", function(event) { that.handleSwipe(0); });
-		this.hammer.on("swiperight", function(event) { that.handleSwipe(1); });
-		this.hammer.on("panup", function(event) { that.handleSwipe(3); });
-		this.hammer.on("pandown", function(event) { that.handleSwipe(4); });
-		this.hammer.on("tap", function(event) { that.handleSwipe(2); });
-		*/
+		   This.hammer.on("swipeleft", function(event) { that.handleSwipe(0); });
+		   this.hammer.on("swiperight", function(event) { that.handleSwipe(1); });
+		   this.hammer.on("panup", function(event) { that.handleSwipe(3); });
+		   this.hammer.on("pandown", function(event) { that.handleSwipe(4); });
+		   this.hammer.on("tap", function(event) { that.handleSwipe(2); });
+		 */
 		speech.speak(this.name);
 		this.sndOpen.play();
 	}
@@ -262,23 +262,23 @@ this.music.unload();
 			let addItem = null;
 			if (this.menuData[i].type == MenuTypes.SLIDER) {
 				addItem = {
-					id: this.menuData[i].id,
-					value: this.menuData[i].currentValue
-					// Name: this.menuData[i].options[this.menuData[i].currentValue]
+id: this.menuData[i].id,
+    value: this.menuData[i].currentValue
+	    // Name: this.menuData[i].options[this.menuData[i].currentValue]
 				};
 			}
 			if (this.menuData[i].type == MenuTypes.EDIT) {
 				addItem = {
-					id: this.menuData[i].id,
-					value: this.menuData[i].text
+id: this.menuData[i].id,
+    value: this.menuData[i].text
 
 				};
 			}
 			if (this.menuData[i].type == MenuTypes.SELECTOR) {
 				addItem = {
-					id: this.menuData[i].id,
-					value: this.menuData[i].currentOption,
-					name: this.menuData[i].options[this.menuData[i].currentOption]
+id: this.menuData[i].id,
+    value: this.menuData[i].currentOption,
+    name: this.menuData[i].options[this.menuData[i].currentOption]
 				};
 			}
 			items.push(addItem);
@@ -299,11 +299,11 @@ this.music.unload();
 			this.musicDuration = 3000;
 		}
 		if (typeof this.music !== 'undefined') {
-this.fade();
+			this.fade();
 		}
 		const that = this;
-				setTimeout(() => {
-that.selectCallback(toReturn);
+		setTimeout(() => {
+				that.selectCallback(toReturn);
 				}, this.musicDuration);
 	}
 }

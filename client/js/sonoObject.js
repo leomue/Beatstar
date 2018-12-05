@@ -13,73 +13,73 @@ class SoundObjectItem {
 			this.onMemory++;
 			this.sound.id = file;
 			this.fromMemory = false;
-		this.sound.on('loaded', () => {
- that.doneLoading();
-		});
-		this.sound.on('destroy', () => {
-			that.destroySound();
-		});
+			this.sound.on('loaded', () => {
+					that.doneLoading();
+					});
+			this.sound.on('destroy', () => {
+					that.destroySound();
+					});
 		} else {
 			this.fileName = so.memName;
 			const found = so.findSound(this.fileName);
 			if (found == -1) {
-			console.log('fuck! -1 when creating from memory!');
+				console.log('fuck! -1 when creating from memory!');
 			} else {
 				found.onMemory++;
 			}
 			this.sound = sono.create(file.data);
 			this.sound.on('destroy', () => {
-	that.destroySound();
-			});
+					that.destroySound();
+					});
 			this.sound.id = so.memName;
 			this.fromMemory = true;
 		}
 		this.timeout = setTimeout(() => {
- that.checkProgress();
-		}, 2000);
+				that.checkProgress();
+				}, 2000);
 		this.loaded = false;
 		this.callback = callback;
 		this.timeToLoad = performance.now();
 		this.tag = tag;
 		if (this.fromMemory) {
-	clearTimeout(this.timeout);
-	this.loaded = true;
+			clearTimeout(this.timeout);
+			this.loaded = true;
 		}
 	}
 
 	destroySound() {
 		const found = so.findSound(this.fileName);
 		if (found == -1) {
-		console.log('fuck. -1!' + this.fileName);
-		return;
+			console.log('fuck. -1!' + this.fileName);
+			return;
 		}
 		found.onMemory--;
-// Console.log("got the sound on memory "+found.onMemory+" times. "+found.fileName);
-console.log('destroy ' + found.onMemory);
-if (found.onMemory <= 0 && found.sound.data != null) {
-found.sound.unload();
-console.log('unloaded.' + this.fileName);
-}
+		// Console.log("got the sound on memory "+found.onMemory+" times. "+found.fileName);
+		console.log('destroy ' + found.onMemory);
+		if (found.onMemory <= 0 && found.sound.data != null) {
+			found.sound.unload();
+			console.log('unloaded.' + this.fileName);
+		}
 	}
 
 	checkProgress() {
 		if (this.sound.progress == 0) {
-						this.sound.destroy();
-						var that = this;
-						this.sound = sono.create({src: this.fileName, onComplete() {
- that.doneLoading();
-						}});
-this.sound.on('destroy', () => {
-			that.destroySound();
-});
+			this.sound.destroy();
+			var that = this;
+			this.sound = sono.create({src: this.fileName, onComplete() {
+					that.doneLoading();
+					}});
+			this.sound.on('destroy', () => {
+					that.destroySound();
+					});
 		}
 		if (this.sound.progress == 1) {
 			this.doneLoading();
 		} else {
 			var that = this;
 			this.timeout = setTimeout(() => {
- that.checkProgress();
-			}, 500);
+					that.checkProgress();
+					}, 500);
 		}
 	}
 
@@ -97,7 +97,7 @@ this.sound.on('destroy', () => {
 	}
 
 	destroy() {
-			this.sound.destroy();
+		this.sound.destroy();
 	}
 
 	unload() {
@@ -158,7 +158,7 @@ class SoundObject {
 		for (let i = 0; i < this.sounds.length; i++) {
 			if (typeof this.sounds[i] !== 'undefined') {
 				if (this.sounds[i].tag == 1) {
-									this.sounds[i].sound.destroy();
+					this.sounds[i].sound.destroy();
 					this.sounds.splice(i, 1);
 				}
 			}
@@ -181,19 +181,19 @@ class SoundObject {
 		if (found == -1 || found.sound.data == null) {
 			var that = this;
 			returnObject = new SoundObjectItem(file, (() => {
- that.doneLoading();
-			}));
-								this.sounds.push(returnObject);
-								returnObject = returnObject.sound;
+						that.doneLoading();
+						}));
+			this.sounds.push(returnObject);
+			returnObject = returnObject.sound;
 		} else {
 			this.memName = found.fileName;
 			returnObject = new SoundObjectItem(found.sound, (() => {
- that.doneLoading();
-			}));
+						that.doneLoading();
+						}));
 			// I want to try this, we don't need to push this to the array if it's from memory.
-								this.sounds.push(returnObject);
+			this.sounds.push(returnObject);
 			// Found.onMemory++;
-								returnObject = returnObject.sound;
+			returnObject = returnObject.sound;
 		}
 		return returnObject;
 	}
@@ -202,8 +202,8 @@ class SoundObject {
 		const fs = require('fs');
 		file = this.directory + file + this.extension;
 		if (fs.exists(file)) {
-		this.queue.push(file);
-		this.queueLength = this.queue.length;
+			this.queue.push(file);
+			this.queueLength = this.queue.length;
 		}
 	}
 
@@ -214,8 +214,8 @@ class SoundObject {
 	}
 
 	loadQueue() {
-			this.handleQueue();
-			this.loadingQueue = true;
+		this.handleQueue();
+		this.loadingQueue = true;
 	}
 
 	setQueueCallback(callback) {
@@ -239,15 +239,15 @@ class SoundObject {
 				return;
 			}
 			this.sounds.push(new SoundObjectItem(this.queue[0], (() => {
- that.handleQueue();
-			}), 1));
+							that.handleQueue();
+							}), 1));
 			this.queue.splice(0, 1);
 		} else {
 			this.loadingQueue = false;
-				console.log('finished with queue.');
-				if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
-					this.queueCallback();
-				}
+			console.log('finished with queue.');
+			if (typeof this.queueCallback !== 'undefined' && this.queueCallback != 0) {
+				this.queueCallback();
+			}
 		}
 	}
 
@@ -290,18 +290,18 @@ class SoundObject {
 		const toDestroy = new Array();
 		const that = this;
 		this.oneShotSound.on('ended', () => {
-			for (var i = 0; i < that.oneShots.length; i++) {
+				for (var i = 0; i < that.oneShots.length; i++) {
 				if (that.oneShots[i].playing == false) {
-that.oneShots[i].destroy();
-toDestroy.push(i);
+				that.oneShots[i].destroy();
+				toDestroy.push(i);
 				}
-			}
-			for (var i = 0; i < toDestroy.length; i++) {
+				}
+				for (var i = 0; i < toDestroy.length; i++) {
 				if (that.oneShotSounds[i].playing == false) {
 				that.oneShotSounds.splice(toDestroy[i], 1);
 				}
-			}
-		 });
+				}
+				});
 	}
 
 	destroy(file, callback = 0) {
@@ -312,22 +312,22 @@ toDestroy.push(i);
 			if (found == -1 || this.sounds[found].sound.data == null) {
 				noMore = true;
 			} else {
-																																				this.sounds[found].sound.destroy();
-												this.sounds.splice(found, 1);
+				this.sounds[found].sound.destroy();
+				this.sounds.splice(found, 1);
 			}
 		}
 		if (callback != 0) {
-callback();
+			callback();
 		}
 	}
 
 	kill(callback = 0) {
 		while (this.sounds.length > 0) {
-															this.sounds[0].sound.destroy();
-					this.sounds.splice(0, 1);
+			this.sounds[0].sound.destroy();
+			this.sounds.splice(0, 1);
 		}
 		if (callback != 0) {
-callback();
+			callback();
 		}
 	}
 }

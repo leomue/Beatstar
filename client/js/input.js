@@ -16,13 +16,13 @@ class KeyboardInput {
 		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
 		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
 		document.addEventListener('keydown', event => {
- that.handleKeyDown(event);
-		});
+				that.handleKeyDown(event);
+				});
 		document.addEventListener('keyup', event => {
- that.handleKeyUp(event);
-		});
-				document.addEventListener('keypress', event => {
- that.handleChar(event);
+				that.handleKeyUp(event);
+				});
+		document.addEventListener('keypress', event => {
+				that.handleChar(event);
 				});
 	}
 
@@ -32,7 +32,7 @@ class KeyboardInput {
 			this.justPressed[event.which] = true;
 			this.justReleased[event.which] = false;
 			if (typeof this.justPressedEventCallback !== 'undefined' && this.justPressedEventCallback != null) {
-this.justPressedEventCallback(event.which);
+				this.justPressedEventCallback(event.which);
 			}
 		}
 	}
@@ -44,7 +44,7 @@ this.justPressedEventCallback(event.which);
 		if (String.fromCharCode(char.which) != '') {
 			this.chars += String.fromCharCode(char.which);
 			if (typeof this.charEventCallback !== 'undefined' && this.charEventCallback != null) {
-this.charEventCallback(String.fromCharCode(char.which));
+				this.charEventCallback(String.fromCharCode(char.which));
 			}
 		}
 	}
@@ -80,12 +80,12 @@ this.charEventCallback(String.fromCharCode(char.which));
 
 	keysDown() {
 		const kd = [];
-	this.keyDown.forEach((v, i) => {
-		if (v) {
-	kd.push(i);
-		}
-	});
-	return kd;
+		this.keyDown.forEach((v, i) => {
+				if (v) {
+				kd.push(i);
+				}
+				});
+		return kd;
 	}
 
 	getChars() {
@@ -96,13 +96,13 @@ this.charEventCallback(String.fromCharCode(char.which));
 
 	keysPressed() {
 		const kd = [];
-	this.justPressed.forEach((v, i) => {
-		if (v) {
-	kd.push(i);
-		}
-	});
-	this.justPressed.splice();
-	return kd;
+		this.justPressed.forEach((v, i) => {
+				if (v) {
+				kd.push(i);
+				}
+				});
+		this.justPressed.splice();
+		return kd;
 	}
 
 	releaseAllKeys() {
@@ -111,13 +111,13 @@ this.charEventCallback(String.fromCharCode(char.which));
 
 	keysReleased() {
 		const kd = [];
-	this.justReleased.forEach((v, i) => {
-		if (v) {
-	kd.push(i);
-		}
-	});
-	this.justReleased.splice();
-	return kd;
+		this.justReleased.forEach((v, i) => {
+				if (v) {
+				kd.push(i);
+				}
+				});
+		this.justReleased.splice();
+		return kd;
 	}
 }
 

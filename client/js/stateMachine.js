@@ -18,28 +18,28 @@ class StateMachine {
 	setState(state) {
 		if (state == 1) {
 			event = new KeyboardInput();
-	event.init();
-	const intro = so.create('logo');
-	const that = this;
-	intro.volume = 0.5;
-	intro.play();
-	intro.sound.once('end', () => {
-		intro.unload();
-	$(document).off('keydown');
-			that.setState(2);
-	});
-	$(document).keydown(event => {
-		if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
-						intro.unload();
+			event.init();
+			const intro = so.create('logo');
+			const that = this;
+			intro.volume = 0.5;
+			intro.play();
+			intro.sound.once('end', () => {
+					intro.unload();
 					$(document).off('keydown');
-			that.setState(20);
-		}
-	});
-	this.state = state;
+					that.setState(2);
+					});
+			$(document).keydown(event => {
+					if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
+					intro.unload();
+					$(document).off('keydown');
+					that.setState(20);
+					}
+					});
+			this.state = state;
 		} else if (state == 2) {
 			event = null;
-checkPack();
-this.state = state;
+			checkPack();
+			this.state = state;
 		} else if (state == 21) {
 			this.currentState = new Game(credits, 2);
 			this.state = state;
@@ -48,23 +48,23 @@ this.state = state;
 			this.state = state;
 		} else if (state == 20) {
 			event = null;
-checkPack(false);
-this.state = state;
+			checkPack(false);
+			this.state = state;
 		} else if (state == 4) {
- learnPack();
+			learnPack();
 		} else if (state == 7) {
- listenPack();
+			listenPack();
 		}
 		// New states
 		else if (state == 5) {
-browsePacks();
-this.state = state;
+			browsePacks();
+			this.state = state;
 		} else if (state == 6) {
-browsePacks(2);
-this.state = state;
+			browsePacks(2);
+			this.state = state;
 		} else if (state == 8) {
-browsePacks(3);
-this.state = state;
+			browsePacks(3);
+			this.state = state;
 		}
 	}
 }

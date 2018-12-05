@@ -8,7 +8,7 @@ event.init();
 function test() {
 	if (event.isDown(KeyEvent.DOM_VK_SPACE)) {
 		const sound = new SoundSource('click', -1500, 0, 0, false);
-	sound.play();
+		sound.play();
 	}
 }
 
