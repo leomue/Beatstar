@@ -471,7 +471,7 @@ this.preSound.play();
 this.playing = true;
 		}
 		if (this.playing) {
-		this.queueLevels();
+		//this.queueLevels();
 		while (this.preSound.playing) {
 			await utils.sleep(5);
 			if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
@@ -492,7 +492,7 @@ this.music.play();
 			this.render(key);
 		};
 	});
-	if (!this.playing && this.level > 1 && this.level != this.forceLevel) {
+	if (this.level > 1 && this.level != this.forceLevel) {
 									this.queueLevels();
 	}
 	this.action = 0;
