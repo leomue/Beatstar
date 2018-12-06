@@ -1,4 +1,5 @@
-Version 3.5 October 2018
+Version 4.0 
+Fixed another potential issue regarding game delays that had to do with  loading more levels than it should.
 You can now change the language from the main menu, because why not?
 You can now relocate your beatstar packs library to an external drive, yay!
 It is recommended that your beatpacks folder is either on your internal drive or an ssd external drive.

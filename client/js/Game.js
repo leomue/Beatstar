@@ -565,17 +565,22 @@ class Game {
 	}
 
 	queueLevels() {
-		let levelLimit = this.level + 1;
+		let levelLimit = this.level+1;
 		if (this.levels < levelLimit) {
 			levelLimit = this.levels;
 		}
 		so.directory = '';
-		for (let i = this.level; i <= levelLimit; i++) {
+		let debugstr="";
+		let queueLevel=this.level
+		if (this.level>1) queueLevel++;
+		for (let i = queueLevel; i <= levelLimit; i++) {
 			so.enqueue(packdir + i + 'music');
+			debugstr+="queuing "+i;
 			if (fs.existsSync(packdir + 'pre' + i + '.ogg')) {
 				so.enqueue(packdir + 'pre' + i);
 			}
 		}
+		speech.speak(debugstr)
 		if (this.level > 1 && this.level != this.forceLevel) {
 			so.setQueueCallback(0);
 			so.loadQueue();
