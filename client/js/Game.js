@@ -124,7 +124,7 @@ class Game {
 			so.directory = './sounds/';
 			that.setupLevel();
 		});
-		this.queueLevels();
+		this.queueLevels(this.level);
 		so.loadQueue();
 	}
 
@@ -470,41 +470,47 @@ class Game {
 			this.preSound.play();
 			this.playing = true;
 		}
-		if (this.playing) {
-			// This.queueLevels();
-			while (this.preSound.playing) {
-				await utils.sleep(5);
-				if (this.input.isJustPressed(KeyEvent.DOM_VK_RETURN)) {
+		if (!this.playing) {
+			 this.queueLevels(this.level);
+						this.postprocess();
+		}
+		else {
+			if (this.level>1) this.queueLevels(this.level);
+			this.input.justPressedEventCallback=(evt)=> {
+				if (evt==KeyEvent.DOM_VK_RETURN && this.preSound.playing) {
 					this.preSound.stop();
+				this.postprocess();
 				}
-			}
-		}
-		so.directory = '';
-		const that = this;
-		this.music = so.create(packdir + this.level + 'music', false);
-		this.music.loop = true;
-		this.music.volume = this.volume;
-		so.directory = './sounds/';
-		this.music.play();
-		this.music.sound.once('play', () => {
-			this.timer.change(that.bpms[that.level] / 1000.0);
-			this.input.justPressedEventCallback = key => {
-				this.render(key);
 			};
-		});
-		if (this.level > 1 && this.level != this.forceLevel) {
-			this.queueLevels();
+			this.preSound.sound.once("end",()=> {
+				this.postprocess();
+			});
 		}
-		this.action = 0;
-		this.actionCompleted = false;
-		this.currentAction = 0;
-		if (!this.playing && this.level > 1) {
-			// This.currentAction++;
-		}
-		this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
-		this.forceLevel = 0;
 	}
-
+	postprocess() {
+				so.directory = '';
+			const that = this;
+			this.music = so.create(packdir + this.level + 'music', false);
+			this.music.loop = true;
+			this.music.volume = this.volume;
+			so.directory = './sounds/';
+			this.music.play();
+			this.music.sound.once('play', () => {
+				this.timer.change(that.bpms[that.level]  /1000.0);
+				this.input.justPressedEventCallback = key => {
+					this.render(key);
+				};
+			});
+			if (this.level > 1 && this.level != this.forceLevel) {
+	//this.queueLevels();
+			}
+			this.action = 0;
+			this.actionCompleted = false;
+			this.currentAction = 0;
+			this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
+			this.forceLevel = 0;
+	}
+	
 	unload() {
 	}
 
@@ -564,15 +570,15 @@ class Game {
 		this.levelAverage.push(mod);
 	}
 
-	queueLevels() {
-		let levelLimit = this.level+1;
+	queueLevels(lev) {
+		let levelLimit = lev+1;
 		if (this.levels < levelLimit) {
 			levelLimit = this.levels;
 		}
 		so.directory = '';
 		let debugstr="";
-		let queueLevel=this.level
-		if (this.level>1) queueLevel++;
+		let queueLevel=lev;
+		if (queueLevel>1) queueLevel++;
 		for (let i = queueLevel; i <= levelLimit; i++) {
 			so.enqueue(packdir + i + 'music');
 			debugstr+="queuing "+i;

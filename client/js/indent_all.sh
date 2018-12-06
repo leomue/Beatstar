@@ -1,3 +1,4 @@
 #!/bin/bash
 
-find . | xargs -I {} ../../../indent.sh {}
+find . | xargs -I {} ~/code/indent.sh {}
+echo "success!"
