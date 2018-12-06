@@ -66,8 +66,9 @@ class SoundHandler {
 	}
 
 	play(file) {
-		let slot = 0,
-		    reuse = 0;
+		let slot = 0;
+
+		let reuse = 0;
 		if (this.reuseSounds) {
 			slot = this.findDynamicSound(file);
 			reuse = true;

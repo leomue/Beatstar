@@ -2,7 +2,7 @@
 import {speech} from './tts';
 
 const MenuTypes = {
-NORMAL: 0,
+	NORMAL: 0,
 	SELECTOR: 1,
 	SLIDER: 2,
 	EDIT: 3

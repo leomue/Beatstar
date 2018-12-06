@@ -1,13 +1,14 @@
 'use strict';
+import $ from 'jquery';
 import {utils} from './utilities';
 import {strings} from './strings';
 import {speech} from './tts';
-import $ from 'jquery';
 import {so} from './soundObject.js';
 import {MenuTypes, MenuItem} from './menuItem';
 import {KeyEvent} from './keycodes';
 import {KeyboardInput} from './input';
 import {packDirectory} from './main';
+
 class Menu {
 	constructor(name, menuData, music) {
 		this.menuData = menuData;
@@ -156,8 +157,8 @@ class Menu {
 		// This.hammer.destroy();
 		const that = this;
 		setTimeout(() => {
-				that.destroySounds();
-				}, 500);
+			that.destroySounds();
+		}, 500);
 	}
 
 	handleKeys(event) {
@@ -196,12 +197,12 @@ class Menu {
 	}
 
 	async runSync() {
-		return new Promise((resolve) => {
-				this.run(s => {
-						resolve(s.selected);
-						this.destroy();
-						});
-				});
+		return new Promise(resolve => {
+			this.run(s => {
+				resolve(s.selected);
+				this.destroy();
+			});
+		});
 	}
 
 	run(callback) {
@@ -219,11 +220,11 @@ class Menu {
 		this.selectCallback = callback;
 		const that = this;
 		$(document).on('keypress', event => {
-				that.handleInput(event);
-				});
+			that.handleInput(event);
+		});
 		$(document).on('keydown', event => {
-				that.handleKeys(event);
-				});
+			that.handleKeys(event);
+		});
 		/*
 		   This.hammer.on("swipeleft", function(event) { that.handleSwipe(0); });
 		   this.hammer.on("swiperight", function(event) { that.handleSwipe(1); });
@@ -262,23 +263,23 @@ class Menu {
 			let addItem = null;
 			if (this.menuData[i].type == MenuTypes.SLIDER) {
 				addItem = {
-id: this.menuData[i].id,
-    value: this.menuData[i].currentValue
+					id: this.menuData[i].id,
+					value: this.menuData[i].currentValue
 	    // Name: this.menuData[i].options[this.menuData[i].currentValue]
 				};
 			}
 			if (this.menuData[i].type == MenuTypes.EDIT) {
 				addItem = {
-id: this.menuData[i].id,
-    value: this.menuData[i].text
+					id: this.menuData[i].id,
+					value: this.menuData[i].text
 
 				};
 			}
 			if (this.menuData[i].type == MenuTypes.SELECTOR) {
 				addItem = {
-id: this.menuData[i].id,
-    value: this.menuData[i].currentOption,
-    name: this.menuData[i].options[this.menuData[i].currentOption]
+					id: this.menuData[i].id,
+					value: this.menuData[i].currentOption,
+					name: this.menuData[i].options[this.menuData[i].currentOption]
 				};
 			}
 			items.push(addItem);
@@ -303,8 +304,8 @@ id: this.menuData[i].id,
 		}
 		const that = this;
 		setTimeout(() => {
-				that.selectCallback(toReturn);
-				}, this.musicDuration);
+			that.selectCallback(toReturn);
+		}, this.musicDuration);
 	}
 }
 export {Menu};

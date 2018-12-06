@@ -1,15 +1,8 @@
-'use strict';
-var main=require('./main');
-const {dialog} = require('electron').remote;
-
-const electron = require('electron');
-
-const remote = electron.remote;
 import {utils} from './utilities';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
-import {checkPack,version, version2, save, data, browseAch, editPack, minituts, minigames, buySafeguards} from './main';
+import {checkPack, version, version2, save, data, browseAch, editPack, minituts, minigames, buySafeguards} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -19,8 +12,16 @@ import {KeyboardInput} from './input.js';
 import {KeyEvent} from './keycodes';
 import {Menu} from './menu';
 
+'use strict';
+const {dialog} = require('electron').remote;
+
+const electron = require('electron');
+const main = require('./main');
+
+const remote = electron.remote;
+
 export async function mainMenu() {
-	console.log("menu thinks pack dir is "+main.packDirectory);
+	console.log('menu thinks pack dir is ' + main.packDirectory);
 	const fs = require('fs');
 	const items = new Array();
 	items.push(new MenuItem(0, strings.get('mStart')));
@@ -51,7 +52,7 @@ export async function mainMenu() {
 	items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level])));
 	items.push(new MenuItem(10, strings.get('mGameTuts',)));
 	items.push(new MenuItem(1234, strings.get('mLang',)));
-	items.push(new MenuItem(69, strings.get('mDir',[main.packDirectory])));
+	items.push(new MenuItem(69, strings.get('mDir', [main.packDirectory])));
 	items.push(new MenuItem(3, strings.get('mHashes')));
 	so.directory = './sounds/';
 	const mainMenu = new Menu(strings.get('mainmenu'), items);
@@ -62,27 +63,27 @@ export async function mainMenu() {
 		mainMenu.sndChoose = so.create(packdir + 'select');
 	}
 	mainMenu.run(async s => {
-			speech.stop();
-			so.directory = './sounds/';
-			mainMenu.destroy();
-			switch (s.selected) {
+		speech.stop();
+		so.directory = './sounds/';
+		mainMenu.destroy();
+		switch (s.selected) {
 			case 1234:
-			languageSelect();
-			break;
+				languageSelect();
+				break;
 			case 32:
-			changeRate();
-			break;
+				changeRate();
+				break;
 			case 33:
-			if (process.platform == 'darwin') {
-			await new ScrollingText(strings.get('macwarning'));
-			}
-			speech.webTTS = false;
-			st.setState(2);
-			break;
+				if (process.platform == 'darwin') {
+					await new ScrollingText(strings.get('macwarning'));
+				}
+				speech.webTTS = false;
+				st.setState(2);
+				break;
 			case 34:
-			speech.webTTS = true;
-			st.setState(2);
-			break;
+				speech.webTTS = true;
+				st.setState(2);
+				break;
 
 			case 0: st.setState(3); break;
 			case 1: st.setState(4); break;
@@ -100,39 +101,38 @@ export async function mainMenu() {
 			case 9: minigames(); break;
 			case 10: minituts(); break;
 			case 69:
-				 let dir=await changeDir();
-				 console.log("dir"+dir);
+				 const dir = await changeDir();
+				 console.log('dir' + dir);
 				 if (typeof dir !== 'undefined' && dir != '') {
-					 main.packDirectory=dir;
-					 main.packdir =main.packDirectory+"/" + pack + '/';
-					 window.localStorage.setItem("path",main.packDirectory);
-				 }
-				 else {
-					 console.log("fuck you error.");
+					 main.packDirectory = dir;
+					 main.packdir = main.packDirectory + '/' + pack + '/';
+					 window.localStorage.setItem('path', main.packDirectory);
+				 } else {
+					 console.log('fuck you error.');
 				 }
 				 checkPack();
 				 break;
 			case 11:
 				 const stuff = dialog.showOpenDialog({
-title: strings.get('selectPack'),
-properties: ['openDirectory']
-}, path => {
-editPack(path);
-});
-break;
-case 12:
-browseAch();
-break;
-case 13:
-st.setState(21);
-break;
-case -1000:
-const {shell} = require('electron').remote;
-shell.openExternal('http://oriolgomez.com');
-st.setState(2);
-break;
-}
-});
+					title: strings.get('selectPack'),
+					properties: ['openDirectory']
+				}, path => {
+					editPack(path);
+				});
+				break;
+			case 12:
+				browseAch();
+				break;
+			case 13:
+				st.setState(21);
+				break;
+			case -1000:
+				const {shell} = require('electron').remote;
+				shell.openExternal('http://oriolgomez.com');
+				st.setState(2);
+				break;
+		}
+	});
 }
 export async function changeRate() {
 	let rate = speech.rate;
@@ -170,22 +170,22 @@ export function languageSelect() {
 	}
 	const lm = new Menu(str, items);
 	lm.run(s => {
-			main.lang = s.selected;
-			data.lang = lang;
-			save();
+		main.lang = s.selected;
+		data.lang = lang;
+		save();
 
-			lm.destroy();
-			st.setState(2);
-			});	
+		lm.destroy();
+		st.setState(2);
+	});
 }
 export async function changeDir() {
-	return new Promise((resolve)=> {
-			const stuff = dialog.showOpenDialog({
-title: strings.get('selectNewPath'),
-properties: ['openDirectory']
-}, path=> {
-console.log("path"+path);
-resolve(String(path));
-});
-			});
+	return new Promise(resolve => {
+		const stuff = dialog.showOpenDialog({
+			title: strings.get('selectNewPath'),
+			properties: ['openDirectory']
+		}, path => {
+			console.log('path' + path);
+			resolve(String(path));
+		});
+	});
 }

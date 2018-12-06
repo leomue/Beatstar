@@ -8,13 +8,13 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
-			//New English
-selectNewPath:"Select the new path for the packs",
-	      noFindFolder:"I can't find your packs folder in %1, you will now be prompted to choose where it is.",
-	      mDir:"Packs folder change (currently %1)",
-	      selectPath:"Please select the path where your packs are saved:",
-	      directoryQuestion:"Wait a second... are you ok with your beatpacks folder being in your user folder? If not, you will be prompted to select a different directory to store your soundpacks. If you already have packs in your user folder and wish to change it, you will need to do that yourself as the game will not do it for you",
-	      mLang:"Change language",
+			// New English
+			selectNewPath: 'Select the new path for the packs',
+	      noFindFolder: 'I can\'t find your packs folder in %1, you will now be prompted to choose where it is.',
+	      mDir: 'Packs folder change (currently %1)',
+	      selectPath: 'Please select the path where your packs are saved:',
+	      directoryQuestion: 'Wait a second... are you ok with your beatpacks folder being in your user folder? If not, you will be prompted to select a different directory to store your soundpacks. If you already have packs in your user folder and wish to change it, you will need to do that yourself as the game will not do it for you',
+	      mLang: 'Change language',
 	      gq_end: 'Game over! I hope you had fun. You got %1 right and %2 wrong. Wanna try again?',
 	      gq_welcome: 'Welcome to pack quizz!\nAre you ready to find out how much you know about your unlocked soundpacks?',
 	      pq: 'Which pack do you think this level belongs to?',
@@ -116,7 +116,7 @@ selectNewPath:"Select the new path for the packs",
 	      football: 'soccer kick',
 	      react: 'Quick tap',
 	      gogame: 'Ready set go!',
-	      gq:"Pack quizz, get to know your soundpacks",
+	      gq: 'Pack quizz, get to know your soundpacks',
 	      achfw: 'Premier League Team',
 	      achhfw: 'Obtained by winning a game of football kick',
 	      achfl: 'Bad loser: You suck!',
@@ -305,13 +305,13 @@ selectNewPath:"Select the new path for the packs",
 	      mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
-			//new Spanish
-selectNewPath:"Selecciona una nueva ruta para los packs",
-	      noFindFolder:"No puedo encontrar tu carpeta de packs en %1, por favor dime dónde está en el cuadro que se te mostrará ahora.",
-	      mDir:"Cambiar carpeta de packs (ahora %1)",
-	      selectPath:"Por favor dime la carpeta donde guardaremos los packs",
-	      directoryQuestion:"Espera! Está bien que guarde los packs de sonido en la carpeta beatpacks de tu carpeta de usuario? Si no, te pediré que busques otra carpeta para guardar los packs. Si ya tienes packs guardados en la carpeta de usuario y quieres cambiar, deberás moverlos tú ya que el juego no lo hace por sí solo",
-	      mLang:"Cambiar Idioma",
+			// New Spanish
+			selectNewPath: 'Selecciona una nueva ruta para los packs',
+	      noFindFolder: 'No puedo encontrar tu carpeta de packs en %1, por favor dime dónde está en el cuadro que se te mostrará ahora.',
+	      mDir: 'Cambiar carpeta de packs (ahora %1)',
+	      selectPath: 'Por favor dime la carpeta donde guardaremos los packs',
+	      directoryQuestion: 'Espera! Está bien que guarde los packs de sonido en la carpeta beatpacks de tu carpeta de usuario? Si no, te pediré que busques otra carpeta para guardar los packs. Si ya tienes packs guardados en la carpeta de usuario y quieres cambiar, deberás moverlos tú ya que el juego no lo hace por sí solo',
+	      mLang: 'Cambiar Idioma',
 	      gq_end: 'Juego terminado! Espero que te hayas divertido. Has adivinado %1 y %2 estaban mal. ¿Quieres intentarlo de nuevo?',
 	      gq_welcome: 'Bienvenido a preguntas de packs!\nEstás listo para averiguar cuánto sabes de tus packs desbloqueados?',
 	      pq: 'A qué pack crees que pertenece este nivel?',
@@ -411,7 +411,7 @@ selectNewPath:"Selecciona una nueva ruta para los packs",
 	      football: 'Lanzamiento de penaltis',
 	      react: 'Reacciona',
 	      gogame: 'Preparados listos ya!',
-	      gq:"Adivina la música, conoce tus packs de sonido",
+	      gq: 'Adivina la música, conoce tus packs de sonido',
 	      doublecash: 'El mínimo para jugar son 5000 monedas. Lo siento!',
 	      achfw: 'Equipo de primera',
 	      achhfw: 'Gana un partido de penaltis',
@@ -611,9 +611,9 @@ selectNewPath:"Selecciona una nueva ruta para los packs",
 			return what;
 		}
 		rep.forEach((v, i) => {
-				const i1 = Number(i) + 1;
-				str = str.replace('%' + i1, v);
-				});
+			const i1 = Number(i) + 1;
+			str = str.replace('%' + i1, v);
+		});
 		return str;
 	}
 
@@ -627,9 +627,9 @@ selectNewPath:"Selecciona una nueva ruta para los packs",
 			speech.speak(what);
 		}
 		rep.forEach((v, i) => {
-				const i1 = Number(i) + 1;
-				str = str.replace('%' + i1, v);
-				});
+			const i1 = Number(i) + 1;
+			str = str.replace('%' + i1, v);
+		});
 		speech.speak(str);
 	}
 

@@ -1,8 +1,8 @@
 'use strict';
 import {utils} from './utilities';
+import {ttsVoice, ttsRate} from './main';
 
 const useWebTTS = true;
-import {ttsVoice, ttsRate} from './main';
 
 class TTS {
 	constructor(webTTS = false) {

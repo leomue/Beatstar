@@ -109,8 +109,9 @@ class GameUtils {
 	}
 
 	objSize(obj) {
-		let size = 0,
-		    key;
+		let size = 0;
+
+		let key;
 		for (key in obj) {
 			if (obj.hasOwnProperty(key)) {
 				size++;

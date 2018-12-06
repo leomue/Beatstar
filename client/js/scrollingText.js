@@ -22,9 +22,9 @@ class ScrollingText {
 		// This.hammer = new Hammer(id);
 		this.init();
 		if (this.callback == 0) {
-			return this.prom = new Promise((resolve) => {
-					this.res = resolve;
-					});
+			return this.prom = new Promise(resolve => {
+				this.res = resolve;
+			});
 		}
 	}
 
@@ -69,8 +69,8 @@ class ScrollingText {
 			const snd = so.create(str, true);
 			snd.play();
 			snd.sound.once('end', () => {
-					this.advance();
-					});
+				this.advance();
+			});
 		} else {
 			speech.speak(this.splitText[this.currentLine]);
 		}

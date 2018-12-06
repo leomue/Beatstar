@@ -14,11 +14,11 @@ class SoundObjectItem {
 			this.sound.id = file;
 			this.fromMemory = false;
 			this.sound.on('loaded', () => {
-					that.doneLoading();
-					});
+				that.doneLoading();
+			});
 			this.sound.on('destroy', () => {
-					that.destroySound();
-					});
+				that.destroySound();
+			});
 		} else {
 			this.fileName = so.memName;
 			const found = so.findSound(this.fileName);
@@ -29,14 +29,14 @@ class SoundObjectItem {
 			}
 			this.sound = sono.create(file.data);
 			this.sound.on('destroy', () => {
-					that.destroySound();
-					});
+				that.destroySound();
+			});
 			this.sound.id = so.memName;
 			this.fromMemory = true;
 		}
 		this.timeout = setTimeout(() => {
-				that.checkProgress();
-				}, 2000);
+			that.checkProgress();
+		}, 2000);
 		this.loaded = false;
 		this.callback = callback;
 		this.timeToLoad = performance.now();
@@ -67,19 +67,19 @@ class SoundObjectItem {
 			this.sound.destroy();
 			var that = this;
 			this.sound = sono.create({src: this.fileName, onComplete() {
-					that.doneLoading();
-					}});
+				that.doneLoading();
+			}});
 			this.sound.on('destroy', () => {
-					that.destroySound();
-					});
+				that.destroySound();
+			});
 		}
 		if (this.sound.progress == 1) {
 			this.doneLoading();
 		} else {
 			var that = this;
 			this.timeout = setTimeout(() => {
-					that.checkProgress();
-					}, 500);
+				that.checkProgress();
+			}, 500);
 		}
 	}
 
@@ -181,15 +181,15 @@ class SoundObject {
 		if (found == -1 || found.sound.data == null) {
 			var that = this;
 			returnObject = new SoundObjectItem(file, (() => {
-						that.doneLoading();
-						}));
+				that.doneLoading();
+			}));
 			this.sounds.push(returnObject);
 			returnObject = returnObject.sound;
 		} else {
 			this.memName = found.fileName;
 			returnObject = new SoundObjectItem(found.sound, (() => {
-						that.doneLoading();
-						}));
+				that.doneLoading();
+			}));
 			// I want to try this, we don't need to push this to the array if it's from memory.
 			this.sounds.push(returnObject);
 			// Found.onMemory++;
@@ -239,8 +239,8 @@ class SoundObject {
 				return;
 			}
 			this.sounds.push(new SoundObjectItem(this.queue[0], (() => {
-							that.handleQueue();
-							}), 1));
+				that.handleQueue();
+			}), 1));
 			this.queue.splice(0, 1);
 		} else {
 			this.loadingQueue = false;
@@ -290,18 +290,18 @@ class SoundObject {
 		const toDestroy = new Array();
 		const that = this;
 		this.oneShotSound.on('ended', () => {
-				for (var i = 0; i < that.oneShots.length; i++) {
+			for (var i = 0; i < that.oneShots.length; i++) {
 				if (that.oneShots[i].playing == false) {
-				that.oneShots[i].destroy();
-				toDestroy.push(i);
+					that.oneShots[i].destroy();
+					toDestroy.push(i);
 				}
-				}
-				for (var i = 0; i < toDestroy.length; i++) {
+			}
+			for (var i = 0; i < toDestroy.length; i++) {
 				if (that.oneShotSounds[i].playing == false) {
-				that.oneShotSounds.splice(toDestroy[i], 1);
+					that.oneShotSounds.splice(toDestroy[i], 1);
 				}
-				}
-				});
+			}
+		});
 	}
 
 	destroy(file, callback = 0) {
