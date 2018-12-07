@@ -507,6 +507,7 @@ class Game {
 			this.action = 0;
 			this.actionCompleted = false;
 			this.currentAction = 0;
+			if (!this.playing && this.level>1) this.currentAction=1;
 			this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
 			this.forceLevel = 0;
 	}
