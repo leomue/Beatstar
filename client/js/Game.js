@@ -495,8 +495,8 @@ class Game {
 			this.music.volume = this.volume;
 			so.directory = './sounds/';
 			this.music.play();
+			this.timer.change(that.bpms[that.level]  /1000.0);
 			this.music.sound.once('play', () => {
-				this.timer.change(that.bpms[that.level]  /1000.0);
 				this.input.justPressedEventCallback = key => {
 					this.render(key);
 				};
@@ -586,7 +586,7 @@ class Game {
 				so.enqueue(packdir + 'pre' + i);
 			}
 		}
-		speech.speak(debugstr)
+		//speech.speak(debugstr)
 		if (this.level > 1 && this.level != this.forceLevel) {
 			so.setQueueCallback(0);
 			so.loadQueue();
