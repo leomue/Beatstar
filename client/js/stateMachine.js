@@ -25,17 +25,17 @@ class StateMachine {
 			intro.volume = 0.5;
 			intro.play();
 			intro.sound.once('end', () => {
-				intro.unload();
-				$(document).off('keydown');
-				that.setState(2);
-			});
+					intro.unload();
+					$(document).off('keydown');
+					that.setState(2);
+					});
 			$(document).keydown(event => {
-				if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
+					if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
 					intro.unload();
 					$(document).off('keydown');
 					that.setState(20);
-				}
-			});
+					}
+					});
 			this.state = state;
 		} else if (state == 2) {
 			event = null;

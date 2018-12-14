@@ -1,4 +1,7 @@
 Version 4.0 
+You can now change the voice that the game will use. It will show voices belonging to  the language the game is set to, and will change to the first available voice of the language you select, if you change it. It supports English and Spanish, because so far there haven't been any other translations from players.
+
+Text to speech delay has been greatly reduced.
 Fixed another potential issue regarding game delays that had to do with  loading more levels than it should.
 You can now change the language from the main menu, because why not?
 You can now relocate your beatstar packs library to an external drive, yay!

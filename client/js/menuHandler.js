@@ -36,6 +36,7 @@ export async function mainMenu() {
 	}
 	if (speech.webTTS) {
 		items.push(new MenuItem(32, strings.get('mRate')));
+		items.push(new MenuItem(293, strings.get('mSelectVoice')));
 	}
 	items.push(new MenuItem(13, strings.get('mRev')));
 	items.push(new MenuItem(8, strings.get('mSafeguards', [data.safeguards])));
@@ -63,27 +64,36 @@ export async function mainMenu() {
 		mainMenu.sndChoose = so.create(packdir + 'select');
 	}
 	mainMenu.run(async s => {
-		speech.stop();
-		so.directory = './sounds/';
-		mainMenu.destroy();
-		switch (s.selected) {
+			speech.stop();
+			so.directory = './sounds/';
+			mainMenu.destroy();
+			switch (s.selected) {
 			case 1234:
-				languageSelect();
-				break;
+			languageSelect();
+			break;
+			case 293:
+			speech.setVoice(v=> {
+					data.voice=v;
+					speech.setRate(data.rate);
+					save();
+					st.setState(2);
+					});
+			break;
+
 			case 32:
-				changeRate();
-				break;
+			changeRate();
+			break;
 			case 33:
-				if (process.platform == 'darwin') {
-					await new ScrollingText(strings.get('macwarning'));
-				}
-				speech.webTTS = false;
-				st.setState(2);
-				break;
+			if (process.platform == 'darwin') {
+				await new ScrollingText(strings.get('macwarning'));
+			}
+			speech.webTTS = false;
+			st.setState(2);
+			break;
 			case 34:
-				speech.webTTS = true;
-				st.setState(2);
-				break;
+			speech.webTTS = true;
+			st.setState(2);
+			break;
 
 			case 0: st.setState(3); break;
 			case 1: st.setState(4); break;
@@ -114,25 +124,25 @@ export async function mainMenu() {
 				 break;
 			case 11:
 				 const stuff = dialog.showOpenDialog({
-					title: strings.get('selectPack'),
-					properties: ['openDirectory']
-				}, path => {
-					editPack(path);
-				});
-				break;
-			case 12:
-				browseAch();
-				break;
-			case 13:
-				st.setState(21);
-				break;
-			case -1000:
-				const {shell} = require('electron').remote;
-				shell.openExternal('http://oriolgomez.com');
-				st.setState(2);
-				break;
-		}
-	});
+title: strings.get('selectPack'),
+properties: ['openDirectory']
+}, path => {
+editPack(path);
+});
+break;
+case 12:
+browseAch();
+break;
+case 13:
+st.setState(21);
+break;
+case -1000:
+const {shell} = require('electron').remote;
+shell.openExternal('http://oriolgomez.com');
+st.setState(2);
+break;
+}
+});
 }
 export async function changeRate() {
 	let rate = speech.rate;
@@ -143,13 +153,16 @@ export async function changeRate() {
 		await utils.sleep(5);
 		if (inp.isJustPressed(KeyEvent.DOM_VK_RIGHT)) {
 			rate += 0.25;
-			speech.rate = rate;
-			strings.speak('newRate');
+			if (rate>10) rate=10;
+
+			speech.setRate(rate)
+				strings.speak('newRate');
 		}
 		if (inp.isJustPressed(KeyEvent.DOM_VK_LEFT)) {
 			rate -= 0.25;
-			speech.rate = rate;
-			strings.speak('newRate');
+			if (rate<1) rate=1;
+			speech.setRate(rate)
+				strings.speak('newRate');
 		}
 	}
 	data.rate = speech.rate;
@@ -170,22 +183,22 @@ export function languageSelect() {
 	}
 	const lm = new Menu(str, items);
 	lm.run(s => {
-		main.lang = s.selected;
-		data.lang = lang;
-		save();
-
-		lm.destroy();
-		st.setState(2);
-	});
+			main.lang = s.selected;
+			data.lang = lang;
+			save();
+			speech.setLanguage(lang);
+			lm.destroy();
+			st.setState(2);
+			});
 }
 export async function changeDir() {
 	return new Promise(resolve => {
-		const stuff = dialog.showOpenDialog({
-			title: strings.get('selectNewPath'),
-			properties: ['openDirectory']
-		}, path => {
-			console.log('path' + path);
-			resolve(String(path));
-		});
-	});
+			const stuff = dialog.showOpenDialog({
+title: strings.get('selectNewPath'),
+properties: ['openDirectory']
+}, path => {
+console.log('path' + path);
+resolve(String(path));
+});
+			});
 }

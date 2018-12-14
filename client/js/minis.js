@@ -28,19 +28,19 @@ pin.init();
 
 export async function betSync(minBet = 5000, slideBy = 500) {
 	return new Promise(resolve => {
-		minibet(bet => {
-			resolve(bet);
-			return bet;
-		}, minBet, slideBy);
-	});
+			minibet(bet => {
+					resolve(bet);
+					return bet;
+					}, minBet, slideBy);
+			});
 }
 export function minibet(callbet = null, minBet = 5000, slideBy = 500) {
 	if (data.beatcoins < minBet) {
 		const error = new ScrollingText(strings.get('noGameCash', [minBet, data.beatcoins]), '\n', (() => {
-			if (typeof callbet !== 'undefined') {
-				callbet(-1);
-			}
-		}));// Scroll
+					if (typeof callbet !== 'undefined') {
+					callbet(-1);
+					}
+					}));// Scroll
 	}// If not cash
 	else {
 		// Bet start
@@ -53,124 +53,124 @@ export function minibet(callbet = null, minBet = 5000, slideBy = 500) {
 		const dm = new Menu(strings.get('bet'), items);
 		let myBet = 0;
 		dm.run(s => {
-			so.directory = './sounds/';
-			myBet = s.items[0].value;
-			dm.destroy();
-			if (s.selected == 2) {
+				so.directory = './sounds/';
+				myBet = s.items[0].value;
+				dm.destroy();
+				if (s.selected == 2) {
 				if (typeof callbet !== 'undefined') {
-					callbet(0);
+				callbet(0);
 				}
-			}// Option 2
-			else {
+				}// Option 2
+				else {
 				addCash(0, myBet, () => {
-					if (typeof callbet !== 'undefined') {
+						if (typeof callbet !== 'undefined') {
 						callbet(myBet);
-					}
-				});
-			}// Not option 2
-		});// Menu callback
+						}
+						});
+				}// Not option 2
+				});// Menu callback
 		// bet end
 	}// Enough cash
 }// Function
 export async function playSlots() {
 	let myBet;
 	minibet(bet => {
-		if (bet <= 0) {
+			if (bet <= 0) {
 			st.setState(2);
 			return;
-		}
-		myBet = bet;
-		// Slots
-		so.directory = './sounds/';
-		const loop = so.create('slot_wheel', true);
-		let wheel;
-		let counter = 0;
-		loop.play();
-		const wheels = [];
-		const myInt = setInterval(() => {
-			if (counter < 3) {
-				so.directory = '';
-				wheels[counter] = utils.randomInt(2, 5);
-				if (counter == 2 && (wheels[0] == wheels[1])) {
+			}
+			myBet = bet;
+			// Slots
+			so.directory = './sounds/';
+			const loop = so.create('slot_wheel', true);
+			let wheel;
+			let counter = 0;
+			loop.play();
+			const wheels = [];
+			const myInt = setInterval(() => {
+					if (counter < 3) {
+					so.directory = '';
+					wheels[counter] = utils.randomInt(2, 5);
+					if (counter == 2 && (wheels[0] == wheels[1])) {
 					let void_random;
 					void_random = utils.randomInt(1, 10);
 					if (void_random == 1) {
-						wheels[2] = 1;
+					wheels[2] = 1;
 					}
-				}
-				wheel = so.create(packdir + 'a' + wheels[counter]);
-				wheel.play();
-				counter++;
-			} else {
-				clearInterval(myInt);
-				loop.stop();
-				so.directory = './sounds/';
-				if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
+					}
+					wheel = so.create(packdir + 'a' + wheels[counter]);
+					wheel.play();
+					counter++;
+					} else {
+					clearInterval(myInt);
+					loop.stop();
+					so.directory = './sounds/';
+					if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
 					const win = so.create('slot_win_' + utils.randomInt(1, 4));
 					win.play();
 					win.sound.once('end', async () => {
-						await getAch('slotwin');
-						const capcash = myBet;
-						console.log(capcash);
-						const perc = Math.ceil(utils.percentOf(utils.randomInt(80, 100), capcash) + myBet);
-						console.log('perc' + perc);
-						addCash(perc, 0, () => {
-							so.kill(() => {
-								st.setState(2);
+							await getAch('slotwin');
+							const capcash = myBet;
+							console.log(capcash);
+							const perc = Math.ceil(utils.percentOf(utils.randomInt(80, 100), capcash) + myBet);
+							console.log('perc' + perc);
+							addCash(perc, 0, () => {
+									so.kill(() => {
+											st.setState(2);
+											});
+									});
 							});
-						});
-					});
-				} else if (wheels[2] == 1) {
-					const lose = so.create('slot_lose_3');
-					lose.play();
-					let capcash = myBet;
-					if (capcash > data.beatcoins) {
-						capcash = data.beatcoins;
-					}
-					const perc = Math.ceil(utils.percentOf(utils.randomInt(15, 25), capcash));
-					console.log('perc' + perc);
-					data.beatcoins -= perc;
-					lose.sound.once('end', async () => {
-						addCash(0, perc, () => {
-							so.kill(() => {
-								st.setState(2);
-							});
-						}, true);
-					});
-				} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
-					const lose = so.create('slot_lose_1');
-					lose.play();
-					lose.sound.once('end', async () => {
-						await getAch('frust');
-						const capcash = myBet;
-						const perc = capcash;
-						addCash(perc, 0, () => {
-							so.kill(() => {
-								st.setState(2);
-							});
-						});
-					});
-				} else {
-					const lose = so.create('slot_lose_2');
-					lose.play();
-					lose.sound.once('end', async () => {
-						await getAch('catslots');
+					} else if (wheels[2] == 1) {
+						const lose = so.create('slot_lose_3');
+						lose.play();
 						let capcash = myBet;
 						if (capcash > data.beatcoins) {
 							capcash = data.beatcoins;
 						}
-						console.log(capcash);
-						const perc = Math.ceil(utils.percentOf(utils.randomInt(20, 60), capcash));
+						const perc = Math.ceil(utils.percentOf(utils.randomInt(15, 25), capcash));
 						console.log('perc' + perc);
-						addCash(0, perc, () => {
-							so.kill(() => {
-								st.setState(2);
-							});
-						});
-					});
-				}
-			}// Counter
-		}, utils.randomInt(2500, 3100));
+						data.beatcoins -= perc;
+						lose.sound.once('end', async () => {
+								addCash(0, perc, () => {
+										so.kill(() => {
+												st.setState(2);
+												});
+										}, true);
+								});
+					} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
+						const lose = so.create('slot_lose_1');
+						lose.play();
+						lose.sound.once('end', async () => {
+								await getAch('frust');
+								const capcash = myBet;
+								const perc = capcash;
+								addCash(perc, 0, () => {
+										so.kill(() => {
+												st.setState(2);
+												});
+										});
+								});
+					} else {
+						const lose = so.create('slot_lose_2');
+						lose.play();
+						lose.sound.once('end', async () => {
+								await getAch('catslots');
+								let capcash = myBet;
+								if (capcash > data.beatcoins) {
+								capcash = data.beatcoins;
+								}
+								console.log(capcash);
+								const perc = Math.ceil(utils.percentOf(utils.randomInt(20, 60), capcash));
+								console.log('perc' + perc);
+								addCash(0, perc, () => {
+										so.kill(() => {
+												st.setState(2);
+												});
+										});
+								});
+					}
+					}// Counter
+			}, utils.randomInt(2500, 3100));
 	}, 2500, 500);
 }
 function sop() {
@@ -292,16 +292,16 @@ export async function playCode() {
 	}// While playing
 	const newsafe = utils.randomInt(0, level - 1);
 	new ScrollingText(strings.get('codescracked', [crackedcodes, actions]), '\n', (async () => {
-		if (crackedcodes >= 3) {
-			await getAch('robber');
-		}
-		safeget(newsafe, () => {
-			so.kill(() => {
-				input.justPressedEventCallback = null;
-				st.setState(2);
-			});
-		});
-	}));
+				if (crackedcodes >= 3) {
+				await getAch('robber');
+				}
+				safeget(newsafe, () => {
+						so.kill(() => {
+								input.justPressedEventCallback = null;
+								st.setState(2);
+								});
+						});
+				}));
 }// Function
 export async function playDeck() {
 	const deck = shuffle(newDecks(1));
@@ -311,8 +311,8 @@ export async function playDeck() {
 	speech.speak(bet);
 	if (bet <= 0) {
 		so.kill(() => {
-			st.setState(2);
-		});
+				st.setState(2);
+				});
 		return;
 	}
 	strings.speak('hw');
@@ -329,82 +329,82 @@ export async function playDeck() {
 	while (bet != -1) {
 		await utils.sleep(8);
 		await new Promise(resolve => {
-			cardO = takeCard(deck);
-			take.playSync();
-			deck.splice(0, 1);
-			card = cardO[1];
-			value = cardO[0].value;
-			// Question
-			let answer = false;
-			const items = new Array();
-			items.push(new MenuItem(0, strings.get('nextCard', [card, bet])));
-			if (value < 13) {
+				cardO = takeCard(deck);
+				take.playSync();
+				deck.splice(0, 1);
+				card = cardO[1];
+				value = cardO[0].value;
+				// Question
+				let answer = false;
+				const items = new Array();
+				items.push(new MenuItem(0, strings.get('nextCard', [card, bet])));
+				if (value < 13) {
 				items.push(new MenuItem(0, strings.get('higher', )));
-			}
-			if (value > 1) {
+				}
+				if (value > 1) {
 				items.push(new MenuItem(1, strings.get('lower', )));
-			}
-			if (!first) {
+				}
+				if (!first) {
 				items.push(new MenuItem(2, strings.get('collect',)));
-			} else {
+				} else {
 				first = false;
-			}
-			so.directory = './sounds/';
-			const dm = new Menu(strings.get('nextCard', [card, bet]), items);
-			speech.speak('ok');
-			dm.run(async s => {
+				}
 				so.directory = './sounds/';
-				switch (s.selected) {
-					case 0:
+				const dm = new Menu(strings.get('nextCard', [card, bet]), items);
+				speech.speak('ok');
+				dm.run(async s => {
+						so.directory = './sounds/';
+						switch (s.selected) {
+						case 0:
 						dm.destroy();
 						answer = true;
 						break;
-					case 1:
+						case 1:
 						dm.destroy();
 						answer = false;
 						break;
-					case 2:
+						case 2:
 						dm.destroy();
 						await addCashSync(bet, 0);
 						st.setState(2);
 						resolve();
 						bet = -1;
 						return;
-				}
-				const nextCard = takeCard(deck);
-				await utils.sleep(utils.randomInt(1000, 1900));
-				speech.speak(nextCard[1] + '!');
-				await utils.sleep(utils.randomInt(400, 800));
-				if (nextCard[0].value < value && !answer) {
-					bet += firstBet;
-					pool.playStatic('hl_right', 0);
-					await utils.sleep(utils.randomInt(100, 300));
-					pool.playStatic('hl_crowdwin', 0);
-					await utils.sleep(utils.randomInt(800, 1600));
-					resolve();
-				} else if (nextCard[0].value > value && answer) {
-					bet += firstBet;
-					pool.playStatic('hl_right', 0);
-					await utils.sleep(utils.randomInt(100, 300));
-					pool.playStatic('hl_crowdwin', 0);
-					await utils.sleep(utils.randomInt(800, 1600));
-					resolve();
-				} else if (nextCard[0].value == value) {
-					pool.playStatic('hl_equal', 0);
-					await utils.sleep(utils.randomInt(100, 300));
-					pool.playStatic('hl_crowdequal', 0);
-					await utils.sleep(utils.randomInt(800, 1600));
-					resolve();
-				} else {
-					pool.playStatic('hl_wrong', 0);
-					await utils.sleep(utils.randomInt(100, 300));
-					pool.playStatic('hl_crowdlose', 0);
-					await utils.sleep(3400);
-					st.setState(2);
-					resolve();
-					bet = -1;
-				}
-			});// Menu
+						}
+						const nextCard = takeCard(deck);
+						await utils.sleep(utils.randomInt(1000, 1900));
+						speech.speak(nextCard[1] + '!');
+						await utils.sleep(utils.randomInt(400, 800));
+						if (nextCard[0].value < value && !answer) {
+							bet += firstBet;
+							pool.playStatic('hl_right', 0);
+							await utils.sleep(utils.randomInt(100, 300));
+							pool.playStatic('hl_crowdwin', 0);
+							await utils.sleep(utils.randomInt(800, 1600));
+							resolve();
+						} else if (nextCard[0].value > value && answer) {
+							bet += firstBet;
+							pool.playStatic('hl_right', 0);
+							await utils.sleep(utils.randomInt(100, 300));
+							pool.playStatic('hl_crowdwin', 0);
+							await utils.sleep(utils.randomInt(800, 1600));
+							resolve();
+						} else if (nextCard[0].value == value) {
+							pool.playStatic('hl_equal', 0);
+							await utils.sleep(utils.randomInt(100, 300));
+							pool.playStatic('hl_crowdequal', 0);
+							await utils.sleep(utils.randomInt(800, 1600));
+							resolve();
+						} else {
+							pool.playStatic('hl_wrong', 0);
+							await utils.sleep(utils.randomInt(100, 300));
+							pool.playStatic('hl_crowdlose', 0);
+							await utils.sleep(3400);
+							st.setState(2);
+							resolve();
+							bet = -1;
+						}
+				});// Menu
 		});// Promise
 	}
 }
@@ -808,8 +808,8 @@ export async function playFootball() {
 		}// Second turn
 		if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 			so.kill(() => {
-				st.setState(2);
-			});
+					st.setState(2);
+					});
 			return;
 		}
 		await utils.sleep(5);
@@ -844,14 +844,14 @@ export async function playFootball() {
 	sp.stop();
 	himno.stop();
 	if (st2 == 5) {
-		getAch('fl');
+		await getAch('fl');
 	}
 	if (st1 == 5) {
-		getAch('fw');
+		await getAch('fw');
 	}
 	so.kill(() => {
-		st.setState(2);
-	});
+			st.setState(2);
+			});
 }
 
 export async function playPong() {
@@ -877,10 +877,10 @@ export async function playPong() {
 		}
 	}
 	gametimer = Timer({update(dt) {
-		pongloop(dt, actions);
-	}, render() {
-		pongrender();
-	}}, 1 / 60);
+			pongloop(dt, actions);
+			}, render() {
+			pongrender();
+			}}, 1 / 60);
 	pongtimer.restart();
 	current = 1;
 	gametimer.start();
@@ -916,25 +916,25 @@ function pongloop(dt, actions) {
 			const end = so.create('pong_endbgm');
 			end.play();
 			end.sound.once('end', async () => {
-				pin.justPressedEventCallback = null;
-				await new ScrollingText(strings.get('pongend', [pongright, pongmiss]));
-				if (pongright == 0 && pongmiss > 0) {
+					pin.justPressedEventCallback = null;
+					await new ScrollingText(strings.get('pongend', [pongright, pongmiss]));
+					if (pongright == 0 && pongmiss > 0) {
 					await getAch('pongfail');
-				}
-				if (pongright > 25) {
+					}
+					if (pongright > 25) {
 					await getAch('pongfire');
-				}
-				let cashToAdd = 0;
-				cashToAdd += pongright * 60;
-				cashToAdd -= pongmiss * 70;
-				if (cashToAdd < 0) {
+					}
+					let cashToAdd = 0;
+					cashToAdd += pongright * 60;
+					cashToAdd -= pongmiss * 70;
+					if (cashToAdd < 0) {
 					cashToAdd = 0;
-				}
-				await addCashSync(cashToAdd);
-				so.kill(() => {
-					st.setState(2);
-				});
-			});
+					}
+					await addCashSync(cashToAdd);
+					so.kill(() => {
+							st.setState(2);
+							});
+					});
 		}
 		pin.justPressedEventCallback = evt => {
 			if (event.which != actionKeys[current]) {
@@ -973,10 +973,10 @@ class GoGame {
 		this.maxTurns = 5;
 		const that = this;
 		this.timer = Timer({update(dt) {
-			// This.update();
-		}, render() {
-			that.loop();
-		}});
+				// This.update();
+				}, render() {
+				that.loop();
+				}});
 		this.pool = new SoundHandler();
 		this.time = new OldTimer();
 		this.notify = 0;
@@ -1011,14 +1011,14 @@ class GoGame {
 				this.combo++;
 				this.timer.stop();
 				new ScrollingText(strings.get('goExact', [this.turns - 1]), '\n', async () => {
-					if (this.combo > 1) {
+						if (this.combo > 1) {
 						this.pool.playStatic('go_combo', 0);
 						await new ScrollingText(strings.get('combo', [this.combo, this.curscore * this.combo]));
 						this.curscore = this.curscore + (this.curscore * this.combo);
-					}
-					this.score += this.curscore;
-					this.newTurn();
-				});
+						}
+						this.score += this.curscore;
+						this.newTurn();
+						});
 			} else if (this.elapsedTime <= this.th1) {
 				let timeDisplay = this.elapsedTime / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
@@ -1027,8 +1027,8 @@ class GoGame {
 				this.timer.stop();
 				this.score += this.curscore;
 				new ScrollingText(strings.get('goEarly', [timeDisplay, this.turns - 1]), '\n', () => {
-					this.newTurn();
-				});
+						this.newTurn();
+						});
 			} else if (this.elapsedTime > this.th1 && this.elapsedTime < this.th2) {
 				let timeDisplay = this.elapsedTime / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
@@ -1038,14 +1038,14 @@ class GoGame {
 				this.combo++;
 				this.timer.stop();
 				new ScrollingText(strings.get('goOk', [timeDisplay, this.curscore, this.turns - 1]), '\n', async () => {
-					if (this.combo > 1) {
+						if (this.combo > 1) {
 						this.pool.playStatic('go_combo', 0);
 						await new ScrollingText(strings.get('combo', [this.combo, this.curscore * this.combo]));
 						this.curscore = this.curscore + (this.curscore * this.combo);
-					}
-					this.score += this.curscore;
-					this.newTurn();
-				});
+						}
+						this.score += this.curscore;
+						this.newTurn();
+						});
 			} else if (this.elapsedTime > this.th2 && this.elapsedTime < this.th3) {
 				let timeDisplay = this.elapsedTime / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
@@ -1055,14 +1055,14 @@ class GoGame {
 				this.pool.playStatic('go_ok', 0);
 				this.timer.stop();
 				new ScrollingText(strings.get('goOk', [timeDisplay, this.curscore, this.turns - 1]), '\n', async () => {
-					if (this.combo > 1) {
+						if (this.combo > 1) {
 						this.pool.playStatic('go_combo', 0);
 						await new ScrollingText(strings.get('combo', [this.combo, this.curscore * this.combo]));
 						this.curscore = this.curscore + (this.curscore * this.combo);
-					}
-					this.score += this.curscore;
-					this.newTurn();
-				});
+						}
+						this.score += this.curscore;
+						this.newTurn();
+						});
 			}
 		}// Enter pressed
 		if (this.time.elapsed >= 0 && this.notify == 0) {
@@ -1076,8 +1076,8 @@ class GoGame {
 			this.combo = 0;
 			this.timer.stop();
 			new ScrollingText(strings.get('goLate', [this.turns - 1]), '\n', () => {
-				this.newTurn();
-			});
+					this.newTurn();
+					});
 		}
 	}
 
@@ -1087,12 +1087,12 @@ class GoGame {
 		this.notify = 0;
 		if (this.turns < 1) {
 			new ScrollingText(strings.get('goOver', [this.score, this.maxTurns]), '\n', () => {
-				addCash(Math.ceil(this.score / 2), 0, () => {
-					so.kill(() => {
-						st.setState(2);
+					addCash(Math.ceil(this.score / 2), 0, () => {
+							so.kill(() => {
+									st.setState(2);
+									});
+							});
 					});
-				});
-			});
 		} else {
 			this.time.restart();
 			this.timer.start();
@@ -1115,8 +1115,8 @@ class QuestionsGame {
 		}
 		if (this.packs < 5) {
 			new ScrollingText(strings.get('need5'), '\n', () => {
-				st.setState(2);
-			});
+					st.setState(2);
+					});
 		}
 		this.songs = {};
 		this.correct = 0;
@@ -1181,7 +1181,7 @@ class QuestionsGame {
 		}
 		await new ScrollingText(strings.get('gq_end', [this.correct, this.wrong]));
 		so.kill(() => {
-			st.setState(2);
-		});
+				st.setState(2);
+				});
 	}
 }

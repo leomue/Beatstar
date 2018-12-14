@@ -6,11 +6,10 @@ var package=require('../../package.json');
 export var version =package.version;
 export var version2 = '';
 export var lang = 0;
-
 export var ttsVoice;
 export var ttsRate = 1;
 const achs = [
-	'fw', 'fl', 'idle', 'dl', 'dw', 'w1', 'w5', 'w10', 'w25', 'w50', 'usepinky', 'lactions', 'fingr', 'bulk', 'intro', 'slotwin', 'frust', 'catslots', 'robber', 'pongfire', 'pongfail'
+	'fw', 'fl', 'idle', 'dl', 'dw', 'w1', 'w5', 'w10', 'w25', 'w50', 'usepinky', 'lactions', 'fingr', 'bulk', 'intro', 'slotwin', 'frust', 'catslots', 'robber', 'pongfire', 'pongfail',
 ];
 export var editing = false;
 import {OldTimer} from './oldtimer';
@@ -69,14 +68,6 @@ async function setup() {
 			});
 	st.setState(1);
 }
-function proceed() {
-	const sound = so.create('memtest');
-	sound.volume = 0.3;
-	sound.play();
-	so.destroy('memtest');
-}
-// St.setState(1);
-// document.removeEventListener("DOMContentLoaded",setup);
 export async function learnPack() {
 	so.directory = '';
 	const fs = require('fs');
@@ -492,7 +483,8 @@ export async function checkPack(changeBoot = true, debug = false) {
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
 		await changeLang();
-		await new ScrollingText(strings.get("noFindFolder",[window.localStorage.getItem("path")]));
+		speech.setLanguage(lang)
+			await new ScrollingText(strings.get("noFindFolder",[window.localStorage.getItem("path")]));
 		let dir=await changeDir();
 		if (typeof dir !== 'undefined' && dir != '') {
 			packDirectory=dir;
@@ -506,17 +498,24 @@ export async function checkPack(changeBoot = true, debug = false) {
 		try {
 			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.dat')));
 			lang = data.lang;
-			if (typeof data.rate !== 'undefined') {
-				speech.rate = data.rate;
+			speech.setLanguage(lang)
+				if (typeof data.rate !== 'undefined') {
+					speech.setRate(data.rate);
+				}
+			if (typeof data.voice !== 'undefined') {
+				speech.synth.setVoice(data.voice);
 			}
+
 		} catch (err) {
 			console.log(err);
 			await changeLang();
+			speech.setLanguage()
 		}
 	}
 	else {
 		if (!changedLang) {
 			await changeLang();
+			speech.setLanguage(lang)
 		}
 	}
 	console.log("lang"+lang);
@@ -589,10 +588,15 @@ export async function checkPack(changeBoot = true, debug = false) {
 	}
 	pack = data.pack;
 	lang = data.lang;
-	save();
+	speech.setLanguage(lang)
+		save();
 	if (typeof data.rate !== 'undefined') {
-		speech.rate = data.rate;
+		speech.setRate(data.rate);
 	}
+	if (typeof data.voice !== 'undefined') {
+		speech.synth.setVoice(data.voice);
+	}
+
 	if (!changeBoot) {
 		boot = false;
 		credits = true;
@@ -615,8 +619,8 @@ export async function checkPack(changeBoot = true, debug = false) {
 		return;
 	}
 	if (debug) {
-		localStorage.clear();
 		// Await strings.check(2);
+		speech.setVoice();
 		return;
 	}
 	booter();

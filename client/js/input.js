@@ -16,14 +16,14 @@ class KeyboardInput {
 		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
 		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
 		document.addEventListener('keydown', event => {
-			that.handleKeyDown(event);
-		});
+				that.handleKeyDown(event);
+				});
 		document.addEventListener('keyup', event => {
-			that.handleKeyUp(event);
-		});
+				that.handleKeyUp(event);
+				});
 		document.addEventListener('keypress', event => {
-			that.handleChar(event);
-		});
+				that.handleChar(event);
+				});
 	}
 
 	handleKeyDown(event) {
@@ -57,7 +57,10 @@ class KeyboardInput {
 		}
 		this.chars = '';
 	}
-
+	destroy() {
+		this.charEventCallback = null;
+		this.justPressedEventCallback=null;
+	}
 	isDown(event) {
 		return this.keyDown[event];
 	}
@@ -81,10 +84,10 @@ class KeyboardInput {
 	keysDown() {
 		const kd = [];
 		this.keyDown.forEach((v, i) => {
-			if (v) {
+				if (v) {
 				kd.push(i);
-			}
-		});
+				}
+				});
 		return kd;
 	}
 
@@ -97,10 +100,10 @@ class KeyboardInput {
 	keysPressed() {
 		const kd = [];
 		this.justPressed.forEach((v, i) => {
-			if (v) {
+				if (v) {
 				kd.push(i);
-			}
-		});
+				}
+				});
 		this.justPressed.splice();
 		return kd;
 	}
@@ -112,10 +115,10 @@ class KeyboardInput {
 	keysReleased() {
 		const kd = [];
 		this.justReleased.forEach((v, i) => {
-			if (v) {
+				if (v) {
 				kd.push(i);
-			}
-		});
+				}
+				});
 		this.justReleased.splice();
 		return kd;
 	}

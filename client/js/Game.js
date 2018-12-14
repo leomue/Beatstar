@@ -26,7 +26,7 @@ class Game {
 		this.totalAverage = [];
 		this.cash = 0;
 		so.directory = './sounds/',
-		this.scoreAverage = [];
+			this.scoreAverage = [];
 		this.levelAverage = [];
 		this.scoreCounter = so.create('cling');
 		so.directory = '';
@@ -79,8 +79,8 @@ class Game {
 			this.fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 		} else {
 			const error = new ScrollingText('There was an error loading the pack ' + this.pack + '.', '\n', (() => {
-				st.setState(2);
-			}));
+						st.setState(2);
+						}));
 		}
 		this.bpms = this.fileData.split(',');
 		so.directory = './sounds/';
@@ -117,13 +117,13 @@ class Game {
 		this.keys = actionKeys;
 		const that = this;
 		this.timer = Timer({update(dt) {
-			that.update(dt);
-		}, render() {
-		}}, this.bpms[this.level] / 1000.0);
+				that.update(dt);
+				}, render() {
+				}}, this.bpms[this.level] / 1000.0);
 		so.setQueueCallback(() => {
-			so.directory = './sounds/';
-			that.setupLevel();
-		});
+				so.directory = './sounds/';
+				that.setupLevel();
+				});
 		this.queueLevels(this.level);
 		so.loadQueue();
 	}
@@ -145,7 +145,7 @@ class Game {
 			save();
 			this.actionCompleted = true;
 			this.safe.pitch = utils.progressPitch(data.safeguards, 1, this.maxSafeguards, 1.6, 0.9);
-			this.safe.play();
+			this.safe.splay();
 		}
 		this.currentAction++;
 		// Action and level checks go here
@@ -184,8 +184,8 @@ class Game {
 			await getAch('fingr');
 		}
 		addCash(this.cash, 0, () => {
-			st.setState(2);
-		});
+				st.setState(2);
+				});
 	}
 
 	async fail(skipGuards = false) {
@@ -196,7 +196,7 @@ class Game {
 			this.actionCompleted = true;
 			this.currentAction--;
 			this.safe.pitch = utils.progressPitch(data.safeguards, 1, this.maxSafeguards, 1.6, 0.9);
-			this.safe.play();
+			this.safe.splay();
 			return;
 		}
 		this.timer.stop();
@@ -223,29 +223,29 @@ class Game {
 			await getAch('lactions');
 		}
 		so.kill(() => {
-			if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
+				if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 				const input = new KeyboardInput();
 				input.init();
 				so.directory = '';
 				const bootSound = so.create(packdir + 'credits');
 				bootSound.play();
 				bootSound.sound.once('end', () => {
-					input.justPressedEventCallback = null;
-					that.doScore();
-				});
+						input.justPressedEventCallback = null;
+						that.doScore();
+						});
 				so.directory = './sounds/';
 
 				input.justPressedEventCallback = function (evt) {
-					bootSound.sound.off('end');
-					bootSound.stop();
-					bootSound.destroy();
-					input.justPressedEventCallback = null;
-					that.doScore();
-				};
-			}// If file exists
-			else {
+				bootSound.sound.off('end');
+				bootSound.stop();
+				bootSound.destroy();
+				input.justPressedEventCallback = null;
 				that.doScore();
-			}
+				};
+				}// If file exists
+				else {
+					that.doScore();
+				}
 		});
 	}
 
@@ -262,7 +262,7 @@ class Game {
 		so.resetQueuedInstance();
 		const that = this;
 		so.kill(() => {
-			if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
+				if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 				console.log('found credits');
 				const input = new KeyboardInput();
 				input.init();
@@ -270,22 +270,22 @@ class Game {
 				const bootSound = so.create(packdir + 'credits');
 				bootSound.play();
 				bootSound.sound.once('end', () => {
-					input.justPressedEventCallback = null;
-					that.doScore();
-				});
+						input.justPressedEventCallback = null;
+						that.doScore();
+						});
 				so.directory = './sounds/';
 
 				input.justPressedEventCallback = function (evt) {
-					bootSound.sound.off('end');
-					bootSound.stop();
-					bootSound.destroy();
-					input.justPressedEventCallback = null;
-					that.doScore();
-				};
-			}// If file exists
-			else {
+				bootSound.sound.off('end');
+				bootSound.stop();
+				bootSound.destroy();
+				input.justPressedEventCallback = null;
 				that.doScore();
-			}
+				};
+				}// If file exists
+				else {
+					that.doScore();
+				}
 		});
 	}
 
@@ -304,14 +304,14 @@ class Game {
 		so.resetQueuedInstance();
 		const that = this;
 		so.kill(async () => {
-			data.save = {
+				data.save = {
 				pack,
 				level: this.level
-			};
-			save();
-			await new ScrollingText('saved');
-			this.doScore();
-		});
+				};
+				save();
+				await new ScrollingText('saved');
+				this.doScore();
+				});
 	}
 
 	render(key) {
@@ -446,8 +446,8 @@ class Game {
 				this.cash += (this.cash * 2);
 			}
 			so.kill(() => {
-				that2.doScore();
-			});
+					that2.doScore();
+					});
 			return;
 		}// Winning
 		this.canPause = true;
@@ -471,47 +471,47 @@ class Game {
 			this.playing = true;
 		}
 		if (!this.playing) {
-			 this.queueLevels(this.level);
-						this.postprocess();
+			this.queueLevels(this.level);
+			this.postprocess();
 		}
 		else {
 			if (this.level>1) this.queueLevels(this.level);
 			this.input.justPressedEventCallback=(evt)=> {
 				if (evt==KeyEvent.DOM_VK_RETURN && this.preSound.playing) {
 					this.preSound.stop();
-				this.postprocess();
+					this.postprocess();
 				}
 			};
 			this.preSound.sound.once("end",()=> {
-				this.postprocess();
-			});
+					this.postprocess();
+					});
 		}
 	}
 	postprocess() {
-				so.directory = '';
-			const that = this;
-			this.music = so.create(packdir + this.level + 'music', false);
-			this.music.loop = true;
-			this.music.volume = this.volume;
-			so.directory = './sounds/';
-			this.music.play();
-			this.timer.change(that.bpms[that.level]  /1000.0);
-			this.music.sound.once('play', () => {
+		so.directory = '';
+		const that = this;
+		this.music = so.create(packdir + this.level + 'music', false);
+		this.music.loop = true;
+		this.music.volume = this.volume;
+		so.directory = './sounds/';
+		this.music.play();
+		this.timer.change(that.bpms[that.level]  /1000.0);
+		this.music.sound.once('play', () => {
 				this.input.justPressedEventCallback = key => {
-					this.render(key);
+				this.render(key);
 				};
-			});
-			if (this.level > 1 && this.level != this.forceLevel) {
-	//this.queueLevels();
-			}
-			this.action = 0;
-			this.actionCompleted = false;
-			this.currentAction = 0;
-			if (!this.playing && this.level>1) this.currentAction=1;
-			this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
-			this.forceLevel = 0;
+				});
+		if (this.level > 1 && this.level != this.forceLevel) {
+			//this.queueLevels();
+		}
+		this.action = 0;
+		this.actionCompleted = false;
+		this.currentAction = 0;
+		if (!this.playing && this.level>1) this.currentAction=1;
+		this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
+		this.forceLevel = 0;
 	}
-	
+
 	unload() {
 	}
 
