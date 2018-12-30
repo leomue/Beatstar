@@ -620,7 +620,8 @@ export async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		// Await strings.check(2);
-		speech.setVoice();
+		data.beatcoins=400000;
+		save();
 		return;
 	}
 	booter();

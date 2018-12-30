@@ -2,3 +2,4 @@ Make tutorial for react and gogame
 achievements for goGame
 make an achievement if you fail at the last level.
 change safegaurd sound
+delete pack world collection 2.1
