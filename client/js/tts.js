@@ -21,13 +21,15 @@ splitSentences:false,
 .then((data) => {
 		this.voices=data.voices;
 		}).catch(e => {
-			console.error("An error occured while initializing : ", e)
+			console.error("An error occured while initializing : ", e.message)
 			})
 
 }
 setLanguage(lang) {
+	console.log("lang"+lang+"!");
 	if (lang==1) this.lang="en-us";
 	if (lang==2) this.lang="es-es";
+	console.log("lang"+this.lang);
 	this.synth.setLanguage(this.lang)
 }
 setRate(r) {

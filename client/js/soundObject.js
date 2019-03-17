@@ -244,6 +244,7 @@ class SoundObject {
 			this.sounds.push(returnObject);
 		} catch(err) {
 			console.log("Error loading sound: "+err.message);
+			return false;
 		}
 		return returnObject;
 	}

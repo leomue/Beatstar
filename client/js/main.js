@@ -16,7 +16,7 @@ import {OldTimer} from './oldtimer';
 import $ from 'jquery';
 import {playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 // Import {SoundPool} from './soundPool';
-import Cryptr from 'cryptr';
+import Cryptr from './cryptr_old';
 
 let boot = false;
 export var credits = false;
@@ -46,7 +46,7 @@ import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
 
 export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT];
-export var mangle = new Cryptr('sdf jkl wer uio');
+export var mangle = new Cryptr('canttouchthis007');
 import {KeyboardInput} from './input.js';
 
 export var langs = ['', 'english', 'spanish'];
@@ -497,6 +497,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 		packDirectory=window.localStorage.getItem("path");
 		try {
 			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.dat')));
+			return;
 			lang = data.lang;
 			speech.setLanguage(lang)
 				if (typeof data.rate !== 'undefined') {
@@ -509,7 +510,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 		} catch (err) {
 			console.log(err);
 			await changeLang();
-			speech.setLanguage()
+			speech.setLanguage(lang)
 		}
 	}
 	else {
