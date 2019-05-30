@@ -9,6 +9,14 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			// New English
+			k2:"Space bar",
+			k3: "tab",
+			k4: "enter",
+			k5: "backspace",
+			k6:"up arrow",
+			k7:"Down arrow",
+			k8:"Right arrow",
+			k9:"Left arrow",
 			adbulk:"Well, aren't you a vicious downloader? You just want all the packs, don't you? Fine, here you go. Have a little achievement.",
 			adcatslots:"Well, that was a pretty bad game of slots. Think about a tsunami, a tornado and an earthquake hitting the same spot. Maybe your house. Wouldn't it be spectacular?",
 			addl:"Let the fanfares play, friends, because a loser has just lost. Double loser, loser times 2. Get it? No? Good.",
@@ -331,6 +339,15 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 		};
 		this.strings[2] = {
 			// New Spanish
+			k2:"espacio",
+			k3: "tabulador",
+			k4: "énter",
+			k5: "retroceso o borrar",
+			k6:"flecha arriba",
+			k7:"flecha abajo",
+			k8:"flecha derecha",
+			k9:"flecha izquierda",
+			
 selectVoice:"%1 voces disponibles. Usa las flechas arriba y abajo para seleccionar una nueva voz y pulsa enter cuando hayas terminado.",
 	    mSelectVoice:"Cambiar la voz del juego",
 	    selectNewPath: 'Selecciona una nueva ruta para los packs',

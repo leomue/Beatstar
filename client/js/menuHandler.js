@@ -1,4 +1,5 @@
 import {utils} from './utilities';
+import {mangle} from './main';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
@@ -22,7 +23,7 @@ const remote = electron.remote;
 
 export async function mainMenu() {
 	console.log('menu thinks pack dir is ' + main.packDirectory);
-	const fs = require('fs');
+	const fs=require('fs');
 	const items = new Array();
 	items.push(new MenuItem(0, strings.get('mStart')));
 	if (version2 != '' && version != version2) {
@@ -74,6 +75,7 @@ export async function mainMenu() {
 			case 293:
 			speech.setVoice(v=> {
 					data.voice=v;
+					if (typeof data.rate==="undefined") data.rate=3;
 					speech.setRate(data.rate);
 					save();
 					st.setState(2);

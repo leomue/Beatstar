@@ -4,3 +4,4 @@ achievements for goGame
 make an achievement if you fail at the last level.
 change safegaurd sound
 delete pack world collection 2.1
+export var mangle = new Cryptr('sdf jkl wer uio');

@@ -16,7 +16,7 @@ import {OldTimer} from './oldtimer';
 import $ from 'jquery';
 import {playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 // Import {SoundPool} from './soundPool';
-import Cryptr from './cryptr_old';
+import Cryptr from 'cryptr';
 
 let boot = false;
 export var credits = false;
@@ -143,7 +143,7 @@ export async function browsePacks(browsing = 1) {
 			return;
 		}
 	try {
-		var packs = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/hashes.db')));
+		var packs = JSON.parse(fs.readFileSync(packDirectory+'/hashes.db'));
 	} catch (err) {
 		console.log(err);
 		var error = 0;
@@ -416,7 +416,7 @@ hash: newHash
 	});
 	so.directory = './sounds/';
 	let write = JSON.stringify(packs);
-	write = mangle.encrypt(write);
+	
 	fs.writeFileSync(packDirectory+'/hashes.db', write);
 	if (silent) {
 		return packs;
@@ -496,8 +496,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 		console.log("path set to "+window.localStorage.getItem("path"));
 		packDirectory=window.localStorage.getItem("path");
 		try {
-			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.dat')));
-			return;
+			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
 			lang = data.lang;
 			speech.setLanguage(lang)
 				if (typeof data.rate !== 'undefined') {
@@ -544,7 +543,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 	}//get it from the saved path
 
 	try {
-		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.dat')));
+		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
 	} catch (err) {
 		data = new Player();
 		let introing = true;
@@ -649,7 +648,7 @@ export async function downloadPacks(arr = []) {
 		await fetch('http://oriolgomez.com/beatpacks/hashes.db')
 			.then(event => event.text())
 			.then(data => {
-					remoteHashes = JSON.parse(mangle.decrypt(data));
+					remoteHashes = JSON.parse(data);
 					console.log('remote' + remoteHashes.length);
 					});
 		// Ok
@@ -960,7 +959,7 @@ export function save() {
 	}
 	let write = JSON.stringify(data);
 	write = mangle.encrypt(write);
-	fs.writeFileSync(packDirectory+'/save.dat', write);
+	fs.writeFileSync(packDirectory+'/save.beat', write);
 }
 export function listenPack() {
 	const fs = require('fs');
@@ -1554,22 +1553,12 @@ export async function getAch(name, forcePlay = false) {
 		let snd;
 		const old = so.directory;
 		so.directory = './sounds/';
-		// If (fs.existsSync("sounds/"+lang+"/ach"+name+".ogg")) {
-		snd = so.create(lang + '/ach' + name);
-		// }
-		/* else if (fs.existsSync("sounds/"+"1"+"/ach"+name+".ogg")) {
-		   snd=so.create("1"+"/ach"+name);
-		   }
-		   else {
-		   console.log("sounds/"+lang+"/ach"+name+".ogg");
-		   }
-		 */
-		if (typeof snd !== 'undefined') {
+		snd = so.create('getAch');
 			await snd.playSync();
-		}
-		if (!forcePlay) {
-			await new ScrollingText(strings.get('newach', [strings.get('ach' + name)]));
-		}
+			if (!forcePlay) {
+				await new ScrollingText(strings.get('newach', [strings.get('ach' + name)]));
+			}
+			await new ScrollingText(strings.get("ad"+name));
 		so.directory = old;
 		return true;
 	}
