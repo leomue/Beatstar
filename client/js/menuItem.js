@@ -9,14 +9,16 @@ const MenuTypes = {
 		AUDIO: 4,
 };
 class MenuItem {
-	constructor(id, name) {
+	constructor(id, name,shortcut="") {
 		this.name = name;
+		this.shortcut=shortcut;
 					this.id = id;
 			this.type = MenuTypes.NORMAL;
 	}
 	
 		speak() {
-			speech.speak(this.name);
+		if (this.shortcut=="") speech.speak(this.name);
+		if (this.shortcut!="") speech.speak(this.name+" ("+this.shortcut+")");
 		}
 	
 		select() {

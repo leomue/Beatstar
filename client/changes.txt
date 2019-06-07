@@ -1,3 +1,9 @@
+Version 5.0
+Sadly, old save files are no longer compatible. I am sorry for this, however the new stuff I'm working on will "hopefully" make people want to start over.
+Added shortcuts for some main menu options which select that option inmediately, for example 1 start game, 3 minigames, etc.
+I need to add missions and statistics and credits which allow you to unlock one free pack per credit.
+Added audio ducking support to the menus which changes the volume of the music slightly  while the tts speaks. Note that this will not work if you are using a screen reader to speak, as the game has no control over that.
+
 Version 4.0 
 You can now change the voice that the game will use. It will show voices belonging to  the language the game is set to, and will change to the first available voice of the language you select, if you change it. It supports English and Spanish, because so far there haven't been any other translations from players.
 

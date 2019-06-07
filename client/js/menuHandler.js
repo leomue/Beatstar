@@ -25,7 +25,7 @@ export async function mainMenu() {
 	console.log('menu thinks pack dir is ' + main.packDirectory);
 	const fs=require('fs');
 	const items = new Array();
-	items.push(new MenuItem(0, strings.get('mStart')));
+	items.push(new MenuItem(0, strings.get('mStart'),"1"));
 	if (version2 != '' && version != version2) {
 		items.push(new MenuItem(-1000, strings.get('newUpdate', [version, version2])));
 	}
@@ -36,26 +36,26 @@ export async function mainMenu() {
 		items.push(new MenuItem(34, strings.get('mSapi')));
 	}
 	if (speech.webTTS) {
-		items.push(new MenuItem(32, strings.get('mRate')));
-		items.push(new MenuItem(293, strings.get('mSelectVoice')));
+		items.push(new MenuItem(32, strings.get('mRate'),));
+		items.push(new MenuItem(293, strings.get('mSelectVoice'),"v"));
 	}
-	items.push(new MenuItem(13, strings.get('mRev')));
-	items.push(new MenuItem(8, strings.get('mSafeguards', [data.safeguards])));
+	items.push(new MenuItem(13, strings.get('mRev'),"v"));
+	items.push(new MenuItem(8, strings.get('mSafeguards', [data.safeguards]),"7"));
 
-	items.push(new MenuItem(1, strings.get('mLearn')));
+	items.push(new MenuItem(1, strings.get('mLearn'),"2"));
 	items.push(new MenuItem(12, strings.get('mAch')));
-	items.push(new MenuItem(11, strings.get('mEdit')));
-	items.push(new MenuItem(9, strings.get('mGames',)));
+	items.push(new MenuItem(11, strings.get('mEdit'),"4"));
+	items.push(new MenuItem(9, strings.get('mGames',),"3"));
 
-	items.push(new MenuItem(2, strings.get('mBrowse', [data.beatcoins])));
+	items.push(new MenuItem(2, strings.get('mBrowse', [data.beatcoins]),"5"));
 	items.push(new MenuItem(5, strings.get('mBrowseUnlocked')));
-	items.push(new MenuItem(7, strings.get('mBrowseIncompleted')));
-	items.push(new MenuItem(4, strings.get('mDownload')));
-	items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level])));
+	items.push(new MenuItem(7, strings.get('mBrowseIncompleted'),"6"));
+	items.push(new MenuItem(4, strings.get('mDownload'),"d"));
+	items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level]),"9"));
 	items.push(new MenuItem(10, strings.get('mGameTuts',)));
 	items.push(new MenuItem(1234, strings.get('mLang',)));
 	items.push(new MenuItem(69, strings.get('mDir', [main.packDirectory])));
-	items.push(new MenuItem(3, strings.get('mHashes')));
+	items.push(new MenuItem(3, strings.get('mHashes'),"h"));
 	so.directory = './sounds/';
 	const mainMenu = new Menu(strings.get('mainmenu'), items);
 	so.directory = '';

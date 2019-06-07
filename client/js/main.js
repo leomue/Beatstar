@@ -1542,7 +1542,7 @@ async function editPackDefinite(path) {
 					});
 	});// Menu callback
 }// Function
-export async function getAch(name, forcePlay = false) {
+export async function getAch(name, forcePlay = false,fromMenu=false) {
 	const fs = require('fs');
 	if (typeof data.ach === 'undefined') {
 		data.ach = {};
@@ -1554,7 +1554,7 @@ export async function getAch(name, forcePlay = false) {
 		const old = so.directory;
 		so.directory = './sounds/';
 		snd = so.create('getAch');
-			await snd.playSync();
+			if (!fromMenu) await snd.playSync();
 			if (!forcePlay) {
 				await new ScrollingText(strings.get('newach', [strings.get('ach' + name)]));
 			}
@@ -1565,6 +1565,8 @@ export async function getAch(name, forcePlay = false) {
 	return false;
 }
 export async function browseAch() {
+	let achMusic=so.create("ach_music");
+	speech.ducker=achMusic;
 	if (typeof data.ach === 'undefined') {
 		data.ach = {};
 	}
@@ -1579,7 +1581,10 @@ export async function browseAch() {
 	}
 	items.push(new MenuItem(-1, strings.get('mAchTuts')));
 	items.push(new MenuItem(0, strings.get('mBack')));
-	const acm = new Menu(strings.get('achMenu'), items, so.create('ach_music'));
+	
+	achMusic.loop=true;
+	if (!achMusic.playing) achMusic.play(); 
+	const acm = new Menu(strings.get('achMenu'), items);
 	let exit = false;
 	while (!exit) {
 		await utils.sleep(8);
@@ -1587,10 +1592,7 @@ export async function browseAch() {
 				acm.run(async s => {
 						if (s.selected == 0) {
 						acm.destroy();
-						st.setState(2);
-						resolve();
-						exit = true;
-						return;
+						return;						
 						}
 						if (s.selected == -1) {
 						for (const i in achs) {
@@ -1599,12 +1601,16 @@ export async function browseAch() {
 						}
 						}
 						acm.destroy();
-						st.setState(2);
+						achMusic.fade(achMusic.volume,0,500);
+						achMusic.once("fade",()=> {
+						st.setState(2);	
 						resolve();
 						exit = true;
+						});
+
 						return;
 						}
-						await getAch(s.selected, true);
+						await getAch(s.selected, true,true);
 						resolve();
 				});
 		});

@@ -123,6 +123,12 @@ class Menu {
 			}
 			// Char navigation code
 			for (let i = this.cursor + 1; i < this.menuData.length; i++) {
+				if (this.menuData[i].shortcut== String.fromCharCode(char).toLowerCase()) {
+										this.cursor = i;
+										this.select();
+										console.log("meow");
+					return;
+				}
 				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
 					this.cursor = i;
 					this.menuData[this.cursor].speak();
@@ -131,6 +137,13 @@ class Menu {
 				}
 			}
 			for (let i = 0; i < this.menuData.length; i++) {
+				if (this.menuData[i].shortcut== String.fromCharCode(char).toLowerCase()) {
+										this.cursor = i;
+										this.select();
+										console.log("meow");
+					return;
+				}
+
 				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
 					this.cursor = i;
 					this.menuData[this.cursor].speak();
@@ -164,8 +177,7 @@ class Menu {
 				this.sndWrap.destroy();
 				for (let i=0;i<this.menuData.length;i++) {
 					if (this.menuData[i].type==MenuTypes.AUDIO) this.menuData[i].snd.destroy();
-					console.log("Why audio");
-				}
+									}
 			if (typeof this.music !== 'undefined') {
 								this.music.destroy();
 			}

@@ -145,7 +145,7 @@ class Game {
 			save();
 			this.actionCompleted = true;
 			this.safe.pitch = utils.progressPitch(data.safeguards, 1, this.maxSafeguards, 1.6, 0.9);
-			this.safe.splay();
+			this.safe.play();
 		}
 		this.currentAction++;
 		// Action and level checks go here
@@ -196,7 +196,7 @@ class Game {
 			this.actionCompleted = true;
 			this.currentAction--;
 			this.safe.pitch = utils.progressPitch(data.safeguards, 1, this.maxSafeguards, 1.6, 0.9);
-			this.safe.splay();
+			this.safe.play();
 			return;
 		}
 		this.timer.stop();
