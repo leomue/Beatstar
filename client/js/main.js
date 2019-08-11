@@ -620,7 +620,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		// Await strings.check(2);
-		data.beatcoins=400000;
+remap();
 		save();
 		return;
 	}
@@ -1636,6 +1636,29 @@ export async function changeLang() {
 					resolve();
 					});
 			});	
+}
+export async function remap() {
+let newActionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT];	
+var invalid=[KeyEvent.DOM_VK_ESCAPE,KeyEvent.DOM_VK_Q,KeyEvent.DOM_VK_S];
+let inp=new KeyboardInput();
+inp.init();
+await new ScrollingText(strings.get("kh"));
+for (let i=2;i<10;i++) {
+speech.speak(strings.get("ki")+" "+strings.get("k"+i));
+let nextKey=false;
+while (!nextKey) {
+	await utils.sleep(5);
+	if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
+		st.setState(2);
+		return;
+	}
+	let keys=inp.keysPressed();
+	if (keys.length>0 && !invalid.includes(keys[0])) {
+		newActionKeys[i]=keys[0];
+		nextKey=true;
+			}
+}
+}
 }
 module.exports.lang=lang;
 module.exports.langs=langs;
