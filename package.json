@@ -35,6 +35,6 @@
     "speak-tts": "^2.0.8"
   },
   "devDependencies": {
-    "electron": "^6.0.1"
+    "electron": "^6.0.2"
   }
 }
