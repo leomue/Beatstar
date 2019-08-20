@@ -11,10 +11,29 @@ class SoundObjectItem {
 		this.duckingFirstTime=true;
 		const that = this;
 		this.fileName = file;
+if (!stream) {
 		try {
 			this.sound = new Howl({
 				src: file,
-				html5: stream,
+				html5: false,
+				onload() {
+					that.doneLoading();
+				}
+			});
+		} catch (error) {
+			console.log('error creating sound ' + error.message);
+		}
+}
+if (stream) {
+console.log("streaming sound");
+try {
+var sound      = document.createElement('audio');
+sound.id       = 'audio-player';
+sound.src      = file;
+var context=new AudioContext();
+var source = context.createMediaElementSource(sound);
+			this.sound = new Howl({
+				src: source,
 				onload() {
 					that.doneLoading();
 				}
@@ -23,6 +42,8 @@ class SoundObjectItem {
 			console.log('error creating sound ' + error.message);
 		}
 
+}//stream
+if (!stream) {
 		this.timeout = setTimeout(() => {
 			that.checkProgress();
 		}, 2000);
@@ -31,7 +52,7 @@ class SoundObjectItem {
 		this.timeToLoad = performance.now();
 		this.tag = tag;
 	}
-
+}
 	checkProgress() {
 		if (this.sound.state() == 'loaded') {
 			this.doneLoading();
@@ -279,6 +300,21 @@ class SoundObject {
 
 		return returnObject;
 	}
+	stream(file, stream = false) {
+		file = this.directory + file + this.extension;
+		let returnObject = null;
+		const that = this;
+		try {
+			returnObject = new SoundObjectItem(file, (() => {
+				that.doneLoading();
+			}), 0, true);
+		} catch (error) {
+			console.log('Error loading sound: ' + error.message);
+		}
+
+		return returnObject;
+	}
+
 
 	enqueue(file) {
 		file = this.directory + file + this.extension;

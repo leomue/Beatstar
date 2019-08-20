@@ -1,5 +1,7 @@
-Version 5.0
+Version 5.1.0
+Beatstar now saves screen reader vs tts preference.
 
+Version 5.0
 Sadly, old save files are no longer compatible. I am sorry for this, however the new stuff I'm working on will "hopefully" make people want to start over.
 Added shortcuts for some main menu options which select that option inmediately, for example 1 start game, 3 minigames, etc.
 I need to add missions and statistics and credits which allow you to unlock one free pack per credit.

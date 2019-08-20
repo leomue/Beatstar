@@ -478,7 +478,7 @@ export function question(text, localizedValues = [], callback = null) {
 			}
 			});
 }
-export async function checkPack(changeBoot = true, debug = false) {
+export async function checkPack(changeBoot = true, debug = true) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
@@ -620,8 +620,10 @@ export async function checkPack(changeBoot = true, debug = false) {
 	}
 	if (debug) {
 		// Await strings.check(2);
-remap();
-		save();
+//remap();
+//		save();
+let huge=so.stream("huge");
+huge.play();
 		return;
 	}
 	booter();
@@ -938,6 +940,7 @@ export async function downloadPacks(arr = []) {
 			console.log(percent + '%');
 		};
 		const threads = 3;
+try {
 		require('async').eachOfLimit(toDownload, threads, (fileUrl, index, next) => {
 				download(fileUrl, dests[index], next);
 
@@ -950,6 +953,15 @@ export async function downloadPacks(arr = []) {
 				so.directory = './sounds/';
 				st.setState(2);
 				});
+} catch(err) {
+				console.log('exiting function');
+speech.speak("download error!");
+				rebuildHashes(true);
+				event.justPressedEventCallback = null;
+				so.directory = './sounds/';
+				st.setState(2);
+
+}
 	}// If length > 1
 }
 export function save() {
@@ -1010,7 +1022,7 @@ export function listenPack() {
 			if (pos > unlocked) {
 				lock.play();
 			} else {
-				mus = so.create(packdir + pos + 'music', true);
+				mus = so.stream(packdir + pos + 'music');
 				mus.loop = true;
 				mus.play();
 			}
@@ -1032,6 +1044,7 @@ export function listenPack() {
 	};// Callback
 }
 export function booter() {
+if (typeof data.webTTS!=="undefined") { speech.webTTS=data.webTTS; }
 	if (!data.safeguards) {
 		data.safeguards = 0;
 	}

@@ -90,10 +90,15 @@ export async function mainMenu() {
 				await new ScrollingText(strings.get('macwarning'));
 			}
 			speech.webTTS = false;
+data.webTTS=false;
+save();
 			st.setState(2);
 			break;
 			case 34:
 			speech.webTTS = true;
+
+data.webTTS=true;
+save();
 			st.setState(2);
 			break;
 
