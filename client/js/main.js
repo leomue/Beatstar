@@ -493,9 +493,15 @@ export async function checkPack(changeBoot = true, debug = false) {
 			packdir =packDirectory +"/"+ pack + '/';
 		}//directory
 	}
-	if (window.localStorage.getItem("path")!=null && fs.existsSync(window.localStorage.getItem("path"))) {
-		console.log("path set to "+window.localStorage.getItem("path"));
+
+	if (window.localStorage.getItem("path")!=null && fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)) {
 		packDirectory=window.localStorage.getItem("path");
+}
+else {
+		packDirectory=os.homedir() + '/beatpacks';
+window.localStorage.setItem("path",os.homedir() + '/beatpacks');
+}
+
 		try {
 			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
 			lang = data.lang;
@@ -508,7 +514,7 @@ export async function checkPack(changeBoot = true, debug = false) {
 			}
 
 		} catch (err) {
-			console.log(err);
+			console.log(err.message);
 			await changeLang();
 			speech.setLanguage(lang)
 		}
