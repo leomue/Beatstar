@@ -478,6 +478,7 @@ export function question(text, localizedValues = [], callback = null) {
 			callback(answer);
 			}
 			});
+
 }
 export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
@@ -647,6 +648,7 @@ const download = function (url, dest, cb) {
 					});
 			});
 };
+
 export async function downloadPacks(arr = []) {
 	const fs = require('fs');
 	if (arr.length == 0) {
@@ -973,12 +975,18 @@ speech.speak("download error!");
 }
 export function save() {
 	const fs = require('fs');
+try {
 	if (!fs.existsSync(packDirectory)) {
 		fs.mkdirSync(packDirectory);
 	}
 	let write = JSON.stringify(data);
 	write = mangle.encrypt(write);
 	fs.writeFileSync(packDirectory+'/save.beat', write);
+} catch {
+		packDirectory=os.homedir() + '/beatpacks';
+window.localStorage.setItem("path",os.homedir() + '/beatpacks');
+save();
+}
 }
 export function listenPack() {
 	const fs = require('fs');

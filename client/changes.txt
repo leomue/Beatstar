@@ -1,4 +1,5 @@
 Version 5.1.0
+Fixed a bunch of errors opening and loading and saving files.
 Beatstar now saves screen reader vs tts preference.
 
 Version 5.0
