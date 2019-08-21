@@ -189,7 +189,7 @@ class Menu {
 				$(document).off('keypress');
 				 this.hammer.destroy();
 				if (typeof this.music!=="undefined") {
-					this.music.fade(this.music.volume,0,this.fadeTime);
+					this.music.fade(0,this.fadeTime);
 				}
 				const that = this;
 				setTimeout(() => {

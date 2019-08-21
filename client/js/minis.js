@@ -108,7 +108,7 @@ export async function playSlots() {
 					if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
 					const win = so.create('slot_win_' + utils.randomInt(1, 4));
 					win.play();
-					win.sound.once('end', async () => {
+					win.sound.once('ended', async () => {
 							await getAch('slotwin');
 							const capcash = myBet;
 							console.log(capcash);
@@ -130,7 +130,7 @@ export async function playSlots() {
 						const perc = Math.ceil(utils.percentOf(utils.randomInt(15, 25), capcash));
 						console.log('perc' + perc);
 						data.beatcoins -= perc;
-						lose.sound.once('end', async () => {
+						lose.sound.once('ended', async () => {
 								addCash(0, perc, () => {
 										so.kill(() => {
 												st.setState(2);
@@ -140,7 +140,7 @@ export async function playSlots() {
 					} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
 						const lose = so.create('slot_lose_1');
 						lose.play();
-						lose.sound.once('end', async () => {
+						lose.sound.once('ended', async () => {
 								await getAch('frust');
 								const capcash = myBet;
 								const perc = capcash;
@@ -153,7 +153,7 @@ export async function playSlots() {
 					} else {
 						const lose = so.create('slot_lose_2');
 						lose.play();
-						lose.sound.once('end', async () => {
+						lose.sound.once('ended', async () => {
 								await getAch('catslots');
 								let capcash = myBet;
 								if (capcash > data.beatcoins) {
@@ -915,7 +915,7 @@ function pongloop(dt, actions) {
 			gametimer.stop();
 			const end = so.create('pong_endbgm');
 			end.play();
-			end.sound.once('end', async () => {
+			end.sound.once('ended', async () => {
 					pin.justPressedEventCallback = null;
 					await new ScrollingText(strings.get('pongend', [pongright, pongmiss]));
 					if (pongright == 0 && pongmiss > 0) {

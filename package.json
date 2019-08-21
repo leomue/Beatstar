@@ -8,7 +8,7 @@
     "watch": "parcel watch ./client/js/main.js -d ./client --target=electron --no-hmr",
     "build": "parcel build ./client/js/main.js -d ./client --target=electron",
     "start": "electron ./client",
-    "run": "npm run build; electron ./client"
+    "run": "npm run build && npm run start"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "http-server": "^0.11.1",
     "jquery": "^3.4.0",
     "s": "^0.1.1",
+    "sono": "^2.1.6",
     "speak-tts": "^2.0.8"
   },
   "devDependencies": {

@@ -229,14 +229,14 @@ class Game {
 				so.directory = '';
 				const bootSound = so.create(packdir + 'credits');
 				bootSound.play();
-				bootSound.sound.once('end', () => {
+				bootSound.sound.on('ended', () => {
 						input.justPressedEventCallback = null;
 						that.doScore();
 						});
 				so.directory = './sounds/';
 
 				input.justPressedEventCallback = function (evt) {
-				bootSound.sound.off('end');
+				bootSound.sound.off('ended');
 				bootSound.stop();
 				bootSound.destroy();
 				input.justPressedEventCallback = null;
@@ -269,14 +269,14 @@ class Game {
 				so.directory = '';
 				const bootSound = so.create(packdir + 'credits');
 				bootSound.play();
-				bootSound.sound.once('end', () => {
+				bootSound.sound.on('ended', () => {
 						input.justPressedEventCallback = null;
 						that.doScore();
 						});
 				so.directory = './sounds/';
 
 				input.justPressedEventCallback = function (evt) {
-				bootSound.sound.off('end');
+				bootSound.sound.off('ended');
 				bootSound.stop();
 				bootSound.destroy();
 				input.justPressedEventCallback = null;
@@ -482,7 +482,7 @@ class Game {
 					this.postprocess();
 				}
 			};
-			this.preSound.sound.once("end",()=> {
+			this.preSound.sound.on("end",()=> {
 					this.postprocess();
 					});
 		}
@@ -496,7 +496,7 @@ class Game {
 		so.directory = './sounds/';
 		this.music.play();
 		this.timer.change(that.bpms[that.level]  /1000.0);
-		this.music.sound.once('play', () => {
+		this.music.sound.on('play', () => {
 				this.input.justPressedEventCallback = key => {
 				this.render(key);
 				};

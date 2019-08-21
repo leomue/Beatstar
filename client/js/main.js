@@ -127,8 +127,8 @@ export async function browsePacks(browsing = 1) {
 	}
 	const fs = require('fs');
 	const path=require('path');
-	console.log(path.join(packDirectory,'hashes.db'))
-		if (!fs.existsSync(path.join(packDirectory,'hashes.db'))) {
+	console.log(path.join(packDirectory,'hashes.packInformation'))
+		if (!fs.existsSync(path.join(packDirectory,'hashes.packInformation'))) {
 			var error = "";
 			if (lang == 1) {
 				error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a few seconds...', '\n', (() => {
@@ -143,7 +143,7 @@ export async function browsePacks(browsing = 1) {
 			return;
 		}
 	try {
-		var packs = JSON.parse(fs.readFileSync(packDirectory+'/hashes.db'));
+		var packs = JSON.parse(fs.readFileSync(packDirectory+'/hashes.packInformation'));
 	} catch (err) {
 		console.log(err);
 		var error = 0;
@@ -239,7 +239,7 @@ export async function browsePacks(browsing = 1) {
 								so.directory = './sounds/';
 								const snd = so.create('buypack');
 								snd.play();
-								snd.sound.once('end', () => {
+								snd.sound.on('ended', () => {
 										addCash(0, price, () => {
 												pack = browseArray[browsePosition].name;
 												boot = false;
@@ -409,15 +409,16 @@ export async function rebuildHashes(silent = false) {
 			const temp = {
 name: pf,
 preview: path + 'name',
+size: newHash,
 levels,
-hash: newHash
+hash: levelsa
 			};
 			packs.push(temp);
 	});
 	so.directory = './sounds/';
 	let write = JSON.stringify(packs);
 	
-	fs.writeFileSync(packDirectory+'/hashes.db', write);
+	fs.writeFileSync(packDirectory+'/hashes.packInformation', write);
 	if (silent) {
 		return packs;
 	}
@@ -478,7 +479,7 @@ export function question(text, localizedValues = [], callback = null) {
 			}
 			});
 }
-export async function checkPack(changeBoot = true, debug = true) {
+export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
@@ -622,7 +623,7 @@ export async function checkPack(changeBoot = true, debug = true) {
 		// Await strings.check(2);
 //remap();
 //		save();
-let huge=so.stream("huge");
+let huge=so.create("huge",true);
 huge.play();
 		return;
 	}
@@ -647,7 +648,7 @@ export async function downloadPacks(arr = []) {
 		let remoteHashes;
 		let localHashes;
 		localHashes = await rebuildHashes(true);
-		await fetch('http://oriolgomez.com/beatpacks/hashes.db')
+		await fetch('http://oriolgomez.com/beatpacks/hashes.packInformation')
 			.then(event => event.text())
 			.then(data => {
 					remoteHashes = JSON.parse(data);
@@ -669,7 +670,7 @@ export async function downloadPacks(arr = []) {
 				}
 				if (shouldPush) {
 				browseArray.push(i);
-				size += i.hash;
+				size += i.size;
 				} else {
 				}
 				});
@@ -758,11 +759,11 @@ export async function downloadPacks(arr = []) {
 						if (browsePosition != -1) {
 							if (browseArray[browsePosition].selected) {
 								browseArray[browsePosition].selected = false;
-								size -= browseArray[browsePosition].hash;
+								size -= browseArray[browsePosition].size;
 							} else if (browseArray[browsePosition].selected == false) {
 								browseArray[browsePosition].selected = true;
 								snds.play();
-								size += browseArray[browsePosition].hash;
+								size += browseArray[browsePosition].size;
 							}
 							let sizeS;
 							let dSize;
@@ -1022,7 +1023,7 @@ export function listenPack() {
 			if (pos > unlocked) {
 				lock.play();
 			} else {
-				mus = so.stream(packdir + pos + 'music');
+				mus = so.create(packdir + pos + 'music',true);
 				mus.loop = true;
 				mus.play();
 			}
@@ -1057,7 +1058,7 @@ if (typeof data.webTTS!=="undefined") { speech.webTTS=data.webTTS; }
 		so.directory = '';
 		const bootSound = so.create(packdir + 'boot');
 		bootSound.play();
-		bootSound.sound.once('end', () => {
+		bootSound.sound.on('ended', () => {
 				input.justPressedEventCallback = null;
 				mainMenu();
 				});
@@ -1204,7 +1205,7 @@ export async function buySafeguards() {
 					data.safeguards += buying;
 					save();
 					const snd = so.create('safebuy');
-					snd.sound.once('end', () => {
+					snd.sound.on('ended', () => {
 							st.setState(2);
 							});
 					addCash(0, buying * price, () => {
@@ -1548,7 +1549,7 @@ async function editPackDefinite(path) {
 				}
 			}
 			fs.writeFileSync(path + 'bpm.txt', str);
-			pos.sound.once('end', () => {
+			pos.sound.on('ended', () => {
 					so.kill(() => {
 							st.setState(2);
 							});// Kill call
@@ -1615,7 +1616,7 @@ export async function browseAch() {
 						}
 						acm.destroy();
 						achMusic.fade(achMusic.volume,0,500);
-						achMusic.once("fade",()=> {
+						achMusic.on("fade",()=> {
 						st.setState(2);	
 						resolve();
 						exit = true;

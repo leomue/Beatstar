@@ -20,11 +20,11 @@ class StateMachine {
 		if (state == 1) {
 			event = new KeyboardInput();
 			event.init();
-			const intro = so.create('logo');
+			const intro = so.create('a1');
 			const that = this;
 			intro.volume = 0.5;
 			intro.play();
-			intro.sound.once('end', () => {
+			intro.sound.once('ended', () => {
 					intro.unload();
 					$(document).off('keydown');
 					that.setState(2);
