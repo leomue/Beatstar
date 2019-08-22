@@ -2,8 +2,8 @@
 export var gameID = 'beat';
 export var newPath="";
 let changedLang=false;
-var package=require('../../package.json');
-export var version =package.version;
+var packageFile=require('../../package.json');
+export var version =packageFile.version;
 export var version2 = '';
 export var lang = 0;
 export var ttsVoice;
@@ -483,28 +483,28 @@ export function question(text, localizedValues = [], callback = null) {
 export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
-	if (window.localStorage.getItem("path")!=null && !fs.existsSync(window.localStorage.getItem("path"))) {
+	if (window.localStorage.getItem("path")!=null) {
+try {
+fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
+		packDirectory=window.localStorage.getItem("path");
+} catch(err) {
 		await changeLang();
 		speech.setLanguage(lang)
+		let dir = os.homedir() + '/beatpacks';
 			await new ScrollingText(strings.get("noFindFolder",[window.localStorage.getItem("path")]));
-		let dir=await changeDir();
-		if (typeof dir !== 'undefined' && dir != '') {
 			packDirectory=dir;
 			window.localStorage.setItem("path",packDirectory);
 			packdir =packDirectory +"/"+ pack + '/';
-		}//directory
-	}
+}//exists but can't access
+} else { //path is null
+		let dir = os.homedir() + '/beatpacks';
+			packDirectory=dir;
+			window.localStorage.setItem("path",packDirectory);
+			packdir =packDirectory +"/"+ pack + '/';
 
-	if (window.localStorage.getItem("path")!=null && fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)) {
-		packDirectory=window.localStorage.getItem("path");
-}
-else {
-		packDirectory=os.homedir() + '/beatpacks';
-window.localStorage.setItem("path",os.homedir() + '/beatpacks');
-}
-
-		try {
-			data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
+} // path is null close
+	try {
+		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
 			lang = data.lang;
 			speech.setLanguage(lang)
 				if (typeof data.rate !== 'undefined') {
@@ -514,44 +514,6 @@ window.localStorage.setItem("path",os.homedir() + '/beatpacks');
 				speech.synth.setVoice(data.voice);
 			}
 
-		} catch (err) {
-			console.log(err.message);
-			await changeLang();
-			speech.setLanguage(lang)
-		}
-	}
-	else {
-		if (!changedLang) {
-			await changeLang();
-			speech.setLanguage(lang)
-		}
-	}
-	console.log("lang"+lang);
-	if (window.localStorage.getItem("path")==null || !fs.existsSync(window.localStorage.getItem("path"))) {
-		const answer=await questionSync("directoryQuestion");
-		if (answer) {
-			packDirectory=os.homedir()+"/beatpacks";
-			packdir =packDirectory +'/'+ pack + '/';
-			window.localStorage.setItem("path",packDirectory);
-		}//answer
-		if (!answer) {
-			let dir=await changeDir();
-			if (typeof dir !== 'undefined' && dir != '') {
-				packDirectory=dir;
-				window.localStorage.setItem("path",packDirectory);
-				packdir =packDirectory +"/"+ pack + '/';
-
-			}//directory
-		}					//answer change
-
-	}//storage null
-	else {
-		packDirectory=window.localStorage.getItem("path");
-		packdir =packDirectory +"/" +pack + '/';
-	}//get it from the saved path
-
-	try {
-		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
 	} catch (err) {
 		data = new Player();
 		let introing = true;

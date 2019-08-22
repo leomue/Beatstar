@@ -1,8 +1,13 @@
 import "babel-polyfill";
+import panner from 'sono/effects/panner';
 import sono from 'sono';
 import {KeyboardInput} from './input';
 import {KeyEvent} from './keycodes';
 import {utils} from './utilities';
+    panner.defaults= {
+panningModel:'HRTF',
+maxDistance:50,
+};
 
 var isElectron = true;
 var playOnceTimer;
@@ -10,6 +15,7 @@ class SoundObjectItem {
 	constructor(file, callback=0, tag=0, stream=false) {
 		this.duckingFirstTime=true;
 this.stream=stream;
+this.panner=null;
 			this.fileName = file;
 	if (typeof file=="string") {
 		if (!stream) {
@@ -49,12 +55,31 @@ this.sound.data=file;
 		this.tag = tag;
 this.doneLoading();
 }
+
+
 	}
+
+get playbackRate() {
+		return this.sound.playbackRate
+	}
+
+	set playbackRate(v) {
+		return this.sound.playbackRate=v;
+	}
+get pitch() {
+		return this.sound.playbackRate
+	}
+
+	set pitch(v) {
+		return this.sound.playbackRate=v;
+	}
+
 	set loop(v) {
 	this.sound.loop=v;
 	}
+
 	checkProgress() {
-		
+
 		if (this.sound.progress == 0) {
 			this.sound.destroy();
 			this.sound = sono.create({src:this.fileName,onComplete:() => { this.doneLoading(); } },this.stream);
@@ -162,8 +187,25 @@ return false;
 		return this.sound.playing;
 	}
 
+get pan() {
+if (!this.panner) {
+				this.panner = this.sound.effects.add(panner());
+this.currentPan=0;
+return 0;
+}
+return this.currentPan;
+}
+
+set pan(v) {
+if (!this.panner) {
+				this.panner = this.sound.effects.add(panner());
+}
+this.currentPan=v;
+return this.panner.set(v);
+}
 
 }
+
 class SoundObject {
 	constructor() {
 		this.sounds = new Array();
