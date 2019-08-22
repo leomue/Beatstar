@@ -97,13 +97,13 @@ class Game {
 		so.enqueue('safe');
 		so.directory = '';
 		if (fs.existsSync(packdir + 'nlevel.ogg')) {
-			so.enqueue(packdir + 'nlevel');
+			so.enqueue(packdir + 'nlevel',true);
 		}
 		if (fs.existsSync(packdir + 'win.ogg')) {
-			so.enqueue(packdir + 'win');
+			so.enqueue(packdir + 'win',true);
 		}
 		if (fs.existsSync(packdir + 'fail.ogg')) {
-			so.enqueue(packdir + 'fail');
+			so.enqueue(packdir + 'fail',true);
 		}
 		for (let i = 1; i <= 10; i++) {
 			if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
@@ -152,8 +152,8 @@ class Game {
 		if (this.currentAction >= this.numberOfActions) {
 			this.input.justPressedEventCallback = null;
 			so.directory = '';
-			so.destroy(packdir + this.level + 'music');
-			so.destroy(packdir + 'pre' + this.level);
+this.music.destroy();
+this.preSound.destroy();
 			so.directory = './sounds/';
 			this.level++;
 			this.timer.stop();
@@ -200,18 +200,13 @@ class Game {
 			return;
 		}
 		this.timer.stop();
-		const snd = this.music;
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
 		const failsound = this.pool.playStatic(packdir + 'fail', 0);
 		so.directory = './sounds/';
-		for (let i = snd.playbackRate; i > 0; i -= 0.05) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
-		}
-		snd.unload();
+this.music.destroy();
 		while (this.pool.staticSounds[failsound].sound.playing) {
-			await utils.sleep(10);
+			await utils.sleep(16);
 			if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
 				this.pool.staticSounds[failsound].sound.unload();
 			}
@@ -482,7 +477,7 @@ class Game {
 					this.postprocess();
 				}
 			};
-			this.preSound.sound.on("end",()=> {
+			this.preSound.sound.on("ended",()=> {
 					this.postprocess();
 					});
 		}
@@ -490,17 +485,17 @@ class Game {
 	postprocess() {
 		so.directory = '';
 		const that = this;
-		this.music = so.create(packdir + this.level + 'music', false);
+		this.music = so.create(packdir + this.level + 'music', true);
 		this.music.loop = true;
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		this.music.play();
 		this.timer.change(that.bpms[that.level]  /1000.0);
-		this.music.sound.on('play', () => {
+//		this.music.sound.on('play', () => {
 				this.input.justPressedEventCallback = key => {
 				this.render(key);
 				};
-				});
+//				});
 		if (this.level > 1 && this.level != this.forceLevel) {
 			//this.queueLevels();
 		}
@@ -526,12 +521,12 @@ class Game {
 		this.timer.stop();
 		this.scoreTimer.pause();
 		this.pauseTime = snd.currentTime;
-		for (let i = snd.playbackRate; i > 0; i -= 0.05) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
-		}
+this.music.fade(0,0.2);
+snd.on("fade",()=> {
 		snd.pause();
 		idle.reset();
+});
+
 		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
 			await utils.sleep(10);
 
@@ -548,14 +543,13 @@ class Game {
 		};
 		const snd = this.music;
 		snd.play();
-		for (let i = snd.playbackRate; i <= 1; i += 0.05) {
-			snd.playbackRate = i;
-			await utils.sleep(8);
-		}
+snd.fade(this.volume,0.2);
+snd.on("fade",()=> {
 		snd.seek(this.pauseTime);
 		this.timer.start();
 		this.scoreTimer.resume();
 		this.input.keysPressed(); // We need this so that it doesn't fail immediately after unpause if you switch windows.
+});
 	}
 
 	calculateScore() {
@@ -581,10 +575,10 @@ class Game {
 		let queueLevel=lev;
 		if (queueLevel>1) queueLevel++;
 		for (let i = queueLevel; i <= levelLimit; i++) {
-			so.enqueue(packdir + i + 'music');
+			so.enqueue(packdir + i + 'music',true);
 			debugstr+="queuing "+i;
 			if (fs.existsSync(packdir + 'pre' + i + '.ogg')) {
-				so.enqueue(packdir + 'pre' + i);
+				so.enqueue(packdir + 'pre' + i,true);
 			}
 		}
 		//speech.speak(debugstr)

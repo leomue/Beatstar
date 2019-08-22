@@ -1,5 +1,6 @@
 import "babel-polyfill";
 import panner from 'sono/effects/panner';
+
 import sono from 'sono';
 import {KeyboardInput} from './input';
 import {KeyEvent} from './keycodes';
@@ -31,20 +32,14 @@ onComplete:() => { this.doneLoading(); } });
 }
 if (stream) {
 console.log("streaming sound");
-this.sound = sono.create("");
-this.htmlSound = new Audio();
-this.source=this.sound.context.createMediaElementSource(this.htmlSound);
-this.htmlSound.src=file;
-this.htmlSound.addEventListener("loadeddata",()=> {
-		this.loaded = false;
+this.hsound = new Audio(file);
+		this.loaded = true;
 		this.callback = callback;
 		this.tag = tag;
+this.sound=sono.create(this.hsound);
 this.doneLoading();
-
 		this.timeout = setTimeout(() => { this.checkProgress();}, 2000);
-		this.data = this.htmlSound.data;
 console.log("vol"+this.sound.volume);
-});
 }
 }
 else if (typeof file=="object") {
@@ -108,6 +103,7 @@ get pitch() {
 	}
 stop() {
 this.sound.stop();
+
 }
 pause() {
 this.sound.pause();
@@ -122,12 +118,12 @@ this.sound.resume();
 unload() { this.sound.destroy(); }
 	duck(time) {
 		if (this.duckingFirstTime) this.oldVolume=this.volume;
+console.log("ducking "+this.oldVolume);
 		this.duckingFirstTime=false;
 		this.sound.fade(0.3,0.15);
 					}
 					unduck(time) {
-
-						this.sound.fade(this.oldVolume,150);
+						this.sound.fade(this.oldVolume,0.15);
 									}
 	async fade(time) {
 		this.sound.fade(0,time);
@@ -203,6 +199,32 @@ if (!this.panner) {
 this.currentPan=v;
 return this.panner.set(v);
 }
+get volume() {
+return this.sound.volume;
+}
+set volume(v) {
+this.sound.volume=v;
+}
+
+	seek(time) {
+		return this.sound.seek(time);
+	}
+
+	get currentTime() {
+		return this.sound.currentTime;
+	}
+
+	get duration() {
+		return this.sound.duration() * 1000;
+	}
+
+	get position() {
+		return this.sound.currentTime;
+	}
+
+	set currentTime(v) {
+		return this.sound.seek(v);
+	}
 
 }
 

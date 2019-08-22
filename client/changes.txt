@@ -1,7 +1,7 @@
 Version 5.1.0
 Removed question when setting up the game if you wanted to change the pack folder as it confused people, just go to the menu to change it.
 rewrote the directory handling tool so that it more accurately checks for errors and doesn't freeze up the game.
-
+Beatstar should no longer wrongly say that there are "x" packs to download when you already have all the packs.
 Fixed a bunch of errors opening and loading and saving files.
 Beatstar now saves screen reader vs tts preference.
 

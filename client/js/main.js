@@ -14,6 +14,7 @@ const achs = [
 export var editing = false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
+
 import {playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 // Import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
@@ -631,7 +632,7 @@ export async function downloadPacks(arr = []) {
 		remoteHashes.forEach((i, v) => {
 				let shouldPush = false;
 				for (let l = 0; l < localHashes.length; l++) {
-				if (i.name == localHashes[l].name && i.hash == localHashes[l].hash) {
+				if (i.name == localHashes[l].name && utils.arraysEqual(i.hash,localHashes[l].hash)) {
 				shouldPush = false;
 				break;
 				} else {

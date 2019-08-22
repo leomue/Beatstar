@@ -5,5 +5,4 @@ packs
 .cache
 client/main.*
 translation_*
-.vscode
 
