@@ -481,7 +481,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug = false) {
+export async function checkPack(changeBoot = true, debug =true) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -593,7 +593,8 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 		// Await strings.check(2);
 //remap();
 //		save();
-let huge=so.create("huge",true);
+so.directory="./sounds/";
+let huge=so.create("a1");
 huge.play();
 		return;
 	}
