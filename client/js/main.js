@@ -593,10 +593,8 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 		// Await strings.check(2);
 //remap();
 //		save();
-so.directory="./sounds/";
-let huge=so.create("a1");
-huge.play();
-		return;
+data.beatcoins=1000000;
+save();
 	}
 	booter();
 }

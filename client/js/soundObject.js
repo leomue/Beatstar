@@ -1,6 +1,7 @@
 import "babel-polyfill";
+import {speech} from './tts';
 import panner from 'sono/effects/panner';
-
+const EventEmitter = require('events');
 import sono from 'sono';
 import {KeyboardInput} from './input';
 import {KeyEvent} from './keycodes';
@@ -9,11 +10,12 @@ import {utils} from './utilities';
 panningModel:'HRTF',
 maxDistance:50,
 };
-
-var isElectron = true;
+sono.playInBackground = true;
 var playOnceTimer;
-class SoundObjectItem {
+class SoundObjectItem extends EventEmitter {
 	constructor(file, callback=0, tag=0, stream=false) {
+super();
+console.log("creating sound for "+file);
 		this.duckingFirstTime=true;
 this.stream=stream;
 this.panner=null;
@@ -28,21 +30,22 @@ onComplete:() => { this.doneLoading(); } });
 		this.loaded = false;
 		this.callback = callback;
 		this.tag = tag;
-
 }
 if (stream) {
 console.log("streaming sound");
 this.hsound = new Audio(file);
+console.log("html created");
 		this.loaded = true;
 		this.callback = callback;
 		this.tag = tag;
 this.sound=sono.create(this.hsound);
+console.log("sono created");
+		this.data = this.sound.data;
 this.doneLoading();
-		this.timeout = setTimeout(() => { this.checkProgress();}, 2000);
-console.log("vol"+this.sound.volume);
 }
 }
-else if (typeof file=="object") {
+else if (typeof file=="object" ) {
+console.log("creating for object");
 this.sound = sono.create("");
 this.sound.data=file;
 		this.loaded = false;
@@ -74,7 +77,7 @@ get pitch() {
 	}
 
 	checkProgress() {
-
+if (this.stream) return;
 		if (this.sound.progress == 0) {
 			this.sound.destroy();
 			this.sound = sono.create({src:this.fileName,onComplete:() => { this.doneLoading(); } },this.stream);
@@ -89,17 +92,21 @@ get pitch() {
 	}
 	
 	doneLoading() {
-		clearTimeout(this.timeout);
+console.log("is done "+this.fileName);
+		if (!this.stream) clearTimeout(this.timeout);
 		this.data = this.sound.data;
 		this.loaded = true;
-		
-		if (this.callback!=0) {
-			
-			this.callback();
+				if (this.callback!=0) {
+				this.callback();
 		}
 	}
 	play() {
 		this.sound.play();
+if (this.stream) {
+this.hsound.onplay=()=> {
+this.emit("play");
+}
+}
 	}
 stop() {
 this.sound.stop();
@@ -113,7 +120,7 @@ this.sound.resume();
 }
 	destroy() {
 		this.sound.destroy();
-		
+if (this.stream) this.hsound=null;
 	}
 unload() { this.sound.destroy(); }
 	duck(time) {
@@ -215,7 +222,7 @@ this.sound.volume=v;
 	}
 
 	get duration() {
-		return this.sound.duration() * 1000;
+		return this.sound.duration() ;
 	}
 
 	get position() {
@@ -292,29 +299,28 @@ class SoundObject {
 	
 	
 	create(file,stream=false) {
+console.log("create function run.");
 		file = this.directory + file + this.extension;
 let found=-1;
-		if (!stream) found = this.findSound(file);
+ found = this.findSound(file);
 		let returnObject = null;
 		if (found == -1 || found.data == null) {
-					returnObject = new SoundObjectItem(file, () => { this.doneLoading(); },-1,stream);
+					returnObject = new SoundObjectItem(file, () => { if (!stream) this.doneLoading(); },0,stream);
 			
-			if (!stream) this.sounds.push(returnObject);
+ this.sounds.push(returnObject);
 			
 		} else {
-			//returnObject = new SoundObjectItem(sono.utils.cloneBuffer(found.sound.data), () => { this.doneLoading(); });
-			returnObject = new SoundObjectItem(found.sound.data, () => { this.doneLoading(); },-1,false);
+			 returnObject = new SoundObjectItem(found.sound.data, () => { if (!stream) this.doneLoading(); },0,stream);
 					}
 		return returnObject;
 	}
 	
-	enqueue(file,stream) {
-		
+	enqueue(file,stream=false) {
 		file = this.directory + file + this.extension;
 		console.log("queuing "+file);
 		this.queue.push({file,stream});
 		this.queueLength = this.queue.length;
-		
+	console.log("length "+this.queueLength);	
 	}
 	
 	loadQueue() {
@@ -327,33 +333,29 @@ let found=-1;
 		this.queueCallback = callback;
 	}
 	resetQueue() {
-		this.queue = new Array();
+		this.queue = [];
 		this.loadingQueue = false;
 	}
 	handleQueue() {
-		
-		
+	console.log("handle queue");		
 		if (this.queue.length > 0) {
-			
-			
 			if (typeof this.statusCallback != "undefined" && this.statusCallback!=null) {
 				this.statusCallback(1-this.queue.length/this.queueLength);
 			}
 			if (this.findSound(this.queue[0].file)!=-1) {
-				
-				
-				this.queue.splice(0, 1);
-				
+console.log("found sound "+this.queue[0].file);
+						this.queue.splice(0, 1);
 				this.handleQueue();
 				return;
 			}
-			this.sounds.push(new SoundObjectItem(this.queue[0].file, () => { this.handleQueue(); }, 1,this.queue[0].stream));
+let file=this.queue[0].file;
+let stream=this.queue[0].stream;
 			this.queue.splice(0, 1);
+			this.sounds.push(new SoundObjectItem(file, () => { this.handleQueue(); }, 1, stream));
+console.log("sound pushed "+this.sounds[this.sounds.length-1].fileName);
+
 		} else {
-			
-			
-				
-				this.loadingQueue = false;
+					this.loadingQueue = false;
 				if (typeof this.queueCallback != "undefined" && this.queueCallback != 0) {
 					this.queueCallback();
 				}

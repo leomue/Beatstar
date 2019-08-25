@@ -1,4 +1,6 @@
 Version 5.1.0
+Fixed a bunch of small design errors like music fade times.
+Music files for the levels now stream instead of being loaded into memory in their entirety which will (hopefully) make for a smoother beatstarring experience. This has the side effect of them not being able to pitch down while pausing or failing, which is just a minor inconvenience I think.
 Removed question when setting up the game if you wanted to change the pack folder as it confused people, just go to the menu to change it.
 rewrote the directory handling tool so that it more accurately checks for errors and doesn't freeze up the game.
 Beatstar should no longer wrongly say that there are "x" packs to download when you already have all the packs.

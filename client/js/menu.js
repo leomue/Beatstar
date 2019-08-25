@@ -11,7 +11,7 @@ import {KeyboardInput} from './input';
 
 class Menu {
 	constructor(name, menuData, music) {
-		this.fadeTime=800;
+		this.fadeTime=0.8;
 		this.menuData = menuData;
 		let audio=name.split(" ");
 		console.log("length",audio.length);

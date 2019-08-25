@@ -20,7 +20,7 @@ class StateMachine {
 		if (state == 1) {
 			event = new KeyboardInput();
 			event.init();
-			const intro = so.create('a1');
+			const intro = so.create('a3');
 			const that = this;
 			intro.volume = 0.5;
 			intro.play();

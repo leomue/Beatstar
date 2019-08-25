@@ -21,6 +21,9 @@ import {KeyEvent} from './keycodes.js';
 class Game {
 	constructor(creds, mode = 1) {
 		this.totalScore = [];
+this.justEnded=false;
+this.justBegun=true;
+this.eventName="";
 		this.maxSafeguards = data.safeguards;
 		this.volume = 1;
 		this.totalAverage = [];
@@ -53,6 +56,8 @@ class Game {
 
 	async setup(creds, mode) {
 		this.forceLevel = 1;
+this.musicTimer=new OldTimer();
+this.musicTimer.pause();
 		if (mode == 1) {
 			this.rev = false;
 		}
@@ -119,7 +124,7 @@ class Game {
 		this.timer = Timer({update(dt) {
 				that.update(dt);
 				}, render() {
-				}}, this.bpms[this.level] / 1000.0);
+				} }, );
 		so.setQueueCallback(() => {
 				so.directory = './sounds/';
 				that.setupLevel();
@@ -129,6 +134,9 @@ class Game {
 	}
 
 	update(dt) {
+if (this.musicTime.elapsed>=this.bpms[this.level] || this.justEnded || this.justBegun) {
+this.musicTimer.restart();
+this.justBegun=false; this.justEnded=false;
 		if (this.currentAction == 0) {
 			this.currentAction++;
 			return;
@@ -138,7 +146,6 @@ class Game {
 				this.fail(true);
 				return;
 			}
-
 			data.safeguards--;
 			this.safeuse = true;
 			this.currentAction--;
@@ -152,8 +159,9 @@ class Game {
 		if (this.currentAction >= this.numberOfActions) {
 			this.input.justPressedEventCallback = null;
 			so.directory = '';
-this.music.destroy();
-this.preSound.destroy();
+
+if (typeof this.music!=="undefined") this.music.destroy();
+if (typeof this.preSound!=="undefined") this.preSound.stop();
 			so.directory = './sounds/';
 			this.level++;
 			this.timer.stop();
@@ -178,6 +186,7 @@ this.preSound.destroy();
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
 	}
+}
 
 	async doScore() {
 		if (this.getscore >= 6) {
@@ -202,13 +211,13 @@ this.preSound.destroy();
 		this.timer.stop();
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
-		const failsound = this.pool.playStatic(packdir + 'fail', 0);
+		const failsound = so.create(packdir + 'fail', true);
 		so.directory = './sounds/';
 this.music.destroy();
-		while (this.pool.staticSounds[failsound].sound.playing) {
+		while (failsound.playing) {
 			await utils.sleep(16);
 			if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
-				this.pool.staticSounds[failsound].sound.unload();
+				failsound.destroy();
 			}
 		}
 		so.resetQueue();
@@ -248,10 +257,6 @@ this.music.destroy();
 		this.input.justPressedEventCallback = null;
 		this.timer.stop();
 		const snd = this.music;
-		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
-		}
 		snd.unload();
 		so.resetQueue();
 		so.resetQueuedInstance();
@@ -290,10 +295,6 @@ this.music.destroy();
 		}
 		this.timer.stop();
 		const snd = this.music;
-		for (let i = snd.playbackRate; i > 0; i -= 0.045) {
-			snd.playbackRate = i;
-			await utils.sleep(30);
-		}
 		snd.unload();
 		so.resetQueue();
 		so.resetQueuedInstance();
@@ -485,17 +486,23 @@ this.music.destroy();
 	postprocess() {
 		so.directory = '';
 		const that = this;
+if (this.level>1) this.music.destroy();
 		this.music = so.create(packdir + this.level + 'music', true);
-		this.music.loop = true;
+//		this.music.loop = true;
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		this.music.play();
-		this.timer.change(that.bpms[that.level]  /1000.0);
-//		this.music.sound.on('play', () => {
+this.musicTimer.restart();
+//speech.speak("play"+this.music.fileName+", "+this.eventName);
 				this.input.justPressedEventCallback = key => {
 				this.render(key);
-				};
+				}
 //				});
+this.music.sound.on("ended",()=> {
+speech.speak("ended");
+this.music.play();
+this.justEnded=true;
+});
 		if (this.level > 1 && this.level != this.forceLevel) {
 			//this.queueLevels();
 		}
@@ -520,16 +527,15 @@ this.music.destroy();
 		const snd = this.music;
 		this.timer.stop();
 		this.scoreTimer.pause();
+this.musicTimer.pause();
 		this.pauseTime = snd.currentTime;
 this.music.fade(0,0.2);
-snd.on("fade",()=> {
+snd.sound.on("fade",()=> {
 		snd.pause();
 		idle.reset();
 });
-
 		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
 			await utils.sleep(10);
-
 			if (idle.elapsed >= 60000) {
 				await getAch('idle');
 			}
@@ -544,7 +550,7 @@ snd.on("fade",()=> {
 		const snd = this.music;
 		snd.play();
 snd.fade(this.volume,0.2);
-snd.on("fade",()=> {
+snd.sound.on("fade",()=> {
 		snd.seek(this.pauseTime);
 		this.timer.start();
 		this.scoreTimer.resume();
@@ -581,7 +587,7 @@ snd.on("fade",()=> {
 				so.enqueue(packdir + 'pre' + i,true);
 			}
 		}
-		//speech.speak(debugstr)
+//speech.speak(debugstr)
 		if (this.level > 1 && this.level != this.forceLevel) {
 			so.setQueueCallback(0);
 			so.loadQueue();
