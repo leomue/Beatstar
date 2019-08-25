@@ -20,9 +20,9 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
-this.runNow=false;
-		this.totalScore = [];
-this.justEnded=false;
+this.updates=0;
+	this.totalScore = [];
+this.justEnded=true;
 this.justBegun=true;
 this.eventName="";
 		this.maxSafeguards = data.safeguards;
@@ -135,21 +135,20 @@ this.musicTimer.pause();
 	}
 
 	update(dt) {
-if (this.justEnded) {
+let begun=this.justBegun;
+if (this.musicTimer.elapsed>=this.bpms[this.level] || (begun && this.currentAction>0)) {
 this.musicTimer.restart();
-this.justEnded=false;
-this.justBegun=true;
-return;
-}
-if (this.musicTimer.elapsed>=this.bpms[this.level] || this.justBegun) {
-this.runNow=true;
-setTimeout(()=> { this.runNow=false; },200);
-this.musicTimer.restart();
-this.justBegun=false; this.justEnded=false;
 		if (this.currentAction == 0) {
 			this.currentAction++;
 			return;
 		}
+if (begun) {
+this.justBegun=false;
+begun=false;
+if (this.currentAction>1) return;
+}
+this.updates++;
+speech.speak(this.currentAction+".");
 		if (!this.actionCompleted && this.action > 1) {
 			if (data.safeguards <= 0) {
 				this.fail(true);
@@ -169,7 +168,6 @@ this.justBegun=false; this.justEnded=false;
 			this.input.justPressedEventCallback = null;
 			so.directory = '';
 if (typeof this.music!=="undefined") {
-this.music.sound.unload();
 this.music.destroy();
 this.music=null;
 }
@@ -515,7 +513,6 @@ this.musicTimer.pause();
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		this.music.play();
-this.justEnded=false;
 this.justBegun=true;
 this.musicTimer.restart();
 this.timer.start();
@@ -526,7 +523,8 @@ this.timer.start();
 //				});
 this.music.sound.on("ended",()=> {
 this.music.play();
-this.justEnded=true;
+//this.musicTimer.restart();
+this.justBegun=true;
 });
 		if (this.level > 1 && this.level != this.forceLevel) {
 //this.queueLevels();
