@@ -91,10 +91,12 @@ if (this.stream) return;
 		}
 	}
 	play() {
+//sometimes, html element sounds complain about having a different connection, so wrap it in a try catch block.
 try {
 		this.sound.play();
 }catch(err) {
 console.log("error playing "+this.fileName+": "+err.message);
+//recreate the sound and replay
 this.sound=sono.create(new Audio(this.fileName));
 this.sound.play();
 }

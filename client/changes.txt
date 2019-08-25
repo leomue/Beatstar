@@ -1,4 +1,6 @@
 Version 5.1.0
+Finally music files now  "stream" so beatstar loads faster than it ever did.
+Reworked the way beatstar synchronizes loops so that it never gets out of sync (unless the pack maker gets their beats wrong!)
 Fixed a bunch of small design errors like music fade times.
 Music files for the levels now stream instead of being loaded into memory in their entirety which will (hopefully) make for a smoother beatstarring experience. This has the side effect of them not being able to pitch down while pausing or failing, which is just a minor inconvenience I think.
 Removed question when setting up the game if you wanted to change the pack folder as it confused people, just go to the menu to change it.

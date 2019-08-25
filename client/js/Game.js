@@ -20,6 +20,7 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
+this.runNow=false;
 		this.totalScore = [];
 this.justEnded=false;
 this.justBegun=true;
@@ -134,8 +135,15 @@ this.musicTimer.pause();
 	}
 
 	update(dt) {
-if (this.musicTimer.elapsed>=this.bpms[this.level] || this.justEnded || this.justBegun) {
-speech.speak("ok");
+if (this.justEnded) {
+this.musicTimer.restart();
+this.justEnded=false;
+this.justBegun=true;
+return;
+}
+if (this.musicTimer.elapsed>=this.bpms[this.level] || this.justBegun) {
+this.runNow=true;
+setTimeout(()=> { this.runNow=false; },200);
 this.musicTimer.restart();
 this.justBegun=false; this.justEnded=false;
 		if (this.currentAction == 0) {
@@ -521,7 +529,7 @@ this.music.play();
 this.justEnded=true;
 });
 		if (this.level > 1 && this.level != this.forceLevel) {
-			//this.queueLevels();
+//this.queueLevels();
 		}
 		this.action = 0;
 		this.actionCompleted = false;
