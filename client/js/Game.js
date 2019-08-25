@@ -124,7 +124,7 @@ this.musicTimer.pause();
 		this.timer = Timer({update(dt) {
 				that.update(dt);
 				}, render() {
-				} }, );
+				} }, 1/120);
 		so.setQueueCallback(() => {
 				so.directory = './sounds/';
 				that.setupLevel();
@@ -134,7 +134,8 @@ this.musicTimer.pause();
 	}
 
 	update(dt) {
-if (this.musicTime.elapsed>=this.bpms[this.level] || this.justEnded || this.justBegun) {
+if (this.musicTimer.elapsed>=this.bpms[this.level] || this.justEnded || this.justBegun) {
+speech.speak("ok");
 this.musicTimer.restart();
 this.justBegun=false; this.justEnded=false;
 		if (this.currentAction == 0) {
@@ -159,12 +160,19 @@ this.justBegun=false; this.justEnded=false;
 		if (this.currentAction >= this.numberOfActions) {
 			this.input.justPressedEventCallback = null;
 			so.directory = '';
-
-if (typeof this.music!=="undefined") this.music.destroy();
-if (typeof this.preSound!=="undefined") this.preSound.stop();
+if (typeof this.music!=="undefined") {
+this.music.sound.unload();
+this.music.destroy();
+this.music=null;
+}
+if (typeof this.preSound!=="undefined") {
+this.preSound.stop();
+}
 			so.directory = './sounds/';
 			this.level++;
 			this.timer.stop();
+this.musicTimer.restart();
+this.musicTimer.pause();
 			this.setupLevel();
 			return;
 		}
@@ -209,6 +217,8 @@ if (typeof this.preSound!=="undefined") this.preSound.stop();
 			return;
 		}
 		this.timer.stop();
+this.musicTimer.restart();
+this.musicTimer.pause();
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
 		const failsound = so.create(packdir + 'fail', true);
@@ -256,6 +266,9 @@ this.music.destroy();
 	async quit() {
 		this.input.justPressedEventCallback = null;
 		this.timer.stop();
+this.musicTimer.restart();
+this.musicTimer.pause();
+
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -294,6 +307,9 @@ this.music.destroy();
 			return;
 		}
 		this.timer.stop();
+this.musicTimer.restart();
+this.musicTimer.pause();
+
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -486,20 +502,21 @@ this.music.destroy();
 	postprocess() {
 		so.directory = '';
 		const that = this;
-if (this.level>1) this.music.destroy();
 		this.music = so.create(packdir + this.level + 'music', true);
 //		this.music.loop = true;
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		this.music.play();
+this.justEnded=false;
+this.justBegun=true;
 this.musicTimer.restart();
+this.timer.start();
 //speech.speak("play"+this.music.fileName+", "+this.eventName);
 				this.input.justPressedEventCallback = key => {
 				this.render(key);
 				}
 //				});
 this.music.sound.on("ended",()=> {
-speech.speak("ended");
 this.music.play();
 this.justEnded=true;
 });
@@ -544,6 +561,7 @@ snd.sound.on("fade",()=> {
 	}
 
 	async unpause() {
+
 		this.input.justPressedEventCallback = key => {
 			this.render(key);
 		};
@@ -551,6 +569,7 @@ snd.sound.on("fade",()=> {
 		snd.play();
 snd.fade(this.volume,0.2);
 snd.sound.on("fade",()=> {
+this.musicTimer.resume();
 		snd.seek(this.pauseTime);
 		this.timer.start();
 		this.scoreTimer.resume();

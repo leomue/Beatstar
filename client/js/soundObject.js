@@ -15,7 +15,6 @@ var playOnceTimer;
 class SoundObjectItem extends EventEmitter {
 	constructor(file, callback=0, tag=0, stream=false) {
 super();
-console.log("creating sound for "+file);
 		this.duckingFirstTime=true;
 this.stream=stream;
 this.panner=null;
@@ -26,26 +25,19 @@ this.sound = sono.create({
 src: file,
 onComplete:() => { this.doneLoading(); } });
 		this.timeout = setTimeout(() => { this.checkProgress();}, 2000);
-		this.data = this.sound.data;
 		this.loaded = false;
 		this.callback = callback;
 		this.tag = tag;
 }
 if (stream) {
-console.log("streaming sound");
-this.hsound = new Audio(file);
-console.log("html created");
 		this.loaded = true;
 		this.callback = callback;
 		this.tag = tag;
-this.sound=sono.create(this.hsound);
-console.log("sono created");
-		this.data = this.sound.data;
+this.sound=sono.create(new Audio(file));
 this.doneLoading();
 }
 }
 else if (typeof file=="object" ) {
-console.log("creating for object");
 this.sound = sono.create("");
 this.sound.data=file;
 		this.loaded = false;
@@ -92,20 +84,19 @@ if (this.stream) return;
 	}
 	
 	doneLoading() {
-console.log("is done "+this.fileName);
 		if (!this.stream) clearTimeout(this.timeout);
-		this.data = this.sound.data;
 		this.loaded = true;
 				if (this.callback!=0) {
 				this.callback();
 		}
 	}
 	play() {
+try {
 		this.sound.play();
-if (this.stream) {
-this.hsound.onplay=()=> {
-this.emit("play");
-}
+}catch(err) {
+console.log("error playing "+this.fileName+": "+err.message);
+this.sound=sono.create(new Audio(this.fileName));
+this.sound.play();
 }
 	}
 stop() {
@@ -119,13 +110,12 @@ resume() {
 this.sound.resume();
 }
 	destroy() {
-		this.sound.destroy();
-if (this.stream) this.hsound=null;
+		this.sound.unload();
+this.sound.destroy();
 	}
 unload() { this.sound.destroy(); }
 	duck(time) {
 		if (this.duckingFirstTime) this.oldVolume=this.volume;
-console.log("ducking "+this.oldVolume);
 		this.duckingFirstTime=false;
 		this.sound.fade(0.3,0.15);
 					}
@@ -299,12 +289,11 @@ class SoundObject {
 	
 	
 	create(file,stream=false) {
-console.log("create function run.");
 		file = this.directory + file + this.extension;
 let found=-1;
  found = this.findSound(file);
 		let returnObject = null;
-		if (found == -1 || found.data == null) {
+		if (found == -1 || found.sound.data == null) {
 					returnObject = new SoundObjectItem(file, () => { if (!stream) this.doneLoading(); },0,stream);
 			
  this.sounds.push(returnObject);
@@ -312,15 +301,14 @@ let found=-1;
 		} else {
 			 returnObject = new SoundObjectItem(found.sound.data, () => { if (!stream) this.doneLoading(); },0,stream);
 					}
+returnObject.fileName=file; //otherwise html element fileNames get fucked up.
 		return returnObject;
 	}
 	
 	enqueue(file,stream=false) {
 		file = this.directory + file + this.extension;
-		console.log("queuing "+file);
 		this.queue.push({file,stream});
 		this.queueLength = this.queue.length;
-	console.log("length "+this.queueLength);	
 	}
 	
 	loadQueue() {
@@ -337,13 +325,11 @@ let found=-1;
 		this.loadingQueue = false;
 	}
 	handleQueue() {
-	console.log("handle queue");		
 		if (this.queue.length > 0) {
 			if (typeof this.statusCallback != "undefined" && this.statusCallback!=null) {
 				this.statusCallback(1-this.queue.length/this.queueLength);
 			}
 			if (this.findSound(this.queue[0].file)!=-1) {
-console.log("found sound "+this.queue[0].file);
 						this.queue.splice(0, 1);
 				this.handleQueue();
 				return;
@@ -352,7 +338,6 @@ let file=this.queue[0].file;
 let stream=this.queue[0].stream;
 			this.queue.splice(0, 1);
 			this.sounds.push(new SoundObjectItem(file, () => { this.handleQueue(); }, 1, stream));
-console.log("sound pushed "+this.sounds[this.sounds.length-1].fileName);
 
 		} else {
 					this.loadingQueue = false;
@@ -371,7 +356,6 @@ console.log("sound pushed "+this.sounds[this.sounds.length-1].fileName);
 		if (result == 1) {
 			
 			if (typeof this.loadedCallback != "undefined" && this.loadedCallback != 0 && this.loadedCallback != null) {
-				console.log(this.loadedCallback);
 				this.loadedCallback();
 			}
 		}

@@ -960,7 +960,7 @@ export function listenPack() {
 	let mus;
 	let levels;
 	so.directory = './sounds/';
-	const lock = so.create('locked');
+	const lock = so.create('locked',true);
 	so.directory = '';
 	let unlocked = data.unlocks[pack].level;
 	if (unlocked == 0) {
@@ -982,16 +982,16 @@ export function listenPack() {
 	speech.speak(strings.get('mListen', [unlocked]));
 	inp.justPressedEventCallback = function (evt) {
 		lock.stop();
-		if (typeof mus !== 'undefined') {
-			mus.destroy();
-		}
-
 		if (evt == KeyEvent.DOM_VK_LEFT) {
 			inp.justPressedEventCallback = null;
+mus.destroy();
 			st.setState(2);
 		}
 		// Down
 		else if (evt == KeyEvent.DOM_VK_DOWN) {
+		if (typeof mus !== 'undefined') {
+			mus.sound.unload();
+		}
 			pos++;
 			if (pos > levels) {
 				pos = 1;
@@ -1006,6 +1006,9 @@ export function listenPack() {
 		}
 		// Up
 		else if (evt == KeyEvent.DOM_VK_UP) {
+		if (typeof mus !== 'undefined') {
+			mus.sound.unload();
+		}
 			pos--;
 			if (pos <= 0) {
 				pos = levels;
