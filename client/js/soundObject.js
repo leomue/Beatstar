@@ -214,7 +214,7 @@ this.sound.volume=v;
 	}
 
 	get duration() {
-		return this.sound.duration() ;
+		return this.sound.duration;
 	}
 
 	get position() {

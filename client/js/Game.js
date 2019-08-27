@@ -20,8 +20,12 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
+this.justAssigned=false;
+
+this.updateInterval=-1;
 this.updates=0;
 	this.totalScore = [];
+this.maxUpdates=0;
 this.justEnded=true;
 this.justBegun=true;
 this.eventName="";
@@ -33,6 +37,7 @@ this.eventName="";
 			this.scoreAverage = [];
 		this.levelAverage = [];
 		this.scoreCounter = so.create('cling');
+this.locator=so.create("locator");
 		so.directory = '';
 		this.canPause = true;
 
@@ -41,7 +46,7 @@ this.eventName="";
 		this.scoreTimer = new OldTimer();
 		var that = this;
 		this.pauseTime = 0;
-		this.timer = null;
+
 		this.music = null;
 		this.score = 0;
 		this.pool = new SoundHandler();
@@ -57,8 +62,6 @@ this.eventName="";
 
 	async setup(creds, mode) {
 		this.forceLevel = 1;
-this.musicTimer=new OldTimer();
-this.musicTimer.pause();
 		if (mode == 1) {
 			this.rev = false;
 		}
@@ -122,10 +125,6 @@ this.musicTimer.pause();
 		}
 		this.keys = actionKeys;
 		const that = this;
-		this.timer = Timer({update(dt) {
-				that.update(dt);
-				}, render() {
-				} }, 1/120);
 		so.setQueueCallback(() => {
 				so.directory = './sounds/';
 				that.setupLevel();
@@ -135,21 +134,23 @@ this.musicTimer.pause();
 	}
 
 	update(dt) {
-let begun=this.justBegun;
-if (this.musicTimer.elapsed>=this.bpms[this.level] || (begun && this.currentAction>0)) {
-this.musicTimer.restart();
-		if (this.currentAction == 0) {
-			this.currentAction++;
-			return;
-		}
-if (begun) {
-this.justBegun=false;
-begun=false;
-if (this.currentAction>1) return;
+if (this.paused) {
+return;
 }
-this.updates++;
-speech.speak(this.currentAction+".");
-		if (!this.actionCompleted && this.action > 1) {
+if (this.updateInterval==null) {
+this.updateInterval=setTimeout(()=> {
+this.update();
+},this.bpms[this.level]);
+}
+if (this.justBegun) {
+this.updateInterval=null;
+this.justBegun=false;
+}
+ //update
+		if (this.currentAction == 0) {
+	this.currentAction++;
+		}
+				if (!this.actionCompleted && this.action > 1) {
 			if (data.safeguards <= 0) {
 				this.fail(true);
 				return;
@@ -176,9 +177,7 @@ this.preSound.stop();
 }
 			so.directory = './sounds/';
 			this.level++;
-			this.timer.stop();
-this.musicTimer.restart();
-this.musicTimer.pause();
+
 			this.setupLevel();
 			return;
 		}
@@ -199,7 +198,6 @@ this.musicTimer.pause();
 		so.directory = './sounds/';
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
-	}
 }
 
 	async doScore() {
@@ -222,17 +220,16 @@ this.musicTimer.pause();
 			this.safe.play();
 			return;
 		}
-		this.timer.stop();
-this.musicTimer.restart();
-this.musicTimer.pause();
+clearTimeout(this.updateInterval);
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
-		const failsound = so.create(packdir + 'fail', true);
+		const failsound = so.create(packdir + 'fail',true);
+failsound.play();
 		so.directory = './sounds/';
 this.music.destroy();
 		while (failsound.playing) {
 			await utils.sleep(16);
-			if (this.input.isDown(KeyEvent.DOM_VK_RETURN)) {
+			if (this.input.isDown(KeyEvent.DOM_VK_ESCAPE)) {
 				failsound.destroy();
 			}
 		}
@@ -271,10 +268,8 @@ this.music.destroy();
 
 	async quit() {
 		this.input.justPressedEventCallback = null;
-		this.timer.stop();
-this.musicTimer.restart();
-this.musicTimer.pause();
 
+clearTimeout(this.updateInterval);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -312,10 +307,8 @@ this.musicTimer.pause();
 		if (!data.allowSave) {
 			return;
 		}
-		this.timer.stop();
-this.musicTimer.restart();
-this.musicTimer.pause();
 
+clearTimeout(this.updateInterval);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -338,15 +331,15 @@ this.musicTimer.pause();
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_C) {
-			speech.speak(this.cash);
+			speech.speak(this.cash+" ");
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_G) {
-			speech.speak(data.safeguards);
+			speech.speak(data.safeguards+" ");
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_L) {
-			speech.speak(this.level);
+			speech.speak(this.level+" ");
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_S) {
@@ -513,19 +506,33 @@ this.musicTimer.pause();
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		this.music.play();
-this.justBegun=true;
-this.musicTimer.restart();
-this.timer.start();
+this.updates=0;
+this.locator.pitch=1;
+this.locator.play();
+setTimeout(()=> {
+this.locator.stop();
+this.locator.pitch=1.3;
+this.locator.play();
+},this.bpms[this.level]/2);
+if (this.updateInterval!=null) clearTimeout(this.updateInterval);
+this.updateInterval=setTimeout(()=> {
+this.update();
+},this.bpms[this.level]);
 //speech.speak("play"+this.music.fileName+", "+this.eventName);
 				this.input.justPressedEventCallback = key => {
 				this.render(key);
 				}
 //				});
 this.music.sound.on("ended",()=> {
+//music ended
+if (this.paused) return;
 this.music.play();
-//this.musicTimer.restart();
+this.updateInterval=setTimeout(()=> {
+this.update();
+},this.bpms[this.level]);
 this.justBegun=true;
 });
+
 		if (this.level > 1 && this.level != this.forceLevel) {
 //this.queueLevels();
 		}
@@ -539,50 +546,41 @@ this.justBegun=true;
 
 	unload() {
 	}
-
 	async pause() {
-		if (!this.canPause) {
+		if (!this.canPause || (!this.actionCompleted && this.currentAction>0)) {
 			return;
 		}
+this.paused=true;
 		this.input.justPressedEventCallback = null;
 		const idle = new OldTimer();
 		this.canPause = false;
-		const snd = this.music;
-		this.timer.stop();
 		this.scoreTimer.pause();
-this.musicTimer.pause();
-		this.pauseTime = snd.currentTime;
-this.music.fade(0,0.2);
-snd.sound.on("fade",()=> {
-		snd.pause();
+		this.pauseTime = this.music.currentTime;
 		idle.reset();
-});
-		while (!this.input.isDown(KeyEvent.DOM_VK_P)) {
-			await utils.sleep(10);
+this.music.pause();
+this.input.justPressed[KeyEvent.DOM_VK_P]=false;
+let pauseInt=setInterval(()=> {
 			if (idle.elapsed >= 60000) {
-				await getAch('idle');
+getAch('idle');
 			}
-		}
+if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {		
+clearInterval(pauseInt);
 		this.unpause();
+}
+},50);
 	}
-
 	async unpause() {
-
 		this.input.justPressedEventCallback = key => {
 			this.render(key);
 		};
-		const snd = this.music;
-		snd.play();
-snd.fade(this.volume,0.2);
-snd.sound.on("fade",()=> {
-this.musicTimer.resume();
-		snd.seek(this.pauseTime);
-		this.timer.start();
+this.paused=false;
+		this.music.play();
+		this.music.sound.seek(0);
+clearTimeout(this.updateInterval);
+this.updateInterval=null;
 		this.scoreTimer.resume();
 		this.input.keysPressed(); // We need this so that it doesn't fail immediately after unpause if you switch windows.
-});
 	}
-
 	calculateScore() {
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;

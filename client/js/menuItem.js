@@ -106,7 +106,7 @@ class SliderItem extends MenuItem {
 				this.currentValue+=this.increaseBy;
 			}
 			if (this.currentValue>this.maxValue) this.currentValue=this.maxValue;
-				speech.speak(this.currentValue);
+				speech.speak(this.currentValue+".");
 		}
 	
 		decrease() {
@@ -114,7 +114,7 @@ class SliderItem extends MenuItem {
 				this.currentValue-=this.increaseBy;
 			}
 			if (this.currentValue<this.minValue) this.currentValue=this.minValue;
-				speech.speak(this.currentValue);
+				speech.speak(this.currentValue+".");
 		}
 	
 		select() {

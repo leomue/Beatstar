@@ -1101,10 +1101,11 @@ class GoGame {
 }
 export async function playQuestions() {
 	const q = new QuestionsGame();
-	await q.init();
+	if (!q.stop) await q.init();
 }
 class QuestionsGame {
 	constructor() {
+this.stop=false;
 		this.packs = 0;
 		this.packnames = [];
 		for (const i in data.unlocks) {
@@ -1114,10 +1115,14 @@ class QuestionsGame {
 			}
 		}
 		if (this.packs < 5) {
-			new ScrollingText(strings.get('need5'), '\n', () => {
+this.stop=true;
+new ScrollingText(strings.get('need5'), '\n', () => {
+
 					st.setState(2);
+return;
 					});
 		}
+if (this.stop) return;
 		this.songs = {};
 		this.correct = 0;
 		sos();
@@ -1137,6 +1142,7 @@ class QuestionsGame {
 	}
 
 	async init() {
+if (this.stop) return;
 		const os = require('os');
 		sos();
 		const suspense = so.create('gq_intro');

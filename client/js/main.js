@@ -592,7 +592,6 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (debug) {
 		// Await strings.check(2);
 //remap();
-//		save();
 data.beatcoins=1000000;
 save();
 	}
