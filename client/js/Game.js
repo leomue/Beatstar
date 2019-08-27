@@ -21,8 +21,8 @@ import {KeyEvent} from './keycodes.js';
 class Game {
 	constructor(creds, mode = 1) {
 this.justAssigned=false;
-
-this.updateInterval=-1;
+this.newUpdateInterval=null;
+this.updateInterval=null;
 this.updates=0;
 	this.totalScore = [];
 this.maxUpdates=0;
@@ -137,14 +137,9 @@ this.locator=so.create("locator");
 if (this.paused) {
 return;
 }
-if (this.updateInterval==null) {
-this.updateInterval=setTimeout(()=> {
-this.update();
-},this.bpms[this.level]);
-}
-if (this.justBegun) {
-this.updateInterval=null;
-this.justBegun=false;
+if (this.newUpdateInterval!=null) {
+this.updateInterval=this.newUpdateInterval;
+this.newUpdateInterval=null;
 }
  //update
 		if (this.currentAction == 0) {
@@ -220,7 +215,7 @@ this.preSound.stop();
 			this.safe.play();
 			return;
 		}
-clearTimeout(this.updateInterval);
+clearInterval(this.updateInterval);
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
 		const failsound = so.create(packdir + 'fail',true);
@@ -269,7 +264,7 @@ this.music.destroy();
 	async quit() {
 		this.input.justPressedEventCallback = null;
 
-clearTimeout(this.updateInterval);
+clearInterval(this.updateInterval);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -308,7 +303,7 @@ clearTimeout(this.updateInterval);
 			return;
 		}
 
-clearTimeout(this.updateInterval);
+clearInterval(this.updateInterval);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -514,8 +509,8 @@ this.locator.stop();
 this.locator.pitch=1.3;
 this.locator.play();
 },this.bpms[this.level]/2);
-if (this.updateInterval!=null) clearTimeout(this.updateInterval);
-this.updateInterval=setTimeout(()=> {
+if (this.updateInterval!=null) clearInterval(this.updateInterval);
+this.updateInterval=setInterval(()=> {
 this.update();
 },this.bpms[this.level]);
 //speech.speak("play"+this.music.fileName+", "+this.eventName);
@@ -524,15 +519,14 @@ this.update();
 				}
 //				});
 this.music.sound.on("ended",()=> {
-//music ended
+//ended
 if (this.paused) return;
 this.music.play();
-this.updateInterval=setTimeout(()=> {
+this.newUpdateInterval=setInterval(()=> {
 this.update();
 },this.bpms[this.level]);
 this.justBegun=true;
 });
-
 		if (this.level > 1 && this.level != this.forceLevel) {
 //this.queueLevels();
 		}
@@ -576,7 +570,7 @@ clearInterval(pauseInt);
 this.paused=false;
 		this.music.play();
 		this.music.sound.seek(0);
-clearTimeout(this.updateInterval);
+clearInterval(this.updateInterval);
 this.updateInterval=null;
 		this.scoreTimer.resume();
 		this.input.keysPressed(); // We need this so that it doesn't fail immediately after unpause if you switch windows.
