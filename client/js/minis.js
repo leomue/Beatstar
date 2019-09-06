@@ -909,7 +909,7 @@ function pongloop(dt, actions) {
 			pin.justPressedEventCallback = null;
 			pin.justPressedEventCallback = null;
 			ps.stop();
-			pongmusic.sound.fade(1, 0, 300);
+			pongmusic.sound.fade(0, 0.3);
 			pongpool.playStatic('pong_end', 0);
 			pongtimer.restart();
 			gametimer.stop();
@@ -1020,7 +1020,7 @@ class GoGame {
 						this.newTurn();
 						});
 			} else if (this.elapsedTime <= this.th1) {
-				let timeDisplay = this.elapsedTime / 1000;
+				let timeDisplay = (this.elapsedTime+1000) / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
 				this.pool.playStatic('go_early', 0);
 				this.combo = 0;
@@ -1030,7 +1030,7 @@ class GoGame {
 						this.newTurn();
 						});
 			} else if (this.elapsedTime > this.th1 && this.elapsedTime < this.th2) {
-				let timeDisplay = this.elapsedTime / 1000;
+				let timeDisplay = (this.elapsedTime+1000) / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
 				const scoreFormula = Math.round(100 - (2000 - this.elapsedTime)) * 8;
 				this.curscore = scoreFormula;
@@ -1047,7 +1047,7 @@ class GoGame {
 						this.newTurn();
 						});
 			} else if (this.elapsedTime > this.th2 && this.elapsedTime < this.th3) {
-				let timeDisplay = this.elapsedTime / 1000;
+				let timeDisplay = (this.elapsedTime+1000) / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
 				const scoreFormula = Math.round(100 - (this.elapsedTime - 2000)) * 8;
 				this.combo++;

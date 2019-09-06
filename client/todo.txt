@@ -4,6 +4,4 @@ achievements for goGame
 make an achievement if you fail at the last level.
 change safegaurd sound
 delete pack world collection 2.1
-go through  all minigames ensure they work.
 code remap and achievement.
-fix save

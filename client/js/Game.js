@@ -20,7 +20,13 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
-this.justAssigned=false;
+		this.resync=setInterval(()=> {
+			if (this.newUpdateInterval!=null) {
+			clearInterval(this.updateInterval);
+			this.updateInterval=this.newUpdateInterval;
+			this.newUpdateInterval=null;
+			}
+		},1000/32);
 this.newUpdateInterval=null;
 this.updateInterval=null;
 this.updates=0;
@@ -137,10 +143,6 @@ this.locator=so.create("locator");
 if (this.paused) {
 return;
 }
-if (this.newUpdateInterval!=null) {
-this.updateInterval=this.newUpdateInterval;
-this.newUpdateInterval=null;
-}
  //update
 		if (this.currentAction == 0) {
 	this.currentAction++;
@@ -216,6 +218,7 @@ this.preSound.stop();
 			return;
 		}
 clearInterval(this.updateInterval);
+clearInterval(this.resync);
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
 		const failsound = so.create(packdir + 'fail',true);
@@ -227,6 +230,9 @@ this.music.destroy();
 			if (this.input.isDown(KeyEvent.DOM_VK_ESCAPE)) {
 				failsound.destroy();
 			}
+		}
+		if (this.level==this.levels) {
+			await getAch("faillast");
 		}
 		so.resetQueue();
 		so.resetQueuedInstance();
@@ -263,8 +269,8 @@ this.music.destroy();
 
 	async quit() {
 		this.input.justPressedEventCallback = null;
-
 clearInterval(this.updateInterval);
+clearInterval(this.resync);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -299,11 +305,13 @@ clearInterval(this.updateInterval);
 	}
 
 	async save() {
+		this.input.justPressedEventCallback = null;
 		if (!data.allowSave) {
 			return;
 		}
 
 clearInterval(this.updateInterval);
+clearInterval(this.resync);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
@@ -541,15 +549,15 @@ this.justBegun=true;
 	unload() {
 	}
 	async pause() {
-		if (!this.canPause || (!this.actionCompleted && this.currentAction>0)) {
+		if (!this.canPause || (!this.actionCompleted && this.currentAction>0 && this.action!=1)) {
 			return;
 		}
 this.paused=true;
 		this.input.justPressedEventCallback = null;
+		clearInterval(this.updateInterval);
 		const idle = new OldTimer();
 		this.canPause = false;
 		this.scoreTimer.pause();
-		this.pauseTime = this.music.currentTime;
 		idle.reset();
 this.music.pause();
 this.input.justPressed[KeyEvent.DOM_VK_P]=false;
@@ -568,10 +576,13 @@ clearInterval(pauseInt);
 			this.render(key);
 		};
 this.paused=false;
-		this.music.play();
-		this.music.sound.seek(0);
 clearInterval(this.updateInterval);
 this.updateInterval=null;
+		this.music.sound.seek(0);
+		this.music.play();
+		this.newUpdateInterval=setInterval(()=> {
+		this.update();
+		},this.bpms[this.level]);
 		this.scoreTimer.resume();
 		this.input.keysPressed(); // We need this so that it doesn't fail immediately after unpause if you switch windows.
 	}

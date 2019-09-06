@@ -9,7 +9,7 @@ export var lang = 0;
 export var ttsVoice;
 export var ttsRate = 1;
 const achs = [
-	'fw', 'fl', 'idle', 'dl', 'dw', 'w1', 'w5', 'w10', 'w25', 'w50', 'usepinky', 'lactions', 'fingr', 'bulk', 'intro', 'slotwin', 'frust', 'catslots', 'robber', 'pongfire', 'pongfail',
+	'fw', 'fl', 'idle', 'dl', 'dw', 'w1', 'w5', 'w10', 'w25', 'w50', 'usepinky', 'lactions', 'fingr', 'bulk', 'intro', 'slotwin', 'frust', 'catslots', 'robber', 'pongfire', 'pongfail','faillast',
 ];
 export var editing = false;
 import {OldTimer} from './oldtimer';
@@ -219,7 +219,10 @@ export async function browsePacks(browsing = 1) {
 				return;
 			}
 			if (typeof snd !== 'undefined') {
+				try {
 				snd.destroy();
+				} catch {
+				}
 			}
 			if (timeout != -1) {
 				clearTimeout(timeout);
@@ -481,7 +484,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug =true) {
+export async function checkPack(changeBoot = true, debug =false) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -534,6 +537,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 			lm.run(s => {
 					lang = s.selected;
 					data.lang = lang;
+					speech.setLanguage(lang)
 					lm.destroy();
 					new ScrollingText(strings.get('intro'), '\n', (async () => {
 								await getAch('intro');
@@ -543,6 +547,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 		}
 		else {
 			data.lang = lang;
+			speech.setLanguage(lang)
 			new ScrollingText(strings.get('intro'), '\n', (async () => {
 						await getAch('intro');
 						introing = false;
@@ -1542,16 +1547,10 @@ export async function getAch(name, forcePlay = false,fromMenu=false) {
 	if (!data.ach[name] || forcePlay) {
 		data.ach[name] = name;
 		save();
-		let snd;
-		const old = so.directory;
-		so.directory = './sounds/';
-		snd = so.create('getAch');
-			if (!fromMenu) await snd.playSync();
 			if (!forcePlay) {
 				await new ScrollingText(strings.get('newach', [strings.get('ach' + name)]));
 			}
 			await new ScrollingText(strings.get("ad"+name));
-		so.directory = old;
 		return true;
 	}
 	return false;
@@ -1587,18 +1586,19 @@ export async function browseAch() {
 						return;						
 						}
 						if (s.selected == -1) {
+							await getAch("spoiledBrat");
 						for (const i in achs) {
 						if (!data.ach.hasOwnProperty(achs[i])) {
 						await new ScrollingText(strings.get('ach' + achs[i]) + ': ' + strings.get('achh' + achs[i]));
 						}
 						}
 						acm.destroy();
-						achMusic.fade(achMusic.volume,0,500);
-						achMusic.on("fade",()=> {
+						achMusic.fade(0,0.5);
+						setTimeout(()=> {
 						st.setState(2);	
 						resolve();
 						exit = true;
-						});
+						},500);
 
 						return;
 						}

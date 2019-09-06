@@ -112,8 +112,11 @@ resume() {
 this.sound.resume();
 }
 	destroy() {
-		this.sound.unload();
+		try {
 this.sound.destroy();
+		} catch(err) {
+			console.log("Can't destroy: "+err.message);
+		}
 	}
 unload() { this.sound.destroy(); }
 	duck(time) {

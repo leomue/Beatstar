@@ -1,4 +1,7 @@
-Version 6.1.0
+Version 6.0.0
+Fixed a misleading message that said if you want to change the ingame language you must delete your save. This is no longer true and can be done in the main menu.
+fixed a cosmetic bug in ready set go, where time would display as 2 seconds instead of 3. Bugger! this did not affect the game, though.
+Fixed a bug where the save function (s during a game) would still allow you to  fail once more and waste a possible safeguard when pressing enter to get rid of the "saved!" message.
 Added an audio locator which plays before each level starts, to give you an idea of what the ideal beat rhythm is. Such is the power of event driven code instead of traditional timers.
 fixed a bug where pack quizz would let you play even if you had less than 5 packs with more than 1  level unlocked.
 Audio ducking works properly now.
@@ -13,6 +16,7 @@ Beatstar should no longer wrongly say that there are "x" packs to download when 
 Fixed a bunch of errors opening and loading and saving files.
 Beatstar now saves screen reader vs tts preference.
 added a new branch (local, not available in the gitlab repo yet), for the keep the beat game.
+The resynchronize function for the music timers runs every 32 frames per second. This should be ok for everyone and only changes 1 timer, there is no game loop anymore, meaning that the CPU usage should be more efficient. The keyboard check function is now only executed whenever you actually press the keyboard, to make up for this change. In other words, good stuff. Event driven code and all that.
 
 Version 5.0
 Sadly, old save files are no longer compatible. I am sorry for this, however the new stuff I'm working on will "hopefully" make people want to start over.
