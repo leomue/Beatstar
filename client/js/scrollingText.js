@@ -68,8 +68,8 @@ class ScrollingText {
 	}
 
 	readCurrentLine() {
-		if (this.splitText[this.currentLine][0] == '!') {
-			const str = this.splitText[this.currentLine].substr(1);
+		if (this.splitText[this.currentLine].trim()[0] == '!') {
+			const str = this.splitText[this.currentLine].trim().substr(1);
 			const snd = so.create(str, true);
 			snd.play();
 			snd.sound.once('end', () => {

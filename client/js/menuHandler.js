@@ -7,7 +7,7 @@ import {checkPack, version, version2, save, data, browseAch, editPack, minituts,
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
-import {MenuItem} from './menuItem';
+import {SelectorItem, MenuItem} from './menuItem';
 import {pack, packdir, rebuildHashes, downloadPacks} from './main';
 import {KeyboardInput} from './input.js';
 import {KeyEvent} from './keycodes';
@@ -39,9 +39,18 @@ export async function mainMenu() {
 		items.push(new MenuItem(32, strings.get('mRate'),));
 		items.push(new MenuItem(293, strings.get('mSelectVoice'),"v"));
 	}
+let selectorAction=0;
+if (data.actionLimit) {
+if (data.actionLimit>0) selectorAction=1;
+}
+items.push(new SelectorItem(91,strings.get("MKeyLayout"),[strings.get("mk1"),strings.get("mk2")],selectorAction,((option)=>{
+console.log("option ",option);
+if (option==0) data.actionLimit=0;
+if (option==1) data.actionLimit=10;
+save();
+})));
 	items.push(new MenuItem(13, strings.get('mRev'),"v"));
 	items.push(new MenuItem(8, strings.get('mSafeguards', [data.safeguards]),"7"));
-
 	items.push(new MenuItem(1, strings.get('mLearn'),"2"));
 	items.push(new MenuItem(12, strings.get('mAch')));
 	items.push(new MenuItem(11, strings.get('mEdit'),"4"));

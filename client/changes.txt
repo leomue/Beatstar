@@ -1,5 +1,9 @@
 Version 6.5
+Fixed a problem where tutorial sounds would not play.
+In the learn pack menu you can now press shift to hear the countersound.
+You can now use an alternative keyboard layout which uses e, d, r, f, and optionally i, k, j, l as alternative keys for beatstar. This has been a long time coming and I am ashamed not to have made it sooner. I made it this way instead of a remapping option so that players don't use in game keys as action keys, etc. Hopefully, it's enough.
 Fixed a bug inin game  save, if the option was not enabled, the save would fail but you wouldn't be able to perform any more keyboard actions, resulting in... Well.
+
 
 Version 6.0.0
 Fixed a misleading message that said if you want to change the ingame language you must delete your save. This is no longer true and can be done in the main menu.

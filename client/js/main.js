@@ -47,7 +47,7 @@ import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
 
 export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT, 0, 0, KeyEvent.DOM_VK_D, KeyEvent.DOM_VK_E, KeyEvent.DOM_VK_F, KeyEvent.DOM_VK_R, KeyEvent.DOM_VK_I, KeyEvent.DOM_VK_K, KeyEvent.DOM_VK_L, KeyEvent.DOM_VK_J];
-export var mangle = new Cryptr('canttouchthis007');
+export var mangle = require("base-64");
 import {KeyboardInput} from './input.js';
 
 export var langs = ['', 'english', 'spanish'];
@@ -83,31 +83,35 @@ export async function learnPack() {
 	const event = new KeyboardInput();
 	event.init();
 	so.directory = '';
+console.log("meh", actionKeys[data.actionLimit+2]);
+let letter="a";
 	while (!event.isJustPressed(KeyEvent.DOM_VK_Q)) {
 		await utils.sleep(10);
+if (event.isDown(KeyEvent.DOM_VK_SHIFT)) letter='o';
+if (!event.isDown(KeyEvent.DOM_VK_SHIFT)) letter='a';
 		if (event.isJustPressed(actionKeys[data.actionLimit+2])) {
-			pool.playStatic(packdir + 'a' + 2, 0);
+			pool.playStatic(packdir + letter + 2, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+3])) {
-			pool.playStatic(packdir + 'a' + 3, 0);
+			pool.playStatic(packdir + letter + 3, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+4])) {
-			pool.playStatic(packdir + 'a' + 4, 0);
+			pool.playStatic(packdir + letter + 4, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+5])) {
-			pool.playStatic(packdir + 'a' + 5, 0);
+			pool.playStatic(packdir + letter + 5, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+6])) {
-			pool.playStatic(packdir + 'a' + 6, 0);
+			pool.playStatic(packdir + letter + 6, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+7])) {
-			pool.playStatic(packdir + 'a' + 7, 0);
+			pool.playStatic(packdir + letter + 7, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+8])) {
-			pool.playStatic(packdir + 'a' + 8, 0);
+			pool.playStatic(packdir + letter + 8, 0);
 		}
 		if (event.isJustPressed(actionKeys[data.actionLimit+9])) {
-			pool.playStatic(packdir + 'a' + 9, 0);
+			pool.playStatic(packdir + letter + 9, 0);
 		}
 		if (event.isJustPressed(KeyEvent.DOM_VK_PERIOD)) {
 			pool.playStatic(packdir + 'a' + 1, 0);
@@ -508,7 +512,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 
 } // path is null close
 	try {
-		data = JSON.parse(mangle.decrypt(fs.readFileSync(packDirectory+'/save.beat')));
+		data = JSON.parse(mangle.decode(fs.readFileSync(packDirectory+'/save.beatstar')));
 			lang = data.lang;
 			speech.setLanguage(lang)
 				if (typeof data.rate !== 'undefined') {
@@ -582,7 +586,6 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 		credits = false;
 	}
 	packdir = packDirectory +"/"+ pack + '/';
-	actionKeys = data.actionKeys;
 	save();
 	if (!fs.existsSync(packdir + 'bpm.txt')) {
 		pack = 'default';
@@ -600,7 +603,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	}
 	if (debug) {
 		// Await strings.check(2);
-//remap();
+
 playTone();
 return;
 	}
@@ -950,8 +953,8 @@ try {
 		fs.mkdirSync(packDirectory);
 	}
 	let write = JSON.stringify(data);
-	write = mangle.encrypt(write);
-	fs.writeFileSync(packDirectory+'/save.beat', write);
+	write = mangle.encode(write);
+	fs.writeFileSync(packDirectory+'/save.beatstar', write);
 } catch {
 		packDirectory=os.homedir() + '/beatpacks';
 window.localStorage.setItem("path",os.homedir() + '/beatpacks');
@@ -1632,29 +1635,6 @@ export async function changeLang() {
 					resolve();
 					});
 			});	
-}
-export async function remap() {
-let newActionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT];	
-var invalid=[KeyEvent.DOM_VK_ESCAPE,KeyEvent.DOM_VK_Q,KeyEvent.DOM_VK_S];
-let inp=new KeyboardInput();
-inp.init();
-await new ScrollingText(strings.get("kh"));
-for (let i=2;i<10;i++) {
-speech.speak(strings.get("ki")+" "+strings.get("k"+i));
-let nextKey=false;
-while (!nextKey) {
-	await utils.sleep(5);
-	if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
-		st.setState(2);
-		return;
-	}
-	let keys=inp.keysPressed();
-	if (keys.length>0 && !invalid.includes(keys[0])) {
-		newActionKeys[i]=keys[0];
-		nextKey=true;
-			}
-}
-}
 }
 async function playTone() {
 	

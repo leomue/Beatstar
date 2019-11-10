@@ -57,7 +57,7 @@ class SelectorItem extends MenuItem {
 	}
 	
 		speak() {
-			speech.speak(this.name + '. Selector. Set to ' + this.options[this.currentOption]);
+			speech.speak(this.name + '. Selector. ' + this.options[this.currentOption]);
 		}
 	
 		increase() {
@@ -66,7 +66,7 @@ class SelectorItem extends MenuItem {
 			}
 			speech.speak(this.options[this.currentOption]);
 				if (typeof this.selectCallback !== 'undefined') {
-					this.selectCallback(this.options[this.currentOption]);
+					this.selectCallback(this.currentOption);
 				}
 		}
 	
@@ -76,7 +76,7 @@ class SelectorItem extends MenuItem {
 			}
 			speech.speak(this.options[this.currentOption]);
 				if (typeof this.selectCallback !== 'undefined') {
-					this.selectCallback(this.options[this.currentOption]);
+					this.selectCallback(this.currentOption,this.options[this.currentOption]);
 				}
 		}
 	
