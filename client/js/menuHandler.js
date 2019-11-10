@@ -25,26 +25,26 @@ export async function mainMenu() {
 	console.log('menu thinks pack dir is ' + main.packDirectory);
 	const fs=require('fs');
 	const items = new Array();
+	const settings = new Array();
 	items.push(new MenuItem(0, strings.get('mStart'),"1"));
 	if (version2 != '' && version != version2) {
 		items.push(new MenuItem(-1000, strings.get('newUpdate', [version, version2])));
 	}
 	if (speech.webTTS) {
-		items.push(new MenuItem(33, strings.get('mReader')));
+		settings.push(new MenuItem(33, strings.get('mReader')));
 	}
 	if (!speech.webTTS) {
-		items.push(new MenuItem(34, strings.get('mSapi')));
+		settings.push(new MenuItem(34, strings.get('mSapi')));
 	}
 	if (speech.webTTS) {
-		items.push(new MenuItem(32, strings.get('mRate'),));
-		items.push(new MenuItem(293, strings.get('mSelectVoice'),"v"));
+		settings.push(new MenuItem(32, strings.get('mRate'),"t"));
+		settings.push(new MenuItem(293, strings.get('mSelectVoice'),"v"));
 	}
 let selectorAction=0;
 if (data.actionLimit) {
 if (data.actionLimit>0) selectorAction=1;
 }
-items.push(new SelectorItem(91,strings.get("MKeyLayout"),[strings.get("mk1"),strings.get("mk2")],selectorAction,((option)=>{
-console.log("option ",option);
+settings.push(new SelectorItem(91,strings.get("MKeyLayout"),[strings.get("mk1"),strings.get("mk2")],selectorAction,((option)=>{
 if (option==0) data.actionLimit=0;
 if (option==1) data.actionLimit=10;
 save();
@@ -55,16 +55,17 @@ save();
 	items.push(new MenuItem(12, strings.get('mAch')));
 	items.push(new MenuItem(11, strings.get('mEdit'),"4"));
 	items.push(new MenuItem(9, strings.get('mGames',),"3"));
-
+	settings.push(new MenuItem(10, strings.get('mGameTuts',)));
 	items.push(new MenuItem(2, strings.get('mBrowse', [data.beatcoins]),"5"));
 	items.push(new MenuItem(5, strings.get('mBrowseUnlocked')));
 	items.push(new MenuItem(7, strings.get('mBrowseIncompleted'),"6"));
 	items.push(new MenuItem(4, strings.get('mDownload'),"d"));
 	items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level]),"9"));
-	items.push(new MenuItem(10, strings.get('mGameTuts',)));
-	items.push(new MenuItem(1234, strings.get('mLang',)));
-	items.push(new MenuItem(69, strings.get('mDir', [main.packDirectory])));
-	items.push(new MenuItem(3, strings.get('mHashes'),"h"));
+	items.push(new MenuItem(9191, strings.get('mSettings'),"0"));
+	settings.push(new MenuItem(1234, strings.get('mLang',),"l"));
+	settings.push(new MenuItem(69, strings.get('mDir', [main.packDirectory])));
+	settings.push(new MenuItem(3, strings.get('mHashes'),"h"));
+	settings.push(new MenuItem(-1, strings.get('mBack'),"0"));
 	so.directory = './sounds/';
 	const mainMenu = new Menu(strings.get('mainmenu'), items);
 	so.directory = '';
@@ -74,9 +75,22 @@ save();
 		mainMenu.sndChoose = so.create(packdir + 'select');
 	}
 	mainMenu.run(async s => {
+			mainMenu.destroy();
+if (s.selected!=9191) {
+await menusFunction(s);
+} else {
+	const settingsMenu = new Menu(strings.get('settingsMenu'), settings);
+settingsMenu.run(async s => {
+settingsMenu.destroy();
+await menusFunction(s);
+});
+}
+});
+}
+async function menusFunction(s) {
 			speech.stop();
 			so.directory = './sounds/';
-			mainMenu.destroy();
+
 			switch (s.selected) {
 			case 1234:
 			languageSelect();
@@ -152,13 +166,15 @@ break;
 case 13:
 st.setState(21);
 break;
+case -1:
+st.setState(2);
+break;
 case -1000:
 const {shell} = require('electron').remote;
 shell.openExternal('http://oriolgomez.com');
 st.setState(2);
 break;
 }
-});
 }
 export async function changeRate() {
 	let rate = speech.rate;

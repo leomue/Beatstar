@@ -8,7 +8,9 @@ class Strings {
 	constructor() {
 		this.strings = {};
 		this.strings[1] = {
-			// New English
+			//New English
+mSettings:"Settings and help",
+settingsMenu:"This is the settings menu. Feel free to change anything. You can cancel by choosing back.",
 "mk1":"Space, tab, enter, backspace and arrows",
 "mk2": "e, d, r, f, and I, K, J, and L as arrows.",
 "MKeyLayout": "Keyboard Layout (left and right arrows to change)",
@@ -349,6 +351,8 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 		};
 		this.strings[2] = {
 			// New Spanish
+mSettings:"Configuración y ayuda",
+settingsMenu:"Este es el menú de configuración. Puedes cambiar opciones aquí, o pulsar volver para salir.",
 "mk1":"Espacio, tabulador, enter y retroceso, y las flechas.",
 "mk2": "e, d, r, f; e I, K, J, y L como flechas.",
 "MKeyLayout": "Modo de teclado (flechas izquierda y derecha para cambiar)",
