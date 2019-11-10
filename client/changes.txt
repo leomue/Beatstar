@@ -1,3 +1,6 @@
+Version 6.5
+Fixed a bug inin game  save, if the option was not enabled, the save would fail but you wouldn't be able to perform any more keyboard actions, resulting in... Well.
+
 Version 6.0.0
 Fixed a misleading message that said if you want to change the ingame language you must delete your save. This is no longer true and can be done in the main menu.
 fixed a cosmetic bug in ready set go, where time would display as 2 seconds instead of 3. Bugger! this did not affect the game, though.

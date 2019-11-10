@@ -251,7 +251,7 @@ export async function playCode() {
 					playing = false;
 				}
 				if (actionKeys.includes(evt)) {
-					if (evt == actionKeys[acode[counter].substr(1)]) {
+					if (evt == actionKeys[data.actionLimit+acode[counter].substr(1)]) {
 						sop();
 						pool.playStatic(acode[counter], 0);
 						sos();
@@ -937,12 +937,12 @@ function pongloop(dt, actions) {
 					});
 		}
 		pin.justPressedEventCallback = evt => {
-			if (event.which != actionKeys[current]) {
+			if (event.which != actionKeys[data.actionLimit+current]) {
 				pongpool.playStatic('pong_fail', 0);
 				pongmiss++;
 				time -= 25;
 			}
-			if (event.which == actionKeys[current]) {
+			if (event.which == actionKeys[data.actionLimit+current]) {
 				pongpool.playStatic('pong_bell', 0);
 				time -= 30;
 				current = 1;

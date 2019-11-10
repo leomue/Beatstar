@@ -22,7 +22,7 @@
     "audiobuffer-to-wav": "^1.0.0",
     "babel-polyfill": "^6.26.0",
     "copy-to-clipboard": "^3.2.0",
-    "cryptr": "^4.0.2",
+    "cryptr": "^6.0.1",
     "download-file-sync": "^1.0.4",
     "fs-walk": "0.0.2",
     "hammerjs": "^2.0.8",
@@ -32,10 +32,26 @@
     "jquery": "^3.4.1",
     "s": "^0.1.1",
     "sono": "^2.1.6",
-    "speak-tts": "^2.0.8"
+    "speak-tts": "^2.0.8",
+    "tone": "^13.8.25"
   },
   "devDependencies": {
-    "electron": "^6.0.4",
-    "parcel-bundler": "^1.12.3"
+    "electron": "^7.1.1",
+    "parcel-bundler": "^1.12.4"
+  },
+  "build": {
+    "compression": "maximum",
+    "nodeGypRebuild": false,
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
+    }
   }
 }

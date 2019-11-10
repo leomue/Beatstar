@@ -46,7 +46,7 @@ import {so} from './soundObject';
 import {KeyEvent} from './keycodes';
 import {st} from './stateMachine';
 
-export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT];
+export var actionKeys = [0, 0, KeyEvent.DOM_VK_SPACE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_RETURN, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_LEFT, 0, 0, KeyEvent.DOM_VK_D, KeyEvent.DOM_VK_E, KeyEvent.DOM_VK_F, KeyEvent.DOM_VK_R, KeyEvent.DOM_VK_I, KeyEvent.DOM_VK_K, KeyEvent.DOM_VK_L, KeyEvent.DOM_VK_J];
 export var mangle = new Cryptr('canttouchthis007');
 import {KeyboardInput} from './input.js';
 
@@ -85,28 +85,28 @@ export async function learnPack() {
 	so.directory = '';
 	while (!event.isJustPressed(KeyEvent.DOM_VK_Q)) {
 		await utils.sleep(10);
-		if (event.isJustPressed(actionKeys[2])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+2])) {
 			pool.playStatic(packdir + 'a' + 2, 0);
 		}
-		if (event.isJustPressed(actionKeys[3])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+3])) {
 			pool.playStatic(packdir + 'a' + 3, 0);
 		}
-		if (event.isJustPressed(actionKeys[4])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+4])) {
 			pool.playStatic(packdir + 'a' + 4, 0);
 		}
-		if (event.isJustPressed(actionKeys[5])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+5])) {
 			pool.playStatic(packdir + 'a' + 5, 0);
 		}
-		if (event.isJustPressed(actionKeys[6])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+6])) {
 			pool.playStatic(packdir + 'a' + 6, 0);
 		}
-		if (event.isJustPressed(actionKeys[7])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+7])) {
 			pool.playStatic(packdir + 'a' + 7, 0);
 		}
-		if (event.isJustPressed(actionKeys[8])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+8])) {
 			pool.playStatic(packdir + 'a' + 8, 0);
 		}
-		if (event.isJustPressed(actionKeys[9])) {
+		if (event.isJustPressed(actionKeys[data.actionLimit+9])) {
 			pool.playStatic(packdir + 'a' + 9, 0);
 		}
 		if (event.isJustPressed(KeyEvent.DOM_VK_PERIOD)) {
@@ -594,11 +594,15 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 					}));
 		return;
 	}
+	if (!data.actionLimit) {
+		data.actionLimit=0;
+		save();
+	}
 	if (debug) {
 		// Await strings.check(2);
 //remap();
-data.beatcoins=1000000;
-save();
+playTone();
+return;
 	}
 	booter();
 }
@@ -1652,7 +1656,11 @@ while (!nextKey) {
 }
 }
 }
+async function playTone() {
+	
+}
 module.exports.lang=lang;
 module.exports.langs=langs;
 module.exports.packDirectory=packDirectory;
 module.exports.packdir=packdir;
+module.exports.playTone=playTone;

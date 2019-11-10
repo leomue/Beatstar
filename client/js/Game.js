@@ -305,11 +305,10 @@ clearInterval(this.resync);
 	}
 
 	async save() {
-		this.input.justPressedEventCallback = null;
 		if (!data.allowSave) {
+			this.input.justPressedEventCallback = null;
 			return;
 		}
-
 clearInterval(this.updateInterval);
 clearInterval(this.resync);
 		const snd = this.music;
@@ -374,7 +373,7 @@ clearInterval(this.resync);
 			this.fail();
 			return;
 		}
-		if (key == this.keys[this.action]) {
+		if (key == this.keys[data.actionLimit+this.action]) {
 			so.directory = '';
 			if (!this.rev) {
 				this.pool.playStatic(packdir + 'o' + this.action, 0);
@@ -387,7 +386,7 @@ clearInterval(this.resync);
 			this.calculateScore();
 			return;
 		}
-		if (key != this.keys[this.action]) {
+		if (key != this.keys[data.actionLimit+this.action]) {
 			this.fail();
 		}
 	}
