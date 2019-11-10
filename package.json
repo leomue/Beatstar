@@ -30,6 +30,7 @@
     "hash-files": "^1.1.1",
     "howler": "^2.1.2",
     "http-server": "^0.11.1",
+    "humanize-duration": "^3.21.0",
     "jquery": "^3.4.1",
     "s": "^0.1.1",
     "sono": "^2.1.6",
