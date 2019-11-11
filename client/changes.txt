@@ -1,4 +1,6 @@
-Version 6.5.0
+Version 7.5.0
+Missions system enabled, with a couple of missions that you'll discover as you play. There are currently 7 missions which give you mission credits as your mission level increases. Mission credits do nothing right now.
+The stats system is taking shape. You can now see your stats, which are things like total played time, etc.
 There is now a settings menu at the bottom, to clean up the huge main menu of seamingly endless options which includes things like pack directory, language, the new keyboard layout option, etc.
 Fixed a problem where tutorial sounds would not play.
 In the learn pack menu you can now press shift to hear the countersound.

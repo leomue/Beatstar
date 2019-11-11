@@ -20,6 +20,7 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
+		increase("totalGames");
 		this.resync=setInterval(()=> {
 			if (this.newUpdateInterval!=null) {
 			clearInterval(this.updateInterval);
@@ -42,11 +43,19 @@ this.eventName="";
 		so.directory = './sounds/',
 			this.scoreAverage = [];
 		this.levelAverage = [];
+		this.timer = Timer({
+			update: () => {
+				
+			if (!this.paused) increase("totalTime",1,false);
+			
+			},
+			render: () => {}
+		},1);
+this.timer.start();
 		this.scoreCounter = so.create('cling');
 this.locator=so.create("locator");
 		so.directory = '';
 		this.canPause = true;
-
 		this.actionCompleted = false;
 		this.toDestroy = new Array();
 		this.scoreTimer = new OldTimer();
@@ -154,7 +163,7 @@ return;
 			}
 			data.safeguards--;
 			this.safeuse = true;
-			increase("totalSafeguards");
+			increase("totalSafeguards",1,false);
 			this.currentAction--;
 			save();
 			this.actionCompleted = true;
@@ -208,9 +217,10 @@ this.preSound.stop();
 	}
 
 	async fail(skipGuards = false) {
+		this.timer.stop();
 		if (data.safeguards >= 1 && !skipGuards) {
 			data.safeguards--;
-			increase("totalSafeguards");
+			increase("totalSafeguards",1,false);
 			this.safeuse = true;
 			save();
 			this.actionCompleted = true;
@@ -268,9 +278,11 @@ this.music.destroy();
 					that.doScore();
 				}
 		});
+		save();
 	}
 
 	async quit() {
+		this.timer.stop();
 		this.input.justPressedEventCallback = null;
 clearInterval(this.updateInterval);
 clearInterval(this.resync);
@@ -305,10 +317,12 @@ clearInterval(this.resync);
 					that.doScore();
 				}
 		});
+		save();
 	}
 
 	async save() {
 		if (!data.allowSave) {
+			this.timer.stop();
 			this.input.justPressedEventCallback = null;
 			return;
 		}
@@ -385,7 +399,7 @@ clearInterval(this.resync);
 				this.pool.playStatic(packdir + 'a' + this.action, 0);
 			}
 			so.directory = './sounds/';
-			increase("totalActions",false);
+			increase("totalActions",1,false);
 			this.actionCompleted = true;
 			this.calculateScore();
 			return;
@@ -407,7 +421,7 @@ clearInterval(this.resync);
 				this.getscore--;
 			}
 			this.cash += (utils.averageInt(this.levelAverage) + utils.averageInt(this.levelAverage) + this.actionPercentage);
-			increase("totalLevels");
+			increase("totalLevels",1,false);
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];

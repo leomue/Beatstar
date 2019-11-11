@@ -1,4 +1,6 @@
 ' use strict';
+import {Mission} from './mission';
+let justRan=true;
 export var gameID = 'beat';
 export var newPath="";
 let changedLang=false;
@@ -12,6 +14,7 @@ const achs = [
 	'fw', 'fl', 'idle', 'dl', 'dw', 'w1', 'w5', 'w10', 'w25', 'w50', 'usepinky', 'lactions', 'fingr', 'bulk', 'intro', 'slotwin', 'frust', 'catslots', 'robber', 'pongfire', 'pongfail','faillast',
 ];
 export var editing = false;
+
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
 
@@ -55,7 +58,7 @@ export var langs = ['', 'english', 'spanish'];
 export var pack = 'default';
 export let packDirectory = os.homedir() + '/beatpacks';
 export var data = '';
-
+export var missionSound=so.create("missionSound");
 export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
@@ -604,11 +607,13 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (!data.stats) data.stats={};
 	if (debug) {
 		// Await strings.check(2);
-
-playTone();
+		await missions(true);
 return;
 	}
+	if (justRan) {
 	increase("totalRuns");
+	justRan=false;
+	}
 	booter();
 }
 const download = function (url, dest, cb) {
@@ -1079,7 +1084,7 @@ export async function addCashSync(c1, c2 = 0, simulate = false) {
 export function increase(stat,value=1,saving=true) {
 	if (!data.stats[stat]) data.stats[stat]=0;
 	data.stats[stat]+=value;
-	if (saving) save();
+save();
 }
 export function decrease(stat,value=1,saving=true) {
 	if (!data.stats[stat]) data.stats[stat]=0;
@@ -1657,14 +1662,74 @@ async function playTone() {
 }
  async function statsFunction() {
 	const humanize=require("humanize-duration");
-	var lng="en";
+	let lng="en";
 	if (lang==2) lng="es";
 	let items=[];
-	items.push(new MenuItem(0,strings.get("sMissionCredits",[data.missionCredits])));
+	if (data.missionCredits) items.push(new MenuItem(0,strings.get("sMissionCredits",[data.missionCredits])));
+	if (data.stats.totalRuns) items.push(new MenuItem(0,strings.get("sRuns",[data.stats.totalRuns])));
+	if (data.stats.totalGames) items.push(new MenuItem(0,strings.get("sTotalGames",[data.stats.totalGames])));
+	if (data.stats.totalLevels) items.push(new MenuItem(0,strings.get("sTotalLevels",[data.stats.totalLevels])));	
+	if (data.stats.totalWins) items.push(new MenuItem(0,strings.get("sTotalWins",[data.stats.totalWins])));		
+	if (data.stats.totalSafeguards) items.push(new MenuItem(0,strings.get("sTotalSafeguards",[data.stats.totalSafeguards])));
+if (data.stats.totalFails) items.push(new MenuItem(0,strings.get("sTotalFails",[data.stats.totalFails])));	
+if (data.stats.totalActions) items.push(new MenuItem(0,strings.get("sTotalActions",[data.stats.totalActions])));
+if (data.stats.totalCash) items.push(new MenuItem(0,strings.get("sTotalCash",[data.stats.totalCash])));
+if (data.stats.totalDownloads) items.push(new MenuItem(0,strings.get("sTotalDownloads",[data.stats.totalDownloads])));
+if (data.stats.totalTime) items.push(new MenuItem(0,strings.get("sTotalTime",[humanize(data.stats.totalTime*1000,{language: lng})])));
 	const statsMenu=new Menu(strings.get("statsMenuIntro"),items);
 	statsMenu.run((s)=> {
+		statsMenu.destroy();
 		st.setState(2);
 	});
+}
+async function missions(checkOnly=false) {
+	let arr=[];
+		let items=[];
+								if (data.stats.totalRuns) {
+					arr.push(new Mission("runs",10,1));
+					await arr[arr.length-1].check(data.stats.totalRuns);
+					items.push(arr[arr.length-1].menuItem());
+				}
+				if (data.stats.totalGames) {
+	arr.push(new Mission("games",7,1.5));
+	await arr[arr.length-1].check(data.stats.totalGames);
+	items.push(arr[arr.length-1].menuItem());
+}
+				if (data.stats.totalLevels) {
+	arr.push(new Mission("levels",50,1.5));
+	await arr[arr.length-1].check(data.stats.totalLevels);
+	items.push(arr[arr.length-1].menuItem());
+}
+				if (data.stats.totalWins) {
+	arr.push(new Mission("wins",5,2.5));
+	await arr[arr.length-1].check(data.stats.totalWins);
+	items.push(arr[arr.length-1].menuItem());
+}
+				if (data.stats.totalFails) {
+	arr.push(new Mission("fails",25,2.5));
+	await arr[arr.length-1].check(data.stats.totalFails);
+	items.push(arr[arr.length-1].menuItem());
+}
+				if (data.stats.totalCash) {
+	arr.push(new Mission("cash",100000,1));
+	await arr[arr.length-1].check(data.stats.totalCash);
+	items.push(arr[arr.length-1].menuItem());
+}
+				if (data.stats.totalTime) {
+	arr.push(new Mission("time",3600,1));
+	await arr[arr.length-1].check(data.stats.totalTime);
+	items.push(arr[arr.length-1].menuItem());
+}
+
+				items.push(new MenuItem(0,strings.get("sMissionCredits",[data.missionCredits])));
+	let missionsMenu=new Menu("missions",items);
+	if (!checkOnly) {
+		await missionsMenu.runSync();
+		st.setState(2);
+		return;
+	} else {
+		return
+	}
 }
 module.exports.lang=lang;
 module.exports.statsFunction=statsFunction;
@@ -1672,3 +1737,4 @@ module.exports.langs=langs;
 module.exports.packDirectory=packDirectory;
 module.exports.packdir=packdir;
 module.exports.playTone=playTone;
+module.exports.missions=missions;

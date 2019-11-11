@@ -1,5 +1,5 @@
 import {utils} from './utilities';
-import {mangle} from './main';
+import {missions,mangle} from './main';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
@@ -54,6 +54,7 @@ save();
 	items.push(new MenuItem(1, strings.get('mLearn'),"2"));
 	items.push(new MenuItem(12, strings.get('mAch')));
 	items.push(new MenuItem(1337, strings.get('mStats'),"s"));	
+	items.push(new MenuItem(1338, strings.get('mMissions'),"m"));		
 	items.push(new MenuItem(11, strings.get('mEdit'),"4"));
 	items.push(new MenuItem(9, strings.get('mGames',),"3"));
 	settings.push(new MenuItem(10, strings.get('mGameTuts',)));
@@ -75,6 +76,7 @@ save();
 		mainMenu.sndChoose.unload();
 		mainMenu.sndChoose = so.create(packdir + 'select');
 	}
+	await missions(true);
 	mainMenu.run(async s => {
 			mainMenu.destroy();
 if (s.selected!=9191) {
@@ -106,6 +108,7 @@ async function menusFunction(s) {
 					});
 			break;
 case 1337: statsFunction(); break;
+case 1338: await missions(); break;
 			case 32:
 			changeRate();
 			break;
