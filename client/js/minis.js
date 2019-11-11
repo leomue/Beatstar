@@ -15,7 +15,12 @@ import {so} from './soundObject';
 import {KeyEvent} from './keycodes';
 import {KeyboardInput} from './input';
 import {st} from './stateMachine';
-
+class Case {
+	constructor(prize,type) {
+		this.prize=prize;
+		this.type=type;
+	}
+}
 let gametimer;
 let pongnotify;
 let pongmusic;
