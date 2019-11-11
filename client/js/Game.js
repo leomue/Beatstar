@@ -4,7 +4,7 @@ import os from 'os';
 import $ from 'jquery';
 import {strings} from './strings';
 import {speech} from './tts';
-import {addCash, data, actionKeys} from './main';
+import {increase,addCash, data, actionKeys} from './main';
 import {getAch, pack, packdir, save} from './main';
 import {OldTimer} from './oldtimer';
 // Var os=require('os');
@@ -154,6 +154,7 @@ return;
 			}
 			data.safeguards--;
 			this.safeuse = true;
+			increase("totalSafeguards");
 			this.currentAction--;
 			save();
 			this.actionCompleted = true;
@@ -209,6 +210,7 @@ this.preSound.stop();
 	async fail(skipGuards = false) {
 		if (data.safeguards >= 1 && !skipGuards) {
 			data.safeguards--;
+			increase("totalSafeguards");
 			this.safeuse = true;
 			save();
 			this.actionCompleted = true;
@@ -217,6 +219,7 @@ this.preSound.stop();
 			this.safe.play();
 			return;
 		}
+		increase("totalFails");
 clearInterval(this.updateInterval);
 clearInterval(this.resync);
 		so.directory = '';
@@ -382,6 +385,7 @@ clearInterval(this.resync);
 				this.pool.playStatic(packdir + 'a' + this.action, 0);
 			}
 			so.directory = './sounds/';
+			increase("totalActions",false);
 			this.actionCompleted = true;
 			this.calculateScore();
 			return;
@@ -403,10 +407,12 @@ clearInterval(this.resync);
 				this.getscore--;
 			}
 			this.cash += (utils.averageInt(this.levelAverage) + utils.averageInt(this.levelAverage) + this.actionPercentage);
+			increase("totalLevels");
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
 		if (this.level > this.levels) {
+			increase("totalWins");
 			if (fs.existsSync(packdir + 'win.ogg')) {
 				so.directory = '';
 				this.input.justPressedEventCallback = null;

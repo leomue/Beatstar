@@ -601,12 +601,14 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 		data.actionLimit=0;
 		save();
 	}
+	if (!data.stats) data.stats={};
 	if (debug) {
 		// Await strings.check(2);
 
 playTone();
 return;
 	}
+	increase("totalRuns");
 	booter();
 }
 const download = function (url, dest, cb) {
@@ -624,6 +626,7 @@ const download = function (url, dest, cb) {
 
 export async function downloadPacks(arr = []) {
 	const fs = require('fs');
+	increase("totalDownloads",arr.length);
 	if (arr.length == 0) {
 		const dlList = new Array();
 		let remoteHashes;
@@ -1073,6 +1076,17 @@ export async function addCashSync(c1, c2 = 0, simulate = false) {
 					}, simulate);
 			});
 }
+export function increase(stat,value=1,saving=true) {
+	if (!data.stats[stat]) data.stats[stat]=0;
+	data.stats[stat]+=value;
+	if (saving) save();
+}
+export function decrease(stat,value=1,saving=true) {
+	if (!data.stats[stat]) data.stats[stat]=0;
+	data.stats[stat]-=value;
+	if (saving) save();
+}
+
 export async function addCash(c1, c2 = 0, callback, simulate = false) {
 	let coinCap = -1;
 	let cash = Math.ceil(c1 - c2);
@@ -1084,6 +1098,8 @@ export async function addCash(c1, c2 = 0, callback, simulate = false) {
 	let time = 370;
 	if (cash < 0) {
 		positive = false;
+	} else {
+		increase("totalCash",cash);
 	}
 	cash = Math.abs(cash);
 	so.directory = './sounds/';
@@ -1639,7 +1655,19 @@ export async function changeLang() {
 async function playTone() {
 	
 }
+ async function statsFunction() {
+	const humanize=require("humanize-duration");
+	var lng="en";
+	if (lang==2) lng="es";
+	let items=[];
+	items.push(new MenuItem(0,strings.get("sMissionCredits",[data.missionCredits])));
+	const statsMenu=new Menu(strings.get("statsMenuIntro"),items);
+	statsMenu.run((s)=> {
+		st.setState(2);
+	});
+}
 module.exports.lang=lang;
+module.exports.statsFunction=statsFunction;
 module.exports.langs=langs;
 module.exports.packDirectory=packDirectory;
 module.exports.packdir=packdir;

@@ -6,3 +6,12 @@ achievements for goGame
 make an achievement if you fail at the last level.
 change safegaurd sound
 delete pack world collection 2.1
+
+missions
+total playing time
+total runs
+total packs complete
+total fails
+total levels passed
+total actions
+total safeguards used

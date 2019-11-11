@@ -9,6 +9,8 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			statsMenuIntro:"Welcome to the stats menu! You can see your stats here, and press enter when you're done.",
+			sMissionCredits:"Mission credits: %1",
 mSettings:"Settings and help",
 settingsMenu:"This is the settings menu. Feel free to change anything. You can cancel by choosing back.",
 "mk1":"Space, tab, enter, backspace and arrows",

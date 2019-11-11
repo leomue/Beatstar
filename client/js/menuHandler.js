@@ -3,7 +3,7 @@ import {mangle} from './main';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
-import {checkPack, version, version2, save, data, browseAch, editPack, minituts, minigames, buySafeguards} from './main';
+import {statsFunction,checkPack, version, version2, save, data, browseAch, editPack, minituts, minigames, buySafeguards} from './main';
 import {langs, lang} from './main';
 import {st} from './stateMachine';
 import {strings} from './strings';
@@ -53,6 +53,7 @@ save();
 	items.push(new MenuItem(8, strings.get('mSafeguards', [data.safeguards]),"7"));
 	items.push(new MenuItem(1, strings.get('mLearn'),"2"));
 	items.push(new MenuItem(12, strings.get('mAch')));
+	items.push(new MenuItem(1337, strings.get('mStats'),"s"));	
 	items.push(new MenuItem(11, strings.get('mEdit'),"4"));
 	items.push(new MenuItem(9, strings.get('mGames',),"3"));
 	settings.push(new MenuItem(10, strings.get('mGameTuts',)));
@@ -104,7 +105,7 @@ async function menusFunction(s) {
 					st.setState(2);
 					});
 			break;
-
+case 1337: statsFunction(); break;
 			case 32:
 			changeRate();
 			break;
