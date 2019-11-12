@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head role="application">
 <meta 
 charset="utf-8"/>
 <title>Beatstar</title>
@@ -13,16 +13,19 @@ charset="utf-8"/>
        width:80%;height:80%;}
 </style>
 
-<script type="text/javascript" src="./main.js"></script>
+<script role="application" type="text/javascript" src="./main.js"></script>
 
 
 </head>
-<body aria-role="application">
+<body id="body" role="application">
+<div role="application">
+<input type="button" role="application" id="app">Game<input>
 Welcome!<p>
 this is the game window. Please disable your screen reader's virtual cursor (or browse cursor) so you can use the arrow keys.<br>
 On a mac, please disable voice over for best performance.
-<div id="speech" class="speechArea" aria-live="polite"></div>
-<div class="touchArea" id="touchArea">Supercube</div>
-<div class="languageSelector" id="langSelect"></div>
+</div>
+<div role="application" id="speech" class="speechArea" aria-live="polite"></div>
+<div role="application" class="touchArea" id="touchArea">Game Window</div>
+<div role="application" class="languageSelector" id="langSelect"></div>
 </body>
 </html>

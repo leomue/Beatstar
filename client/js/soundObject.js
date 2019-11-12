@@ -146,10 +146,11 @@ unload() { this.sound.destroy(); }
 		this.sound.stop();
 		this.sound.play();
 	}
-	playSync() {
+	async playSync(die=false) {
 		const inp = new KeyboardInput();
 		inp.init();
 		this.sound.play();
+		console.log("playing ",this.sound.file);
 		inp.justPressedEventCallback = (evt => {
 			if (evt == KeyEvent.DOM_VK_Q || evt == KeyEvent.DOM_VK_X) {
 				this.sound.stop();
@@ -158,10 +159,14 @@ unload() { this.sound.destroy(); }
 		});
 		return new Promise(resolve => {
 			this.sound.once('ended', () => {
+this.sound.removeAllListeners();
+if (die) this.sound.destroy();
 				resolve('ok');
 				inp.justPressedEventCallback = null;
 			});// End
 			this.sound.once('stop', () => {
+this.sound.removeAllListeners();
+if (die) this.sound.destroy();
 				resolve('ok');
 				inp.justPressedEventCallback = null;
 			});// Stop

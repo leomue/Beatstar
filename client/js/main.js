@@ -18,7 +18,7 @@ export var editing = false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
 
-import {playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
+import {Cases,playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 // Import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 
@@ -62,6 +62,7 @@ export var missionSound=so.create("missionSound");
 export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
 async function setup() {
+document.getElementById("app").focus();
 	const prom = new Promise((resolve) => {
 			fetch('http://oriolgomez.com/versions.php?id=' + gameID)
 			.then(event => event.text())
@@ -491,7 +492,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug =false) {
+export async function checkPack(changeBoot = true, debug =true) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -607,7 +608,8 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (!data.stats) data.stats={};
 	if (debug) {
 		// Await strings.check(2);
-		await missions(true);
+let casegame=new Cases();
+await casegame.start();
 return;
 	}
 	if (justRan) {
@@ -1686,7 +1688,7 @@ async function missions(checkOnly=false) {
 	let arr=[];
 		let items=[];
 								if (data.stats.totalRuns) {
-					arr.push(new Mission("runs",10,1));
+					arr.push(new Mission("runs",10,1.3));
 					await arr[arr.length-1].check(data.stats.totalRuns);
 					items.push(arr[arr.length-1].menuItem());
 				}
@@ -1696,22 +1698,22 @@ async function missions(checkOnly=false) {
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalLevels) {
-	arr.push(new Mission("levels",50,1.5));
+	arr.push(new Mission("levels",20,1.5));
 	await arr[arr.length-1].check(data.stats.totalLevels);
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalWins) {
-	arr.push(new Mission("wins",5,2.5));
+	arr.push(new Mission("wins",4,1.5));
 	await arr[arr.length-1].check(data.stats.totalWins);
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalFails) {
-	arr.push(new Mission("fails",25,2.5));
+	arr.push(new Mission("fails",10,1.8));
 	await arr[arr.length-1].check(data.stats.totalFails);
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalCash) {
-	arr.push(new Mission("cash",100000,1));
+	arr.push(new Mission("cash",25000,1));
 	await arr[arr.length-1].check(data.stats.totalCash);
 	items.push(arr[arr.length-1].menuItem());
 }

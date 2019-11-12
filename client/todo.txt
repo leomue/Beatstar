@@ -15,3 +15,4 @@ total fails
 total levels passed
 total actions
 total safeguards used
+bank prize 7 is a real mission credit, award.

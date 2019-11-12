@@ -9,6 +9,22 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+creditPrize:"the mission credit was real! Congratulations!",
+remaining:"Remaining prizes: ",
+b:"Beatcoins",
+s:"Safeguards",
+stillGet:"But you can still get %1 %2!",
+bankOffer:"The bank is offering %1 beatcoins and %2. Do you accept this deal?",
+prize1:"A free copy of manamon 2",
+prize2:"A box of chocolates",
+prize3:"a slap to the face. Bam",
+prize4:"a driving exam fit for a blind person",
+prize5:"A mystery box, who knows what's in it",
+prize6:"A fake mission credit",
+prize7:"A real mission credit",
+prize8:"A box of dead insects",
+prize9:"The heart of a human, the recently discovered species",
+prize10:"An I got scared and took the bank's offer t-shirt",
 			mStats:"Statistics",
 			mMissions:"Missions",
 			missionruns:"Run the game like a pro: Current mission level %1. %2 runs out of %3 for next mission credit.",
