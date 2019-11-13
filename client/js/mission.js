@@ -47,7 +47,7 @@ if (this.id=="time") {
 	const humanize=require("humanize-duration");
 	let lng="en";
 	if (lang==2) lng="es";
-	return new MenuItem(0, strings.get("mission"+this.id,[this.level,humanize(this.currentValue*1000,{language: lng}),humanize(Math.floor(this.cost*(this.level+1)*this.scale),{language:lng})]));
+	return new MenuItem(0, strings.get("mission"+this.id,[this.level,humanize(this.currentValue*1000,{language: lng}),humanize((Math.floor(this.cost*(this.level+1)*this.scale))*1000,{language:lng})]));
 }
 }
 async check(v) {

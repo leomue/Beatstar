@@ -1,4 +1,8 @@
 Version 7.5.0
+new mission: Tap tap at quick tap
+Total beatcoins are now announced when you win or lose coins.
+I made a cool infrastructure for future minigames to use mission credits. Maybe I can set up some sort of mission credit rewards as well, but expect mission credits to be acquired mostly by completing the dynamic missions.
+Wealthy chance minigame is back, and it now costs mission credits to play because the prizes are high. Hint: The bank may offer a surprise!
 Fixed a long standing and very very annoying problem, browse mode is now automatically disabled!
 Missions system enabled, with a couple of missions that you'll discover as you play. There are currently 7 missions which give you mission credits as your mission level increases. Mission credits do nothing right now.
 The stats system is taking shape. You can now see your stats, which are things like total played time, etc.

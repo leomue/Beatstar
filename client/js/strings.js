@@ -1,4 +1,5 @@
 'use strict';
+import copy from 'copy-to-clipboard';
 import {lang} from './main';
 import {utils} from './utilities';
 import {speech} from './tts';
@@ -9,8 +10,13 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			sTotalTaps:"Total taps at quick tap: %1",
+			creditsPlease:"%1 mission credits please.",
+			creditsSorry:"Oh, sorry. This is all wrong. You only have %1!",
+			thanks:"Thank you!",
+			freeplay:"Hi! I'll let you play for free this time. But just this time. It will cost you %1 mission credits later, ok?",
 creditPrize:"the mission credit was real! Congratulations!",
-remaining:"Remaining prizes: ",
+remaining:"prizes remaining",
 b:"Beatcoins",
 s:"Safeguards",
 stillGet:"But you can still get %1 %2!",
@@ -27,6 +33,8 @@ prize9:"The heart of a human, the recently discovered species",
 prize10:"An I got scared and took the bank's offer t-shirt",
 			mStats:"Statistics",
 			mMissions:"Missions",
+			missionttaps:"Tap tap tap at quick tap",
+			missiontaps:"Tap tap tap at quick tap. Mission level %1, with %2 out of %3 taps.",
 			missionruns:"Run the game like a pro: Current mission level %1. %2 runs out of %3 for next mission credit.",
 			missiontruns:"Run the game like a pro",
 			missiongames:"Play the game many times: Current mission level %1. Now %2 out of %3 for next mission credit.",
@@ -52,7 +60,7 @@ missionlevels:"Complete some levels: Now at level %1, with %2 out of %3 for next
 			missiontcash:"It's raining beatcoins",
 			missioncash:"It's raining beatcoins: Mission level %1, collected %2 out of %3 for next credit.",
 			missionttime:"Play for a long time",
-			missionttime:"Play for a long time: Mission level %1, with %2 out of %3 until next credit.",
+			missiontime:"Play for a long time: Mission level %1, with %2 out of %3 until next credit.",
 			sTotalDownloads:"You have downloaded a total of %1 packs.",
 			sTotalTime: "And, to top it off, you have played beatstar, not including minigames, for %1.",
 			missionNext:"Congratulations! You have achieved mission level %1 in %2. You have %3 mission credits.",
@@ -209,6 +217,7 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 	    football: 'soccer kick',
 	    react: 'Quick tap',
 	    gogame: 'Ready set go!',
+	chance:"wealthy chance: Choose your case",
 	    gq: 'Pack quizz, get to know your soundpacks',
 	    achfw: 'Premier League Team',
 	    achhfw: 'Obtained by winning a game of football kick',
@@ -392,14 +401,40 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 	    mBrowse: 'buy new packs (You have %1 beatcoins )',
 	    mBrowseIncompleted: 'incompleted packs',
 	    mBrowseUnlocked: 'Change to different unlocked pack',
-	    youwin: 'You win %1 coins!',
-	    youlose: 'You lose %1 coins.',
+	    youwin: 'You win %1 coins! You now have %2 coins.',
+	    youlose: 'You lose %1 coins. You now have %2 coins.',
 
 	    mHashes: 'Rebuild packs folder',
 	    mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
 			// New Spanish
+			creditsPlease: "%1 misiofichas, por favor.",
+			creditsSorry: "Vaya, perdón. No me lo esperaba. Esto está mal. Solo tienes %1 misiocréditos!",
+			thanks: "Gracias!",
+			freeplay: "Te voy a dejar jugar gratis esta vez. Pero solo esta vez. Luego te costará %1 misiocréditos, ok?",
+			creditPrize: "El misiocrédito era de verdad. ¡Felicidades!",
+			remaining: "Premios restantes",
+			b: "monedas",
+			s: "antifallos",
+			stillGet: "¡Pero aún puedes ganar %1 %2!",
+			bankOffer: "La banca te ofrece %1 monedas y %2. ¿Aceptas la oferta?",
+			prize1: "Una copia gratis del Manamon 2",
+			prize2: "Una caja de bombones",
+			prize3: "Una hostia en toda la cara",
+			prize4: "Un examen para el carnet de conducir especial para ciegos",
+			prize5: "Una caja del misterio. ¿Quién sabe lo que hay?",
+			prize6: "Un misiocrédito de mentira",
+			prize7: "Un misiocrédito de verdad",
+			prize8: "Una caja de tiflobichos muertos",
+			prize9: "Un corazón del humano, la especie recién descubierta",
+			prize10: "Una camiseta de me dio miedo y acepté la oferta de la banca",
+			mStats: "Estadísticas",
+			mMissions: "Misiones",
+			missionttaps: "dale dale dale don dale al reacciona",
+			missiontaps: "Dale dale dale al reacciona. Nivel %1 de misión, con %2 de %3 teclas pulsadas",
+			missionruns: "Abre el juego y vuélvelo a abrir. Nivel de misión %1, con %2 de %3 veces.",
+			sTotalTaps: "teclas pulsadas en el reacciona",
 mSettings:"Configuración y ayuda",
 settingsMenu:"Este es el menú de configuración. Puedes cambiar opciones aquí, o pulsar volver para salir.",
 "mk1":"Espacio, tabulador, enter y retroceso, y las flechas.",
@@ -747,6 +782,7 @@ selectVoice:"%1 voces disponibles. Usa las flechas arriba y abajo para seleccion
 		const len = utils.objSize(this.strings) - 2;
 		for (const i in this.strings[1]) {
 			if (!this.strings[lng].hasOwnProperty(i)) {
+							copy(i + ': "",');
 				await new ScrollingText(i + ': ' + this.strings[1][i]);
 			}
 		}

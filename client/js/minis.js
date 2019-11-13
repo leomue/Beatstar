@@ -1,7 +1,7 @@
 import os from 'os';
 import fs from 'fs';
 import {shuffle, newDeck, newDecks} from '52-deck';
-import {packDirectory, lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data} from './main';
+import {increase,packDirectory, lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data} from './main';
 import Timer from './timer';
 import {OldTimer} from './oldtimer';
 import {SoundHandler} from './soundHandler';
@@ -946,6 +946,7 @@ function pongloop(dt, actions) {
 				time -= 30;
 				current = 1;
 				pongnotify = false;
+				increase("totalTaps");
 				ps.stop();
 				pongmusic.pitch += 0.01;
 				pongright += 1;
@@ -1218,6 +1219,7 @@ save();
 }
 export class Cases {
 constructor() {
+	sos();
 this.cases=[];
 this.cases.push(new Case(1,1,0));
 this.cases.push(new Case(7,1,1));
@@ -1251,7 +1253,7 @@ this.offer3=so.create("case_offer3");
 }
 async start() {
 sos();
-let debug=true;
+let debug=false;
 if (debug) speech.webTTS=false;
 	if (!debug) {
 this.introCroud=so.create("case_cintro");
@@ -1285,6 +1287,7 @@ let mycase=new Menu("case_choose"+lang,this.caseSounds);
 mycase.silent=true;
 this.caseID=await mycase.runSync();
 this.myCase=this.findCase(this.caseID);
+console.log("my case is ",this.myCase.getValue()," of type ",this.myCase.type," with id of ",this.myCase.random);
 this.removeCase(this.myCase,"first");
 await utils.sleep(800);
 this.intro=so.create("case_begin"+lang);
@@ -1322,22 +1325,24 @@ this.miscSounds[utils.randomInt(3,7)].play();
 this.caseSounds=[];
 this.caseSounds.splice(0,this.caseSounds.length);
 this.sortRemaining();
-let str=strings.get("remaining");
+let str1="";
+let str2="";
 if (this.sortedBeatcoins.length>1) {
-str+=strings.get("b");
+		str1=this.sortedBeatcoins.length+strings.get("b")+" "+strings.get("remaining")+": ";
 for (let i=0;i<this.sortedBeatcoins.length;i++) {
-str+=this.sortedBeatcoins[i]+", ";
+str1+=this.sortedBeatcoins[i]+", ";
 }
 }
 if (this.sortedSafeguards.length>1) {
-str+=strings.get("s");
+	str2=(this.sortedSafeguards.length)+strings.get("s")+" "+strings.get("remaining")+": ";
 for (let i=0;i<this.sortedSafeguards.length;i++) {
-str+=this.sortedSafeguards[i]+", ";
+str2+=this.sortedSafeguards[i]+", ";
 }
 }
-this.caseSounds.push(new MenuItem(-1,str));
+if (str1!="") this.caseSounds.push(new MenuItem(-1,str1));
+if (str2!="") this.caseSounds.push(new MenuItem(-1,str2));
 for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random!="") this.caseSounds.push(this.cases[i].menuItem());
+if (this.cases[i].random!=-1) this.caseSounds.push(this.cases[i].menuItem());
 }
 let choices=new Menu(" ",this.caseSounds)
 choices.silent=true;
@@ -1372,7 +1377,7 @@ if (theCase.getValue()>=this.max) {
 //get new max
 this.max=0;
 for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random=="") continue;
+if (this.cases[i].random==-1) continue;
 if (this.cases[i].getValue()>this.max) {
 this.max=this.cases[i].getValue();
 this.maxType=this.cases[i].letter;
@@ -1389,8 +1394,6 @@ if (this.maxType=="s") this.spokenMax=this.max/750;
 speech.speak(strings.get("stillGet",[this.spokenMax,strings.get(this.maxType)]));
 }
 }//if max
-this.sortRemaining();
-
 await utils.sleep(utils.randomInt(3000,3500));
 if (this.bankCall()>0) {
 	await this.bankSound.playSync();
@@ -1399,11 +1402,11 @@ let offer=this.bankCall();
 if (offer>0 && offer<10000) {
 this.offer1.play();
 }
-else if (offer>=10000 && offer<40000) {
+else if (offer>=10000 && offer<25000) {
 this.offer2.play();
 await utils.sleep(300);
 }
-else if (offer>=40000) {
+else if (offer>=25000) {
 this.offer3.play();
 await utils.sleep(700);
 }
@@ -1442,7 +1445,7 @@ if (theCase.getValue()>0 && theCase.getValue()<40000) {
 this.jingle=so.create("case_loser");
 }
 else if (theCase.getValue()>=40000 && theCase.getValue()<100000) {
-this.miscSounds[9].play();
+this.miscSounds[10].play();
 this.jingle=so.create("case_winner");
 }
 else if (theCase.getValue()>=100000) {
@@ -1454,41 +1457,45 @@ await this.myCase.award();
 } //if banking
 st.setState(2);
 }//function
-average() {
-let avg=0;
-for (let i=0;i<this.cases.length;i++) {
-avg+=this.cases[i].getValue();
-}
-return avg;
-}
 bankCall() {
-let bankTurns=[4,7,10,13,15,17,19,21,22,23];
+let bankTurns=[4,7,10,13,15,17,19,21,22];
 if (bankTurns.includes(this.turn)) {
 let avg=0;
+let total=1;
 for (let i=0;i<this.cases.length;i++) {
+	if (this.cases[i].random!=-1) {
 avg+=this.cases[i].getValue();
+total++;
+	}
 }
 avg+=this.myCase.getValue();
-avg=avg/this.cases.length+1;
-let calc=Math.floor(utils.percentOf((this.turn+1)*4,avg));
+avg=avg/total;
+let calc=Math.floor(utils.percentage((this.turn+1)*4,avg));
 return calc;
 }
 return 0;
 }
 removeCase(whichCase,wtf) {
-let index=this.cases.indexOf(whichCase);
-this.cases[index].random="";
-console.log("removed",index,wtf);
+let 	index=this.cases.indexOf(whichCase);
+this.cases[index].random=-1;
+console.log("removed",index,wtf,this.cases[index].getValue());
 }
 sortRemaining() {
 this.sortedBeatcoins=[];
 this.sortedSafeguards=[];
-if (this.myCase.type==1) this.sortedBeatcoins.push(this.myCase.amount);
-if (this.myCase.type==2) this.sortedSafeguards.push(this.myCase.amount);
+console.log("my case is "+this.myCase.getValue()+" and "+this.myCase.type);
+if (this.myCase.type==1) {
+console.log("sorted into b");
+this.sortedBeatcoins.push(this.myCase.amount);
+}
+if (this.myCase.type==2) {
+	console.log("sorted into s");
+this.sortedSafeguards.push(this.myCase.amount);
+}
 for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random=="") continue;
-if (this.cases[i].letter=="b") this.sortedBeatcoins.push(this.cases[i].amount);
-if (this.cases[i].letter=="s") this.sortedSafeguards.push(this.cases[i].amount);
+if (this.cases[i].random==-1) continue;
+if (this.cases[i].type==1) this.sortedBeatcoins.push(this.cases[i].amount);
+if (this.cases[i].type==2) this.sortedSafeguards.push(this.cases[i].amount);
 }
 this.sortedBeatcoins.sort(utils.numericSort);
 this.sortedSafeguards.sort(utils.numericSort);

@@ -1,6 +1,12 @@
 ' use strict';
 import {Mission} from './mission';
 let justRan=true;
+function sop() {
+	so.directory = packdir + '/';
+}
+function sos() {
+	so.directory = './sounds/';
+}
 export var gameID = 'beat';
 export var newPath="";
 let changedLang=false;
@@ -32,7 +38,8 @@ slot: 8500,
       football: 12000,
       react: 14000,
       gogame: 18000,
-      gq: 35000
+      gq: 35000,
+chance: 25000,
 };
 import {Player} from './player';
 import {SliderItem, MenuItem} from './menuItem';
@@ -607,9 +614,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	}
 	if (!data.stats) data.stats={};
 	if (debug) {
-		// Await strings.check(2);
-let casegame=new Cases();
-await casegame.start();
+ await strings.check(2);
 return;
 	}
 	if (justRan) {
@@ -1132,11 +1137,11 @@ export async function addCash(c1, c2 = 0, callback, simulate = false) {
 		} // Yeah, you hear lose sound every 1k.
 		if (positive) {
 			snd = so.create('morecash' + coinCap);
-			speech.speak(strings.get('youwin', [cash]));
+			speech.speak(strings.get('youwin', [cash,data.beatcoins]));
 		}// Positive
 		else if (!positive) {
 			snd = so.create('lesscash');
-			speech.speak(strings.get('youlose', [cash]));
+			speech.speak(strings.get('youlose', [cash,data.beatcoins]));
 		}// Negative
 		await utils.sleep(400);
 		if (cash >= coinCap) {
@@ -1280,10 +1285,10 @@ export async function minigames() {
 					if (!answer) {
 					st.setState(2);
 					} else {
-					addCash(0, minis[name], () => {
+					addCash(0, minis[name], async() => {
 							data.minis[name] = true;
 							save();
-							runGame(name);
+await runGame(name);
 							});
 					}
 					});
@@ -1298,7 +1303,7 @@ export async function minigames() {
 			// else
 	});
 }// Function
-export function runGame(name) {
+export async function runGame(name) {
 	if (name == 'slot') {
 		playSlots();
 	} else if (name == 'code') {
@@ -1315,11 +1320,20 @@ export function runGame(name) {
 		playGo();
 	} else if (name == 'gq') {
 		playQuestions();
-	} else {
+	} 
+	else if (name=="chance") {
+				let success=await creditDeduct(5,data.minis[name],name);
+		if (success) {
+			let chance=new Cases;
+			await chance.start();
+		} else {
+			st.setState(2);
+	}
+	}
+	else {
 		st.setState(2);
 	}
 }
-
 // Tutorials
 export function minituts() {
 	if (typeof data.minis === 'undefined') {
@@ -1678,6 +1692,7 @@ if (data.stats.totalActions) items.push(new MenuItem(0,strings.get("sTotalAction
 if (data.stats.totalCash) items.push(new MenuItem(0,strings.get("sTotalCash",[data.stats.totalCash])));
 if (data.stats.totalDownloads) items.push(new MenuItem(0,strings.get("sTotalDownloads",[data.stats.totalDownloads])));
 if (data.stats.totalTime) items.push(new MenuItem(0,strings.get("sTotalTime",[humanize(data.stats.totalTime*1000,{language: lng})])));
+if (data.stats.totalTaps) items.push(new MenuItem(0,strings.get("sTotalTaps",[data.stats.totalTaps])));
 	const statsMenu=new Menu(strings.get("statsMenuIntro"),items);
 	statsMenu.run((s)=> {
 		statsMenu.destroy();
@@ -1713,13 +1728,18 @@ async function missions(checkOnly=false) {
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalCash) {
-	arr.push(new Mission("cash",25000,1));
+	arr.push(new Mission("cash",24000,1.2));
 	await arr[arr.length-1].check(data.stats.totalCash);
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalTime) {
-	arr.push(new Mission("time",3600,1));
+	arr.push(new Mission("time",900,2));
 	await arr[arr.length-1].check(data.stats.totalTime);
+	items.push(arr[arr.length-1].menuItem());
+}
+				if (data.stats.totalTaps) {
+	arr.push(new Mission("taps",50,1.5));
+	await arr[arr.length-1].check(data.stats.totalTaps);
 	items.push(arr[arr.length-1].menuItem());
 }
 
@@ -1731,6 +1751,40 @@ async function missions(checkOnly=false) {
 		return;
 	} else {
 		return
+	}
+}
+export async function creditDeduct(price,alternative,name) {
+		if (!data.freeplayUsed) data.freeplayUsed={};
+	sos();
+	console.log("game is "+data.freeplayUsed[name]);
+	if (alternative && !data.freeplayUsed[name]) {
+		await new ScrollingText(strings.get("freeplay",[price]));
+		data.freeplayUsed[name]=true;
+		save();
+		return true;
+	}
+	else {
+		let ok=so.create("mission_good");
+		let noplay=so.create("mission_bad");
+		let credgo=so.create("mission_credit_gone");
+		await new ScrollingText(strings.get("creditsPlease",[price]));
+		if (!data.missionCredits) data.missionCredits=0;
+		if (data.missionCredits>=price) {
+			await ok.playSync();
+			for (let i=1;i<=price;i++) {
+				await credgo.playSync();
+			}
+			data.missionCredits-=price;
+			save();
+			await new ScrollingText(strings.get("thanks"));
+			return true;
+		}
+		else {
+			await noplay.playSync();
+		await new ScrollingText(strings.get("creditsSorry",[data.missionCredits]));	
+		return false;
+		}
+		
 	}
 }
 module.exports.lang=lang;

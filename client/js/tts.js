@@ -22,7 +22,7 @@ rate:this.rate,
 splitSentences:false,
 })
 .then((data) => {
-		//this.voices=data.voices;
+this.voices=data.voices;
 		}).catch(e => {
 			console.error("An error occured while initializing : ", e)
 			})
@@ -32,7 +32,7 @@ setLanguage(lang) {
 	if (lang==1) this.lang="en-us";
 	if (lang==2) this.lang="es-es";
 	this.synth.setLanguage(this.lang)
-	//this.setVoice(null,true);
+this.setVoice(null,true);
 }
 setRate(r) {
 	let newRate=r;
@@ -118,6 +118,7 @@ setVoice(cb,silent=false) {
 	if (lang==2) wl="es";
 	let voiceArray=[]
 		for (var k in this.voices) {
+			console.log(this.voices[k].name);
 			//get the first part of the voice languages
 			let vl=this.voices[k].lang.split("-")[0]
 				//do we want this language?

@@ -44,6 +44,7 @@ class Menu {
 	}
 	
 		nextItem() {
+			speech.stop();
 			if (!this.first) {
 				if (this.cursor < this.menuData.length - 1) {
 					if (!this.silent) this.sndMove.play();
@@ -68,6 +69,8 @@ class Menu {
 		}
 	
 		previousItem() {
+			speech.stop();
+
 			if (this.first) {
 				this.first=false;
 					if (!this.silent) this.sndMove.play();
@@ -345,7 +348,7 @@ class Menu {
 				if (typeof this.music!=="undefined") {
 					this.music.sound.fade(0,this.fadeTime);
 				}
-
+if (this.silent) this.musicDuration=0;
 				setTimeout(() => {
 						that.selectCallback(toReturn);
 						}, this.musicDuration);

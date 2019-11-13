@@ -76,6 +76,9 @@ if (sx < lx) {
 	percentOf(int1, int2) {
 		return int2 * int1 / 100;
 	}
+	percentage(percented,value) {
+		return value * percented / 100;
+	}
 
 	average(arr, startIndex = 0) {
 		const len = arr.length;
