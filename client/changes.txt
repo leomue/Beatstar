@@ -1,4 +1,6 @@
 Version 7.5.0
+Added a settings option to decide whether the tts interrupts when pressing keys. Any key, that is.
+You can now use escape to interrupt speech if using tts regardless of interrupt setting.
 new mission: Tap tap at quick tap
 Total beatcoins are now announced when you win or lose coins.
 I made a cool infrastructure for future minigames to use mission credits. Maybe I can set up some sort of mission credit rewards as well, but expect mission credits to be acquired mostly by completing the dynamic missions.

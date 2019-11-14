@@ -1,5 +1,7 @@
 import "babel-polyfill";
+
 'use strict';
+
 import {strings} from './strings';
 import {utils} from './utilities'
 import {lang,ttsVoice, ttsRate} from './main';
@@ -9,13 +11,21 @@ const useWebTTS = true;
 import Speech from 'speak-tts' // es6
 class TTS {
 	constructor(webTTS = true) {
+		this.speechController=new KeyboardInput();
+		this.speechController.init();
 		this.ducking=false;
-
 		if (lang==1) this.lang="en-us";
 		if (lang==2) this.lang="es-es";
 		this.webTTS = webTTS;
 		this.synth=new Speech()
 			this.rate=2;
+			this.speechController.justPressedEventCallback=(key)=> {
+				if (this.interrupt) this.speak("",false);
+				if (key==KeyEvent.VK_CONTROL || key==KeyEvent.DOM_VK_ESCAPE) {
+this.speak("",false);
+				}
+			};
+
 		this.synth.init({
 lang:this.lang,
 rate:this.rate,
@@ -26,7 +36,6 @@ this.voices=data.voices;
 		}).catch(e => {
 			console.error("An error occured while initializing : ", e)
 			})
-
 }
 setLanguage(lang) {
 	if (lang==1) this.lang="en-us";
@@ -38,7 +47,6 @@ setRate(r) {
 	let newRate=r;
 	if (r<1) newRate==1;
 	if (r>10) newRate=10;
-	console.log("rate "+newRate)
 		this.rate=newRate;
 	this.synth.setRate(newRate);
 }
@@ -61,7 +69,6 @@ this.duck();
 		this.unduck();
 	},
 	onerror: (err) => {
-console.log("meow");
 //this.setVoice(null,true);
 return false;
 	},
@@ -118,7 +125,6 @@ setVoice(cb,silent=false) {
 	if (lang==2) wl="es";
 	let voiceArray=[]
 		for (var k in this.voices) {
-			console.log(this.voices[k].name);
 			//get the first part of the voice languages
 			let vl=this.voices[k].lang.split("-")[0]
 				//do we want this language?
@@ -143,7 +149,6 @@ if (!silent) {
 
 			if (key!=KeyEvent.DOM_VK_RETURN && (key==KeyEvent.DOM_VK_UP || key==KeyEvent.DOM_VK_DOWN)) { //dirty hack
 			this.synth.setVoice(voiceArray[selection]);
-			console.log(voiceArray[selection]);
 			speech.speak(voiceArray[selection])
 			}
 			else {

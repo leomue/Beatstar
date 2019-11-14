@@ -49,6 +49,16 @@ if (option==0) data.actionLimit=0;
 if (option==1) data.actionLimit=10;
 save();
 })));
+if (!data.interrupt) data.interrupt=false;
+if (!data.interrupt) selectorAction=1;
+if (data.interrupt) selectorAction=0;
+settings.push(new SelectorItem(91,strings.get("mInterrupt"),[strings.get("yes"),strings.get("no")],selectorAction,((option)=>{
+if (option==0) data.interrupt=true;
+if (option==1) data.interrupt=false;
+speech.interrupt=data.interrupt;
+save();
+})));
+
 	items.push(new MenuItem(13, strings.get('mRev'),"v"));
 	items.push(new MenuItem(8, strings.get('mSafeguards', [data.safeguards]),"7"));
 	items.push(new MenuItem(1, strings.get('mLearn'),"2"));

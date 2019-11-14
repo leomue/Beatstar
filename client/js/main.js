@@ -499,7 +499,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug =true) {
+export async function checkPack(changeBoot = true, debug =false) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -614,8 +614,8 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	}
 	if (!data.stats) data.stats={};
 	if (debug) {
- await strings.check(2);
-return;
+ //await strings.check(2);
+playTravel();
 	}
 	if (justRan) {
 	increase("totalRuns");
@@ -1051,6 +1051,8 @@ mus.destroy();
 }
 export function booter() {
 if (typeof data.webTTS!=="undefined") { speech.webTTS=data.webTTS; }
+if (!data.interrupt) data.interrupt=false;
+speech.interrupt=data.interrupt;
 	if (!data.safeguards) {
 		data.safeguards = 0;
 	}
@@ -1794,3 +1796,8 @@ module.exports.packDirectory=packDirectory;
 module.exports.packdir=packdir;
 module.exports.playTone=playTone;
 module.exports.missions=missions;
+async function playTravel() {
+	let game=new Travel();
+	await game.start();
+}
+module.exports.playTravel=playTravel;

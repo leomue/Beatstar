@@ -1509,3 +1509,22 @@ return this.cases[i];
 }
 }
 }
+function pls(what) {
+	sos();
+	let snd=so.create(what);
+	snd.play();
+}
+async function plsw(what) {
+	sos();
+	let snd=so.create(what);
+	await snd.playSync(true);
+}
+export class Travel {
+	constructor() {
+		this.cities=7;
+		
+	}
+	async start() {
+		
+	}
+}
