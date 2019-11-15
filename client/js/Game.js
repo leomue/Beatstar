@@ -1,4 +1,5 @@
 'use strict';
+import {lang} from './main';
 import fs from 'fs';
 import os from 'os';
 import $ from 'jquery';
@@ -20,6 +21,11 @@ import {KeyEvent} from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
+this.totalTime=0;
+this.humanize=require("humanize-duration");
+	this.lng="en";
+	if (lang==2) this.lng="es";
+
 		increase("totalGames");
 		this.resync=setInterval(()=> {
 			if (this.newUpdateInterval!=null) {
@@ -34,7 +40,6 @@ this.updates=0;
 	this.totalScore = [];
 this.maxUpdates=0;
 this.justEnded=true;
-this.justBegun=true;
 this.eventName="";
 		this.maxSafeguards = data.safeguards;
 		this.volume = 1;
@@ -46,8 +51,10 @@ this.eventName="";
 		this.timer = Timer({
 			update: () => {
 				
-			if (!this.paused) increase("totalTime",1,false);
-			
+			if (!this.paused) {
+increase("totalTime",1,false);
+this.totalTime++;
+}
 			},
 			render: () => {}
 		},1);
@@ -353,6 +360,11 @@ clearInterval(this.resync);
 			speech.speak(this.cash+" ");
 			return;
 		}
+		if (key == KeyEvent.DOM_VK_T) {
+			speech.speak(this.humanize(this.totalTime*1000,{language:this.lng}));
+			return;
+		}
+
 		if (key == KeyEvent.DOM_VK_G) {
 			speech.speak(data.safeguards+" ");
 			return;
@@ -540,7 +552,6 @@ if (this.updateInterval!=null) clearInterval(this.updateInterval);
 this.updateInterval=setInterval(()=> {
 this.update();
 },this.bpms[this.level]);
-
 if (!data.streamMusic) {
 this.music.sound.on("play",()=> {
 if (this.updateInterval!=null) clearInterval(this.updateInterval);
@@ -572,7 +583,6 @@ this.music.play();
 this.newUpdateInterval=setInterval(()=> {
 this.update();
 },this.bpms[this.level]);
-this.justBegun=true;
 });
 		if (this.level > 1 && this.level != this.forceLevel) {
 //this.queueLevels();

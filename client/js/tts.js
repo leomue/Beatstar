@@ -83,6 +83,9 @@ else {
 	const para = document.createElement('p');
 	para.appendChild(document.createTextNode(text));
 	document.getElementById('speech').appendChild(para);
+setTimeout(()=> {
+	document.getElementById('speech').removeChild(para);
+},100);
 }
 } // End speak()
 

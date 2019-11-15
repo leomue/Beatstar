@@ -5,7 +5,7 @@ import {Menu} from './menu';
 import {ScrollingText} from './scrollingText';
 import {strings} from './strings';
 class Mission {
-	constructor(id,scale,cost) {
+	constructor(id,scale,cost,includeName=false) {
 		if (!data.missionCredits) data.missionCredits=0;
 this.currentValue=0;
 this.scale=scale;
@@ -42,7 +42,7 @@ this.level=0;
 
 }
 menuItem() {
-if (this.id!="time") return new MenuItem(0, strings.get("mission"+this.id,[this.level,this.currentValue,Math.floor(this.cost*(this.level+1)*this.scale)]));
+if (this.id!="time") return new MenuItem(0, strings.get("missiont"+this.id)+": "+strings.get("mission"+this.id,[this.level,this.currentValue,Math.floor(this.cost*(this.level+1)*this.scale)]));
 if (this.id=="time") {
 	const humanize=require("humanize-duration");
 	let lng="en";
