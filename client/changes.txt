@@ -1,4 +1,5 @@
 Version 7.5.0
+There is now a menu option to disable reading music from disk, which will eliminate the silence experienced at the end of music files.
 Added a settings option to decide whether the tts interrupts when pressing keys. Any key, that is.
 You can now use escape to interrupt speech if using tts regardless of interrupt setting.
 new mission: Tap tap at quick tap

@@ -10,10 +10,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
-			city0:"the Beat Bastion",
-			city1:""the Drummer's abode",
-			city2:"The royal reliquary",
-			
+mStream:"Read music from disk for better game performance (disable this if you don't want a small silence after each music due to an error in html5)",
 			mInterrupt:"Interrupt speech when pressing keys, (Use left and right arrows to change)",
 			sTotalTaps:"Total taps at quick tap: %1",
 			creditsPlease:"%1 mission credits please.",

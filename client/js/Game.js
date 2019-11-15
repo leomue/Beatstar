@@ -523,7 +523,7 @@ clearInterval(this.resync);
 	postprocess() {
 		so.directory = '';
 		const that = this;
-		this.music = so.create(packdir + this.level + 'music', true);
+		this.music = so.create(packdir + this.level + 'music', data.streamMusic);
 //		this.music.loop = true;
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
@@ -540,11 +540,31 @@ if (this.updateInterval!=null) clearInterval(this.updateInterval);
 this.updateInterval=setInterval(()=> {
 this.update();
 },this.bpms[this.level]);
-//speech.speak("play"+this.music.fileName+", "+this.eventName);
+
+if (!data.streamMusic) {
+this.music.sound.on("play",()=> {
+if (this.updateInterval!=null) clearInterval(this.updateInterval);
+this.updateInterval=setInterval(()=> {
+this.update();
+},this.bpms[this.level]);
+
+});
+
+}
+
 				this.input.justPressedEventCallback = key => {
 				this.render(key);
 				}
 //				});
+/*
+if (!data.streamMusic) {
+this.music.sound.on("play"),(()=> {
+this.newUpdateInterval=setInterval(()=> {
+this.update();
+},this.bpms[this.level]);
+});
+}
+*/
 this.music.sound.on("ended",()=> {
 //ended
 if (this.paused) return;

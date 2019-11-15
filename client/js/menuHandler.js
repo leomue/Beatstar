@@ -44,18 +44,29 @@ let selectorAction=0;
 if (data.actionLimit) {
 if (data.actionLimit>0) selectorAction=1;
 }
-settings.push(new SelectorItem(91,strings.get("MKeyLayout"),[strings.get("mk1"),strings.get("mk2")],selectorAction,((option)=>{
+settings.push(new SelectorItem(-1,strings.get("MKeyLayout"),[strings.get("mk1"),strings.get("mk2")],selectorAction,((option)=>{
 if (option==0) data.actionLimit=0;
 if (option==1) data.actionLimit=10;
 save();
 })));
+
+
 if (!data.interrupt) data.interrupt=false;
 if (!data.interrupt) selectorAction=1;
 if (data.interrupt) selectorAction=0;
-settings.push(new SelectorItem(91,strings.get("mInterrupt"),[strings.get("yes"),strings.get("no")],selectorAction,((option)=>{
+settings.push(new SelectorItem(-1,strings.get("mInterrupt"),[strings.get("yes"),strings.get("no")],selectorAction,((option)=>{
 if (option==0) data.interrupt=true;
 if (option==1) data.interrupt=false;
 speech.interrupt=data.interrupt;
+save();
+})));
+if (typeof data.streamMusic==="undefined") data.streamMusic=true;
+if (data.streamMusic==false) selectorAction=1;
+if (data.streamMusic==true) selectorAction=0;
+settings.push(new SelectorItem(-1,strings.get("mStream"),[strings.get("yes"),strings.get("no")],selectorAction,((option)=>{
+if (option==0) data.streamMusic=true;
+if (option==1) data.streamMusic=false;
+console.log(option);
 save();
 })));
 
