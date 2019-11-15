@@ -85,7 +85,7 @@ else {
 	document.getElementById('speech').appendChild(para);
 setTimeout(()=> {
 	document.getElementById('speech').removeChild(para);
-},100);
+},30);
 }
 } // End speak()
 
