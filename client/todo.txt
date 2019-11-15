@@ -1,4 +1,3 @@
-Code the headshot achievement
 update template with new ScrollingText with trim
 learn pack and shift and layouts
 Make tutorial for react and gogame
@@ -7,13 +6,18 @@ make an achievement if you fail at the last level.
 change safegaurd sound
 delete pack world collection 2.1
 
-missions
-total playing time
-total runs
-total packs complete
-total fails
-total levels passed
-total actions
-total safeguards used
-bank prize 7 is a real mission credit, award.
-fix performance impact on first level  if performance is disabled
+el juego del memoryyy
+el juego de bombas con notas de piano
+pasa algo chungo con el juego de las cajas, case13 doesn't load
+
+create an achievement
+1. strings
+adname:""desc,
+achname:"name",
+achhname:"Spoiler description",
+
+add the achievement to
+const achs
+
+then, the achievement is triggered by
+await getAch(name);

@@ -1509,22 +1509,88 @@ return this.cases[i];
 }
 }
 }
+let snd=null;
 function pls(what) {
 	sos();
-	let snd=so.create(what);
+if (snd!=null) snd.destroy();
+ snd=so.create(what);
 	snd.play();
 }
 async function plsw(what) {
+if (snd!=null) snd.destroy();
 	sos();
-	let snd=so.create(what);
+ snd=so.create(what);
 	await snd.playSync(true);
 }
-export class Travel {
+export class Memory {
 	constructor() {
-		this.cities=7;
-		
-	}
-	async start() {
-		
+sop();
+this.actionSounds=[];
+this.completeSounds=[];
+this.fail=so.create("fail");
+	for (let i = 1; i <= 10; i++) {
+		if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
+this.actions = i;
+this.actionSounds.push(so.create("a"+i));
+this.completeSounds.push(so.create("o"+i));
+		}
 	}
 }
+	async start() {
+this.sounds=[];
+this.numberOfSounds=0;
+await new ScrollingText(strings.get("tutmemory"));
+sos();
+this.bell=so.create("pong_bell");
+pls("go_count");
+await utils.sleep(800);
+pls("go_count");
+await utils.sleep(800);
+this.playing=true;
+this.timer=new OldTimer();
+this.time=4000;
+this.input=new KeyboardInput();
+this.input.init();
+
+while (this.playing) {
+await utils.sleep(5);
+if (this.sounds.length==0) {
+this.numberOfSounds++;
+this.timer.restart();
+for (let i=0;i<this.numberOfSounds;i++) {
+this.sounds.push(utils.randomInt(2,this.actions));
+await this.actionSounds[this.sounds[i]].playSync();
+}//for
+}
+await this.process();
+if (this.timer.elapsed>=this.time) {
+this.timer.restart();
+this.timer.pause();
+await this.fail.playSync();
+await this.exit();}//timer
+}//while
+	}//function
+async process() {
+for (let num=2;num<=this.actions;num++) {
+if (this.input.isJustPressed(data.actionLimit+num)) {
+if (this.sounds[0]==num) {
+this.completeSounds[num].play();
+this.bell.play();
+this.numberOfSounds++;
+this.sounds.splice(0,1);
+this.timer.restart();
+} else {
+this.timer.restart();
+this.timer.pause();
+await this.fail.playSync();
+
+await this.exit();
+}
+}
+}//for
+}
+async exit() {
+this.playing=false;
+st.setState(2);
+}
+}//class

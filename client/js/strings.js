@@ -10,6 +10,8 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+memory:"Memory: How many sounds can you memorize?",
+tutmemory:"Welcome to memory! This is the typical simon game. How many sounds can you memorize? This game uses the sound and keys from your current pack, so make sure you know all of them!",
 mStream:"Read music from disk for better game performance (disable this if you don't want a small silence after each music due to an error in html5)",
 			mInterrupt:"Interrupt speech when pressing keys, (Use left and right arrows to change)",
 			sTotalTaps:"Total taps at quick tap: %1",

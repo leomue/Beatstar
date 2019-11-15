@@ -1,4 +1,5 @@
 ' use strict';
+import {Memory,Cases,playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 import {Mission} from './mission';
 let justRan=true;
 function sop() {
@@ -24,7 +25,7 @@ export var editing = false;
 import {OldTimer} from './oldtimer';
 import $ from 'jquery';
 
-import {Cases,playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
+
 // Import {SoundPool} from './soundPool';
 import Cryptr from 'cryptr';
 
@@ -614,11 +615,18 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	}
 	if (!data.stats) data.stats={};
 	if (debug) {
+try {
  //await strings.check(2);
 //			let chance=new Cases;
 //			await chance.start();
-
+			let memory=new Memory();
+			await memory.start();
+return;
+} catch(err) {
+speech.speak(err.name+": "+err.message);
+return;
 	}
+}
 	if (justRan) {
 	increase("totalRuns");
 	justRan=false;
@@ -1737,7 +1745,7 @@ async function missions(checkOnly=false) {
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalTime) {
-	arr.push(new Mission("time",900,2));
+	arr.push(new Mission("time",450,2));
 	await arr[arr.length-1].check(data.stats.totalTime);
 	items.push(arr[arr.length-1].menuItem());
 }

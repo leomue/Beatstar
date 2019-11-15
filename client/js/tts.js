@@ -188,7 +188,7 @@ unduck() {
 }
 
 } // End class
-const speech = new TTS(true);
+const speech = new TTS(false);
 //if (process.platform == 'darwin') {
 //	speech.webTTS = true;
 //}
