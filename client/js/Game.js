@@ -33,7 +33,7 @@ this.humanize=require("humanize-duration");
 			this.updateInterval=this.newUpdateInterval;
 			this.newUpdateInterval=null;
 			}
-		},1000/32);
+		},5);
 this.newUpdateInterval=null;
 this.updateInterval=null;
 this.updates=0;
