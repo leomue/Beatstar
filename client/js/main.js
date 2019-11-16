@@ -33,6 +33,7 @@ let boot = false;
 export var credits = false;
 export const minis = {
 slot: 8500,
+memory: 6500,
       code: 10000,
       highlow: 15000,
       double: 10000,
@@ -91,7 +92,10 @@ export async function learnPack() {
 			actions = i;
 		}
 	}
-	speech.speak(strings.get('mActions', [actions]));
+	let layout="";
+	if (data.actionLimit==2) layout="mk1";
+	if (data.actionLimit==10) layout="mk2";
+	speech.speak(strings.get('mActions', [actions,strings.get(layout)]));
 	const event = new KeyboardInput();
 	event.init();
 	so.directory = '';
@@ -617,11 +621,6 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (debug) {
 try {
  //await strings.check(2);
-//			let chance=new Cases;
-//			await chance.start();
-			let memory=new Memory();
-			await memory.start();
-return;
 } catch(err) {
 speech.speak(err.name+": "+err.message);
 return;
@@ -1333,6 +1332,10 @@ export async function runGame(name) {
 	} else if (name == 'gq') {
 		playQuestions();
 	} 
+	else if (name=="memory") {
+		let memory=new Memory();
+		await memory.start();
+	}
 	else if (name=="chance") {
 				let success=await creditDeduct(5,data.minis[name],name);
 		if (success) {

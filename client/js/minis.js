@@ -1539,50 +1539,55 @@ this.completeSounds.push(so.create("o"+i));
 	async start() {
 this.sounds=[];
 this.numberOfSounds=0;
-await new ScrollingText(strings.get("tutmemory"));
 sos();
+await new ScrollingText(strings.get("tutmemory"));
 this.bell=so.create("pong_bell");
 pls("go_count");
-await utils.sleep(800);
+await utils.sleep(700);
 pls("go_count");
-await utils.sleep(800);
+await utils.sleep(300);
 this.playing=true;
 this.timer=new OldTimer();
 this.time=4000;
 this.input=new KeyboardInput();
 this.input.init();
-
+this.oldSequence=[];
 while (this.playing) {
 await utils.sleep(5);
 if (this.sounds.length==0) {
+	await utils.sleep(400);
 this.numberOfSounds++;
 this.timer.restart();
+this.oldSequence.push(utils.randomInt(2,this.actions));
+this.sounds=[...this.oldSequence];
 for (let i=0;i<this.numberOfSounds;i++) {
-this.sounds.push(utils.randomInt(2,this.actions));
-await this.actionSounds[this.sounds[i]].playSync();
+this.actionSounds[this.sounds[i]-1].play();
+if (i<this.numberOfSounds-1) await utils.sleep(500);
 }//for
-}
-await this.process();
-if (this.timer.elapsed>=this.time) {
 this.timer.restart();
-this.timer.pause();
-await this.fail.playSync();
-await this.exit();}//timer
+} else {
+	await this.process();
+	if (this.timer.elapsed>=this.time) {
+	this.timer.restart();
+	this.timer.pause();
+	await this.fail.playSync();
+	await this.exit();
+	}//timer
+}
 }//while
 	}//function
 async process() {
 for (let num=2;num<=this.actions;num++) {
-if (this.input.isJustPressed(data.actionLimit+num)) {
+if (this.input.isJustPressed(actionKeys[data.actionLimit+num])) {
 if (this.sounds[0]==num) {
-this.completeSounds[num].play();
+	this.sounds.splice(0,1);
+this.completeSounds[num-1].play();
 this.bell.play();
-this.numberOfSounds++;
-this.sounds.splice(0,1);
 this.timer.restart();
 } else {
 this.timer.restart();
 this.timer.pause();
-await this.fail.playSync();
+await this.fail.playSync(true);
 
 await this.exit();
 }
@@ -1590,6 +1595,9 @@ await this.exit();
 }//for
 }
 async exit() {
+	await addCashSync((this.numberOfSounds-1)*150);
+	data.stats.numberOfSounds=this.numberOfSounds-1;
+	save();
 this.playing=false;
 st.setState(2);
 }

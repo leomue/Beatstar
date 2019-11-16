@@ -152,7 +152,7 @@ unload() { this.sound.destroy(); }
 		this.sound.play();
 		console.log("playing ",this.sound.file);
 		inp.justPressedEventCallback = (evt => {
-			if (evt == KeyEvent.DOM_VK_Q || evt == KeyEvent.DOM_VK_X) {
+			if (evt == KeyEvent.DOM_VK_Q || evt == KeyEvent.DOM_VK_X || evt==KeyEvent.DOM_VK_ESCAPE) {
 				this.sound.stop();
 				inp.justPressedEventCallback = null;
 			}
