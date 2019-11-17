@@ -1,12 +1,9 @@
 update template with new ScrollingText with trim
 learn pack and shift and layouts
 Make tutorial for react and gogame
-achievements for goGame
-make an achievement if you fail at the last level.
 change safegaurd sound
-delete pack world collection 2.1
 
-el juego del memoryyy
+
 el juego de bombas con notas de piano
 pasa algo chungo con el juego de las cajas, case13 doesn't load
 

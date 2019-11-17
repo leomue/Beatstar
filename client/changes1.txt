@@ -1,4 +1,16 @@
+Version 7.5.2
+Fixed a bug in wealthy chance, hopefully
+
+version 7.5.1
+Fixed problem with pack editor
+fixed a problem with the learn pack option and the keyboard layout
+Fixed the achievements menu not returning to main menu
+
 Version 7.5.0
+You can now see the list of changes from the main menu.
+
+there is a reward now, when you open the game and there is an older save present.
+If using screen reader, speech is ducked as soon as the game tries to speak. It will remain ducked for the whole time, as it is impossible to detect when the reader is done speaking. You should still hear the music, though.
 Beatstar memory is back!
 You can now press t during a game to know how long the game's been lasting.
 There is now a menu option to disable reading music from disk, which will eliminate the silence experienced at the end of music files.

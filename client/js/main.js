@@ -27,8 +27,6 @@ import $ from 'jquery';
 
 
 // Import {SoundPool} from './soundPool';
-import Cryptr from 'cryptr';
-
 let boot = false;
 export var credits = false;
 export const minis = {
@@ -93,7 +91,7 @@ export async function learnPack() {
 		}
 	}
 	let layout="";
-	if (data.actionLimit==2) layout="mk1";
+	if (data.actionLimit==0) layout="mk1";
 	if (data.actionLimit==10) layout="mk2";
 	speech.speak(strings.get('mActions', [actions,strings.get(layout)]));
 	const event = new KeyboardInput();
@@ -504,7 +502,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug =true) {
+export async function checkPack(changeBoot = true, debug =false) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -607,8 +605,10 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 		pack = 'default';
 		packdir = packDirectory+ '/'+pack + '/';
 	}
+	if (!data.stats) data.stats={};
 	if (!fs.existsSync(packdir + 'bpm.txt')) {
 		const text = new ScrollingText(strings.get('packError'), '\n', (() => {
+			
 					downloadPacks(['default']);
 					}));
 		return;
@@ -621,6 +621,8 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (debug) {
 try {
  //await strings.check(2);
+let chance=new Cases();
+await chance.start();
 } catch(err) {
 speech.speak(err.name+": "+err.message);
 return;
@@ -1642,6 +1644,8 @@ export async function browseAch() {
 				acm.run(async s => {
 						if (s.selected == 0) {
 						acm.destroy();
+						achMusic.stop();
+						st.setState(2);
 						return;						
 						}
 						if (s.selected == -1) {
@@ -1748,7 +1752,7 @@ async function missions(checkOnly=false) {
 	items.push(arr[arr.length-1].menuItem());
 }
 				if (data.stats.totalTime) {
-	arr.push(new Mission("time",450,2));
+	arr.push(new Mission("time",450,1.5));
 	await arr[arr.length-1].check(data.stats.totalTime);
 	items.push(arr[arr.length-1].menuItem());
 }

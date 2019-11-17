@@ -51,7 +51,6 @@ setRate(r) {
 	this.synth.setRate(newRate);
 }
 speak(text,queue=false) {
-
 	if (this.webTTS) {
 try {
 	if (typeof text=="number") {
@@ -79,6 +78,7 @@ return false;
 
 }
 else {
+	this.duck();
 	document.getElementById('speech').innerHTML = '';
 	const para = document.createElement('p');
 	para.appendChild(document.createTextNode(text));

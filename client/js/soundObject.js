@@ -315,6 +315,30 @@ returnObject.fileName=file; //otherwise html element fileNames get fucked up.
 		return returnObject;
 	}
 	
+	createSync(file,stream=false) {
+		return new Promise(resolve => {
+			file = this.directory + file + this.extension;
+	let found=-1;
+	 found = this.findSound(file);
+			let returnObject = null;
+			if (found == -1 || found.sound.data == null) {
+						returnObject = new SoundObjectItem(file, () => { if (!stream) this.doneLoading(); },0,stream);
+	 this.sounds.push(returnObject);
+	if (stream) resolve(returnObject);
+			} else {
+				 returnObject = new SoundObjectItem(found.sound.data, () => { if (!stream) this.doneLoading(); },0,stream);
+						}
+	returnObject.fileName=file; //otherwise html element fileNames get fucked up.
+				resolve(returnObject);
+	if (!stream) {
+			returnObject.once('loaded', () => {
+				resolve(returnObject);
+			});// End
+							}//stream
+		});// Promise
+	}
+	
+
 	enqueue(file,stream=false) {
 		file = this.directory + file + this.extension;
 		this.queue.push({file,stream});

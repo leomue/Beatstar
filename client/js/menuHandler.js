@@ -1,5 +1,5 @@
 import {utils} from './utilities';
-import {missions,mangle} from './main';
+import {addCashSync,missions,mangle} from './main';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';
 import {so} from './soundObject';
@@ -14,6 +14,13 @@ import {KeyEvent} from './keycodes';
 import {Menu} from './menu';
 
 'use strict';
+function sop() {
+	so.directory = packdir + '/';
+}
+function sos() {
+	so.directory = './sounds/';
+}
+
 const {dialog} = require('electron').remote;
 
 const electron = require('electron');
@@ -43,6 +50,8 @@ export async function mainMenu() {
 let selectorAction=0;
 if (data.actionLimit) {
 if (data.actionLimit>0) selectorAction=1;
+} else {
+	data.actionLimit=0;
 }
 settings.push(new SelectorItem(-1,strings.get("MKeyLayout"),[strings.get("mk1"),strings.get("mk2")],selectorAction,((option)=>{
 if (option==0) data.actionLimit=0;
@@ -85,6 +94,7 @@ save();
 	items.push(new MenuItem(4, strings.get('mDownload'),"d"));
 	items.push(new MenuItem(6, strings.get('mUnlocked', [data.unlocks[pack].level]),"9"));
 	items.push(new MenuItem(9191, strings.get('mSettings'),"0"));
+	items.push(new MenuItem(8000,strings.get("mChanges")));
 	settings.push(new MenuItem(1234, strings.get('mLang',),"l"));
 	settings.push(new MenuItem(69, strings.get('mDir', [main.packDirectory])));
 	settings.push(new MenuItem(3, strings.get('mHashes'),"h"));
@@ -98,6 +108,15 @@ save();
 		mainMenu.sndChoose = so.create(packdir + 'select');
 	}
 	await missions(true);
+	if (fs.existsSync(main.packDirectory+"/save.beat") && !data.awarded) {
+		sos();
+		await new ScrollingText(strings.get("foundOldSave"));
+		try {
+		fs.unlinkSync(main.packDirectory+"/save.beat");
+		} catch { }
+		data.awarded=true;
+		await addCashSync(100000);
+	}
 	mainMenu.run(async s => {
 			mainMenu.destroy();
 if (s.selected!=9191) {
@@ -112,10 +131,22 @@ await menusFunction(s);
 });
 }
 async function menusFunction(s) {
+	const fs=require('fs');
 			speech.stop();
 			so.directory = './sounds/';
 
 			switch (s.selected) {
+				case 8000:
+				let file=fs.readFileSync(__dirname+"/changes"+lang+".txt",{encoding: "utf-8"}).split("\n");
+				let items=[];
+				for (let i=0;i<file.length;i++) {
+					if (file[i]!="") items.push(new MenuItem(0,file[i]));
+				}
+				let menu=new Menu(strings.get("changesMenu"),items);
+				menu.silent=true;
+							await menu.runSync();
+				st.setState(2);
+break;
 			case 1234:
 			languageSelect();
 			break;
@@ -178,12 +209,8 @@ save();
 				 checkPack();
 				 break;
 			case 11:
-				 const stuff = dialog.showOpenDialog({
-title: strings.get('selectPack'),
-properties: ['openDirectory']
-}, path => {
-editPack(path);
-});
+let path=dialog.showOpenDialogSync({properties: ['openDirectory'], title: strings.get("selectPack")});
+	editPack(path[0]);
 break;
 case 12:
 browseAch();
@@ -249,13 +276,7 @@ export function languageSelect() {
 			});
 }
 export async function changeDir() {
-	return new Promise(resolve => {
-			const stuff = dialog.showOpenDialog({
-title: strings.get('selectNewPath'),
-properties: ['openDirectory']
-}, path => {
-console.log('path' + path);
-resolve(String(path));
-});
-			});
+	let path=dialog.showOpenDialogSync({properties: ['openDirectory'], title: strings.get("selectNewPath")});
+	if (typeof path==="undefined") return "";
+	return path[0];
 }

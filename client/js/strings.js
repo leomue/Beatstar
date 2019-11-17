@@ -10,6 +10,9 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			mChanges:"List of changes and new features from all versions",
+			changesMenu:"Here are the list of changes. Press enter to go back to the menus",
+			foundOldSave:"Hi,w welcome to this new version of beatstar!\nThis version has a lot of new things, including missions, statistics, and so on.\nSadly, your old save file will not be compatible. However...\nAs an appology...\nBy the way, this is the last time that save files will stop being compatible, as I've stopped using that piece of trash called crypto for game encryption.",
 memory:"Memory: How many sounds can you memorize?",
 tutmemory:"Welcome to memory! This is the typical simon game. How many sounds can you memorize? This game uses the sound and keys from your current pack, so make sure you know all of them!",
 mStream:"Read music from disk for better game performance (disable this if you don't want a small silence after each music due to an error in html5)",
@@ -410,6 +413,15 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 		};
 		this.strings[2] = {
 			// New Spanish
+			mStream: "Leer la música desde el disco (desactiva esto si no quieres experimentar un pequeño retraso en la música",
+			mInterrupt:"Interrumpir el habla si pulsas una tecla (usa las flechas para cambiar)",
+			
+			memory: "El memorión: Cuántos sonidos puedes memorizar?",
+			tutmemory: "Bienvenido al memorión! Este es el típico juego del simón. ¿Cuántos sonidos puedes memorizar? Este juego usa sonidos del pack de sonidos, con las mismas teclas. Estás preparado? Asegúrate de que conoces el pack!",
+			
+			changesMenu:"Aquí está la lista de cambios. Pulsa énter para volver al menú.",
+			mChanges:"Lista de novedades de todas las versiones",
+			foundOldSave:"Hola, bienvenido a la nueva versión de Beatstar!\nEsta versión tiene muchas cosas nuevas: Misiones, estadísticas, minijuegos...\nesto significa que, desafortunadamente, tu juego guardado del beatstar antiguo no es compatible. Sin embargo...\nPara que me disculpes...\nPor cierto, esta es la última vez que dejarán de ser compatibles los archivos de guardado entre una versión y otra. He dejado de utilizar el crypto, que encriptaba los juegos y era una basura monumental.",
 			adbulk: "Pero... Qué viciosillo, no? Tú quieres todos los packs. Pues toma. Un logro. Para ti, anda.",
 			adspoiledBrat: "Te gustan los spoilers, por lo que veo. Toma, niño mimado.",
 			achspoiledBrat: "niño mimado",
@@ -479,9 +491,9 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 			mStats: "Estadísticas",
 			mMissions: "Misiones",
 			missionttaps: "dale dale dale don dale al reacciona",
-			missiontaps: "Dale dale dale al reacciona. Nivel %1 de misión, con %2 de %3 teclas pulsadas",
-			missiongames: "Juega muchas veces: Ahora en el nivel %1, con %2 juegos de %3.",
-			missionruns: "Abre el juego y vuélvelo a abrir. Nivel de misión %1, con %2 de %3 veces.",
+			missiontaps: "Nivel %1 de misión, con %2 de %3 teclas pulsadas",
+			missiongames: "Ahora en el nivel %1, con %2 juegos de %3.",
+			missionruns: "Nivel de misión %1, con %2 de %3 veces.",
 			sTotalTaps: "teclas pulsadas en el reacciona: %1",
 mSettings:"Configuración y ayuda",
 settingsMenu:"Este es el menú de configuración. Puedes cambiar opciones aquí, o pulsar volver para salir.",

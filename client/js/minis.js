@@ -1273,9 +1273,9 @@ ids.push(i);
 ids=utils.shuffle(ids);
 for (let i=0;i<this.cases.length;i++) {
 this.cases[i].random=ids[i];
-this.cases[i].sound=so.create(lang+"ca"+this.cases[i].letter+this.cases[i].amount);
-this.cases[i].vocal=so.create("casec"+this.cases[i].random+"_"+lang);
-this.cases[i].intro=so.create("case"+this.cases[i].random);
+this.cases[i].sound=await so.create(lang+"ca"+this.cases[i].letter+this.cases[i].amount);
+this.cases[i].vocal=await so.create("casec"+this.cases[i].random+"_"+lang);
+this.cases[i].intro=await so.create("case"+this.cases[i].random);
 }
 this.cases=utils.shuffle(this.cases);
 this.caseSounds=[];

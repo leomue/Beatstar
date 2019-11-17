@@ -1,0 +1,88 @@
+Version 7.5.2
+Creo que he arreglado el problema con jugar para ganar.
+
+version 7.5.1
+Arreglado problema con editor de packs
+Arreglado lo del aprender el pack usa las teclas . y shift.
+Arreglado el menú logros que se quedaba trabado.
+
+Version 7.5.0
+Ahora puedes ver la lista de cambios desde el menú.
+
+Si abres el juego y tenías un juego guardado de antes, tendrás un premio porque el juego antiguo ya no vale.
+Si usas tu lector de pantalla para jugar, se bajará la música cuando el juego hable. No se volverá a subir porque no tengo forma de detectar cuándo el lector ha dejado de hablar, pero algo es algo.
+el memorión ha vuelto. Tomaaaa!
+Puedes pulsar la t durante un juego para saber cuánto va durando. Yo he aguantado como 10 minutos, pero no mucho más. Siempre fallo.
+Hay una opción ahora para dejar de leer la música desde el disco y cargarla en memoria, que mejora los loops en muchos packs rápidos.
+Si juegas con tts, ahora tienes una opción en el nuevo menú de configuración para que se interrumpa cuando pulses cualquier tecla.
+Si usas tts, puedes interrumpir el habla con el escape, da igual si la nueva opción de interrumpir con cualquier tecla está activada o no.
+Nueva misión, dale don dale al reacciona.
+Ahora el juego te dice Las monedas totales que tienes al ganar o perder monedas.
+
+He hecho una infraestructura para que los minijuegos puedan usar misiofichas como precio. Quizá puedo hacer que algún juego de preios de misiocréditos, pero en su mayor parte los misiocréditos se consiguen solo con misiones.
+Ha vuelto el juego jugar para ganar: Escoge tu caja. Ahora utiliza misiofichas como moneda, porque tiene premios muy altos. Truco: La banca puede darte alguna sorpresa.
+Por fin he arreglado el problema de que Jaws y NVDA daban problemas con el modo formulario. Ya era. hora.
+
+He puesto un sistema de misiones, con 8 misiones ahora mismo. Las misiones son dinámicas y se van haciendo más difíciles a medida que vas incrementando su nivel, como premio te dan las misiofichas que se usan con algunos juegos.
+Ahora puedes ver tus estadísticas: Tiempo jugado, monedas adquiridas, etc.
+He hecho un menú de configuración que sustituye a la cantidad de opciones en el menú principal que había antes.
+Arreglado un problema con los sonidos del tutorial.
+Eb ek menú aprender el pack, ahora puedes usar la tecla shift (mayúscula) pra escuchar el contrasonido.
+Ahora hay un diseño de teclado disponible que lsa la e, d, r, f, y como flechas i, k, j y l. Lo he hecho así para que la gente no pueda sin querer comerse alguna tecla que hace algo (como consultar las monedas, salir, etc).
+He arreglado un problema con la opción guardar partida que si no estaba activada, no podías usar más teclas hasta que fallabas. ¡Vaya!
+
+Version 6.0.0
+Fixed a misleading message that said if you want to change the ingame language you must delete your save. This is no longer true and can be done in the main menu.
+fixed a cosmetic bug in ready set go, where time would display as 2 seconds instead of 3. Bugger! this did not affect the game, though.
+Fixed a bug where the save function (s during a game) would still allow you to  fail once more and waste a possible safeguard when pressing enter to get rid of the "saved!" message.
+Added an audio locator which plays before each level starts, to give you an idea of what the ideal beat rhythm is. Such is the power of event driven code instead of traditional timers.
+fixed a bug where pack quizz would let you play even if you had less than 5 packs with more than 1  level unlocked.
+Audio ducking works properly now.
+
+Finally music files now  "stream" so beatstar loads faster than it ever did.
+Reworked the way beatstar synchronizes loops so that it never gets out of sync (unless the pack maker gets their beats wrong!). the way it's done now is that, every time the new loop plays, the game ensures that its timers are in sync.
+Fixed a bunch of small design errors like music fade times.
+Music files for the levels now stream instead of being loaded into memory in their entirety which will (hopefully) make for a smoother beatstarring experience. This has the side effect of them not being able to pitch down while pausing or failing, which is just a minor inconvenience I think.
+Removed question when setting up the game if you wanted to change the pack folder as it confused people, just go to the menu to change it.
+rewrote the directory handling tool so that it more accurately checks for errors and doesn't freeze up the game.
+Beatstar should no longer wrongly say that there are "x" packs to download when you already have all the packs.
+Fixed a bunch of errors opening and loading and saving files.
+Beatstar now saves screen reader vs tts preference.
+added a new branch (local, not available in the gitlab repo yet), for the keep the beat game.
+The resynchronize function for the music timers runs every 32 frames per second. This should be ok for everyone and only changes 1 timer, there is no game loop anymore, meaning that the CPU usage should be more efficient. The keyboard check function is now only executed whenever you actually press the keyboard, to make up for this change. In other words, good stuff. Event driven code and all that.
+
+Version 5.0
+Sadly, old save files are no longer compatible. I am sorry for this, however the new stuff I'm working on will "hopefully" make people want to start over.
+Added shortcuts for some main menu options which select that option inmediately, for example 1 start game, 3 minigames, etc.
+I need to add missions and statistics and credits which allow you to unlock one free pack per credit.
+Added audio ducking support to the menus which changes the volume of the music slightly  while the tts speaks. Note that this will not work if you are using a screen reader to speak, as the game has no control over that.
+It is now possible to remap your keyboard from within the main menu, in case you can't use the original tab space enter backspace layout.
+
+
+Version 4.0 
+You can now change the voice that the game will use. It will show voices belonging to  the language the game is set to, and will change to the first available voice of the language you select, if you change it. It supports English and Spanish, because so far there haven't been any other translations from players.
+
+Text to speech delay has been greatly reduced.
+Fixed another potential issue regarding game delays that had to do with  loading more levels than it should.
+You can now change the language from the main menu, because why not?
+You can now relocate your beatstar packs library to an external drive, yay!
+It is recommended that your beatpacks folder is either on your internal drive or an ssd external drive.
+TTS Speech now stops when an option in the main menu is selected.
+Fixed a bad problem with playSync
+Added new minigame pack quizz.
+I have been fixing beatstar's functions for catching key presses. Hopefully this will result in much less CPU use and more precise key timings (there used to be some problems with mac computers).
+The safeguard use sound now changesin pitch  depending on how many safeguards you have left. cool.
+Updated electron binaries to 3.0.4.
+
+Version 3.0 September 2018
+- Added first letter navigation in the main menu.
+- Explained in the main menu that you can use page up and down to control music volume as well as first letter navigation.
+- Added a new minigame, react
+- Added  achievements for react.
+- Added explanation for the page up and down keys for the music.
+- Moved screen reader option below start game.
+- Make new version available menu option launch the oriolgomez.com website.
+- Fixed a possible exploit in betting games.
+- New minigame, ready set go.
+- fixed scoring in the new ready set go minigame
+- Added a bunch of soundspacks that were uploaded, please keep uploading new content!

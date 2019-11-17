@@ -1,6 +1,6 @@
 {
   "name": "beatstar",
-  "version": "6.0.0",
+  "version": "7.5.2",
   "description": "Beatstar JS",
   "main": "./client/index.js",
   "scripts": {
@@ -23,7 +23,6 @@
     "babel-polyfill": "^6.26.0",
     "base-64": "^0.1.0",
     "copy-to-clipboard": "^3.2.0",
-    "cryptr": "^6.0.1",
     "download-file-sync": "^1.0.4",
     "fs-walk": "0.0.2",
     "hammerjs": "^2.0.8",
