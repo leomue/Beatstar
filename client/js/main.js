@@ -502,7 +502,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug = true) {
+export async function checkPack(changeBoot = true, debug = false) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
