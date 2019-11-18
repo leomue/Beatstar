@@ -1,5 +1,7 @@
 Version 7.6.1
 Fix beat the code
+fix football
+
 
 Version 7.5.2
 Fixed a bug in wealthy chance, hopefully

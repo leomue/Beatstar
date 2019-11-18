@@ -314,8 +314,15 @@ let found=-1;
 returnObject.fileName=file; //otherwise html element fileNames get fucked up.
 		return returnObject;
 	}
-	
-	createSync(file,stream=false) {
+	async waitForQueue() {
+return new Promise(resolve=> {
+so.setQueueCallback(()=> {
+resolve(true);
+});
+so.loadQueue();
+});
+}
+async createSync(file,stream=false) {
 		return new Promise(resolve => {
 			file = this.directory + file + this.extension;
 	let found=-1;
