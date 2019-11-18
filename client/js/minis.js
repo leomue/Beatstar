@@ -273,6 +273,7 @@ export async function playCode() {
 				await utils.sleep(600);
 				ticker.stop();
 				crackedcodes++;
+increase("codes");
 				time.restart();
 				acode.splice();
 				break;
@@ -832,10 +833,10 @@ export async function playFootball() {
 	bg2.play();
 	let himno;
 	if (st1 == 5) {
-		himno = so.create('bw_himno' + team1);
+		himno = await so.createSync('bw_himno' + team1);
 	}
 	if (st2 == 5) {
-		himno = so.create('bw_himno' + team2);
+		himno = await so.createSync('bw_himno' + team2);
 	}
 	await himno.playSync();
 	bg.stop();
@@ -852,7 +853,6 @@ export async function playFootball() {
 			st.setState(2);
 			});
 }
-
 export async function playPong() {
 	sos();
 	pongnotify = false;

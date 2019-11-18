@@ -502,7 +502,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug =true) {
+export async function checkPack(changeBoot = true, debug = true) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -608,8 +608,13 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (!data.stats) data.stats={};
 	if (!fs.existsSync(packdir + 'bpm.txt')) {
 		const text = new ScrollingText(strings.get('packError'), '\n', (() => {
-			
+			try {
 					downloadPacks(['default']);
+} catch(err) {
+console.log("Error!"+err.name+": "+err.message);
+st.setState(2);
+}
+
 					}));
 		return;
 	}
@@ -621,7 +626,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 	if (debug) {
 try {
  //await strings.check(2);
-await playCode();
+await playFootball();
 } catch(err) {
 speech.speak(err.name+": "+err.message);
 return;
@@ -717,7 +722,13 @@ export async function downloadPacks(arr = []) {
 				browseArray.forEach(i => {
 						dls.push(i.name);
 						});
+try {
 				downloadPacks(dls);
+} catch(err) {
+console.log("Error!"+err.name+": "+err.message);
+st.setState(2);
+}
+
 				break;
 				case 2:
 				dm.destroy();
@@ -808,7 +819,13 @@ export async function downloadPacks(arr = []) {
 							browsing = 0;
 							event.justPressedEventCallback = null;
 							event.charEventCallback = null;
+try {
 							downloadPacks(selected);
+} catch(err) {
+console.log("Error!"+err.name+": "+err.message);
+st.setState(2);
+}
+
 
 							return;
 						}
@@ -1300,7 +1317,12 @@ export async function minigames() {
 					addCash(0, minis[name], async() => {
 							data.minis[name] = true;
 							save();
+try {
 await runGame(name);
+} catch(err) {
+console.log("Error!"+err.name+": "+err.message);
+st.setState(2);
+}
 							});
 					}
 					});
@@ -1310,7 +1332,12 @@ await runGame(name);
 							}));
 			}
 			} else {
+try {
 				runGame(name);
+} catch(err) {
+console.log("Error!"+err.name+": "+err.message);
+st.setState(2);
+}
 			}// It is unlocked
 			// else
 	});
