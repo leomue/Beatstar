@@ -305,16 +305,14 @@ let found=-1;
 		let returnObject = null;
 		if (found == -1 || found.sound.data == null) {
 					returnObject = new SoundObjectItem(file, () => { if (!stream) this.doneLoading(); },0,stream);
-			
  this.sounds.push(returnObject);
-			
 		} else {
 			 returnObject = new SoundObjectItem(found.sound.data, () => { if (!stream) this.doneLoading(); },0,stream);
 					}
 returnObject.fileName=file; //otherwise html element fileNames get fucked up.
 		return returnObject;
 	}
-	async waitForQueue() {
+	async loadQueueSync() {
 return new Promise(resolve=> {
 so.setQueueCallback(()=> {
 resolve(true);
@@ -334,11 +332,12 @@ async createSync(file,stream=false) {
 	if (stream) resolve(returnObject);
 			} else {
 				 returnObject = new SoundObjectItem(found.sound.data, () => { if (!stream) this.doneLoading(); },0,stream);
+resolve(returnObject);
 						}
 	returnObject.fileName=file; //otherwise html element fileNames get fucked up.
-				resolve(returnObject);
+				if (stream) resolve(returnObject);
 	if (!stream) {
-			returnObject.once('loaded', () => {
+			returnObject.sound.once('loaded', () => {
 				resolve(returnObject);
 this.doneLoading();
 			});// End
