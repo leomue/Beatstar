@@ -247,7 +247,7 @@ failsound.play();
 this.music.destroy();
 		while (failsound.playing) {
 			await utils.sleep(16);
-			if (this.input.isDown(KeyEvent.DOM_VK_ESCAPE)) {
+			if (this.input.isDown(KeyEvent.DOM_VK_ESCAPE) || this.input.isDown(KeyEvent.DOM_VK_Q)) {
 				failsound.destroy();
 			}
 		}
