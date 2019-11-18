@@ -259,7 +259,7 @@ class SoundObject {
 	}
 	findSound(file) {
 		for (let i=0;i<this.sounds.length;i++) {
-			if (this.sounds[i].fileName == file) {
+			if (this.sounds[i].fileName == file && this.sounds[i].loaded) {
 				return this.sounds[i];
 			}
 		}
@@ -340,6 +340,7 @@ async createSync(file,stream=false) {
 	if (!stream) {
 			returnObject.once('loaded', () => {
 				resolve(returnObject);
+this.doneLoading();
 			});// End
 							}//stream
 		});// Promise
