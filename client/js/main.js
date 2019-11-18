@@ -626,7 +626,7 @@ st.setState(2);
 	if (debug) {
 try {
  //await strings.check(2);
-await playFootball();
+//await playFootball();
 } catch(err) {
 speech.speak(err.name+": "+err.message);
 return;
