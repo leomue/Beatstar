@@ -201,7 +201,7 @@ export async function playCode() {
 	const actionsa = [];
 	const curkeys = [];
 	for (let i = 2; i <= actions; i++) {
-		actionsa.push('a' + i);
+		actionsa.push(i);
 	}
 	let go;
 	const input = new KeyboardInput();
@@ -219,7 +219,7 @@ export async function playCode() {
 		if (level + actions - 1 > actions) {
 			const more = level - 1;
 			for (let i = 1; i <= more; i++) {
-				acode.push('a' + utils.randomInt(2, actions));
+				acode.push(utils.randomInt(2, actions));
 			}
 		}
 		acode = utils.shuffle(acode);
@@ -250,9 +250,9 @@ export async function playCode() {
 					playing = false;
 				}
 				if (actionKeys.includes(evt)) {
-					if (evt == actionKeys[data.actionLimit+acode[counter].substr(1)]) {
+					if (evt == actionKeys[data.actionLimit+acode[counter]]) {
 						sop();
-						pool.playStatic(acode[counter], 0);
+						pool.playStatic("a"+acode[counter], 0);
 						sos();
 						pool.playStatic('code_ok', 0);
 						sop();
