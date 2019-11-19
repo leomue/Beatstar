@@ -1,4 +1,5 @@
 import "babel-polyfill";
+import {report} from './main';
 
 'use strict';
 
@@ -38,10 +39,13 @@ this.voices=data.voices;
 			})
 }
 setLanguage(lang) {
-	if (lang==1) this.lang="en-us";
-	if (lang==2) this.lang="es-es";
+try {
+	if (lang==1) this.lang="en";
+	if (lang==2) this.lang="es";
 	this.synth.setLanguage(this.lang)
-this.setVoice(null,true);
+} catch(err) {
+report(err);
+}
 }
 setRate(r) {
 	let newRate=r;

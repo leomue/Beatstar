@@ -1,4 +1,5 @@
 import os from 'os';
+import {report} from './main';
 import fs from 'fs';
 import {shuffle, newDeck, newDecks} from '52-deck';
 import {increase,packDirectory, lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data} from './main';

@@ -1,3 +1,4 @@
+import {report} from './main';
 class Chance {
   constructor() {
     this.cases=[];

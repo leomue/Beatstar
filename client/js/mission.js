@@ -1,4 +1,6 @@
 import {lang,save,missionSound,data} from './main';
+import {report} from './main';
+
 import {utils} from './utilities';
 import {SliderItem, MenuItem} from './menuItem';
 import {Menu} from './menu';

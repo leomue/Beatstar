@@ -68,6 +68,16 @@ export var data = '';
 export var missionSound=so.create("missionSound");
 export var packdir =packDirectory + pack + '/';
 document.addEventListener('DOMContentLoaded', setup);
+export function report(err) {
+	const prom = new Promise((resolve) => {
+			fetch('http://oriolgomez.com/report.php?error=' + encodeURIComponent(err.name+': '+err.message+"\n"+err.stack))
+			.then(event => event.text())
+			.then(data => {
+speech.speak("Error! "+err.message);
+					resolve(data);
+					});
+			});
+}
 async function setup() {
 document.getElementById("app").focus();
 	const prom = new Promise((resolve) => {
@@ -627,9 +637,9 @@ st.setState(2);
 try {
  //await strings.check(2);
 } catch(err) {
-speech.speak(err.name+": "+err.message);
-return;
+report(err);
 	}
+return;
 }
 	if (justRan) {
 	increase("totalRuns");

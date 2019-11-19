@@ -1,4 +1,5 @@
 'use strict';
+import {report} from './main';
 import {speech} from './tts';
 import {so} from './soundObject';
 const MenuTypes = {

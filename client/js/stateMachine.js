@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import {report} from './main';
+
 import {KeyboardInput} from './input';
 import {credits, listenPack, checkPack, learnPack, browsePacks} from './main';
 import {Menu} from './menuHandler';

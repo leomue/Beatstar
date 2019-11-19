@@ -1,4 +1,5 @@
 import {utils} from './utilities';
+import {report} from './main';
 import {addCashSync,missions,mangle} from './main';
 import {ScrollingText} from './scrollingText';
 import {speech} from './tts';

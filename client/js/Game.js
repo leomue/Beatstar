@@ -1,4 +1,6 @@
 'use strict';
+import {report} from './main';
+
 import {lang} from './main';
 import fs from 'fs';
 import os from 'os';
