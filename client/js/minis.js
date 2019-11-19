@@ -1596,6 +1596,7 @@ await this.exit();
 }//for
 }
 async exit() {
+	await new ScrollingText(strings.get("memorySounds",[this.numberOfSounds-1]));
 	await addCashSync((this.numberOfSounds-1)*150);
 	data.stats.numberOfSounds=this.numberOfSounds-1;
 	save();

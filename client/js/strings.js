@@ -10,6 +10,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			memorySounds:"ou memorized %1 sounds. Cool!",
 			mChanges:"List of changes and new features from all versions",
 			changesMenu:"Here are the list of changes. Press enter to go back to the menus",
 			foundOldSave:"Hi,w welcome to this new version of beatstar!\nThis version has a lot of new things, including missions, statistics, and so on.\nSadly, your old save file will not be compatible. However...\nAs an appology...\nBy the way, this is the last time that save files will stop being compatible, as I've stopped using that piece of trash called crypto for game encryption.",
@@ -413,6 +414,7 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 		};
 		this.strings[2] = {
 			// New Spanish
+			memorySounds:"Has memorizado %1 sonidos. Bien!",
 			mStream: "Leer la música desde el disco (desactiva esto si no quieres experimentar un pequeño retraso en la música",
 			mInterrupt:"Interrumpir el habla si pulsas una tecla (usa las flechas para cambiar)",
 			
