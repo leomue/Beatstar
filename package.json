@@ -1,12 +1,12 @@
 {
   "name": "beatstar",
-  "version": "7.7.0",
+  "version": "7.7.1",
   "description": "Beatstar JS",
   "main": "./client/index.js",
   "scripts": {
     "git": "git add . && git commit -m 'npm auto commit' && git push --all && npm version patch",
-    "minor": "git add . && git commit -m 'npm next minor version' && git push --all && npm version minor",    
-        "release": "git add . && git commit -m 'npm release' && git push --all && npm version major",
+    "minor": "git add . && git commit -m 'npm next minor version' && git push --all && npm version minor",
+    "release": "git add . && git commit -m 'npm release' && git push --all && npm version major",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "parcel watch ./client/js/main.js -d ./client --target=electron --no-hmr",
     "build": "parcel build ./client/js/main.js -d ./client --target=electron",
