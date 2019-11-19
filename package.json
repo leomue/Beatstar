@@ -1,6 +1,6 @@
 {
   "name": "beatstar",
-  "version": "7.7.2",
+  "version": "7.7.3",
   "description": "Beatstar JS",
   "main": "./client/index.js",
   "scripts": {
@@ -19,8 +19,7 @@
   },
   "author": "Oriol Gomez",
   "license": "GPL",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "52-deck": "^1.1.0",
     "agk-ui": "0.0.2",
@@ -42,7 +41,6 @@
     "speak-tts": "^2.0.8",
     "tone": "^13.8.25",
     "unique-random": "^2.1.0",
-
     "electron": "^7.1.1",
     "parcel-bundler": "^1.12.4"
   }
