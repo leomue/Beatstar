@@ -1,6 +1,4 @@
 appId: "com.oriolgomez.beatstar"
-files:
-   "!**/node_modules/*"
 
 directories:
   output: dist

@@ -2,6 +2,7 @@ Version 7.7.0
 Fixed double or nothing language files.
 Fix an error with spanish and tts
 Enabled automatic error reports system.
+I managed to get auto detect screen reader working, I think.
 
 Version 7.6.1
 Fix beat the code
