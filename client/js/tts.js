@@ -15,8 +15,8 @@ class TTS {
 		this.speechController=new KeyboardInput();
 		this.speechController.init();
 		this.ducking=false;
-		if (lang==1) this.lang="en-us";
-		if (lang==2) this.lang="es-es";
+		if (lang==1) this.lang="en";
+		if (lang==2) this.lang="es";
 		this.webTTS = webTTS;
 		this.synth=new Speech()
 			this.rate=2;
