@@ -512,7 +512,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug = false) {
+export async function checkPack(changeBoot = true, debug = true) {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -636,6 +636,7 @@ st.setState(2);
 	if (debug) {
 try {
  //await strings.check(2);
+
 } catch(err) {
 report(err);
 	}

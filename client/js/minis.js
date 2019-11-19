@@ -437,7 +437,7 @@ export async function playDouble() {
 	}
 	const old = data.beatcoins;
 	so.directory = './sounds/';
-	let snd = so.create('doub_intro');
+	let snd = so.create(lang+'/doub_intro');
 	await snd.playSync();
 	await addCashSync(0, data.beatcoins);
 	const rand = utils.randomInt(1, 2);
@@ -447,11 +447,11 @@ export async function playDouble() {
 	}
 	sos();
 	if (!win) {
-		snd = so.create('doub_loser');
+		snd = so.create(lang+'/doub_loser');
 		await snd.playSync();
 		await getAch('dl');
 	} else if (win) {
-		snd = so.create('doub_winner');
+		snd = so.create(lang+'/doub_winner');
 		await snd.playSync();
 		await addCashSync(old * 2);
 		await getAch('dw');

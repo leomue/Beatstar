@@ -20,6 +20,8 @@
   "author": "Oriol Gomez",
   "license": "GPL",
   "dependencies": {
+  },
+  "devDependencies": {
     "52-deck": "^1.1.0",
     "agk-ui": "0.0.2",
     "audiobuffer-to-wav": "^1.0.0",
@@ -39,25 +41,9 @@
     "sono": "^2.1.6",
     "speak-tts": "^2.0.8",
     "tone": "^13.8.25",
-    "unique-random": "^2.1.0"
-  },
-  "devDependencies": {
+    "unique-random": "^2.1.0",
+
     "electron": "^7.1.1",
     "parcel-bundler": "^1.12.4"
-  },
-  "build": {
-    "compression": "maximum",
-    "nodeGypRebuild": false,
-    "npmRebuild": false,
-    "win": {
-      "target": [
-        {
-          "target": "zip",
-          "arch": [
-            "ia32"
-          ]
-        }
-      ]
-    }
   }
 }

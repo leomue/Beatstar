@@ -1,0 +1,22 @@
+appId: "com.oriolgomez.beatstar"
+files:
+   "!**/node_modules/*"
+
+directories:
+  output: dist
+  buildResources: build
+compression: maximum
+nodeGypRebuild: false
+npmRebuild: false
+win:
+  target:
+    - target: zip
+      arch:
+      - ia32
+mac:
+  target:
+    - target: dmg
+      arch:
+                - x64
+
+electronVersion: 7.1.1
