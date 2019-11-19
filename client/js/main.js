@@ -621,7 +621,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 			try {
 					downloadPacks(['default']);
 } catch(err) {
-console.log("Error!"+err.name+": "+err.message);
+report(err);
 st.setState(2);
 }
 
@@ -734,7 +734,7 @@ export async function downloadPacks(arr = []) {
 try {
 				downloadPacks(dls);
 } catch(err) {
-console.log("Error!"+err.name+": "+err.message);
+report(err);
 st.setState(2);
 }
 
@@ -831,7 +831,7 @@ st.setState(2);
 try {
 							downloadPacks(selected);
 } catch(err) {
-console.log("Error!"+err.name+": "+err.message);
+report(err);
 st.setState(2);
 }
 
@@ -1329,7 +1329,7 @@ export async function minigames() {
 try {
 await runGame(name);
 } catch(err) {
-console.log("Error!"+err.name+": "+err.message);
+report(err);
 st.setState(2);
 }
 							});
@@ -1344,7 +1344,7 @@ st.setState(2);
 try {
 				runGame(name);
 } catch(err) {
-console.log("Error!"+err.name+": "+err.message);
+report(err);
 st.setState(2);
 }
 			}// It is unlocked
