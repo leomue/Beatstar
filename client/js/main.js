@@ -536,7 +536,7 @@ fs.accessSync(window.localStorage.getItem("path"),fs.constants.W_OK)
 
 } // path is null close
 	try {
-		data = JSON.parse(mangle.decode(fs.readFileSync(packDirectory+'/save.beatstar')));
+		data = await JSON.parse(mangle.decode(fs.readFileSync(packDirectory+'/save.beatstar')));
 			lang = data.lang;
 			speech.setLanguage(lang)
 				if (typeof data.rate !== 'undefined') {

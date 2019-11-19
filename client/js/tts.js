@@ -1,5 +1,5 @@
 import "babel-polyfill";
-
+const {app} = require('electron').remote;
 import {report} from './main';
 
 'use strict';
@@ -56,7 +56,6 @@ setRate(r) {
 	this.synth.setRate(newRate);
 }
 speak(text,queue=false) {
-const {app} = require('electron').remote;
 let sr=app.isAccessibilitySupportEnabled();
 console.log("sr"+sr);
 if (sr) this.webTTS=false;

@@ -44,10 +44,8 @@ export async function mainMenu() {
 	if (!speech.webTTS) {
 		settings.push(new MenuItem(34, strings.get('mSapi')));
 	}
-	if (speech.webTTS) {
 		settings.push(new MenuItem(32, strings.get('mRate'),"t"));
 		settings.push(new MenuItem(293, strings.get('mSelectVoice'),"v"));
-	}
 let selectorAction=0;
 if (data.actionLimit) {
 if (data.actionLimit>0) selectorAction=1;
