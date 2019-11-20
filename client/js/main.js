@@ -513,6 +513,7 @@ export function question(text, localizedValues = [], callback = null) {
 
 }
 export async function checkPack(changeBoot = true, debug = false) {
+try {
 	editing = false;
 	const fs = require('fs');
 	if (window.localStorage.getItem("path")!=null) {
@@ -647,6 +648,9 @@ return;
 	justRan=false;
 	}
 	booter();
+} catch(err) {
+report(err);
+}
 }
 const download = function (url, dest, cb) {
 	const http = require('http');

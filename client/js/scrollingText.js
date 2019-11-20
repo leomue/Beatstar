@@ -5,6 +5,13 @@ import {KeyEvent} from './keycodes';
 import {so} from './soundObject';
 import {speech} from './tts';
 import copy from 'copy-to-clipboard';
+function sos() {
+so.old=so.directory;
+so.directory="./sounds/";
+}
+function sop() {
+so.directory=so.old;
+}
 if (runningText == undefined) {
 	var runningText = 0;
 }
@@ -16,9 +23,11 @@ class ScrollingText {
 		this.delimiter = delimiter;
 		this.splitText = this.text.split(delimiter);
 		this.currentLine = 0;
+sos();
 		this.sndOpen = so.create('ui/textOpen');
 		this.sndContinue = so.create('ui/textScroll');
 		this.sndClose = so.create('ui/textClose');
+sop();
 		const id = document.getElementById('touchArea');
 		// This.hammer = new Hammer(id);
 		this.init();
@@ -70,7 +79,9 @@ class ScrollingText {
 	readCurrentLine() {
 		if (this.splitText[this.currentLine].trim()[0] == '!') {
 			const str = this.splitText[this.currentLine].trim().substr(1);
+sos();
 			const snd = so.create(str, true);
+sop();
 			snd.play();
 			snd.sound.once('end', () => {
 					this.advance();
