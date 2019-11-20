@@ -19,6 +19,7 @@ class StateMachine {
 	}
 
 	setState(state) {
+try {
 		if (state == 1) {
 			event = new KeyboardInput();
 			event.init();
@@ -68,8 +69,13 @@ class StateMachine {
 		} else if (state == 8) {
 			browsePacks(3);
 			this.state = state;
-		}
-	}
+
+		}//if
+} catch(err) {
+report(err);
 }
+
+}
+	}//function
 const st = new StateMachine();
 export {st};

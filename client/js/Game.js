@@ -418,7 +418,7 @@ clearInterval(this.resync);
 			this.calculateScore();
 			return;
 		}
-		if (key != this.keys[data.actionLimit+this.action]) {
+		if (key != this.keys[data.actionLimit+this.action] && this.keys.includes(key,data.actionLimit+2)) {
 			this.fail();
 		}
 	}

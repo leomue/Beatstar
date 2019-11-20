@@ -56,7 +56,7 @@ setRate(r) {
 	this.synth.setRate(newRate);
 }
 speak(text,queue=false) {
-let sr=app.isAccessibilitySupportEnabled();
+let sr=app.accessibilitySupportEnabled;
 console.log("sr"+sr);
 if (sr) this.webTTS=false;
 if (!sr) this.webTTS=true;
