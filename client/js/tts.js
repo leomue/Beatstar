@@ -36,7 +36,7 @@ splitSentences:false,
 .then((data) => {
 this.voices=data.voices;
 		}).catch(e => {
-			console.error("An error occured while initializing : ", e)
+report(e);
 			})
 }
 setLanguage(lang) {
@@ -57,7 +57,7 @@ setRate(r) {
 }
 speak(text,queue=false) {
 let sr=app.accessibilitySupportEnabled;
-console.log("sr"+sr);
+
 if (sr) this.webTTS=false;
 if (!sr) this.webTTS=true;
 	if (this.webTTS) {
@@ -177,7 +177,7 @@ try {
 this.synth.setVoice(voiceArray[0]);
 return voiceArray[0];
 } catch(err) {
-console.log("Can't find suitable voices."+err.message);
+report(err);
 this.synth.setVoice(voiceArray[1]);
 return voiceArray[1];
 } // catch block

@@ -148,6 +148,7 @@ this.locator=so.create("locator");
 			}
 		}
 		this.keys = actionKeys;
+if (data.actionLimit==0) this.keys.splice(11,20);
 		const that = this;
 		so.setQueueCallback(() => {
 				so.directory = './sounds/';
@@ -302,7 +303,6 @@ clearInterval(this.resync);
 		const that = this;
 		so.kill(() => {
 				if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
-				console.log('found credits');
 				const input = new KeyboardInput();
 				input.init();
 				so.directory = '';
@@ -400,7 +400,7 @@ clearInterval(this.resync);
 		if (this.actionCompleted) {
 			return;
 		}
-		if (this.action == 1) {
+		if (this.action == 1 && this.keys.includes(key,data.actionLimit+2)) {
 			this.fail();
 			return;
 		}
@@ -463,7 +463,6 @@ clearInterval(this.resync);
 					wins++;
 				}
 			}
-			console.log('wins' + wins);
 			if (wins == 1) {
 				await getAch('w1');
 				so.directory = './sounds/';

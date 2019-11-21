@@ -14,7 +14,6 @@ class Menu {
 		this.fadeTime=0.6;
 		this.menuData = menuData;
 		let audio=name.split(" ");
-		console.log("length",audio.length);
 		if (audio.length<2) this.isAudio=true;
 		if (audio.length>=2) this.isAudio=false;
 						this.silent=false;
@@ -129,7 +128,6 @@ class Menu {
 				if (this.menuData[i].shortcut== String.fromCharCode(char).toLowerCase()) {
 										this.cursor = i;
 										this.select();
-										console.log("meow");
 					return;
 				}
 				if (this.menuData[i].name.toLowerCase().substr(0, 1) == String.fromCharCode(char).toLowerCase()) {
@@ -143,7 +141,7 @@ class Menu {
 				if (this.menuData[i].shortcut== String.fromCharCode(char).toLowerCase()) {
 										this.cursor = i;
 										this.select();
-										console.log("meow");
+
 					return;
 				}
 
@@ -343,7 +341,7 @@ class Menu {
 				}		
 					if (!this.silent) this.musicDuration=this.fadeTime*1000;
 					if (typeof this.music==="undefined" || this.silent) this.musicDuration=0;
-					console.log("duration "+this.musicDuration);
+
 			const that = this;
 				if (typeof this.music!=="undefined") {
 					this.music.sound.fade(0,this.fadeTime);

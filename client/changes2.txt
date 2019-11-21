@@ -1,4 +1,4 @@
-Version 7.7.0
+Arreglado una pérdida de memoria en el editor de packs.
 gran cambio en cómo beatstar mira las teclas que pulsas, ya no fallarás si pulsas una tecla que no es ninguna acción.
 He conseguido más o menos auto detectar lector o sapi.
 Arreglado los archivos de idioma del doble o nada.

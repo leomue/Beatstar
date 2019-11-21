@@ -111,9 +111,9 @@ export async function playSlots() {
 					win.sound.once('ended', async () => {
 							await getAch('slotwin');
 							const capcash = myBet;
-							console.log(capcash);
+
 							const perc = Math.ceil(utils.percentOf(utils.randomInt(80, 100), capcash) + myBet);
-							console.log('perc' + perc);
+
 							addCash(perc, 0, () => {
 									so.kill(() => {
 											st.setState(2);
@@ -128,7 +128,7 @@ export async function playSlots() {
 							capcash = data.beatcoins;
 						}
 						const perc = Math.ceil(utils.percentOf(utils.randomInt(15, 25), capcash));
-						console.log('perc' + perc);
+
 						data.beatcoins -= perc;
 						lose.sound.once('ended', async () => {
 								addCash(0, perc, () => {
@@ -159,9 +159,9 @@ export async function playSlots() {
 								if (capcash > data.beatcoins) {
 								capcash = data.beatcoins;
 								}
-								console.log(capcash);
+
 								const perc = Math.ceil(utils.percentOf(utils.randomInt(20, 60), capcash));
-								console.log('perc' + perc);
+
 								addCash(0, perc, () => {
 										so.kill(() => {
 												st.setState(2);
@@ -421,7 +421,7 @@ export function takeCard(deck) {
 		card.value = 13;
 	}
 	const str = strings.get('card', [strings.get(card.text), strings.get('c' + card.suite)]);
-	console.log(str);
+
 	return [card, str];
 }
 export async function playDouble() {
@@ -1003,7 +1003,7 @@ class GoGame {
 			if (this.elapsedTime >= 2000 && this.elapsedTime < 2006) {
 				this.elapsedTime = 2000;
 			}
-			console.log('time ' + this.elapsedTime);
+
 			if (this.elapsedTime == 2000) {
 				this.curscore = 2000;
 				this.pool.playStatic('go_exact', 0);
@@ -1138,7 +1138,7 @@ if (this.stop) return;
 			this.songs[i].pack = rand;
 			const rand2 = utils.randomInt(1, data.unlocks[rand].level);
 			this.songs[i].level = rand2;
-			console.log('rand' + rand2);
+
 		}
 	}
 
@@ -1288,7 +1288,7 @@ let mycase=new Menu("case_choose"+lang,this.caseSounds);
 mycase.silent=true;
 this.caseID=await mycase.runSync();
 this.myCase=this.findCase(this.caseID);
-console.log("my case is ",this.myCase.getValue()," of type ",this.myCase.type," with id of ",this.myCase.random);
+
 this.removeCase(this.myCase,"first");
 await utils.sleep(800);
 this.intro=so.create("case_begin"+lang);
@@ -1479,18 +1479,18 @@ return 0;
 removeCase(whichCase,wtf) {
 let 	index=this.cases.indexOf(whichCase);
 this.cases[index].random=-1;
-console.log("removed",index,wtf,this.cases[index].getValue());
+
 }
 sortRemaining() {
 this.sortedBeatcoins=[];
 this.sortedSafeguards=[];
-console.log("my case is "+this.myCase.getValue()+" and "+this.myCase.type);
+
 if (this.myCase.type==1) {
-console.log("sorted into b");
+
 this.sortedBeatcoins.push(this.myCase.amount);
 }
 if (this.myCase.type==2) {
-	console.log("sorted into s");
+
 this.sortedSafeguards.push(this.myCase.amount);
 }
 for (let i=0;i<this.cases.length;i++) {
@@ -1504,7 +1504,7 @@ this.sortedSafeguards.sort(utils.numericSort);
 findCase(whichCase,wtf) {
 for (let i=0;i<this.cases.length;i++) {
 if (this.cases[i].random==whichCase) {
-console.log("Found");
+
 return this.cases[i];
 }
 }

@@ -30,7 +30,7 @@ const main = require('./main');
 const remote = electron.remote;
 
 export async function mainMenu() {
-	console.log('menu thinks pack dir is ' + main.packDirectory);
+
 	const fs=require('fs');
 	const items = new Array();
 	const settings = new Array();
@@ -74,7 +74,7 @@ if (data.streamMusic==true) selectorAction=0;
 settings.push(new SelectorItem(-1,strings.get("mStream"),[strings.get("yes"),strings.get("no")],selectorAction,((option)=>{
 if (option==0) data.streamMusic=true;
 if (option==1) data.streamMusic=false;
-console.log(option);
+
 save();
 })));
 
@@ -197,13 +197,13 @@ save();
 			case 10: minituts(); break;
 			case 69:
 				 const dir = await changeDir();
-				 console.log('dir' + dir);
+
 				 if (typeof dir !== 'undefined' && dir != '') {
 					 main.packDirectory = dir;
 					 main.packdir = main.packDirectory + '/' + pack + '/';
 					 window.localStorage.setItem('path', main.packDirectory);
 				 } else {
-					 console.log('fuck you error.');
+
 				 }
 				 checkPack();
 				 break;

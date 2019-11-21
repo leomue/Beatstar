@@ -107,7 +107,6 @@ export async function learnPack() {
 	const event = new KeyboardInput();
 	event.init();
 	so.directory = '';
-console.log("meh", actionKeys[data.actionLimit+2]);
 let letter="a";
 	while (!event.isJustPressed(KeyEvent.DOM_VK_Q)) {
 		await utils.sleep(10);
@@ -156,7 +155,6 @@ export async function browsePacks(browsing = 1) {
 	}
 	const fs = require('fs');
 	const path=require('path');
-	console.log(path.join(packDirectory,'hashes.packInformation'))
 		if (!fs.existsSync(path.join(packDirectory,'hashes.packInformation'))) {
 			var error = "";
 			if (lang == 1) {
@@ -174,7 +172,7 @@ export async function browsePacks(browsing = 1) {
 	try {
 		var packs = JSON.parse(fs.readFileSync(packDirectory+'/hashes.packInformation'));
 	} catch (err) {
-		console.log(err);
+report(err);
 		var error = 0;
 		if (lang == 1) {
 			error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a long while, so go get a coffee or something...', '\n', (() => {
@@ -494,7 +492,6 @@ export function question(text, localizedValues = [], callback = null) {
 	const dm = new Menu(strings.get(text, localizedValues), items);
 	so.directory = '';
 	dm.run(s => {
-			console.log('ok');
 			so.directory = './sounds/';
 			switch (s.selected) {
 			case 0:
@@ -677,7 +674,6 @@ export async function downloadPacks(arr = []) {
 			.then(event => event.text())
 			.then(data => {
 					remoteHashes = JSON.parse(data);
-					console.log('remote' + remoteHashes.length);
 					});
 		// Ok
 		const browseArray = [];
@@ -715,7 +711,6 @@ export async function downloadPacks(arr = []) {
 			sizeS = 'gb';
 		}
 		size = size.toFixed(2);
-		//			Console.log("size: "+size+sizeS+" "+browseArray.length+" packs");
 		const items = new Array();
 		items.push(new MenuItem(-1, strings.get('mFound', [browseArray.length])));
 		items.push(new MenuItem(0, strings.get('mDownloadAll', [size, sizeS])));
@@ -802,7 +797,6 @@ st.setState(2);
 								sizeS = 'bytes';
 							}
 							dSize = size / 1024 / 1024;
-							console.log(dSize);
 							sizeS = 'mb';
 							if (dSize > 1024) {
 								dSize = size / 1024;
@@ -954,7 +948,6 @@ st.setState(2);
 			dir = packDirectory+"/";
 			const dirsplit = i.split('/');
 			if (fs.existsSync(dir + i)) {
-				console.log('unlink' + dir + i);
 				fs.unlinkSync(dir + i);
 			}
 			if (!fs.existsSync(dir + dirsplit[0])) {
@@ -965,7 +958,6 @@ st.setState(2);
 			toDownload[ii] = url;
 			dests.push(dir);
 		}
-		console.log('going to start download');
 		speech.speak(strings.get('dfiles', [toDownload.length]));
 		percent = 0;
 		prevPercent = 0;
@@ -975,7 +967,6 @@ st.setState(2);
 		event.justPressedEventCallback = function () {
 			percent = utils.percent(currentIndex, toDownload.length).toFixed(1);
 			speech.speak(percent + '%');
-			console.log(percent + '%');
 		};
 		const threads = 3;
 try {
@@ -985,14 +976,12 @@ try {
 				currentIndex = index;
 				}, () => {
 				speech.speak(strings.get('dlingdone'));
-				console.log('exiting function');
 				rebuildHashes(true);
 				event.justPressedEventCallback = null;
 				so.directory = './sounds/';
 				st.setState(2);
 				});
 } catch(err) {
-				console.log('exiting function');
 speech.speak("download error!");
 				rebuildHashes(true);
 				event.justPressedEventCallback = null;
@@ -1256,7 +1245,6 @@ export async function buySafeguards() {
 			const dm = new Menu(strings.get('mSafeSelect'), items);
 			so.directory = '';
 			dm.run(s => {
-					// Console.log(s.items);
 					so.directory = './sounds/';
 					buying = s.items[0].value;
 					dm.destroy();
@@ -1308,7 +1296,6 @@ export async function minigames() {
 				str += strings.get('unlocked');
 			}
 			items.push(new MenuItem(i, str));
-			console.log(str);
 		}// Own property
 	}// For
 	items.push(new MenuItem('-1', strings.get('mBack')));
@@ -1407,7 +1394,7 @@ export function minituts() {
 			counter++;
 			str += strings.get(i) + ', ';
 			items.push(new MenuItem(i, str));
-			console.log(str);
+
 		}// Own property
 	}// For
 	items.push(new MenuItem('-1', strings.get('mBack')));
@@ -1445,7 +1432,7 @@ export async function editPack(path) {
 		return;
 	}
 	await utils.sleep(1000);
-	console.log(path);
+
 	path += '/';
 	const fs = require('fs');
 	const checkFiles = ['a1', 'a2', 'a3', 'a4', 'a5', 'o2', 'o3', 'o4', 'o5', '1music', '2music', '3music', 'fail', 'name', 'loop', 'select', 'win'];
@@ -1484,6 +1471,7 @@ export async function editPack(path) {
 	}
 }
 async function editPackDefinite(path) {
+try {
 	const fs = require('fs');
 	so.directory = path;
 	let levels = 3;
@@ -1496,7 +1484,7 @@ async function editPackDefinite(path) {
 			stop = true;
 		}
 	}
-	console.log('music levels' + levels);
+
 	let fileLevels = [];
 	if (fs.existsSync(path + 'bpm.txt')) {
 		const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
@@ -1511,9 +1499,9 @@ async function editPackDefinite(path) {
 	for (let i = 0; i < fileLevels.length; i++) {
 		str += fileLevels[i] + ',';
 	}
-	console.log(str);
+
 	so.directory = './sounds/';
-	console.log('levels' + fileLevels.length);
+
 	const items = [];
 	items.push(new MenuItem(-2, strings.get('mPackTut')));
 	items.push(new MenuItem(0, strings.get('startOver')));
@@ -1569,7 +1557,7 @@ async function editPackDefinite(path) {
 				arr = [];
 				timer.restart();
 				if (typeof music !== 'undefined') {
-					music.stop();
+					music.stop(); music.destroy();
 				}
 				music = so.create(i + 'music');
 				speech.speak(strings.get('level', [i]));
@@ -1590,7 +1578,7 @@ async function editPackDefinite(path) {
 						speech.speak(arr.length);
 					}// If
 				}// While
-				console.log('avg' + utils.averageInt(arr, 1));
+
 				if (!escaping) {
 					fileLevels[i] = utils.averageInt(arr, 1);
 				}
@@ -1621,7 +1609,7 @@ async function editPackDefinite(path) {
 			}// Limit for
 			so.directory = './sounds/';
 			pos.play();
-			music.stop();
+			music.stop(); music.destroy();
 			// Write shit
 			if (fs.existsSync(path + 'bpm.txt')) {
 				fs.unlinkSync(path + 'bpm.txt');
@@ -1639,6 +1627,7 @@ async function editPackDefinite(path) {
 							});// Kill call
 					});
 	});// Menu callback
+} catch(err) { report(err); }
 }// Function
 export async function getAch(name, forcePlay = false,fromMenu=false) {
 	const fs = require('fs');
@@ -1815,7 +1804,7 @@ async function missions(checkOnly=false) {
 export async function creditDeduct(price,alternative,name) {
 		if (!data.freeplayUsed) data.freeplayUsed={};
 	sos();
-	console.log("game is "+data.freeplayUsed[name]);
+
 	if (alternative && !data.freeplayUsed[name]) {
 		await new ScrollingText(strings.get("freeplay",[price]));
 		data.freeplayUsed[name]=true;

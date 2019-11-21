@@ -96,7 +96,7 @@ if (this.stream) return;
 try {
 		this.sound.play();
 }catch(err) {
-console.log("error playing "+this.fileName+": "+err.message);
+
 //recreate the sound and replay
 this.sound=sono.create(new Audio(this.fileName));
 this.sound.play();
@@ -116,7 +116,7 @@ this.sound.resume();
 		try {
 this.sound.destroy();
 		} catch(err) {
-			console.log("Can't destroy: "+err.message);
+
 		}
 	}
 unload() { this.sound.destroy(); }
@@ -151,7 +151,7 @@ unload() { this.sound.destroy(); }
 		const inp = new KeyboardInput();
 		inp.init();
 		this.sound.play();
-		console.log("playing ",this.sound.file);
+
 		inp.justPressedEventCallback = (evt => {
 			if (evt == KeyEvent.DOM_VK_Q || evt == KeyEvent.DOM_VK_X || evt==KeyEvent.DOM_VK_ESCAPE) {
 				this.sound.stop();
