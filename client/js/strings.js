@@ -10,6 +10,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+missions:"This is the missions menu. Press enter when you're done.",
 mScore:"Announce score (from 1 to 100) when playing the score ding sound, 100 being the best",
 gq_win:"You win! You have correctly guessed all your unlocked music! You are a pro!",
 
@@ -417,6 +418,7 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 		};
 		this.strings[2] = {
 			//New Spanish
+missions:"Este es el menú de las misiones. Pulsa enter cuando termines.",
 mScore:"Decir la puntuación cuando suene la campanita de puntos (de 1 a 100, 100 siendo mejor)",
 gq_win: "Has ganado! Has adivinado toda tu música! Eres todo un pro!",
 			memorySounds:"Has memorizado %1 sonidos. Bien!",

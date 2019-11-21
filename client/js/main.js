@@ -1794,7 +1794,7 @@ async function missions(checkOnly=false) {
 }
 
 				items.push(new MenuItem(0,strings.get("sMissionCredits",[data.missionCredits])));
-	let missionsMenu=new Menu("missions",items);
+	let missionsMenu=new Menu(strings.get("missions"),items);
 	if (!checkOnly) {
 		await missionsMenu.runSync();
 		st.setState(2);
