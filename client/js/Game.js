@@ -371,8 +371,8 @@ clearInterval(this.resync);
 			speech.speak(data.safeguards+" ");
 			return;
 		}
-		if (key == KeyEvent.DOM_VK_L) {
-			speech.speak(this.level+" ");
+		if (key == KeyEvent.DOM_VK_V) {
+			speech.speak(this.level+", "+this.levels);
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_S) {
