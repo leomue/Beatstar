@@ -640,6 +640,7 @@ this.updateInterval=null;
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
+if (data.sayScore) speech.speak(score);
 		this.scoreCounter.pitch = utils.progressPitch(score, 1, 100, 1.0, 2.0);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();

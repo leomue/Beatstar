@@ -58,6 +58,14 @@ if (option==1) data.actionLimit=10;
 save();
 })));
 
+if (!data.sayScore) data.sayScore=false;
+if (!data.sayScore) selectorAction=1;
+if (data.sayScore) selectorAction=0;
+settings.push(new SelectorItem(-1,strings.get("mScore"),[strings.get("yes"),strings.get("no")],selectorAction,((option)=>{
+if (option==0) data.sayScore=true;
+if (option==1) data.sayScore=false;
+save();
+})));
 
 if (!data.interrupt) data.interrupt=false;
 if (!data.interrupt) selectorAction=1;

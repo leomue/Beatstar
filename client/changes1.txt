@@ -1,3 +1,11 @@
+Added an option to say score (from 1 to 100). Maybe to learn how to play?
+Music quiz game rewriting, with a number of changes:
+1. You keep playing until you fail as long as there is music to play.
+2. Music will no longer repeat itself anymore.
+3. You now get a beatcoin prize and a safeguard prize if you're good.
+4. fix memory leak
+
+Due to a minor bug in the download packs function, you will need to use the most recent versions of beatstar to download the newest packs. You will know this because the file is called hashes.packdata, instead of hashes.packInformation or hashes.db
 Fix memory leak in pack editor
 Major change in how beatstar handles keys in the game, you will no longer fail if you press a key that is not one of the action keys.
 Fixed double or nothing language files.

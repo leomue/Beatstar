@@ -1,4 +1,5 @@
 import os from 'os';
+import {dbg} from './main';
 import {report} from './main';
 import fs from 'fs';
 import {shuffle, newDeck, newDecks} from '52-deck';
@@ -1109,22 +1110,27 @@ class QuestionsGame {
 this.stop=false;
 		this.packs = 0;
 		this.packnames = [];
-		for (const i in data.unlocks) {
+		this.songs = [];
+		for (let i in data.unlocks) {
 			if (data.unlocks[i].level > 1) {
 				this.packs++;
 				this.packnames.push(i);
+for (let j=1;j<=data.unlocks[i].level;j++) {
+this.songs.push(i+"/"+j+"music");
+}
 			}
 		}
-		if (this.packs < 5) {
+		if (this.packs < 5 && !dbg) {
 this.stop=true;
 new ScrollingText(strings.get('need5'), '\n', () => {
-
 					st.setState(2);
 return;
 					});
+
 		}
+
+this.songs=utils.shuffle(this.songs);
 if (this.stop) return;
-		this.songs = {};
 		this.correct = 0;
 		sos();
 		this.wrong = 0;
@@ -1132,32 +1138,29 @@ if (this.stop) return;
 		this.goodc = so.create('gq_oc');
 		this.bad = so.create('gq_wrong');
 		this.badc = so.create('gq_wc');
-		for (let i = 0; i < 10; i++) {
-			this.songs[i] = {};
-			const rand = this.packnames[utils.randomInt(0, this.packs - 1)];
-			this.songs[i].pack = rand;
-			const rand2 = utils.randomInt(1, data.unlocks[rand].level);
-			this.songs[i].level = rand2;
-
-		}
 	}
-
 	async init() {
 if (this.stop) return;
 		const os = require('os');
 		sos();
 		const suspense = so.create('gq_intro');
-		suspense.play();
-		await utils.sleep(1500);
-		await new ScrollingText(strings.get('gq_welcome'));
-		for (let i = 0; i < 10; i++) {
+if (!dbg) 		suspense.play();
+if (!dbg) 		await utils.sleep(1500);
+		if (!dbg) await new ScrollingText(strings.get('gq_welcome'));
+while (!this.stop) {
 			this.options = [];
-			this.options.push(new MenuItem(this.songs[i].pack, this.songs[i].pack));
+if (this.songs.length==0) {
+await new ScrollingText(strings.get("gq_win"));
+this.stop=true;
+break;
+}
+this.thisPack=this.songs[0].split("/")[0];
+			this.options.push(new MenuItem(this.thisPack, this.thisPack));
 			this.packnames = utils.shuffle(this.packnames);
 			let otherOptions = 0;
-			const str = this.songs[i].pack;
+			const str = this.thisPack;
 			let num = 0;
-			while (otherOptions < 4) {
+			while (otherOptions < 4 && typeof this.packnames[num]!=="undefined") {
 				if (str == this.packnames[num]) {
 					num++;
 				} else {
@@ -1166,9 +1169,9 @@ if (this.stop) return;
 					otherOptions++;
 				}
 			}
-			so.directory = packDirectory + '/' + this.songs[i].pack + '/';
-			const sndd = so.create(this.songs[i].level + 'music');
-			sndd.volume = 0.4;
+			so.directory = packDirectory + '/';
+let sndd = await so.createSync(this.songs[0]);
+			sndd.volume = 0.5;
 			sndd.loop = true;
 			sndd.play();
 			this.options = utils.shuffle(this.options);
@@ -1176,7 +1179,8 @@ if (this.stop) return;
 			const choice = new Menu(strings.get('pq'), this.options);
 			const result = await choice.runSync();
 			sndd.stop();
-			if (result == this.songs[i].pack) {
+sndd.destroy();
+			if (result == this.thisPack) {
 				this.good.play();
 				await this.goodc.playSync();
 				this.correct++;
@@ -1184,12 +1188,20 @@ if (this.stop) return;
 				this.bad.play();
 				await this.badc.playSync();
 				this.wrong++;
+this.stop=true;
+break;
 			}
+this.songs.splice(0,1);
 		}
 		await new ScrollingText(strings.get('gq_end', [this.correct, this.wrong]));
+await addCashSync(this.correct*100);
+let amount=0;
+if (this.correct>20) amount=this.correct/5;
+safeget(amount,()=> {
 		so.kill(() => {
 				st.setState(2);
 				});
+});
 	}
 }
 class Case {
@@ -1254,9 +1266,7 @@ this.offer3=so.create("case_offer3");
 }
 async start() {
 sos();
-let debug=false;
-if (debug) speech.webTTS=false;
-	if (!debug) {
+if (!dbg) {
 this.introCroud=so.create("case_cintro");
 this.intro=so.create("case_intro"+lang);
 this.intro.play();

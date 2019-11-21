@@ -164,5 +164,9 @@ resumeTimeout(timerId) {
         remaining -= Date.now() - start;
 return window.setTimeout(callback, remaining);
     };
+randomProperty (obj) {
+    var keys = Object.keys(obj)
+    return obj[keys[ keys.length * Math.random() << 0]];
+};
 }
 export var utils = new GameUtils();

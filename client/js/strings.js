@@ -10,6 +10,9 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+mScore:"Announce score (from 1 to 100) when playing the score ding sound, 100 being the best",
+gq_win:"You win! You have correctly guessed all your unlocked music! You are a pro!",
+
 			memorySounds:"ou memorized %1 sounds. Cool!",
 			mChanges:"List of changes and new features from all versions",
 			changesMenu:"Here are the list of changes. Press enter to go back to the menus",
@@ -121,8 +124,8 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 	    selectPath: 'Please select the path where your packs are saved:',
 	    directoryQuestion: 'Wait a second... are you ok with your beatpacks folder being in your user folder? If not, you will be prompted to select a different directory to store your soundpacks. If you already have packs in your user folder and wish to change it, you will need to do that yourself as the game will not do it for you',
 	    mLang: 'Change language',
-	    gq_end: 'Game over! I hope you had fun. You got %1 right and %2 wrong. Wanna try again?',
-	    gq_welcome: 'Welcome to pack quizz!\nAre you ready to find out how much you know about your unlocked soundpacks?',
+	    gq_end: 'Game over! I hope you had fun. You got %1 correct. Wanna try again?',
+	    gq_welcome: 'Welcome to pack quizz!\nAre you ready to find out how much you know about your unlocked soundpacks? In this new game, you will keep playing until you fail, or until you correctly guess all the sounds!',
 	    pq: 'Which pack do you think this level belongs to?',
 	    need5: 'Sorry but you need to have unlocked at least 5 packs before you can play this game.',
 	    combo: 'Combo x%1!  + %2 points!',
@@ -413,7 +416,9 @@ selectVoice:"%1 voices available, use the up and down arrows to select a voice, 
 	    mDownload: 'Download new packs'
 		};
 		this.strings[2] = {
-			// New Spanish
+			//New Spanish
+mScore:"Decir la puntuación cuando suene la campanita de puntos (de 1 a 100, 100 siendo mejor)",
+gq_win: "Has ganado! Has adivinado toda tu música! Eres todo un pro!",
 			memorySounds:"Has memorizado %1 sonidos. Bien!",
 			mStream: "Leer la música desde el disco (desactiva esto si no quieres experimentar un pequeño retraso en la música",
 			mInterrupt:"Interrumpir el habla si pulsas una tecla (usa las flechas para cambiar)",
@@ -520,8 +525,8 @@ selectVoice:"%1 voces disponibles. Usa las flechas arriba y abajo para seleccion
 	    selectPath: 'Por favor dime la carpeta donde guardaremos los packs',
 	    directoryQuestion: 'Espera! Está bien que guarde los packs de sonido en la carpeta beatpacks de tu carpeta de usuario? Si no, te pediré que busques otra carpeta para guardar los packs. Si ya tienes packs guardados en la carpeta de usuario y quieres cambiar, deberás moverlos tú ya que el juego no lo hace por sí solo',
 	    mLang: 'Cambiar Idioma',
-	    gq_end: 'Juego terminado! Espero que te hayas divertido. Has adivinado %1 y %2 estaban mal. ¿Quieres intentarlo de nuevo?',
-	    gq_welcome: 'Bienvenido a preguntas de packs!\nEstás listo para averiguar cuánto sabes de tus packs desbloqueados?',
+	    gq_end: 'Juego terminado! Espero que te hayas divertido. Has adivinado %1. ¿Quieres intentarlo de nuevo?',
+	    gq_welcome: 'Bienvenido a preguntas de packs!\nEstás listo para averiguar cuánto sabes de tus packs desbloqueados? En este nuevo juego, seguirás jugando hasta que falles, o aciertes todos! Preparado?',
 	    pq: 'A qué pack crees que pertenece este nivel?',
 	    need5: 'Vaya, necesitarás desbloquear al menos 5 packs para poder jugar a este juego.',
 	    combo: 'Combo x%1! +%2 puntos!',

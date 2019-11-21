@@ -1,4 +1,5 @@
 ' use strict';
+export let dbg=false
 import {Memory,Cases,playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 import {Mission} from './mission';
 let justRan=true;
@@ -73,7 +74,7 @@ export function report(err) {
 			fetch('http://oriolgomez.com/report.php?error=' + encodeURIComponent(err.name+': '+err.message+"\n"+err.stack))
 			.then(event => event.text())
 			.then(data => {
-speech.speak("Error! "+err.message);
+speech.speak("Error! "+err.message+": "+err.stack);
 					resolve(data);
 					});
 			});
@@ -155,7 +156,7 @@ export async function browsePacks(browsing = 1) {
 	}
 	const fs = require('fs');
 	const path=require('path');
-		if (!fs.existsSync(path.join(packDirectory,'hashes.packInformation'))) {
+		if (!fs.existsSync(path.join(packDirectory,'hashes.packdata'))) {
 			var error = "";
 			if (lang == 1) {
 				error = new ScrollingText('The packs folder hashes need to be rebuilt to continue. This can take a few seconds...', '\n', (() => {
@@ -170,7 +171,7 @@ export async function browsePacks(browsing = 1) {
 			return;
 		}
 	try {
-		var packs = JSON.parse(fs.readFileSync(packDirectory+'/hashes.packInformation'));
+		var packs = JSON.parse(fs.readFileSync(packDirectory+'/hashes.packdata'));
 	} catch (err) {
 report(err);
 		var error = 0;
@@ -435,6 +436,7 @@ export async function rebuildHashes(silent = false) {
 			let levels = levelsa.length - 1;
 			if (levelsa[levels] == '') {
 			levels--;
+levelsa.pop();
 			}
 			const temp = {
 name: pf,
@@ -448,7 +450,7 @@ hash: levelsa
 	so.directory = './sounds/';
 	let write = JSON.stringify(packs);
 	
-	fs.writeFileSync(packDirectory+'/hashes.packInformation', write);
+	fs.writeFileSync(packDirectory+'/hashes.packdata', write);
 	if (silent) {
 		return packs;
 	}
@@ -509,7 +511,7 @@ export function question(text, localizedValues = [], callback = null) {
 			});
 
 }
-export async function checkPack(changeBoot = true, debug = false) {
+export async function checkPack(changeBoot = true, debug = dbg) {
 try {
 	editing = false;
 	const fs = require('fs');
@@ -634,7 +636,7 @@ st.setState(2);
 	if (debug) {
 try {
  //await strings.check(2);
-
+await playQuestions();
 } catch(err) {
 report(err);
 	}
@@ -670,7 +672,7 @@ export async function downloadPacks(arr = []) {
 		let remoteHashes;
 		let localHashes;
 		localHashes = await rebuildHashes(true);
-		await fetch('http://oriolgomez.com/beatpacks/hashes.packInformation')
+		await fetch('http://oriolgomez.com/beatpacks/hashes.packdata')
 			.then(event => event.text())
 			.then(data => {
 					remoteHashes = JSON.parse(data);
@@ -1490,7 +1492,7 @@ try {
 		const fileData = fs.readFileSync(path + 'bpm.txt', 'utf8');
 		fileLevels = fileData.split(',');
 		if (fileLevels[fileLevels.length - 1] == '') {
-			fileLevels.splice(fileLevels.length - 1, 1);
+fileLevels.pop();
 		}
 	} else {
 		fileLevels.push('0');

@@ -1,3 +1,4 @@
+Debido a un pequeño error en la función de descarga, tendrás que usar una de las versiones más recientes para seguir descargando los packs más nuevos. Lo sabrás porque tu archivo de información de packs se llama hashes.packdata, y no hashes.db o hashes.packInformation
 Arreglado una pérdida de memoria en el editor de packs.
 gran cambio en cómo beatstar mira las teclas que pulsas, ya no fallarás si pulsas una tecla que no es ninguna acción.
 He conseguido más o menos auto detectar lector o sapi.
