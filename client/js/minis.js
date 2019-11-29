@@ -1,22 +1,22 @@
 import os from 'os';
-import {dbg} from './main';
-import {report} from './main';
+import { dbg } from './main';
+import { report } from './main';
 import fs from 'fs';
-import {shuffle, newDeck, newDecks} from '52-deck';
-import {increase,packDirectory, lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data} from './main';
+import { shuffle, newDeck, newDecks } from '52-deck';
+import { increase, packDirectory, lang, questionSync, getAch, addCashSync, safeget, pack, packdir, actionKeys, save, question, addCash, data } from './main';
 import Timer from './timer';
-import {OldTimer} from './oldtimer';
-import {SoundHandler} from './soundHandler';
-import {AudioItem, SliderItem, MenuItem} from './menuItem';
-import {Menu} from './menu';
-import {ScrollingText} from './scrollingText';
-import {strings} from './strings';
-import {speech} from './tts';
-import {utils} from './utilities';
-import {so} from './soundObject';
-import {KeyEvent} from './keycodes';
-import {KeyboardInput} from './input';
-import {st} from './stateMachine';
+import { OldTimer } from './oldtimer';
+import { SoundHandler } from './soundHandler';
+import { AudioItem, SliderItem, MenuItem } from './menuItem';
+import { Menu } from './menu';
+import { ScrollingText } from './scrollingText';
+import { strings } from './strings';
+import { speech } from './tts';
+import { utils } from './utilities';
+import { so } from './soundObject';
+import { KeyEvent } from './keycodes';
+import { KeyboardInput } from './input';
+import { st } from './stateMachine';
 let gametimer;
 let pongnotify;
 let pongmusic;
@@ -29,149 +29,149 @@ pin.init();
 
 export async function betSync(minBet = 5000, slideBy = 500) {
 	return new Promise(resolve => {
-			minibet(bet => {
-					resolve(bet);
-					return bet;
-					}, minBet, slideBy);
-			});
+		minibet(bet => {
+			resolve(bet);
+			return bet;
+		}, minBet, slideBy);
+	});
 }
 export function minibet(callbet = null, minBet = 5000, slideBy = 500) {
 	if (data.beatcoins < minBet) {
 		const error = new ScrollingText(strings.get('noGameCash', [minBet, data.beatcoins]), '\n', (() => {
-					if (typeof callbet !== 'undefined') {
-					callbet(-1);
-					}
-					}));// Scroll
+			if (typeof callbet !== 'undefined') {
+				callbet(-1);
+			}
+		}));// Scroll
 	}// If not cash
 	else {
 		// Bet start
 		const items = new Array();
 		const slider = new SliderItem(0, strings.get('bet', []), minBet, data.beatcoins, minBet, slideBy);
 		items.push(slider);
-		items.push(new MenuItem(1, strings.get('ok',)));
-		items.push(new MenuItem(2, strings.get('mBack',)));
+		items.push(new MenuItem(1, strings.get('ok')));
+		items.push(new MenuItem(2, strings.get('mBack')));
 		so.directory = './sounds/';
 		const dm = new Menu(strings.get('bet'), items);
 		let myBet = 0;
 		dm.run(s => {
-				so.directory = './sounds/';
-				myBet = s.items[0].value;
-				dm.destroy();
-				if (s.selected == 2) {
+			so.directory = './sounds/';
+			myBet = s.items[0].value;
+			dm.destroy();
+			if (s.selected == 2) {
 				if (typeof callbet !== 'undefined') {
-				callbet(0);
+					callbet(0);
 				}
-				}// Option 2
-				else {
+			}// Option 2
+			else {
 				addCash(0, myBet, () => {
-						if (typeof callbet !== 'undefined') {
+					if (typeof callbet !== 'undefined') {
 						callbet(myBet);
-						}
-						});
-				}// Not option 2
-				});// Menu callback
+					}
+				});
+			}// Not option 2
+		});// Menu callback
 		// bet end
 	}// Enough cash
 }// Function
 export async function playSlots() {
 	let myBet;
 	minibet(bet => {
-			if (bet <= 0) {
+		if (bet <= 0) {
 			st.setState(2);
 			return;
-			}
-			myBet = bet;
-			// Slots
-			so.directory = './sounds/';
-			const loop = so.create('slot_wheel', true);
-			let wheel;
-			let counter = 0;
-			loop.play();
-			const wheels = [];
-			const myInt = setInterval(() => {
-					if (counter < 3) {
-					so.directory = '';
-					wheels[counter] = utils.randomInt(2, 5);
-					if (counter == 2 && (wheels[0] == wheels[1])) {
+		}
+		myBet = bet;
+		// Slots
+		so.directory = './sounds/';
+		const loop = so.create('slot_wheel', true);
+		let wheel;
+		let counter = 0;
+		loop.play();
+		const wheels = [];
+		const myInt = setInterval(() => {
+			if (counter < 3) {
+				so.directory = '';
+				wheels[counter] = utils.randomInt(2, 5);
+				if (counter == 2 && (wheels[0] == wheels[1])) {
 					let void_random;
 					void_random = utils.randomInt(1, 10);
 					if (void_random == 1) {
-					wheels[2] = 1;
+						wheels[2] = 1;
 					}
-					}
-					wheel = so.create(packdir + 'a' + wheels[counter]);
-					wheel.play();
-					counter++;
-					} else {
-					clearInterval(myInt);
-					loop.stop();
-					so.directory = './sounds/';
-					if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
+				}
+				wheel = so.create(packdir + 'a' + wheels[counter]);
+				wheel.play();
+				counter++;
+			} else {
+				clearInterval(myInt);
+				loop.stop();
+				so.directory = './sounds/';
+				if (wheels[0] == wheels[1] && wheels[1] == wheels[2]) {
 					const win = so.create('slot_win_' + utils.randomInt(1, 4));
 					win.play();
 					win.sound.once('ended', async () => {
-							await getAch('slotwin');
-							const capcash = myBet;
+						await getAch('slotwin');
+						const capcash = myBet;
 
-							const perc = Math.ceil(utils.percentOf(utils.randomInt(80, 100), capcash) + myBet);
+						const perc = Math.ceil(utils.percentOf(utils.randomInt(80, 100), capcash) + myBet);
 
-							addCash(perc, 0, () => {
-									so.kill(() => {
-											st.setState(2);
-											});
-									});
+						addCash(perc, 0, () => {
+							so.kill(() => {
+								st.setState(2);
 							});
-					} else if (wheels[2] == 1) {
-						const lose = so.create('slot_lose_3');
-						lose.play();
+						});
+					});
+				} else if (wheels[2] == 1) {
+					const lose = so.create('slot_lose_3');
+					lose.play();
+					let capcash = myBet;
+					if (capcash > data.beatcoins) {
+						capcash = data.beatcoins;
+					}
+					const perc = Math.ceil(utils.percentOf(utils.randomInt(15, 25), capcash));
+
+					data.beatcoins -= perc;
+					lose.sound.once('ended', async () => {
+						addCash(0, perc, () => {
+							so.kill(() => {
+								st.setState(2);
+							});
+						}, true);
+					});
+				} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
+					const lose = so.create('slot_lose_1');
+					lose.play();
+					lose.sound.once('ended', async () => {
+						await getAch('frust');
+						const capcash = myBet;
+						const perc = capcash;
+						addCash(perc, 0, () => {
+							so.kill(() => {
+								st.setState(2);
+							});
+						});
+					});
+				} else {
+					const lose = so.create('slot_lose_2');
+					lose.play();
+					lose.sound.once('ended', async () => {
+						await getAch('catslots');
 						let capcash = myBet;
 						if (capcash > data.beatcoins) {
 							capcash = data.beatcoins;
 						}
-						const perc = Math.ceil(utils.percentOf(utils.randomInt(15, 25), capcash));
 
-						data.beatcoins -= perc;
-						lose.sound.once('ended', async () => {
-								addCash(0, perc, () => {
-										so.kill(() => {
-												st.setState(2);
-												});
-										}, true);
-								});
-					} else if (wheels[0] == wheels[1] || wheels[1] == wheels[2] || wheels[0] == wheels[2]) {
-						const lose = so.create('slot_lose_1');
-						lose.play();
-						lose.sound.once('ended', async () => {
-								await getAch('frust');
-								const capcash = myBet;
-								const perc = capcash;
-								addCash(perc, 0, () => {
-										so.kill(() => {
-												st.setState(2);
-												});
-										});
-								});
-					} else {
-						const lose = so.create('slot_lose_2');
-						lose.play();
-						lose.sound.once('ended', async () => {
-								await getAch('catslots');
-								let capcash = myBet;
-								if (capcash > data.beatcoins) {
-								capcash = data.beatcoins;
-								}
+						const perc = Math.ceil(utils.percentOf(utils.randomInt(20, 60), capcash));
 
-								const perc = Math.ceil(utils.percentOf(utils.randomInt(20, 60), capcash));
-
-								addCash(0, perc, () => {
-										so.kill(() => {
-												st.setState(2);
-												});
-										});
-								});
-					}
-					}// Counter
-			}, utils.randomInt(2500, 3100));
+						addCash(0, perc, () => {
+							so.kill(() => {
+								st.setState(2);
+							});
+						});
+					});
+				}
+			}// Counter
+		}, utils.randomInt(2500, 3100));
 	}, 2500, 500);
 }
 function sop() {
@@ -252,9 +252,9 @@ export async function playCode() {
 					playing = false;
 				}
 				if (actionKeys.includes(evt)) {
-					if (evt == actionKeys[data.actionLimit+acode[counter]]) {
+					if (evt == actionKeys[data.actionLimit + acode[counter]]) {
 						sop();
-						pool.playStatic("a"+acode[counter], 0);
+						pool.playStatic("a" + acode[counter], 0);
 						sos();
 						pool.playStatic('code_ok', 0);
 						sop();
@@ -275,7 +275,7 @@ export async function playCode() {
 				await utils.sleep(600);
 				ticker.stop();
 				crackedcodes++;
-increase("codes");
+				increase("codes");
 				time.restart();
 				acode.splice();
 				break;
@@ -294,16 +294,16 @@ increase("codes");
 	}// While playing
 	const newsafe = utils.randomInt(0, level - 1);
 	new ScrollingText(strings.get('codescracked', [crackedcodes, actions]), '\n', (async () => {
-				if (crackedcodes >= 3) {
-				await getAch('robber');
-				}
-				safeget(newsafe, () => {
-						so.kill(() => {
-								input.justPressedEventCallback = null;
-								st.setState(2);
-								});
-						});
-				}));
+		if (crackedcodes >= 3) {
+			await getAch('robber');
+		}
+		safeget(newsafe, () => {
+			so.kill(() => {
+				input.justPressedEventCallback = null;
+				st.setState(2);
+			});
+		});
+	}));
 }// Function
 export async function playDeck() {
 	const deck = shuffle(newDecks(1));
@@ -313,8 +313,8 @@ export async function playDeck() {
 	speech.speak(bet);
 	if (bet <= 0) {
 		so.kill(() => {
-				st.setState(2);
-				});
+			st.setState(2);
+		});
 		return;
 	}
 	strings.speak('hw');
@@ -331,82 +331,82 @@ export async function playDeck() {
 	while (bet != -1) {
 		await utils.sleep(8);
 		await new Promise(resolve => {
-				cardO = takeCard(deck);
-				take.playSync();
-				deck.splice(0, 1);
-				card = cardO[1];
-				value = cardO[0].value;
-				// Question
-				let answer = false;
-				const items = new Array();
-				items.push(new MenuItem(0, strings.get('nextCard', [card, bet])));
-				if (value < 13) {
-				items.push(new MenuItem(0, strings.get('higher', )));
-				}
-				if (value > 1) {
-				items.push(new MenuItem(1, strings.get('lower', )));
-				}
-				if (!first) {
-				items.push(new MenuItem(2, strings.get('collect',)));
-				} else {
+			cardO = takeCard(deck);
+			take.playSync();
+			deck.splice(0, 1);
+			card = cardO[1];
+			value = cardO[0].value;
+			// Question
+			let answer = false;
+			const items = new Array();
+			items.push(new MenuItem(0, strings.get('nextCard', [card, bet])));
+			if (value < 13) {
+				items.push(new MenuItem(0, strings.get('higher')));
+			}
+			if (value > 1) {
+				items.push(new MenuItem(1, strings.get('lower')));
+			}
+			if (!first) {
+				items.push(new MenuItem(2, strings.get('collect')));
+			} else {
 				first = false;
-				}
+			}
+			so.directory = './sounds/';
+			const dm = new Menu(strings.get('nextCard', [card, bet]), items);
+			speech.speak('ok');
+			dm.run(async s => {
 				so.directory = './sounds/';
-				const dm = new Menu(strings.get('nextCard', [card, bet]), items);
-				speech.speak('ok');
-				dm.run(async s => {
-						so.directory = './sounds/';
-						switch (s.selected) {
-						case 0:
+				switch (s.selected) {
+					case 0:
 						dm.destroy();
 						answer = true;
 						break;
-						case 1:
+					case 1:
 						dm.destroy();
 						answer = false;
 						break;
-						case 2:
+					case 2:
 						dm.destroy();
 						await addCashSync(bet, 0);
 						st.setState(2);
 						resolve();
 						bet = -1;
 						return;
-						}
-						const nextCard = takeCard(deck);
-						await utils.sleep(utils.randomInt(1000, 1900));
-						speech.speak(nextCard[1] + '!');
-						await utils.sleep(utils.randomInt(400, 800));
-						if (nextCard[0].value < value && !answer) {
-							bet += firstBet;
-							pool.playStatic('hl_right', 0);
-							await utils.sleep(utils.randomInt(100, 300));
-							pool.playStatic('hl_crowdwin', 0);
-							await utils.sleep(utils.randomInt(800, 1600));
-							resolve();
-						} else if (nextCard[0].value > value && answer) {
-							bet += firstBet;
-							pool.playStatic('hl_right', 0);
-							await utils.sleep(utils.randomInt(100, 300));
-							pool.playStatic('hl_crowdwin', 0);
-							await utils.sleep(utils.randomInt(800, 1600));
-							resolve();
-						} else if (nextCard[0].value == value) {
-							pool.playStatic('hl_equal', 0);
-							await utils.sleep(utils.randomInt(100, 300));
-							pool.playStatic('hl_crowdequal', 0);
-							await utils.sleep(utils.randomInt(800, 1600));
-							resolve();
-						} else {
-							pool.playStatic('hl_wrong', 0);
-							await utils.sleep(utils.randomInt(100, 300));
-							pool.playStatic('hl_crowdlose', 0);
-							await utils.sleep(3400);
-							st.setState(2);
-							resolve();
-							bet = -1;
-						}
-				});// Menu
+				}
+				const nextCard = takeCard(deck);
+				await utils.sleep(utils.randomInt(1000, 1900));
+				speech.speak(nextCard[1] + '!');
+				await utils.sleep(utils.randomInt(400, 800));
+				if (nextCard[0].value < value && !answer) {
+					bet += firstBet;
+					pool.playStatic('hl_right', 0);
+					await utils.sleep(utils.randomInt(100, 300));
+					pool.playStatic('hl_crowdwin', 0);
+					await utils.sleep(utils.randomInt(800, 1600));
+					resolve();
+				} else if (nextCard[0].value > value && answer) {
+					bet += firstBet;
+					pool.playStatic('hl_right', 0);
+					await utils.sleep(utils.randomInt(100, 300));
+					pool.playStatic('hl_crowdwin', 0);
+					await utils.sleep(utils.randomInt(800, 1600));
+					resolve();
+				} else if (nextCard[0].value == value) {
+					pool.playStatic('hl_equal', 0);
+					await utils.sleep(utils.randomInt(100, 300));
+					pool.playStatic('hl_crowdequal', 0);
+					await utils.sleep(utils.randomInt(800, 1600));
+					resolve();
+				} else {
+					pool.playStatic('hl_wrong', 0);
+					await utils.sleep(utils.randomInt(100, 300));
+					pool.playStatic('hl_crowdlose', 0);
+					await utils.sleep(3400);
+					st.setState(2);
+					resolve();
+					bet = -1;
+				}
+			});// Menu
 		});// Promise
 	}
 }
@@ -438,7 +438,7 @@ export async function playDouble() {
 	}
 	const old = data.beatcoins;
 	so.directory = './sounds/';
-	let snd = so.create(lang+'/doub_intro');
+	let snd = so.create(lang + '/doub_intro');
 	await snd.playSync();
 	await addCashSync(0, data.beatcoins);
 	const rand = utils.randomInt(1, 2);
@@ -448,11 +448,11 @@ export async function playDouble() {
 	}
 	sos();
 	if (!win) {
-		snd = so.create(lang+'/doub_loser');
+		snd = so.create(lang + '/doub_loser');
 		await snd.playSync();
 		await getAch('dl');
 	} else if (win) {
-		snd = so.create(lang+'/doub_winner');
+		snd = so.create(lang + '/doub_winner');
 		await snd.playSync();
 		await addCashSync(old * 2);
 		await getAch('dw');
@@ -810,8 +810,8 @@ export async function playFootball() {
 		}// Second turn
 		if (inp.isJustPressed(KeyEvent.DOM_VK_ESCAPE)) {
 			so.kill(() => {
-					st.setState(2);
-					});
+				st.setState(2);
+			});
 			return;
 		}
 		await utils.sleep(5);
@@ -852,8 +852,8 @@ export async function playFootball() {
 		await getAch('fw');
 	}
 	so.kill(() => {
-			st.setState(2);
-			});
+		st.setState(2);
+	});
 }
 export async function playPong() {
 	sos();
@@ -877,11 +877,13 @@ export async function playPong() {
 			actions = i;
 		}
 	}
-	gametimer = Timer({update(dt) {
+	gametimer = Timer({
+		update(dt) {
 			pongloop(dt, actions);
-			}, render() {
+		}, render() {
 			pongrender();
-			}}, 1 / 60);
+		}
+	}, 1 / 60);
 	pongtimer.restart();
 	current = 1;
 	gametimer.start();
@@ -917,33 +919,33 @@ function pongloop(dt, actions) {
 			const end = so.create('pong_endbgm');
 			end.play();
 			end.sound.once('ended', async () => {
-					pin.justPressedEventCallback = null;
-					await new ScrollingText(strings.get('pongend', [pongright, pongmiss]));
-					if (pongright == 0 && pongmiss > 0) {
+				pin.justPressedEventCallback = null;
+				await new ScrollingText(strings.get('pongend', [pongright, pongmiss]));
+				if (pongright == 0 && pongmiss > 0) {
 					await getAch('pongfail');
-					}
-					if (pongright > 25) {
+				}
+				if (pongright > 25) {
 					await getAch('pongfire');
-					}
-					let cashToAdd = 0;
-					cashToAdd += pongright * 60;
-					cashToAdd -= pongmiss * 70;
-					if (cashToAdd < 0) {
+				}
+				let cashToAdd = 0;
+				cashToAdd += pongright * 60;
+				cashToAdd -= pongmiss * 70;
+				if (cashToAdd < 0) {
 					cashToAdd = 0;
-					}
-					await addCashSync(cashToAdd);
-					so.kill(() => {
-							st.setState(2);
-							});
-					});
+				}
+				await addCashSync(cashToAdd);
+				so.kill(() => {
+					st.setState(2);
+				});
+			});
 		}
 		pin.justPressedEventCallback = evt => {
-			if (event.which != actionKeys[data.actionLimit+current]) {
+			if (event.which != actionKeys[data.actionLimit + current]) {
 				pongpool.playStatic('pong_fail', 0);
 				pongmiss++;
 				time -= 25;
 			}
-			if (event.which == actionKeys[data.actionLimit+current]) {
+			if (event.which == actionKeys[data.actionLimit + current]) {
 				pongpool.playStatic('pong_bell', 0);
 				time -= 30;
 				current = 1;
@@ -974,11 +976,13 @@ class GoGame {
 		this.turns = 5;
 		this.maxTurns = 5;
 		const that = this;
-		this.timer = Timer({update(dt) {
+		this.timer = Timer({
+			update(dt) {
 				// This.update();
-				}, render() {
+			}, render() {
 				that.loop();
-				}});
+			}
+		});
 		this.pool = new SoundHandler();
 		this.time = new OldTimer();
 		this.notify = 0;
@@ -1013,26 +1017,26 @@ class GoGame {
 				this.combo++;
 				this.timer.stop();
 				new ScrollingText(strings.get('goExact', [this.turns - 1]), '\n', async () => {
-						if (this.combo > 1) {
+					if (this.combo > 1) {
 						this.pool.playStatic('go_combo', 0);
 						await new ScrollingText(strings.get('combo', [this.combo, this.curscore * this.combo]));
 						this.curscore = this.curscore + (this.curscore * this.combo);
-						}
-						this.score += this.curscore;
-						this.newTurn();
-						});
+					}
+					this.score += this.curscore;
+					this.newTurn();
+				});
 			} else if (this.elapsedTime <= this.th1) {
-				let timeDisplay = (this.elapsedTime+1000) / 1000;
+				let timeDisplay = (this.elapsedTime + 1000) / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
 				this.pool.playStatic('go_early', 0);
 				this.combo = 0;
 				this.timer.stop();
 				this.score += this.curscore;
 				new ScrollingText(strings.get('goEarly', [timeDisplay, this.turns - 1]), '\n', () => {
-						this.newTurn();
-						});
+					this.newTurn();
+				});
 			} else if (this.elapsedTime > this.th1 && this.elapsedTime < this.th2) {
-				let timeDisplay = (this.elapsedTime+1000) / 1000;
+				let timeDisplay = (this.elapsedTime + 1000) / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
 				const scoreFormula = Math.round(100 - (2000 - this.elapsedTime)) * 8;
 				this.curscore = scoreFormula;
@@ -1040,16 +1044,16 @@ class GoGame {
 				this.combo++;
 				this.timer.stop();
 				new ScrollingText(strings.get('goOk', [timeDisplay, this.curscore, this.turns - 1]), '\n', async () => {
-						if (this.combo > 1) {
+					if (this.combo > 1) {
 						this.pool.playStatic('go_combo', 0);
 						await new ScrollingText(strings.get('combo', [this.combo, this.curscore * this.combo]));
 						this.curscore = this.curscore + (this.curscore * this.combo);
-						}
-						this.score += this.curscore;
-						this.newTurn();
-						});
+					}
+					this.score += this.curscore;
+					this.newTurn();
+				});
 			} else if (this.elapsedTime > this.th2 && this.elapsedTime < this.th3) {
-				let timeDisplay = (this.elapsedTime+1000) / 1000;
+				let timeDisplay = (this.elapsedTime + 1000) / 1000;
 				timeDisplay = timeDisplay.toFixed(3);
 				const scoreFormula = Math.round(100 - (this.elapsedTime - 2000)) * 8;
 				this.combo++;
@@ -1057,14 +1061,14 @@ class GoGame {
 				this.pool.playStatic('go_ok', 0);
 				this.timer.stop();
 				new ScrollingText(strings.get('goOk', [timeDisplay, this.curscore, this.turns - 1]), '\n', async () => {
-						if (this.combo > 1) {
+					if (this.combo > 1) {
 						this.pool.playStatic('go_combo', 0);
 						await new ScrollingText(strings.get('combo', [this.combo, this.curscore * this.combo]));
 						this.curscore = this.curscore + (this.curscore * this.combo);
-						}
-						this.score += this.curscore;
-						this.newTurn();
-						});
+					}
+					this.score += this.curscore;
+					this.newTurn();
+				});
 			}
 		}// Enter pressed
 		if (this.time.elapsed >= 0 && this.notify == 0) {
@@ -1078,8 +1082,8 @@ class GoGame {
 			this.combo = 0;
 			this.timer.stop();
 			new ScrollingText(strings.get('goLate', [this.turns - 1]), '\n', () => {
-					this.newTurn();
-					});
+				this.newTurn();
+			});
 		}
 	}
 
@@ -1089,12 +1093,12 @@ class GoGame {
 		this.notify = 0;
 		if (this.turns < 1) {
 			new ScrollingText(strings.get('goOver', [this.score, this.maxTurns]), '\n', () => {
-					addCash(Math.ceil(this.score / 2), 0, () => {
-							so.kill(() => {
-									st.setState(2);
-									});
-							});
+				addCash(Math.ceil(this.score / 2), 0, () => {
+					so.kill(() => {
+						st.setState(2);
 					});
+				});
+			});
 		} else {
 			this.time.restart();
 			this.timer.start();
@@ -1107,7 +1111,7 @@ export async function playQuestions() {
 }
 class QuestionsGame {
 	constructor() {
-this.stop=false;
+		this.stop = false;
 		this.packs = 0;
 		this.packnames = [];
 		this.songs = [];
@@ -1115,25 +1119,25 @@ this.stop=false;
 			if (data.unlocks[i].level > 0) {
 				this.packs++;
 				this.packnames.push(i);
-for (let j=1;j<=data.unlocks[i].level;j++) {
-this.songs.push(i+"/"+j+"music");
-}
-this.songs.push(i+"/name");
-this.songs.push(i+"/loop");
-this.songs.push(i+"/fail");
+				for (let j = 1; j <= data.unlocks[i].level; j++) {
+					this.songs.push(i + "/" + j + "music");
+				}
+				this.songs.push(i + "/name");
+				this.songs.push(i + "/loop");
+				this.songs.push(i + "/fail");
 			}
 		}
 		if (this.packs < 5 && !dbg) {
-this.stop=true;
-new ScrollingText(strings.get('need5'), '\n', () => {
-					st.setState(2);
-return;
-					});
+			this.stop = true;
+			new ScrollingText(strings.get('need5'), '\n', () => {
+				st.setState(2);
+				return;
+			});
 
 		}
 
-this.songs=utils.shuffle(this.songs);
-if (this.stop) return;
+		this.songs = utils.shuffle(this.songs);
+		if (this.stop) return;
 		this.correct = 0;
 		sos();
 		this.wrong = 0;
@@ -1143,27 +1147,27 @@ if (this.stop) return;
 		this.badc = so.create('gq_wc');
 	}
 	async init() {
-if (this.stop) return;
+		if (this.stop) return;
 		const os = require('os');
 		sos();
 		const suspense = so.create('gq_intro');
-if (!dbg) 		suspense.play();
-if (!dbg) 		await utils.sleep(1500);
+		if (!dbg) suspense.play();
+		if (!dbg) await utils.sleep(1500);
 		if (!dbg) await new ScrollingText(strings.get('gq_welcome'));
-while (!this.stop) {
+		while (!this.stop) {
 			this.options = [];
-if (this.songs.length==0) {
-await new ScrollingText(strings.get("gq_win"));
-this.stop=true;
-break;
-}
-this.thisPack=this.songs[0].split("/")[0];
+			if (this.songs.length == 0) {
+				await new ScrollingText(strings.get("gq_win"));
+				this.stop = true;
+				break;
+			}
+			this.thisPack = this.songs[0].split("/")[0];
 			this.options.push(new MenuItem(this.thisPack, this.thisPack));
 			this.packnames = utils.shuffle(this.packnames);
 			let otherOptions = 0;
 			const str = this.thisPack;
 			let num = 0;
-			while (otherOptions < 4 && typeof this.packnames[num]!=="undefined") {
+			while (otherOptions < 4 && typeof this.packnames[num] !== "undefined") {
 				if (str == this.packnames[num]) {
 					num++;
 				} else {
@@ -1173,7 +1177,7 @@ this.thisPack=this.songs[0].split("/")[0];
 				}
 			}
 			so.directory = packDirectory + '/';
-let sndd = await so.createSync(this.songs[0]);
+			let sndd = await so.createSync(this.songs[0]);
 			sndd.volume = 0.5;
 			sndd.loop = true;
 			sndd.play();
@@ -1182,7 +1186,7 @@ let sndd = await so.createSync(this.songs[0]);
 			const choice = new Menu(strings.get('pq'), this.options);
 			const result = await choice.runSync();
 			sndd.stop();
-sndd.destroy();
+			sndd.destroy();
 			if (result == this.thisPack) {
 				this.good.play();
 				await this.goodc.playSync();
@@ -1191,429 +1195,429 @@ sndd.destroy();
 				this.bad.play();
 				await this.badc.playSync();
 				this.wrong++;
-this.stop=true;
-break;
+				this.stop = true;
+				break;
 			}
-this.songs.splice(0,1);
+			this.songs.splice(0, 1);
 		}
 		await new ScrollingText(strings.get('gq_end', [this.correct, this.wrong]));
-await addCashSync(this.correct*100);
-let amount=0;
-if (this.correct>20) amount=this.correct/5;
-safeget(amount,()=> {
-		so.kill(() => {
+		await addCashSync(this.correct * 100);
+		let amount = 0;
+		if (this.correct > 20) amount = this.correct / 5;
+		safeget(amount, () => {
+			so.kill(() => {
 				st.setState(2);
-				});
-});
+			});
+		});
 	}
 }
 class Case {
-constructor(amount,type,theID) {
-this.random=theID;
-this.amount=amount;
-this.type=type;
-if (type==1) this.letter="b";
-if (type==2) this.letter="s";
-return;
-}
-menuItem() {
-return new AudioItem(this.random,"case"+this.random);
-}
-getValue() {
-if (this.type==1) return this.amount;
-if (this.type==2) return this.amount*750;
-}
-async award() {
-if (this.type==2) {
-data.safeguards+=this.amount;
-await new ScrollingText(strings.get("safeget",[this.amount]));
-save();
-}
-if (this.type==1) await addCashSync(this.amount);
-save();
-}
-}
-export class Cases {
-constructor() {
-	sos();
-this.cases=[];
-this.cases.push(new Case(1,1,0));
-this.cases.push(new Case(7,1,1));
-this.cases.push(new Case(9,1,2));
-this.cases.push(new Case(10,1,3));
-this.cases.push(new Case(13,1,4));
-this.cases.push(new Case(25,1,5));
-this.cases.push(new Case(50,1,6));
-this.cases.push(new Case(69,1,7));
-this.cases.push(new Case(100,1,8));
-this.cases.push(new Case(500,1,9));
-this.cases.push(new Case(1000,1,10));
-this.cases.push(new Case(7000,1,11));
-this.cases.push(new Case(15000,1,12));
-this.cases.push(new Case(25000,1,13));
-this.cases.push(new Case(40000,1,14));
-this.cases.push(new Case(50000,1,15));
-this.cases.push(new Case(75000,1,16));
-this.cases.push(new Case(100000,1,17));
-this.cases.push(new Case(1,2,18));
-this.cases.push(new Case(2,2,19));
-this.cases.push(new Case(3,2,20));
-this.cases.push(new Case(5,2,21));
-this.cases.push(new Case(10,2,22));
-this.cases.push(new Case(50,2,23));
-this.cases.push(new Case(69,2,24));
-this.turn=23;
-this.offer1=so.create("case_offer1");
-this.offer2=so.create("case_offer2");
-this.offer3=so.create("case_offer3");
-}
-async start() {
-sos();
-if (!dbg) {
-this.introCroud=so.create("case_cintro");
-this.intro=so.create("case_intro"+lang);
-this.intro.play();
-await utils.sleep(300);
-await this.introCroud.playSync(true);
-this.intro.destroy();
-}
-
-//shuffle ids
-let ids=[];
-ids.splice(0,ids.length);
-for (let i=0;i<this.cases.length;i++) {
-ids.push(i);
-}
-ids=utils.shuffle(ids);
-for (let i=0;i<this.cases.length;i++) {
-this.cases[i].random=ids[i];
-this.cases[i].sound=await so.createSync(lang+"ca"+this.cases[i].letter+this.cases[i].amount);
-this.cases[i].vocal=await so.createSync("casec"+this.cases[i].random+"_"+lang);
-this.cases[i].intro=await so.createSync("case"+this.cases[i].random);
-}
-this.cases=utils.shuffle(this.cases);
-this.caseSounds=[];
-this.caseSounds.splice(0,this.caseSounds.length);
-for (let i=0;i<this.cases.length;i++) {
-this.caseSounds.push(this.cases[i].menuItem());
-}
-let mycase=new Menu("case_choose"+lang,this.caseSounds);
-mycase.silent=true;
-this.caseID=await mycase.runSync();
-this.myCase=this.findCase(this.caseID);
-
-this.removeCase(this.myCase,"first");
-await utils.sleep(800);
-this.intro=so.create("case_begin"+lang);
-await this.intro.playSync(true);
-this.intro=so.create("casec"+this.caseID+"_"+lang)
- this.intro.play();
-this.introCroud=so.create("case_cintro");
-await utils.sleep(400);
- this.introCroud.play();
- await utils.sleep(2500);
- this.playSound=so.create("case_play"+lang);
- await this.playSound.playSync(true);
- this.introCroud.destroy();
- this.intro.destroy();
-this.music=so.create("case_music");
-this.music.loop=true;
-this.music.play();
-this.miscSounds=[];
-this.stinger=so.create("case_stinger");
-this.bankSound=so.create("case_offer");
-for (let i=0;i<3;i++) {
-this.miscSounds.push(so.create("case_tension"+(i+1)));
-}
-for (let i=3;i<8;i++) {
-	this.miscSounds.push(so.create("case_open"+(i-2)+lang));
-}
-for (let i=1;i<4;i++) {
-	this.miscSounds.push(so.create("case_cr"+i));
-}
-this.max=100000;
-this.maxType="b";
-for (this.turn=1;this.turn<=23;this.turn++) {
-	this.music.pitch+=0.01;
-this.miscSounds[utils.randomInt(3,7)].play();
-this.caseSounds=[];
-this.caseSounds.splice(0,this.caseSounds.length);
-this.sortRemaining();
-let str1="";
-let str2="";
-if (this.sortedBeatcoins.length>1) {
-		str1=this.sortedBeatcoins.length+strings.get("b")+" "+strings.get("remaining")+": ";
-for (let i=0;i<this.sortedBeatcoins.length;i++) {
-str1+=this.sortedBeatcoins[i]+", ";
-}
-}
-if (this.sortedSafeguards.length>1) {
-	str2=(this.sortedSafeguards.length)+strings.get("s")+" "+strings.get("remaining")+": ";
-for (let i=0;i<this.sortedSafeguards.length;i++) {
-str2+=this.sortedSafeguards[i]+", ";
-}
-}
-if (str1!="") this.caseSounds.push(new MenuItem(-1,str1));
-if (str2!="") this.caseSounds.push(new MenuItem(-1,str2));
-for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random!=-1) this.caseSounds.push(this.cases[i].menuItem());
-}
-let choices=new Menu(" ",this.caseSounds)
-choices.silent=true;
-let mycase=-1;
-while (mycase==-1) {
-mycase=await choices.runSync();
-if (mycase==-1) {
-continue;
-}
-this.music.volume=0.5;
-if (this.turn>0 && this.turn<15) await this.miscSounds[0].playSync();
-if (this.turn>=15 && this.turn<20) await this.miscSounds[1].playSync();
-if (this.turn>=20 && this.turn<24) await this.miscSounds[2].playSync();
-let theCase=this.findCase(mycase);
-theCase.sound.play();
-await utils.sleep(800);
-if (theCase.getValue()>0 && theCase.getValue()<15000) {
-	this.miscSounds[10].play();
-await utils.sleep(600);
-}
-else if (theCase.getValue()>=15000 && theCase.getValue()<50000) {
-this.miscSounds[9].play();
-await utils.sleep(600);
-}
-else if (theCase.getValue()>=50000) {
-	this.stinger.play();
-this.miscSounds[8].play();
-await utils.sleep(600);
-}
-this.removeCase(theCase,"second");
-if (theCase.getValue()>=this.max) {
-//get new max
-this.max=0;
-for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random==-1) continue;
-if (this.cases[i].getValue()>this.max) {
-this.max=this.cases[i].getValue();
-this.maxType=this.cases[i].letter;
-}//value greater than max
-}//for
-if (this.myCase.getValue()>this.max) {
-this.max=this.myCase.getValue();
-this.maxType=this.myCase.letter;
-}//value greater than max
-if ((this.max>5000) || (this.maxType=="s" && this.max>25)) {
-await utils.sleep(2500);
-this.spokenMax=this.max;
-if (this.maxType=="s") this.spokenMax=this.max/750;
-speech.speak(strings.get("stillGet",[this.spokenMax,strings.get(this.maxType)]));
-}
-}//if max
-await utils.sleep(utils.randomInt(3000,3500));
-if (this.bankCall()>0) {
-	await this.bankSound.playSync();
-	await utils.sleep(utils.randomInt(500,800));
-let offer=this.bankCall();
-if (offer>0 && offer<10000) {
-this.offer1.play();
-}
-else if (offer>=10000 && offer<25000) {
-this.offer2.play();
-await utils.sleep(300);
-}
-else if (offer>=25000) {
-this.offer3.play();
-await utils.sleep(700);
-}
-let prize=utils.randomInt(1,10);
-	let answer=await questionSync("bankOffer",[this.bankCall(),strings.get("prize"+prize)]);
-	this.music.volume=1;
-this.banked=answer;
-if (answer) {
-this.music.stop();
-	this.coward=so.create("case_coward"+lang);
-	await this.coward.playSync();
-		await addCashSync(this.bankCall(),0);
-sos();
-if (prize==7) {
-await new ScrollingText(strings.get("creditPrize"));
-data.missionCredits++;
-save();
-}
-	this.turn=30;
-}//answer
-}//bank
-else {
-	this.music.volume=1;
-}
-}//while
-}//for
-this.music.stop();
-if (!this.banked) {
-this.snd=so.create("case_winning"+lang);
-await this.snd.playSync();
-let theCase=this.myCase;
-theCase.sound.play();
-await utils.sleep(500);
-if (theCase.getValue()>0 && theCase.getValue()<40000) {
-	this.miscSounds[8].play();
-this.jingle=so.create("case_loser");
-}
-else if (theCase.getValue()>=40000 && theCase.getValue()<100000) {
-this.miscSounds[10].play();
-this.jingle=so.create("case_winner");
-}
-else if (theCase.getValue()>=100000) {
-this.miscSounds[10].play();
-this.jingle=so.create("case_winner100");
-}
-await this.jingle.playSync();
-await this.myCase.award();
-} //if banking
-st.setState(2);
-}//function
-bankCall() {
-let bankTurns=[4,7,10,13,15,17,19,21,22];
-if (bankTurns.includes(this.turn)) {
-let avg=0;
-let total=1;
-for (let i=0;i<this.cases.length;i++) {
-	if (this.cases[i].random!=-1) {
-avg+=this.cases[i].getValue();
-total++;
+	constructor(amount, type, theID) {
+		this.random = theID;
+		this.amount = amount;
+		this.type = type;
+		if (type == 1) this.letter = "b";
+		if (type == 2) this.letter = "s";
+		return;
+	}
+	menuItem() {
+		return new AudioItem(this.random, "case" + this.random);
+	}
+	getValue() {
+		if (this.type == 1) return this.amount;
+		if (this.type == 2) return this.amount * 750;
+	}
+	async award() {
+		if (this.type == 2) {
+			data.safeguards += this.amount;
+			await new ScrollingText(strings.get("safeget", [this.amount]));
+			save();
+		}
+		if (this.type == 1) await addCashSync(this.amount);
+		save();
 	}
 }
-avg+=this.myCase.getValue();
-avg=avg/total;
-let calc=Math.floor(utils.percentage((this.turn+1)*4,avg));
-return calc;
-}
-return 0;
-}
-removeCase(whichCase,wtf) {
-let 	index=this.cases.indexOf(whichCase);
-this.cases[index].random=-1;
+export class Cases {
+	constructor() {
+		sos();
+		this.cases = [];
+		this.cases.push(new Case(1, 1, 0));
+		this.cases.push(new Case(7, 1, 1));
+		this.cases.push(new Case(9, 1, 2));
+		this.cases.push(new Case(10, 1, 3));
+		this.cases.push(new Case(13, 1, 4));
+		this.cases.push(new Case(25, 1, 5));
+		this.cases.push(new Case(50, 1, 6));
+		this.cases.push(new Case(69, 1, 7));
+		this.cases.push(new Case(100, 1, 8));
+		this.cases.push(new Case(500, 1, 9));
+		this.cases.push(new Case(1000, 1, 10));
+		this.cases.push(new Case(7000, 1, 11));
+		this.cases.push(new Case(15000, 1, 12));
+		this.cases.push(new Case(25000, 1, 13));
+		this.cases.push(new Case(40000, 1, 14));
+		this.cases.push(new Case(50000, 1, 15));
+		this.cases.push(new Case(75000, 1, 16));
+		this.cases.push(new Case(100000, 1, 17));
+		this.cases.push(new Case(1, 2, 18));
+		this.cases.push(new Case(2, 2, 19));
+		this.cases.push(new Case(3, 2, 20));
+		this.cases.push(new Case(5, 2, 21));
+		this.cases.push(new Case(10, 2, 22));
+		this.cases.push(new Case(50, 2, 23));
+		this.cases.push(new Case(69, 2, 24));
+		this.turn = 23;
+		this.offer1 = so.create("case_offer1");
+		this.offer2 = so.create("case_offer2");
+		this.offer3 = so.create("case_offer3");
+	}
+	async start() {
+		sos();
+		if (!dbg) {
+			this.introCroud = so.create("case_cintro");
+			this.intro = so.create("case_intro" + lang);
+			this.intro.play();
+			await utils.sleep(300);
+			await this.introCroud.playSync(true);
+			this.intro.destroy();
+		}
 
-}
-sortRemaining() {
-this.sortedBeatcoins=[];
-this.sortedSafeguards=[];
+		//shuffle ids
+		let ids = [];
+		ids.splice(0, ids.length);
+		for (let i = 0; i < this.cases.length; i++) {
+			ids.push(i);
+		}
+		ids = utils.shuffle(ids);
+		for (let i = 0; i < this.cases.length; i++) {
+			this.cases[i].random = ids[i];
+			this.cases[i].sound = await so.createSync(lang + "ca" + this.cases[i].letter + this.cases[i].amount);
+			this.cases[i].vocal = await so.createSync("casec" + this.cases[i].random + "_" + lang);
+			this.cases[i].intro = await so.createSync("case" + this.cases[i].random);
+		}
+		this.cases = utils.shuffle(this.cases);
+		this.caseSounds = [];
+		this.caseSounds.splice(0, this.caseSounds.length);
+		for (let i = 0; i < this.cases.length; i++) {
+			this.caseSounds.push(this.cases[i].menuItem());
+		}
+		let mycase = new Menu("case_choose" + lang, this.caseSounds);
+		mycase.silent = true;
+		this.caseID = await mycase.runSync();
+		this.myCase = this.findCase(this.caseID);
 
-if (this.myCase.type==1) {
+		this.removeCase(this.myCase, "first");
+		await utils.sleep(800);
+		this.intro = so.create("case_begin" + lang);
+		await this.intro.playSync(true);
+		this.intro = so.create("casec" + this.caseID + "_" + lang)
+		this.intro.play();
+		this.introCroud = so.create("case_cintro");
+		await utils.sleep(400);
+		this.introCroud.play();
+		await utils.sleep(2500);
+		this.playSound = so.create("case_play" + lang);
+		await this.playSound.playSync(true);
+		this.introCroud.destroy();
+		this.intro.destroy();
+		this.music = so.create("case_music");
+		this.music.loop = true;
+		this.music.play();
+		this.miscSounds = [];
+		this.stinger = so.create("case_stinger");
+		this.bankSound = so.create("case_offer");
+		for (let i = 0; i < 3; i++) {
+			this.miscSounds.push(so.create("case_tension" + (i + 1)));
+		}
+		for (let i = 3; i < 8; i++) {
+			this.miscSounds.push(so.create("case_open" + (i - 2) + lang));
+		}
+		for (let i = 1; i < 4; i++) {
+			this.miscSounds.push(so.create("case_cr" + i));
+		}
+		this.max = 100000;
+		this.maxType = "b";
+		for (this.turn = 1; this.turn <= 23; this.turn++) {
+			this.music.pitch += 0.01;
+			this.miscSounds[utils.randomInt(3, 7)].play();
+			this.caseSounds = [];
+			this.caseSounds.splice(0, this.caseSounds.length);
+			this.sortRemaining();
+			let str1 = "";
+			let str2 = "";
+			if (this.sortedBeatcoins.length > 1) {
+				str1 = this.sortedBeatcoins.length + strings.get("b") + " " + strings.get("remaining") + ": ";
+				for (let i = 0; i < this.sortedBeatcoins.length; i++) {
+					str1 += this.sortedBeatcoins[i] + ", ";
+				}
+			}
+			if (this.sortedSafeguards.length > 1) {
+				str2 = (this.sortedSafeguards.length) + strings.get("s") + " " + strings.get("remaining") + ": ";
+				for (let i = 0; i < this.sortedSafeguards.length; i++) {
+					str2 += this.sortedSafeguards[i] + ", ";
+				}
+			}
+			if (str1 != "") this.caseSounds.push(new MenuItem(-1, str1));
+			if (str2 != "") this.caseSounds.push(new MenuItem(-1, str2));
+			for (let i = 0; i < this.cases.length; i++) {
+				if (this.cases[i].random != -1) this.caseSounds.push(this.cases[i].menuItem());
+			}
+			let choices = new Menu(" ", this.caseSounds)
+			choices.silent = true;
+			let mycase = -1;
+			while (mycase == -1) {
+				mycase = await choices.runSync();
+				if (mycase == -1) {
+					continue;
+				}
+				this.music.volume = 0.5;
+				if (this.turn > 0 && this.turn < 15) await this.miscSounds[0].playSync();
+				if (this.turn >= 15 && this.turn < 20) await this.miscSounds[1].playSync();
+				if (this.turn >= 20 && this.turn < 24) await this.miscSounds[2].playSync();
+				let theCase = this.findCase(mycase);
+				theCase.sound.play();
+				await utils.sleep(800);
+				if (theCase.getValue() > 0 && theCase.getValue() < 15000) {
+					this.miscSounds[10].play();
+					await utils.sleep(600);
+				}
+				else if (theCase.getValue() >= 15000 && theCase.getValue() < 50000) {
+					this.miscSounds[9].play();
+					await utils.sleep(600);
+				}
+				else if (theCase.getValue() >= 50000) {
+					this.stinger.play();
+					this.miscSounds[8].play();
+					await utils.sleep(600);
+				}
+				this.removeCase(theCase, "second");
+				if (theCase.getValue() >= this.max) {
+					//get new max
+					this.max = 0;
+					for (let i = 0; i < this.cases.length; i++) {
+						if (this.cases[i].random == -1) continue;
+						if (this.cases[i].getValue() > this.max) {
+							this.max = this.cases[i].getValue();
+							this.maxType = this.cases[i].letter;
+						}//value greater than max
+					}//for
+					if (this.myCase.getValue() > this.max) {
+						this.max = this.myCase.getValue();
+						this.maxType = this.myCase.letter;
+					}//value greater than max
+					if ((this.max > 5000) || (this.maxType == "s" && this.max > 25)) {
+						await utils.sleep(2500);
+						this.spokenMax = this.max;
+						if (this.maxType == "s") this.spokenMax = this.max / 750;
+						speech.speak(strings.get("stillGet", [this.spokenMax, strings.get(this.maxType)]));
+					}
+				}//if max
+				await utils.sleep(utils.randomInt(3000, 3500));
+				if (this.bankCall() > 0) {
+					await this.bankSound.playSync();
+					await utils.sleep(utils.randomInt(500, 800));
+					let offer = this.bankCall();
+					if (offer > 0 && offer < 10000) {
+						this.offer1.play();
+					}
+					else if (offer >= 10000 && offer < 25000) {
+						this.offer2.play();
+						await utils.sleep(300);
+					}
+					else if (offer >= 25000) {
+						this.offer3.play();
+						await utils.sleep(700);
+					}
+					let prize = utils.randomInt(1, 10);
+					let answer = await questionSync("bankOffer", [this.bankCall(), strings.get("prize" + prize)]);
+					this.music.volume = 1;
+					this.banked = answer;
+					if (answer) {
+						this.music.stop();
+						this.coward = so.create("case_coward" + lang);
+						await this.coward.playSync();
+						await addCashSync(this.bankCall(), 0);
+						sos();
+						if (prize == 7) {
+							await new ScrollingText(strings.get("creditPrize"));
+							data.missionCredits++;
+							save();
+						}
+						this.turn = 30;
+					}//answer
+				}//bank
+				else {
+					this.music.volume = 1;
+				}
+			}//while
+		}//for
+		this.music.stop();
+		if (!this.banked) {
+			this.snd = so.create("case_winning" + lang);
+			await this.snd.playSync();
+			let theCase = this.myCase;
+			theCase.sound.play();
+			await utils.sleep(500);
+			if (theCase.getValue() > 0 && theCase.getValue() < 40000) {
+				this.miscSounds[8].play();
+				this.jingle = so.create("case_loser");
+			}
+			else if (theCase.getValue() >= 40000 && theCase.getValue() < 100000) {
+				this.miscSounds[10].play();
+				this.jingle = so.create("case_winner");
+			}
+			else if (theCase.getValue() >= 100000) {
+				this.miscSounds[10].play();
+				this.jingle = so.create("case_winner100");
+			}
+			await this.jingle.playSync();
+			await this.myCase.award();
+		} //if banking
+		st.setState(2);
+	}//function
+	bankCall() {
+		let bankTurns = [4, 7, 10, 13, 15, 17, 19, 21, 22];
+		if (bankTurns.includes(this.turn)) {
+			let avg = 0;
+			let total = 1;
+			for (let i = 0; i < this.cases.length; i++) {
+				if (this.cases[i].random != -1) {
+					avg += this.cases[i].getValue();
+					total++;
+				}
+			}
+			avg += this.myCase.getValue();
+			avg = avg / total;
+			let calc = Math.floor(utils.percentage((this.turn + 1) * 4, avg));
+			return calc;
+		}
+		return 0;
+	}
+	removeCase(whichCase, wtf) {
+		let index = this.cases.indexOf(whichCase);
+		this.cases[index].random = -1;
 
-this.sortedBeatcoins.push(this.myCase.amount);
-}
-if (this.myCase.type==2) {
+	}
+	sortRemaining() {
+		this.sortedBeatcoins = [];
+		this.sortedSafeguards = [];
 
-this.sortedSafeguards.push(this.myCase.amount);
-}
-for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random==-1) continue;
-if (this.cases[i].type==1) this.sortedBeatcoins.push(this.cases[i].amount);
-if (this.cases[i].type==2) this.sortedSafeguards.push(this.cases[i].amount);
-}
-this.sortedBeatcoins.sort(utils.numericSort);
-this.sortedSafeguards.sort(utils.numericSort);
-}
-findCase(whichCase,wtf) {
-for (let i=0;i<this.cases.length;i++) {
-if (this.cases[i].random==whichCase) {
+		if (this.myCase.type == 1) {
 
-return this.cases[i];
+			this.sortedBeatcoins.push(this.myCase.amount);
+		}
+		if (this.myCase.type == 2) {
+
+			this.sortedSafeguards.push(this.myCase.amount);
+		}
+		for (let i = 0; i < this.cases.length; i++) {
+			if (this.cases[i].random == -1) continue;
+			if (this.cases[i].type == 1) this.sortedBeatcoins.push(this.cases[i].amount);
+			if (this.cases[i].type == 2) this.sortedSafeguards.push(this.cases[i].amount);
+		}
+		this.sortedBeatcoins.sort(utils.numericSort);
+		this.sortedSafeguards.sort(utils.numericSort);
+	}
+	findCase(whichCase, wtf) {
+		for (let i = 0; i < this.cases.length; i++) {
+			if (this.cases[i].random == whichCase) {
+
+				return this.cases[i];
+			}
+		}
+	}
 }
-}
-}
-}
-let snd=null;
+let snd = null;
 function pls(what) {
 	sos();
-if (snd!=null) snd.destroy();
- snd=so.create(what);
+	if (snd != null) snd.destroy();
+	snd = so.create(what);
 	snd.play();
 }
 async function plsw(what) {
-if (snd!=null) snd.destroy();
+	if (snd != null) snd.destroy();
 	sos();
- snd=so.create(what);
+	snd = so.create(what);
 	await snd.playSync(true);
 }
 export class Memory {
 	constructor() {
-sop();
-this.actionSounds=[];
-this.completeSounds=[];
-this.fail=so.create("fail");
-	for (let i = 1; i <= 10; i++) {
-		if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
-this.actions = i;
-this.actionSounds.push(so.create("a"+i));
-this.completeSounds.push(so.create("o"+i));
+		sop();
+		this.actionSounds = [];
+		this.completeSounds = [];
+		this.fail = so.create("fail");
+		for (let i = 1; i <= 10; i++) {
+			if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
+				this.actions = i;
+				this.actionSounds.push(so.create("a" + i));
+				this.completeSounds.push(so.create("o" + i));
+			}
 		}
 	}
-}
 	async start() {
-this.sounds=[];
-this.numberOfSounds=0;
-sos();
-await new ScrollingText(strings.get("tutmemory"));
-this.bell=so.create("pong_bell");
-pls("go_count");
-await utils.sleep(700);
-pls("go_count");
-await utils.sleep(300);
-this.playing=true;
-this.timer=new OldTimer();
-this.time=4000;
-this.input=new KeyboardInput();
-this.input.init();
-this.oldSequence=[];
-while (this.playing) {
-await utils.sleep(5);
-if (this.sounds.length==0) {
-	await utils.sleep(400);
-this.numberOfSounds++;
-this.timer.restart();
-this.oldSequence.push(utils.randomInt(2,this.actions));
-this.sounds=[...this.oldSequence];
-for (let i=0;i<this.numberOfSounds;i++) {
-this.actionSounds[this.sounds[i]-1].play();
-if (i<this.numberOfSounds-1) await utils.sleep(500);
-}//for
-this.timer.restart();
-} else {
-	await this.process();
-	if (this.timer.elapsed>=this.time) {
-	this.timer.restart();
-	this.timer.pause();
-	await this.fail.playSync();
-	await this.exit();
-	}//timer
-}
-}//while
+		this.sounds = [];
+		this.numberOfSounds = 0;
+		sos();
+		await new ScrollingText(strings.get("tutmemory"));
+		this.bell = so.create("pong_bell");
+		pls("go_count");
+		await utils.sleep(700);
+		pls("go_count");
+		await utils.sleep(300);
+		this.playing = true;
+		this.timer = new OldTimer();
+		this.time = 4000;
+		this.input = new KeyboardInput();
+		this.input.init();
+		this.oldSequence = [];
+		while (this.playing) {
+			await utils.sleep(5);
+			if (this.sounds.length == 0) {
+				await utils.sleep(400);
+				this.numberOfSounds++;
+				this.timer.restart();
+				this.oldSequence.push(utils.randomInt(2, this.actions));
+				this.sounds = [...this.oldSequence];
+				for (let i = 0; i < this.numberOfSounds; i++) {
+					this.actionSounds[this.sounds[i] - 1].play();
+					if (i < this.numberOfSounds - 1) await utils.sleep(500);
+				}//for
+				this.timer.restart();
+			} else {
+				await this.process();
+				if (this.timer.elapsed >= this.time) {
+					this.timer.restart();
+					this.timer.pause();
+					await this.fail.playSync();
+					await this.exit();
+				}//timer
+			}
+		}//while
 	}//function
-async process() {
-for (let num=2;num<=this.actions;num++) {
-if (this.input.isJustPressed(actionKeys[data.actionLimit+num])) {
-if (this.sounds[0]==num) {
-	this.sounds.splice(0,1);
-this.completeSounds[num-1].play();
-this.bell.play();
-this.timer.restart();
-} else {
-this.timer.restart();
-this.timer.pause();
-await this.fail.playSync(true);
+	async process() {
+		for (let num = 2; num <= this.actions; num++) {
+			if (this.input.isJustPressed(actionKeys[data.actionLimit + num])) {
+				if (this.sounds[0] == num) {
+					this.sounds.splice(0, 1);
+					this.completeSounds[num - 1].play();
+					this.bell.play();
+					this.timer.restart();
+				} else {
+					this.timer.restart();
+					this.timer.pause();
+					await this.fail.playSync(true);
 
-await this.exit();
-}
-}
-}//for
-}
-async exit() {
-	await new ScrollingText(strings.get("memorySounds",[this.numberOfSounds-1]));
-	await addCashSync((this.numberOfSounds-1)*150);
-	data.stats.numberOfSounds=this.numberOfSounds-1;
-	save();
-this.playing=false;
-st.setState(2);
-}
+					await this.exit();
+				}
+			}
+		}//for
+	}
+	async exit() {
+		await new ScrollingText(strings.get("memorySounds", [this.numberOfSounds - 1]));
+		await addCashSync((this.numberOfSounds - 1) * 150);
+		data.stats.numberOfSounds = this.numberOfSounds - 1;
+		save();
+		this.playing = false;
+		st.setState(2);
+	}
 }//class

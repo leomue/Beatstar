@@ -1,4 +1,4 @@
-import {so} from './soundObject.js';
+import { so } from './soundObject.js';
 
 class SoundPoolItem {
 	constructor(filename) {
@@ -702,4 +702,4 @@ class SoundPool {
 		return false;
 	}
 }
-export {SoundPool};
+export { SoundPool };

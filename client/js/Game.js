@@ -1,48 +1,48 @@
 'use strict';
-import {report} from './main';
+import { report } from './main';
 
-import {lang} from './main';
+import { lang } from './main';
 import fs from 'fs';
 import os from 'os';
 import $ from 'jquery';
-import {strings} from './strings';
-import {speech} from './tts';
-import {increase,addCash, data, actionKeys} from './main';
-import {getAch, pack, packdir, save} from './main';
-import {OldTimer} from './oldtimer';
+import { strings } from './strings';
+import { speech } from './tts';
+import { increase, addCash, data, actionKeys } from './main';
+import { getAch, pack, packdir, save } from './main';
+import { OldTimer } from './oldtimer';
 // Var os=require('os');
-import {SoundHandler} from './soundHandler';
-import {utils} from './utilities';
-import {so} from './soundObject';
-import {st} from './stateMachine';
+import { SoundHandler } from './soundHandler';
+import { utils } from './utilities';
+import { so } from './soundObject';
+import { st } from './stateMachine';
 import Timer from './timer';
-import {ScrollingText} from './scrollingText';
+import { ScrollingText } from './scrollingText';
 // Var fs=require('fs');
-import {KeyboardInput} from './input.js';
-import {KeyEvent} from './keycodes.js';
+import { KeyboardInput } from './input.js';
+import { KeyEvent } from './keycodes.js';
 
 class Game {
 	constructor(creds, mode = 1) {
-this.totalTime=0;
-this.humanize=require("humanize-duration");
-	this.lng="en";
-	if (lang==2) this.lng="es";
+		this.totalTime = 0;
+		this.humanize = require("humanize-duration");
+		this.lng = "en";
+		if (lang == 2) this.lng = "es";
 
 		increase("totalGames");
-		this.resync=setInterval(()=> {
-			if (this.newUpdateInterval!=null) {
-			clearInterval(this.updateInterval);
-			this.updateInterval=this.newUpdateInterval;
-			this.newUpdateInterval=null;
+		this.resync = setInterval(() => {
+			if (this.newUpdateInterval != null) {
+				clearInterval(this.updateInterval);
+				this.updateInterval = this.newUpdateInterval;
+				this.newUpdateInterval = null;
 			}
-		},5);
-this.newUpdateInterval=null;
-this.updateInterval=null;
-this.updates=0;
-	this.totalScore = [];
-this.maxUpdates=0;
-this.justEnded=true;
-this.eventName="";
+		}, 5);
+		this.newUpdateInterval = null;
+		this.updateInterval = null;
+		this.updates = 0;
+		this.totalScore = [];
+		this.maxUpdates = 0;
+		this.justEnded = true;
+		this.eventName = "";
 		this.maxSafeguards = data.safeguards;
 		this.volume = 1;
 		this.totalAverage = [];
@@ -52,17 +52,17 @@ this.eventName="";
 		this.levelAverage = [];
 		this.timer = Timer({
 			update: () => {
-				
-			if (!this.paused) {
-increase("totalTime",1,false);
-this.totalTime++;
-}
+
+				if (!this.paused) {
+					increase("totalTime", 1, false);
+					this.totalTime++;
+				}
 			},
-			render: () => {}
-		},1);
-this.timer.start();
+			render: () => { }
+		}, 1);
+		this.timer.start();
 		this.scoreCounter = so.create('cling');
-this.locator=so.create("locator");
+		this.locator = so.create("locator");
 		so.directory = '';
 		this.canPause = true;
 		this.actionCompleted = false;
@@ -112,8 +112,8 @@ this.locator=so.create("locator");
 			this.fileData = fs.readFileSync(packdir + 'bpm.txt', 'utf8');
 		} else {
 			const error = new ScrollingText('There was an error loading the pack ' + this.pack + '.', '\n', (() => {
-						st.setState(2);
-						}));
+				st.setState(2);
+			}));
 		}
 		this.bpms = this.fileData.split(',');
 		so.directory = './sounds/';
@@ -130,13 +130,13 @@ this.locator=so.create("locator");
 		so.enqueue('safe');
 		so.directory = '';
 		if (fs.existsSync(packdir + 'nlevel.ogg')) {
-			so.enqueue(packdir + 'nlevel',true);
+			so.enqueue(packdir + 'nlevel', true);
 		}
 		if (fs.existsSync(packdir + 'win.ogg')) {
-			so.enqueue(packdir + 'win',true);
+			so.enqueue(packdir + 'win', true);
 		}
 		if (fs.existsSync(packdir + 'fail.ogg')) {
-			so.enqueue(packdir + 'fail',true);
+			so.enqueue(packdir + 'fail', true);
 		}
 		for (let i = 1; i <= 10; i++) {
 			if (fs.existsSync(packdir + 'a' + i + '.ogg')) {
@@ -148,32 +148,32 @@ this.locator=so.create("locator");
 			}
 		}
 		this.keys = actionKeys;
-if (data.actionLimit==0) this.keys.splice(11,20);
+		if (data.actionLimit == 0) this.keys.splice(11, 20);
 		const that = this;
 		so.setQueueCallback(() => {
-				so.directory = './sounds/';
-				that.setupLevel();
-				});
+			so.directory = './sounds/';
+			that.setupLevel();
+		});
 		this.queueLevels(this.level);
 		so.loadQueue();
 	}
 
 	update(dt) {
-if (this.paused) {
-return;
-}
- //update
-		if (this.currentAction == 0) {
-	this.currentAction++;
+		if (this.paused) {
+			return;
 		}
-				if (!this.actionCompleted && this.action > 1) {
+		//update
+		if (this.currentAction == 0) {
+			this.currentAction++;
+		}
+		if (!this.actionCompleted && this.action > 1) {
 			if (data.safeguards <= 0) {
 				this.fail(true);
 				return;
 			}
 			data.safeguards--;
 			this.safeuse = true;
-			increase("totalSafeguards",1,false);
+			increase("totalSafeguards", 1, false);
 			this.currentAction--;
 			save();
 			this.actionCompleted = true;
@@ -185,13 +185,13 @@ return;
 		if (this.currentAction >= this.numberOfActions) {
 			this.input.justPressedEventCallback = null;
 			so.directory = '';
-if (typeof this.music!=="undefined") {
-this.music.destroy();
-this.music=null;
-}
-if (typeof this.preSound!=="undefined") {
-this.preSound.stop();
-}
+			if (typeof this.music !== "undefined") {
+				this.music.destroy();
+				this.music = null;
+			}
+			if (typeof this.preSound !== "undefined") {
+				this.preSound.stop();
+			}
 			so.directory = './sounds/';
 			this.level++;
 
@@ -215,22 +215,22 @@ this.preSound.stop();
 		so.directory = './sounds/';
 		//		If (this.action==1) this.actionCompleted=true;//freeze
 		this.scoreTimer.reset();
-}
+	}
 
 	async doScore() {
 		if (this.getscore >= 6) {
 			await getAch('fingr');
 		}
 		addCash(this.cash, 0, () => {
-				st.setState(2);
-				});
+			st.setState(2);
+		});
 	}
 
 	async fail(skipGuards = false) {
 		this.timer.stop();
 		if (data.safeguards >= 1 && !skipGuards) {
 			data.safeguards--;
-			increase("totalSafeguards",1,false);
+			increase("totalSafeguards", 1, false);
 			this.safeuse = true;
 			save();
 			this.actionCompleted = true;
@@ -240,21 +240,21 @@ this.preSound.stop();
 			return;
 		}
 		increase("totalFails");
-clearInterval(this.updateInterval);
-clearInterval(this.resync);
+		clearInterval(this.updateInterval);
+		clearInterval(this.resync);
 		so.directory = '';
 		this.input.justPressedEventCallback = null;
-		const failsound = so.create(packdir + 'fail',true);
-failsound.play();
+		const failsound = so.create(packdir + 'fail', true);
+		failsound.play();
 		so.directory = './sounds/';
-this.music.destroy();
+		this.music.destroy();
 		while (failsound.playing) {
 			await utils.sleep(16);
 			if (this.input.isDown(KeyEvent.DOM_VK_ESCAPE) || this.input.isDown(KeyEvent.DOM_VK_Q)) {
 				failsound.destroy();
 			}
 		}
-		if (this.level==this.levels) {
+		if (this.level == this.levels) {
 			await getAch("faillast");
 		}
 		so.resetQueue();
@@ -264,29 +264,29 @@ this.music.destroy();
 			await getAch('lactions');
 		}
 		so.kill(() => {
-				if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
+			if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 				const input = new KeyboardInput();
 				input.init();
 				so.directory = '';
 				const bootSound = so.create(packdir + 'credits');
 				bootSound.play();
 				bootSound.sound.on('ended', () => {
-						input.justPressedEventCallback = null;
-						that.doScore();
-						});
+					input.justPressedEventCallback = null;
+					that.doScore();
+				});
 				so.directory = './sounds/';
 
 				input.justPressedEventCallback = function (evt) {
-				bootSound.sound.off('ended');
-				bootSound.stop();
-				bootSound.destroy();
-				input.justPressedEventCallback = null;
-				that.doScore();
-				};
-				}// If file exists
-				else {
+					bootSound.sound.off('ended');
+					bootSound.stop();
+					bootSound.destroy();
+					input.justPressedEventCallback = null;
 					that.doScore();
-				}
+				};
+			}// If file exists
+			else {
+				that.doScore();
+			}
 		});
 		save();
 	}
@@ -294,37 +294,37 @@ this.music.destroy();
 	async quit() {
 		this.timer.stop();
 		this.input.justPressedEventCallback = null;
-clearInterval(this.updateInterval);
-clearInterval(this.resync);
+		clearInterval(this.updateInterval);
+		clearInterval(this.resync);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
 		so.resetQueuedInstance();
 		const that = this;
 		so.kill(() => {
-				if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
+			if (fs.existsSync(packdir + 'credits.ogg') && this.credits) {
 				const input = new KeyboardInput();
 				input.init();
 				so.directory = '';
 				const bootSound = so.create(packdir + 'credits');
 				bootSound.play();
 				bootSound.sound.on('ended', () => {
-						input.justPressedEventCallback = null;
-						that.doScore();
-						});
+					input.justPressedEventCallback = null;
+					that.doScore();
+				});
 				so.directory = './sounds/';
 
 				input.justPressedEventCallback = function (evt) {
-				bootSound.sound.off('ended');
-				bootSound.stop();
-				bootSound.destroy();
-				input.justPressedEventCallback = null;
-				that.doScore();
-				};
-				}// If file exists
-				else {
+					bootSound.sound.off('ended');
+					bootSound.stop();
+					bootSound.destroy();
+					input.justPressedEventCallback = null;
 					that.doScore();
-				}
+				};
+			}// If file exists
+			else {
+				that.doScore();
+			}
 		});
 		save();
 	}
@@ -335,22 +335,22 @@ clearInterval(this.resync);
 			this.input.justPressedEventCallback = null;
 			return;
 		}
-clearInterval(this.updateInterval);
-clearInterval(this.resync);
+		clearInterval(this.updateInterval);
+		clearInterval(this.resync);
 		const snd = this.music;
 		snd.unload();
 		so.resetQueue();
 		so.resetQueuedInstance();
 		const that = this;
 		so.kill(async () => {
-				data.save = {
+			data.save = {
 				pack,
 				level: this.level
-				};
-				save();
-				await new ScrollingText('saved');
-				this.doScore();
-				});
+			};
+			save();
+			await new ScrollingText('saved');
+			this.doScore();
+		});
 	}
 
 	render(key) {
@@ -359,20 +359,20 @@ clearInterval(this.resync);
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_C) {
-			speech.speak(this.cash+" ");
+			speech.speak(this.cash + " ");
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_T) {
-			speech.speak(this.humanize(this.totalTime*1000,{language:this.lng}));
+			speech.speak(this.humanize(this.totalTime * 1000, { language: this.lng }));
 			return;
 		}
 
 		if (key == KeyEvent.DOM_VK_G) {
-			speech.speak(data.safeguards+" ");
+			speech.speak(data.safeguards + " ");
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_V) {
-			speech.speak(this.level+", "+this.levels);
+			speech.speak(this.level + ", " + this.levels);
 			return;
 		}
 		if (key == KeyEvent.DOM_VK_S) {
@@ -400,11 +400,11 @@ clearInterval(this.resync);
 		if (this.actionCompleted) {
 			return;
 		}
-		if (this.action == 1 && this.keys.includes(key,data.actionLimit+2)) {
+		if (this.action == 1 && this.keys.includes(key, data.actionLimit + 2)) {
 			this.fail();
 			return;
 		}
-		if (key == this.keys[data.actionLimit+this.action]) {
+		if (key == this.keys[data.actionLimit + this.action]) {
 			so.directory = '';
 			if (!this.rev) {
 				this.pool.playStatic(packdir + 'o' + this.action, 0);
@@ -413,12 +413,12 @@ clearInterval(this.resync);
 				this.pool.playStatic(packdir + 'a' + this.action, 0);
 			}
 			so.directory = './sounds/';
-			increase("totalActions",1,false);
+			increase("totalActions", 1, false);
 			this.actionCompleted = true;
 			this.calculateScore();
 			return;
 		}
-		if (key != this.keys[data.actionLimit+this.action] && this.keys.includes(key,data.actionLimit+2)) {
+		if (key != this.keys[data.actionLimit + this.action] && this.keys.includes(key, data.actionLimit + 2)) {
 			this.fail();
 		}
 	}
@@ -435,7 +435,7 @@ clearInterval(this.resync);
 				this.getscore--;
 			}
 			this.cash += (utils.averageInt(this.levelAverage) + utils.averageInt(this.levelAverage) + this.actionPercentage);
-			increase("totalLevels",1,false);
+			increase("totalLevels", 1, false);
 		}
 		this.scoreAverage = [];
 		this.levelAverage = [];
@@ -492,8 +492,8 @@ clearInterval(this.resync);
 				this.cash += (this.cash * 2);
 			}
 			so.kill(() => {
-					that2.doScore();
-					});
+				that2.doScore();
+			});
 			return;
 		}// Winning
 		this.canPause = true;
@@ -521,77 +521,77 @@ clearInterval(this.resync);
 			this.postprocess();
 		}
 		else {
-			if (this.level>1) this.queueLevels(this.level);
-			this.input.justPressedEventCallback=(evt)=> {
-				if (evt==KeyEvent.DOM_VK_RETURN && this.preSound.playing) {
+			if (this.level > 1) this.queueLevels(this.level);
+			this.input.justPressedEventCallback = (evt) => {
+				if (evt == KeyEvent.DOM_VK_RETURN && this.preSound.playing) {
 					this.preSound.stop();
 					this.postprocess();
 				}
 			};
-			this.preSound.sound.on("ended",()=> {
-					this.postprocess();
-					});
+			this.preSound.sound.on("ended", () => {
+				this.postprocess();
+			});
 		}
 	}
 	postprocess() {
 		so.directory = '';
 		const that = this;
 		this.music = so.create(packdir + this.level + 'music', data.streamMusic);
-//		this.music.loop = true;
+		//		this.music.loop = true;
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		this.music.play();
-this.updates=0;
-this.locator.pitch=1;
-this.locator.play();
-setTimeout(()=> {
-this.locator.stop();
-this.locator.pitch=1.3;
-this.locator.play();
-},this.bpms[this.level]/2);
-if (this.updateInterval!=null) clearInterval(this.updateInterval);
-this.updateInterval=setInterval(()=> {
-this.update();
-},this.bpms[this.level]);
-if (!data.streamMusic) {
-this.music.sound.on("play",()=> {
-if (this.updateInterval!=null) clearInterval(this.updateInterval);
-this.updateInterval=setInterval(()=> {
-this.update();
-},this.bpms[this.level]);
+		this.updates = 0;
+		this.locator.pitch = 1;
+		this.locator.play();
+		setTimeout(() => {
+			this.locator.stop();
+			this.locator.pitch = 1.3;
+			this.locator.play();
+		}, this.bpms[this.level] / 2);
+		if (this.updateInterval != null) clearInterval(this.updateInterval);
+		this.updateInterval = setInterval(() => {
+			this.update();
+		}, this.bpms[this.level]);
+		if (!data.streamMusic) {
+			this.music.sound.on("play", () => {
+				if (this.updateInterval != null) clearInterval(this.updateInterval);
+				this.updateInterval = setInterval(() => {
+					this.update();
+				}, this.bpms[this.level]);
 
-});
+			});
 
-}
+		}
 
-				this.input.justPressedEventCallback = key => {
-				this.render(key);
-				}
-//				});
-/*
-if (!data.streamMusic) {
-this.music.sound.on("play"),(()=> {
-this.newUpdateInterval=setInterval(()=> {
-this.update();
-},this.bpms[this.level]);
-});
-}
-*/
-this.music.sound.on("ended",()=> {
-//ended
-if (this.paused) return;
-this.music.play();
-this.newUpdateInterval=setInterval(()=> {
-this.update();
-},this.bpms[this.level]);
-});
+		this.input.justPressedEventCallback = key => {
+			this.render(key);
+		}
+		//				});
+		/*
+		if (!data.streamMusic) {
+		this.music.sound.on("play"),(()=> {
+		this.newUpdateInterval=setInterval(()=> {
+		this.update();
+		},this.bpms[this.level]);
+		});
+		}
+		*/
+		this.music.sound.on("ended", () => {
+			//ended
+			if (this.paused) return;
+			this.music.play();
+			this.newUpdateInterval = setInterval(() => {
+				this.update();
+			}, this.bpms[this.level]);
+		});
 		if (this.level > 1 && this.level != this.forceLevel) {
-//this.queueLevels();
+			//this.queueLevels();
 		}
 		this.action = 0;
 		this.actionCompleted = false;
 		this.currentAction = 0;
-		if (!this.playing && this.level>1) this.currentAction=1;
+		if (!this.playing && this.level > 1) this.currentAction = 1;
 		this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
 		this.forceLevel = 0;
 	}
@@ -599,40 +599,40 @@ this.update();
 	unload() {
 	}
 	async pause() {
-		if (!this.canPause || (!this.actionCompleted && this.currentAction>0 && this.action!=1)) {
+		if (!this.canPause || (!this.actionCompleted && this.currentAction > 0 && this.action != 1)) {
 			return;
 		}
-this.paused=true;
+		this.paused = true;
 		this.input.justPressedEventCallback = null;
 		clearInterval(this.updateInterval);
 		const idle = new OldTimer();
 		this.canPause = false;
 		this.scoreTimer.pause();
 		idle.reset();
-this.music.pause();
-this.input.justPressed[KeyEvent.DOM_VK_P]=false;
-let pauseInt=setInterval(()=> {
+		this.music.pause();
+		this.input.justPressed[KeyEvent.DOM_VK_P] = false;
+		let pauseInt = setInterval(() => {
 			if (idle.elapsed >= 60000) {
-getAch('idle');
+				getAch('idle');
 			}
-if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {		
-clearInterval(pauseInt);
-		this.unpause();
-}
-},50);
+			if (this.input.isJustPressed(KeyEvent.DOM_VK_P)) {
+				clearInterval(pauseInt);
+				this.unpause();
+			}
+		}, 50);
 	}
 	async unpause() {
 		this.input.justPressedEventCallback = key => {
 			this.render(key);
 		};
-this.paused=false;
-clearInterval(this.updateInterval);
-this.updateInterval=null;
+		this.paused = false;
+		clearInterval(this.updateInterval);
+		this.updateInterval = null;
 		this.music.sound.seek(0);
 		this.music.play();
-		this.newUpdateInterval=setInterval(()=> {
-		this.update();
-		},this.bpms[this.level]);
+		this.newUpdateInterval = setInterval(() => {
+			this.update();
+		}, this.bpms[this.level]);
 		this.scoreTimer.resume();
 		this.input.keysPressed(); // We need this so that it doesn't fail immediately after unpause if you switch windows.
 	}
@@ -640,7 +640,7 @@ this.updateInterval=null;
 		const bpm = this.bpms[this.level];
 		const time = this.scoreTimer.elapsed;
 		const score = Math.ceil(((bpm / 2) - Math.abs((bpm / 2) - time)) / (bpm / 2) * 100);
-if (data.sayScore) speech.speak(score);
+		if (data.sayScore) speech.speak(score);
 		this.scoreCounter.pitch = utils.progressPitch(score, 1, 100, 1.0, 2.0);
 		this.scoreCounter.stop();
 		this.scoreCounter.play();
@@ -651,22 +651,22 @@ if (data.sayScore) speech.speak(score);
 	}
 
 	queueLevels(lev) {
-		let levelLimit = lev+1;
+		let levelLimit = lev + 1;
 		if (this.levels < levelLimit) {
 			levelLimit = this.levels;
 		}
 		so.directory = '';
-		let debugstr="";
-		let queueLevel=lev;
-		if (queueLevel>1) queueLevel++;
+		let debugstr = "";
+		let queueLevel = lev;
+		if (queueLevel > 1) queueLevel++;
 		for (let i = queueLevel; i <= levelLimit; i++) {
-			so.enqueue(packdir + i + 'music',true);
-			debugstr+="queuing "+i;
+			so.enqueue(packdir + i + 'music', true);
+			debugstr += "queuing " + i;
 			if (fs.existsSync(packdir + 'pre' + i + '.ogg')) {
-				so.enqueue(packdir + 'pre' + i,true);
+				so.enqueue(packdir + 'pre' + i, true);
 			}
 		}
-//speech.speak(debugstr)
+		//speech.speak(debugstr)
 		if (this.level > 1 && this.level != this.forceLevel) {
 			so.setQueueCallback(0);
 			so.loadQueue();
@@ -674,4 +674,4 @@ if (data.sayScore) speech.speak(score);
 		}
 	}
 }
-export {Game};
+export { Game };

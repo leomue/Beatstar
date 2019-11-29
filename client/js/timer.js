@@ -41,8 +41,8 @@ function Timer(callbacks, step) {
 	}
 	return {
 		start,
-			stop,
-			change
+		stop,
+		change
 	};
 }
 

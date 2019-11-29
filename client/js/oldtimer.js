@@ -44,4 +44,4 @@ class OldTimer {
 		this.lastTime += performance.now() - this.pauseWhen;
 	}
 }
-export {OldTimer};
+export { OldTimer };

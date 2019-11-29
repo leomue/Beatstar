@@ -1,5 +1,5 @@
-import {SoundSource} from './soundSource.js';
-import {so} from './soundObject.js';
+import { SoundSource } from './soundSource.js';
+import { so } from './soundObject.js';
 
 class SoundHandler {
 	constructor(directional = false) {
@@ -124,4 +124,4 @@ class SoundItem {
 	}
 }
 
-export {SoundHandler};
+export { SoundHandler };
