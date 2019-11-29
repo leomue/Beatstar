@@ -1,5 +1,6 @@
 ' use strict';
-export let dbg=false
+import copy from 'copy-to-clipboard';
+export let dbg=true
 import {Memory,Cases,playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots} from './minis.js';
 import {Mission} from './mission';
 let justRan=true;
@@ -636,7 +637,7 @@ st.setState(2);
 	if (debug) {
 try {
  //await strings.check(2);
-await playQuestions();
+exportSave();
 } catch(err) {
 report(err);
 	}
@@ -1144,6 +1145,7 @@ export async function addCash(c1, c2 = 0, callback, simulate = false) {
 	let time = 370;
 	if (cash < 0) {
 		positive = false;
+data.lastLost=new Date();
 	} else {
 		increase("totalCash",cash);
 	}
@@ -1848,4 +1850,21 @@ async function playTravel() {
 	let game=new Travel();
 	await game.start();
 }
+async function exportSave() {
+const humanize=require("humanize-duration");
+let lng="en";
+	if (lang==2) lng="es";
+	if (!data.lastLost) data.lastLost=new Date("20190101");
+save();
+let dateDifference=new Date()-data.lastLost;
+if (dateDifference<3600000) {
+await new ScrollingText(strings.get("waitData",[humanize(dateDifference,{language:lng})]));
+return;
+}
+	let write = JSON.stringify(data);
+	write = mangle.encode(write);
+copy(write);
+await new ScrollingText(strings.get("exported"));
+}
+
 module.exports.playTravel=playTravel;

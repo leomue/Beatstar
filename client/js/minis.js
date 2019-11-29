@@ -1112,12 +1112,15 @@ this.stop=false;
 		this.packnames = [];
 		this.songs = [];
 		for (let i in data.unlocks) {
-			if (data.unlocks[i].level > 1) {
+			if (data.unlocks[i].level > 0) {
 				this.packs++;
 				this.packnames.push(i);
 for (let j=1;j<=data.unlocks[i].level;j++) {
 this.songs.push(i+"/"+j+"music");
 }
+this.songs.push(i+"/name");
+this.songs.push(i+"/loop");
+this.songs.push(i+"/fail");
 			}
 		}
 		if (this.packs < 5 && !dbg) {

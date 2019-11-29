@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {dbg} from './main';
 import {report} from './main';
 
 import {KeyboardInput} from './input';
@@ -33,6 +34,7 @@ try {
 					that.setState(2);
 					});
 			$(document).keydown(event => {
+if (event.which==KeyEvent.DOM_VK_D) dbg=true;
 					if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
 					intro.unload();
 					$(document).off('keydown');

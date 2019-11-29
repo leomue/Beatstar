@@ -10,6 +10,8 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			waitData:"You need to wait %1 before you can export or import your data because you lost some beatcoins.",
+			exported:"Success! Your save has been coppied to your clipboard",
 missions:"This is the missions menu. Press enter when you're done.",
 mScore:"Announce score (from 1 to 100) when playing the score ding sound, 100 being the best",
 gq_win:"You win! You have correctly guessed all your unlocked music! You are a pro!",
