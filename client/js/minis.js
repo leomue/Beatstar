@@ -1289,6 +1289,7 @@ export class Cases {
 			ids.push(i);
 		}
 		ids = utils.shuffle(ids);
+		sos();
 		for (let i = 0; i < this.cases.length; i++) {
 			this.cases[i].random = ids[i];
 			this.cases[i].sound = await so.createSync(lang + "ca" + this.cases[i].letter + this.cases[i].amount);
