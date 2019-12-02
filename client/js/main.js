@@ -1,6 +1,6 @@
 ' use strict';
 import copy from 'copy-to-clipboard';
-export let dbg = true
+export let dbg = false
 import { Memory, Cases, playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots } from './minis.js';
 import { Mission } from './mission';
 let justRan = true;

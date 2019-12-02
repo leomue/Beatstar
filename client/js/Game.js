@@ -70,7 +70,6 @@ class Game {
 		this.scoreTimer = new OldTimer();
 		var that = this;
 		this.pauseTime = 0;
-
 		this.music = null;
 		this.score = 0;
 		this.pool = new SoundHandler();
@@ -186,6 +185,10 @@ class Game {
 			this.input.justPressedEventCallback = null;
 			so.directory = '';
 			if (typeof this.music !== "undefined") {
+				//change
+				speech.speak("destroyed");
+				if (!data.streamMusic) this.music.sound.removeAllListeners();
+				this.music.stop();
 				this.music.destroy();
 				this.music = null;
 			}
@@ -247,6 +250,8 @@ class Game {
 		const failsound = so.create(packdir + 'fail', true);
 		failsound.play();
 		so.directory = './sounds/';
+		if (!data.streamMusic) this.music.sound.removeAllListeners();
+		this.music.stop();
 		this.music.destroy();
 		while (failsound.playing) {
 			await utils.sleep(16);
@@ -536,57 +541,62 @@ class Game {
 	postprocess() {
 		so.directory = '';
 		const that = this;
+		if (this.music !== null) {
+			speech.speak("destroyed");
+			if (!data.streamMusic) this.music.sound.removeAllListeners();
+			this.music.stop();
+			this.music.destroy();
+			this.music = null;
+		}
 		this.music = so.create(packdir + this.level + 'music', data.streamMusic);
-		//		this.music.loop = true;
+		if (!data.streamMusic) this.music.loop = true;
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
-		this.music.play();
-		this.updates = 0;
-		this.locator.pitch = 1;
-		this.locator.play();
-		setTimeout(() => {
-			this.locator.stop();
-			this.locator.pitch = 1.3;
-			this.locator.play();
-		}, this.bpms[this.level] / 2);
-		if (this.updateInterval != null) clearInterval(this.updateInterval);
-		this.updateInterval = setInterval(() => {
-			this.update();
-		}, this.bpms[this.level]);
 		if (!data.streamMusic) {
-			this.music.sound.on("play", () => {
+			speech.speak(this.music.active);
+			this.music.sound.once("play", () => {
+				speech.speak("play");
 				if (this.updateInterval != null) clearInterval(this.updateInterval);
-				this.updateInterval = setInterval(() => {
+				this.newUpdateInterval = setInterval(() => {
 					this.update();
 				}, this.bpms[this.level]);
+				this.locator.pitch = 1;
+				this.locator.play();
+				setTimeout(() => {
+					this.locator.stop();
+					this.locator.pitch = 1.3;
+					this.locator.play();
+				}, this.bpms[this.level] / 2);
 
 			});
 
 		}
-
-		this.input.justPressedEventCallback = key => {
-			this.render(key);
-		}
-		//				});
-		/*
-		if (!data.streamMusic) {
-		this.music.sound.on("play"),(()=> {
-		this.newUpdateInterval=setInterval(()=> {
-		this.update();
-		},this.bpms[this.level]);
-		});
-		}
-		*/
-		this.music.sound.on("ended", () => {
-			//ended
-			if (this.paused) return;
-			this.music.play();
+		this.music.play();
+		this.updates = 0;
+		if (data.streamMusic) {
+			this.locator.pitch = 1;
+			this.locator.play();
+			setTimeout(() => {
+				this.locator.stop();
+				this.locator.pitch = 1.3;
+				this.locator.play();
+			}, this.bpms[this.level] / 2);
+			if (this.updateInterval != null) clearInterval(this.updateInterval);
 			this.newUpdateInterval = setInterval(() => {
 				this.update();
 			}, this.bpms[this.level]);
-		});
-		if (this.level > 1 && this.level != this.forceLevel) {
-			//this.queueLevels();
+		}
+		this.input.justPressedEventCallback = key => {
+			this.render(key);
+		}
+		if (data.streamMusic) {
+			this.music.sound.on("ended", () => {
+				if (this.paused) return;
+				this.music.play();
+				this.newUpdateInterval = setInterval(() => {
+					this.update();
+				}, this.bpms[this.level]);
+			});
 		}
 		this.action = 0;
 		this.actionCompleted = false;
@@ -595,7 +605,6 @@ class Game {
 		this.numberOfActions = utils.randomInt(6 + this.level, this.level * 2 + 5);
 		this.forceLevel = 0;
 	}
-
 	unload() {
 	}
 	async pause() {

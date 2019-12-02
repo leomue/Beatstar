@@ -115,6 +115,7 @@ class SoundObjectItem extends EventEmitter {
 	}
 	destroy() {
 		try {
+		
 			this.sound.destroy();
 		} catch (err) {
 
