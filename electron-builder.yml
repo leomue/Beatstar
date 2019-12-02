@@ -3,7 +3,6 @@ appId: "com.oriolgomez.beatstar"
 directories:
   output: dist
   buildResources: build
-compression: maximum
 nodeGypRebuild: false
 npmRebuild: false
 win:

@@ -186,8 +186,7 @@ class Game {
 			so.directory = '';
 			if (typeof this.music !== "undefined") {
 				//change
-				speech.speak("destroyed");
-				if (!data.streamMusic) this.music.sound.removeAllListeners();
+								if (!data.streamMusic) this.music.sound.removeAllListeners();
 				this.music.stop();
 				this.music.destroy();
 				this.music = null;
@@ -542,7 +541,7 @@ class Game {
 		so.directory = '';
 		const that = this;
 		if (this.music !== null) {
-			speech.speak("destroyed");
+			
 			if (!data.streamMusic) this.music.sound.removeAllListeners();
 			this.music.stop();
 			this.music.destroy();
@@ -553,9 +552,9 @@ class Game {
 		this.music.volume = this.volume;
 		so.directory = './sounds/';
 		if (!data.streamMusic) {
-			speech.speak(this.music.active);
+			
 			this.music.sound.once("play", () => {
-				speech.speak("play");
+				
 				if (this.updateInterval != null) clearInterval(this.updateInterval);
 				this.newUpdateInterval = setInterval(() => {
 					this.update();
@@ -675,8 +674,7 @@ class Game {
 				so.enqueue(packdir + 'pre' + i, true);
 			}
 		}
-		//speech.speak(debugstr)
-		if (this.level > 1 && this.level != this.forceLevel) {
+				if (this.level > 1 && this.level != this.forceLevel) {
 			so.setQueueCallback(0);
 			so.loadQueue();
 			so.directory = './sounds/';
