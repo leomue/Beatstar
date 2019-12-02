@@ -10,6 +10,8 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			importError: "This doesn't seem to be a valid save string!",
+			importQuestion: "Are you sure you want to import a save? Your current save file will be stored in save.beatbackup.",
 			waitData: "You need to wait %1 before you can export or import your data because you lost some beatcoins.",
 			exported: "Success! Your save has been coppied to your clipboard",
 			missions: "This is the missions menu. Press enter when you're done.",
@@ -420,6 +422,11 @@ class Strings {
 		};
 		this.strings[2] = {
 			//New Spanish
+			importError: "Error: Esto no parece ser una partida guardada...",
+			importQuestion: "Seguro que quieres importar una partida? (Tu partida actual se guardará en save.beatbackup)",
+			waitData: "Tendrás que esperar %1 antes de importar o exportar, porque has perdido monedas.",
+			exported: "Bien! Tu partida se ha guardado en el portapapeles",
+			
 			missions: "Este es el menú de las misiones. Pulsa enter cuando termines.",
 			mScore: "Decir la puntuación cuando suene la campanita de puntos (de 1 a 100, 100 siendo mejor)",
 			gq_win: "Has ganado! Has adivinado toda tu música! Eres todo un pro!",

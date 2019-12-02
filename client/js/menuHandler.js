@@ -38,6 +38,8 @@ export async function mainMenu() {
 	if (version2 != '' && version != version2) {
 		items.push(new MenuItem(-1000, strings.get('newUpdate', [version, version2])));
 	}
+	settings.push(new MenuItem(71, strings.get('mImport')));
+	settings.push(new MenuItem(72, strings.get('mExport')));
 	if (speech.webTTS) {
 		settings.push(new MenuItem(33, strings.get('mReader')));
 	}
@@ -157,6 +159,8 @@ async function menusFunction(s) {
 		case 1234:
 			languageSelect();
 			break;
+			case 71: await importSave(); break;
+			case 72: await exportSave(); break;
 		case 293:
 			speech.setVoice(v => {
 				data.voice = v;

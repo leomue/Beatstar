@@ -1,3 +1,14 @@
+Ahora se puede importar y exportar la partida guardada.
+esto va muy bien para guardar tu partida donde quieras: En un archivo, pasarla a un amigo por mensaje, etc.
+Si pierdes monedas, tendrás que esperar una hora para poder importar un save antiguo.
+Añadida una opción para verbalizar la puntuación de 1 a 100 cuando juegas un pack.
+El juego adivina la música se ha mejorado con los siguientes cambios.
+1. Seguirás jugando hasta que falles, siempre que haya música diferente que escuchar.
+2. La música ya no se repite.
+3. Ahora el sonido de fallo, música del menú, y nombres de packs se incluyen en el juego.
+4. Tendrás premio de monedas (y si eres bueno, antifallos).
+5. arreglado un escape de memoria.
+
 Debido a un pequeño error en la función de descarga, tendrás que usar una de las versiones más recientes para seguir descargando los packs más nuevos. Lo sabrás porque tu archivo de información de packs se llama hashes.packdata, y no hashes.db o hashes.packInformation
 Arreglado una pérdida de memoria en el editor de packs.
 gran cambio en cómo beatstar mira las teclas que pulsas, ya no fallarás si pulsas una tecla que no es ninguna acción.

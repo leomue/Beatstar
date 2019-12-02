@@ -637,12 +637,10 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 		if (debug) {
 			try {
 				//await strings.check(2);
-				exportSave();
 			} catch (err) {
 				report(err);
 			}
-			return;
-		}
+					}
 		if (justRan) {
 			increase("totalRuns");
 			justRan = false;
@@ -994,7 +992,7 @@ export async function downloadPacks(arr = []) {
 		}
 	}// If length > 1
 }
-export function save() {
+export function save(backingUp = false) {
 	const fs = require('fs');
 	try {
 		if (!fs.existsSync(packDirectory)) {
@@ -1002,7 +1000,8 @@ export function save() {
 		}
 		let write = JSON.stringify(data);
 		write = mangle.encode(write);
-		fs.writeFileSync(packDirectory + '/save.beatstar', write);
+		if (!backingUp) fs.writeFileSync(packDirectory + '/save.beatstar', write);
+		if (backingUp) fs.writeFileSync(packDirectory + '/save.beatbackup', write);
 	} catch {
 		packDirectory = os.homedir() + '/beatpacks';
 		window.localStorage.setItem("path", os.homedir() + '/beatpacks');
@@ -1857,14 +1856,39 @@ async function exportSave() {
 	if (!data.lastLost) data.lastLost = new Date("20190101");
 	save();
 	let dateDifference = new Date() - data.lastLost;
-	if (dateDifference < 3600000) {
-		await new ScrollingText(strings.get("waitData", [humanize(dateDifference, { language: lng })]));
-		return;
-	}
 	let write = JSON.stringify(data);
 	write = mangle.encode(write);
 	copy(write);
 	await new ScrollingText(strings.get("exported"));
+}
+async function importSave() {
+	const humanize = require("humanize-duration");
+	let lng = "en";
+	if (lang == 2) lng = "es";
+	if (!data.lastLost) data.lastLost = new Date("20190101");
+	save();
+	let dateDifference = new Date() - data.lastLost;
+	if (dateDifference < 3600000) {
+		await new ScrollingText(strings.get("waitData", [humanize(dateDifference, { language: lng })]));
+		return;
+	}
+	const { clipboard } = require('electron').remote;
+	let clip = clipboard.readText()
+	let answer = await questionSync("importQuestion")
+	if (answer) {
+		save(true);
+		try {
+			data = JSON.parse(mangle.decode(clip));
+			save();
+			checkPack(true, false);
+			return;
+		} catch (err) {
+			await new ScrollingText(strings.get("importError"));
+			st.setState(2)
+		}
+	} else {
+		st.setState(2);
+	}
 }
 
 module.exports.playTravel = playTravel;

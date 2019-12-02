@@ -1,3 +1,5 @@
+You can now import and export your save between all your computers, if you wish to.
+This is handy for backups, to make sure you don't lose your pack progress, etc. When you lose beatcoins, you can't import an older save file until an hour has passed.
 Added an option to say score (from 1 to 100). Maybe to learn how to play?
 Music quiz game rewriting, with a number of changes:
 1. You keep playing until you fail as long as there is music to play.
