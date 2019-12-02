@@ -1849,7 +1849,7 @@ async function playTravel() {
 	let game = new Travel();
 	await game.start();
 }
-async function exportSave() {
+export async function exportSave() {
 	const humanize = require("humanize-duration");
 	let lng = "en";
 	if (lang == 2) lng = "es";
@@ -1860,8 +1860,9 @@ async function exportSave() {
 	write = mangle.encode(write);
 	copy(write);
 	await new ScrollingText(strings.get("exported"));
+	st.setState(2);
 }
-async function importSave() {
+export async function importSave() {
 	const humanize = require("humanize-duration");
 	let lng = "en";
 	if (lang == 2) lng = "es";

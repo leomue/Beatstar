@@ -1,6 +1,6 @@
 import { utils } from './utilities';
 import { report } from './main';
-import { addCashSync, missions, mangle } from './main';
+import { exportSave, importSave, addCashSync, missions, mangle } from './main';
 import { ScrollingText } from './scrollingText';
 import { speech } from './tts';
 import { so } from './soundObject';
@@ -159,8 +159,8 @@ async function menusFunction(s) {
 		case 1234:
 			languageSelect();
 			break;
-			case 71: await importSave(); break;
-			case 72: await exportSave(); break;
+		case 71: await importSave(); break;
+		case 72: await exportSave(); break;
 		case 293:
 			speech.setVoice(v => {
 				data.voice = v;

@@ -10,6 +10,8 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			mImport:"Import save",
+			mExport:"Export your save",
 			importError: "This doesn't seem to be a valid save string!",
 			importQuestion: "Are you sure you want to import a save? Your current save file will be stored in save.beatbackup.",
 			waitData: "You need to wait %1 before you can export or import your data because you lost some beatcoins.",
@@ -422,6 +424,8 @@ class Strings {
 		};
 		this.strings[2] = {
 			//New Spanish
+			mImport:"Importar una partida",
+			mExport:"Exportar tu partida",
 			importError: "Error: Esto no parece ser una partida guardada...",
 			importQuestion: "Seguro que quieres importar una partida? (Tu partida actual se guardará en save.beatbackup)",
 			waitData: "Tendrás que esperar %1 antes de importar o exportar, porque has perdido monedas.",
