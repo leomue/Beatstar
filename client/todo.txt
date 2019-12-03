@@ -1,5 +1,5 @@
+include a warning when editing a pack saying that its too long, 1 minute is long, over 2 minutes do not allow.
 update template with new ScrollingText with trim
-learn pack and shift and layouts
 Make tutorial for react and gogame
 change safegaurd sound
 

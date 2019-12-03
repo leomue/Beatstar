@@ -1476,6 +1476,9 @@ export async function editPack(path) {
 async function editPackDefinite(path) {
 	try {
 		const fs = require('fs');
+			const humanize = require("humanize-duration");
+	let lng = "en";
+	if (lang == 2) lng = "es";
 		so.directory = path;
 		let levels = 3;
 		let stop = false;
