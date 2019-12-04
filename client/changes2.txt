@@ -1,3 +1,4 @@
+Arreglado un error de mierda importando un save con una voz no instalada en la máquina de importación (de mac a windows o viceversa, a un amigo, etc).
 Ahora se puede importar y exportar la partida guardada.
 esto va muy bien para guardar tu partida donde quieras: En un archivo, pasarla a un amigo por mensaje, etc.
 Si pierdes monedas, tendrás que esperar una hora para poder importar un save antiguo.

@@ -537,17 +537,9 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 
 		} // path is null close
 		try {
-			data = await JSON.parse(mangle.decode(fs.readFileSync(packDirectory + '/save.beatstar')));
-			lang = data.lang;
-			speech.setLanguage(lang)
-			if (typeof data.rate !== 'undefined') {
-				speech.setRate(data.rate);
-			}
-			if (typeof data.voice !== 'undefined') {
-				speech.synth.setVoice(data.voice);
-			}
-
+			data = JSON.parse(mangle.decode(await fs.readFileSync(packDirectory + '/save.beatstar')));
 		} catch (err) {
+		console.log(err);
 			data = new Player();
 			let introing = true;
 			let str = '';
@@ -577,6 +569,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 			else {
 				data.lang = lang;
 				speech.setLanguage(lang)
+				
 				new ScrollingText(strings.get('intro'), '\n', (async () => {
 					await getAch('intro');
 					introing = false;
@@ -599,9 +592,8 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 			speech.setRate(data.rate);
 		}
 		if (typeof data.voice !== 'undefined') {
-			speech.synth.setVoice(data.voice);
+		speech.changeVoice(data.voice);
 		}
-
 		if (!changeBoot) {
 			boot = false;
 			credits = true;
@@ -622,7 +614,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 				try {
 					downloadPacks(['default']);
 				} catch (err) {
-					report(err);
+									report(err);
 					st.setState(2);
 				}
 
@@ -647,6 +639,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 		}
 		booter();
 	} catch (err) {
+	console.log(err);
 		report(err);
 	}
 }
@@ -992,20 +985,20 @@ export async function downloadPacks(arr = []) {
 		}
 	}// If length > 1
 }
-export function save(backingUp = false) {
+export async function save(backingUp = false) {
 	const fs = require('fs');
 	try {
 		if (!fs.existsSync(packDirectory)) {
-			fs.mkdirSync(packDirectory);
+			await fs.mkdirSync(packDirectory);
 		}
 		let write = JSON.stringify(data);
 		write = mangle.encode(write);
-		if (!backingUp) fs.writeFileSync(packDirectory + '/save.beatstar', write);
-		if (backingUp) fs.writeFileSync(packDirectory + '/save.beatbackup', write);
+		if (!backingUp) await fs.writeFileSync(packDirectory + '/save.beatstar', write);
+		if (backingUp) await fs.writeFileSync(packDirectory + '/save.beatbackup', write);
 	} catch {
 		packDirectory = os.homedir() + '/beatpacks';
 		window.localStorage.setItem("path", os.homedir() + '/beatpacks');
-		save();
+		await save();
 	}
 }
 export function listenPack() {
@@ -1880,11 +1873,12 @@ export async function importSave() {
 	let clip = clipboard.readText()
 	let answer = await questionSync("importQuestion")
 	if (answer) {
-		save(true);
+		await save(true);
 		try {
-			data = JSON.parse(mangle.decode(clip));
-			save();
-			checkPack(true, false);
+					data = JSON.parse(mangle.decode(clip));
+			console.log(data.beatcoins);
+						await save();
+			checkPack(true,false);
 			return;
 		} catch (err) {
 			await new ScrollingText(strings.get("importError"));

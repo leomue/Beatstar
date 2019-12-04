@@ -13,6 +13,7 @@ const useWebTTS = true;
 import Speech from 'speak-tts' // es6
 class TTS {
 	constructor(webTTS = true) {
+	this.voices=[]
 		this.speechController = new KeyboardInput();
 		this.speechController.init();
 		this.ducking = false;
@@ -126,7 +127,16 @@ class TTS {
 			}
 		}
 	}
+changeVoice(name) {
+		let voiceArray = []
+				for (var k in this.voices) {
+		voiceArray.push(this.voices[k].name)
+		}
+		if (voiceArray.includes(name)) {
+		speech.synth.setVoice(name);
+		}
 
+}
 	setVoice(cb, silent = false) {
 		//what language do we want?
 		let wl = "en";
