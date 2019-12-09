@@ -97,9 +97,9 @@ class SoundObjectItem extends EventEmitter {
 		try {
 			this.sound.play();
 		} catch (err) {
-
+report(err);
 			//recreate the sound and replay
-			this.sound = sono.create(new Audio(this.fileName));
+			this.sound = sono.create(new Audio(this.directory + this.fileName + this.extension));
 			this.sound.play();
 		}
 	}
