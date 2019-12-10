@@ -99,7 +99,11 @@ class SoundObjectItem extends EventEmitter {
 		} catch (err) {
 report(err);
 			//recreate the sound and replay
-			this.sound = sono.create(new Audio(this.directory + this.fileName + this.extension));
+			if (this.stream) this.sound = sono.create(new Audio(this.fileName));
+			if (!this.stream) this.sound = sono.create({
+				src: this.fileName,
+				onComplete: () => { this.doneLoading(); }
+			});
 			this.sound.play();
 		}
 	}
@@ -311,6 +315,7 @@ class SoundObject {
 			this.sounds.push(returnObject);
 		} else {
 			returnObject = new SoundObjectItem(found.sound.data, () => { if (!stream) this.doneLoading(); }, 0, stream);
+			returnObject.fileName=found.fileName;
 		}
 		returnObject.fileName = file; //otherwise html element fileNames get fucked up.
 		return returnObject;
