@@ -1,6 +1,6 @@
 ' use strict';
 import copy from 'copy-to-clipboard';
-export let dbg = false
+export let dbg = true
 import { Memory, Cases, playQuestions, playGo, playPong, playFootball, playDouble, playDeck, playCode, playSlots } from './minis.js';
 import { Mission } from './mission';
 let justRan = true;
@@ -629,6 +629,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
 		if (debug) {
 			try {
 				//await strings.check(2);
+				await playQuestions();
 			} catch (err) {
 				report(err);
 			}

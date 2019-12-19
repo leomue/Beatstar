@@ -1120,11 +1120,11 @@ class QuestionsGame {
 				this.packs++;
 				this.packnames.push(i);
 				for (let j = 1; j <= data.unlocks[i].level; j++) {
-					this.songs.push(i + "/" + j + "music");
+					if (fs.existsSync(packDirectory+"/"+i + "/" + j + "music.ogg")) this.songs.push(i + "/" + j + "music");
 				}
-				this.songs.push(i + "/name");
-				this.songs.push(i + "/loop");
-				this.songs.push(i + "/fail");
+if (fs.existsSync(packDirectory+"/"+i + "/name.ogg")) this.songs.push(i + "/name");
+if (fs.existsSync(packDirectory+"/"+i + "/loop.ogg")) this.songs.push(i + "/loop");
+				if (fs.existsSync(packDirectory+"/"+i + "/fail.ogg")) this.songs.push(i + "/fail");
 			}
 		}
 		if (this.packs < 5 && !dbg) {
