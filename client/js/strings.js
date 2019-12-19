@@ -10,6 +10,8 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			dicetut:"Hi! I am Dunkin Dicenuts. Want to play a game with me? The rules are simple: I will give you 5000 beatcoins. If you roll a 2 or a 4, your beatcoins are multiplied by that number and you will keep playing! If you roll a 3 or a 5, the number of beatcoins you have at that point will be divided by 3 or 5. If you roll a 6, you leave with the beatcoins you have accumulated. If you roll a 1, you will leave with nothing! So try to roll even numbers all the time, and everything will be alright. OK, time to play!",
+			
 			mImport:"Import save",
 			mExport:"Export your save",
 			importError: "This doesn't seem to be a valid save string!",

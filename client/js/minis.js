@@ -1622,3 +1622,16 @@ export class Memory {
 		st.setState(2);
 	}
 }//class
+
+class DiceGame {
+	constructor() {
+		this.beatcoins=5000;
+		this.dice=new Cube();
+			}
+	async start() {
+		await new ScrollingText(strings.get("dicetut"));
+let randomMoves=utils.randomInt(5,15);
+
+		
+	}
+}
