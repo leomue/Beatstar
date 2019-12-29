@@ -1,7 +1,7 @@
 " use strict";
 import Tone from "tone";
 import copy from "copy-to-clipboard";
-export let dbg = true;
+export let dbg = false
 import {
   Memory,
   Cases,
