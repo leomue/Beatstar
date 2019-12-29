@@ -1,8 +1,10 @@
 " use strict";
+export let dbg = false
 import Tone from "tone";
 import copy from "copy-to-clipboard";
-export let dbg = false
+
 import {
+  DiceGame,
   Memory,
   Cases,
   playQuestions,
@@ -73,7 +75,8 @@ export const minis = {
   react: 14000,
   gogame: 18000,
   gq: 35000,
-  chance: 25000
+  chance: 25000,
+  dice: 26000,
 };
 import { Player } from "./player";
 import { SliderItem, MenuItem } from "./menuItem";
@@ -127,7 +130,7 @@ export function report(err) {
   const prom = new Promise(resolve => {
     fetch(
       "http://oriolgomez.com/report.php?error=" +
-        encodeURIComponent(err.name + ": " + err.message + "\n" + err.stack)
+      encodeURIComponent(err.name + ": " + err.message + "\n" + err.stack)
     )
       .then(event => event.text())
       .then(data => {
@@ -314,15 +317,15 @@ export async function browsePacks(browsing = 1) {
   if (lang == 1) {
     speech.speak(
       "ready. showing " +
-        browseArray.length +
-        " packs. Press arrows to move, left arrow to exit, enter to choose a pack, or the first letter of a packs name."
+      browseArray.length +
+      " packs. Press arrows to move, left arrow to exit, enter to choose a pack, or the first letter of a packs name."
     );
   }
   if (lang == 2) {
     speech.speak(
       "listo. Mostrando " +
-        browseArray.length +
-        " packs. Pulsa flechas para moverte, flecha izquierda para salir, enter para elegir uno, o la primera letra del nombre de un pack."
+      browseArray.length +
+      " packs. Pulsa flechas para moverte, flecha izquierda para salir, enter para elegir uno, o la primera letra del nombre de un pack."
     );
   }
   const exitNow = 0;
@@ -336,7 +339,7 @@ export async function browsePacks(browsing = 1) {
       if (typeof snd !== "undefined") {
         try {
           snd.destroy();
-        } catch {}
+        } catch { }
       }
       if (timeout != -1) {
         clearTimeout(timeout);
@@ -428,17 +431,17 @@ export async function browsePacks(browsing = 1) {
       if (lang == 1) {
         speech.speak(
           browseArray[browsePosition].name +
-            ". " +
-            browseArray[browsePosition].levels +
-            " levels."
+          ". " +
+          browseArray[browsePosition].levels +
+          " levels."
         );
       }
       if (lang == 2) {
         speech.speak(
           browseArray[browsePosition].name +
-            ". " +
-            browseArray[browsePosition].levels +
-            " niveles."
+          ". " +
+          browseArray[browsePosition].levels +
+          " niveles."
         );
       }
       timeout = setTimeout(() => {
@@ -468,17 +471,17 @@ export async function browsePacks(browsing = 1) {
       if (lang == 1) {
         speech.speak(
           browseArray[browsePosition].name +
-            ". " +
-            browseArray[browsePosition].levels +
-            " levels."
+          ". " +
+          browseArray[browsePosition].levels +
+          " levels."
         );
       }
       if (lang == 2) {
         speech.speak(
           browseArray[browsePosition].name +
-            ". " +
-            browseArray[browsePosition].levels +
-            " niveles."
+          ". " +
+          browseArray[browsePosition].levels +
+          " niveles."
         );
       }
       timeout = setTimeout(() => {
@@ -503,17 +506,17 @@ export async function browsePacks(browsing = 1) {
       if (lang == 1) {
         speech.speak(
           browseArray[browsePosition].name +
-            ". " +
-            browseArray[browsePosition].levels +
-            " levels."
+          ". " +
+          browseArray[browsePosition].levels +
+          " levels."
         );
       }
       if (lang == 2) {
         speech.speak(
           browseArray[browsePosition].name +
-            ". " +
-            browseArray[browsePosition].levels +
-            " niveles."
+          ". " +
+          browseArray[browsePosition].levels +
+          " niveles."
         );
       }
       timeout = setTimeout(() => {
@@ -577,7 +580,7 @@ export async function rebuildHashes(silent = false) {
       if (!silent) {
         new ScrollingText(
           "one thing before you go... the following packs are corrupt and should be looked at." +
-            corrupts,
+          corrupts,
           "\n",
           () => {
             if (!silent) {
@@ -591,7 +594,7 @@ export async function rebuildHashes(silent = false) {
       if (!silent) {
         new ScrollingText(
           "Antes de que te vayas... los siguientes packs están corruptos y deberías echar un vistazo a ver qué pasa." +
-            corrupts,
+          corrupts,
           "\n",
           () => {
             if (!silent) {
@@ -757,7 +760,8 @@ export async function checkPack(changeBoot = true, debug = dbg) {
       try {
         //await strings.check(2);
         var synth = new Tone.Synth().toMaster();
-
+        let dice = new DiceGame();
+        await dice.start();
 
         return;
       } catch (err) {
@@ -774,7 +778,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
     report(err);
   }
 }
-const download = function(url, dest, cb) {
+const download = function (url, dest, cb) {
   const http = require("http");
   const fs = require("fs");
   const file = fs.createWriteStream(dest);
@@ -904,20 +908,20 @@ export async function downloadPacks(arr = []) {
           if (lang == 1) {
             speech.speak(
               "ready. Browsing " +
-                browseArray.length +
-                " downloadable packs. Press arrows to move, space to select, p to preview, q to exit, enter to start download, or the first letter of a packs name to move to it."
+              browseArray.length +
+              " downloadable packs. Press arrows to move, space to select, p to preview, q to exit, enter to start download, or the first letter of a packs name to move to it."
             );
           }
           if (lang == 2) {
             speech.speak(
               "listo. tienes " +
-                browseArray.length +
-                " packs disponibles. Pulsa flechas para moverte, p para previsualizar, espacio para seleccionar, q para salir, enter para empezar descarga, o pulsa la primera letra del nombre de un pack para moverte a él."
+              browseArray.length +
+              " packs disponibles. Pulsa flechas para moverte, p para previsualizar, espacio para seleccionar, q para salir, enter para empezar descarga, o pulsa la primera letra del nombre de un pack para moverte a él."
             );
           }
           let browsing = 1;
           let size = 0;
-          event.justPressedEventCallback = function(evt) {
+          event.justPressedEventCallback = function (evt) {
             // Space
             if (evt == KeyEvent.DOM_VK_SPACE) {
               if (browsePosition != -1) {
@@ -991,17 +995,17 @@ export async function downloadPacks(arr = []) {
               if (lang == 1) {
                 speech.speak(
                   browseArray[browsePosition].name +
-                    ". " +
-                    browseArray[browsePosition].levels +
-                    " levels."
+                  ". " +
+                  browseArray[browsePosition].levels +
+                  " levels."
                 );
               }
               if (lang == 2) {
                 speech.speak(
                   browseArray[browsePosition].name +
-                    ". " +
-                    browseArray[browsePosition].levels +
-                    " niveles."
+                  ". " +
+                  browseArray[browsePosition].levels +
+                  " niveles."
                 );
               }
             }
@@ -1021,23 +1025,23 @@ export async function downloadPacks(arr = []) {
               if (lang == 1) {
                 speech.speak(
                   browseArray[browsePosition].name +
-                    ". " +
-                    browseArray[browsePosition].levels +
-                    " levels."
+                  ". " +
+                  browseArray[browsePosition].levels +
+                  " levels."
                 );
               }
               if (lang == 2) {
                 speech.speak(
                   browseArray[browsePosition].name +
-                    ". " +
-                    browseArray[browsePosition].levels +
-                    " niveles."
+                  ". " +
+                  browseArray[browsePosition].levels +
+                  " niveles."
                 );
               }
             }
           };
           // First letter
-          event.charEventCallback = function(char) {
+          event.charEventCallback = function (char) {
             let stop = false;
             browseArray.forEach((v, i) => {
               const str = v.name.toLowerCase();
@@ -1058,17 +1062,17 @@ export async function downloadPacks(arr = []) {
             if (lang == 1) {
               speech.speak(
                 browseArray[browsePosition].name +
-                  ". " +
-                  browseArray[browsePosition].levels +
-                  " levels."
+                ". " +
+                browseArray[browsePosition].levels +
+                " levels."
               );
             }
             if (lang == 2) {
               speech.speak(
                 browseArray[browsePosition].name +
-                  ". " +
-                  browseArray[browsePosition].levels +
-                  " niveles."
+                ". " +
+                browseArray[browsePosition].levels +
+                " niveles."
               );
             }
           };
@@ -1135,7 +1139,7 @@ export async function downloadPacks(arr = []) {
     let currentIndex = 0;
     const event = new KeyboardInput();
     event.init();
-    event.justPressedEventCallback = function() {
+    event.justPressedEventCallback = function () {
       percent = utils.percent(currentIndex, toDownload.length).toFixed(1);
       speech.speak(percent + "%");
     };
@@ -1218,7 +1222,7 @@ export function listenPack() {
     levels--;
   }
   speech.speak(strings.get("mListen", [unlocked]));
-  inp.justPressedEventCallback = function(evt) {
+  inp.justPressedEventCallback = function (evt) {
     lock.stop();
     if (evt == KeyEvent.DOM_VK_LEFT) {
       inp.justPressedEventCallback = null;
@@ -1285,7 +1289,7 @@ export function booter() {
     });
     so.directory = "./sounds/";
 
-    input.justPressedEventCallback = function(evt) {
+    input.justPressedEventCallback = function (evt) {
       bootSound.sound.off("end");
       bootSound.stop();
       bootSound.destroy();
@@ -1358,37 +1362,21 @@ export async function addCash(c1, c2 = 0, callback, simulate = false) {
       coinCap = 1000;
     } // Yeah, you hear lose sound every 1k.
     if (positive) {
-      snd = so.create("morecash" + coinCap);
+      snd = so.create("morecash");
       speech.speak(strings.get("youwin", [cash, data.beatcoins]));
     } // Positive
     else if (!positive) {
       snd = so.create("lesscash");
       speech.speak(strings.get("youlose", [cash, data.beatcoins]));
     } // Negative
-    await utils.sleep(400);
-    if (cash >= coinCap) {
-      snd.play();
-      cash -= coinCap;
-      let count = 0;
-      for (let i = cash; i >= coinCap; i -= coinCap) {
-        time -= 15;
-        if (time < 80) {
-          time = 80;
-        }
-      } // For
-      for (let i = cash; i >= coinCap; i -= coinCap) {
-        count++;
-        setTimeout(() => {
-          snd.play();
-        }, time * count);
-      } // For
-      so.directory = "";
-      if (typeof callback !== "undefined") {
-        setTimeout(() => {
-          callback();
-        }, time * (count + 4));
-      } // If callback undefined
-    } // If greater than coin cap
+    await utils.sleep(600);
+    snd.play();
+    so.directory = "./sounds/";
+    if (typeof callback !== "undefined") {
+      setTimeout(() => {
+        callback();
+      }, 1500);
+    } // If callback undefined
   } // CoinCap -1
   else {
     if (typeof callback !== "undefined") {
@@ -1575,6 +1563,14 @@ export async function runGame(name) {
   } else if (name == "memory") {
     let memory = new Memory();
     await memory.start();
+  } else if (name == "dice") {
+    let success = await creditDeduct(13, data.minis[name], name);
+    if (success) {
+      let chance = new DiceGame();
+      await chance.start();
+    } else {
+      st.setState(2);
+    }
   } else if (name == "chance") {
     let success = await creditDeduct(5, data.minis[name], name);
     if (success) {
@@ -1939,8 +1935,8 @@ export async function browseAch() {
             if (!data.ach.hasOwnProperty(achs[i])) {
               await new ScrollingText(
                 strings.get("ach" + achs[i]) +
-                  ": " +
-                  strings.get("achh" + achs[i])
+                ": " +
+                strings.get("achh" + achs[i])
               );
             }
           }
@@ -1981,7 +1977,7 @@ export async function changeLang() {
     });
   });
 }
-async function playTone() {}
+async function playTone() { }
 async function statsFunction() {
   const humanize = require("humanize-duration");
   let lng = "en";

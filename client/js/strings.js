@@ -10,10 +10,16 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
-			dicetut:"Hi! I am Dunkin Dicenuts. Want to play a game with me? The rules are simple: I will give you 5000 beatcoins. If you roll a 2 or a 4, your beatcoins are multiplied by that number and you will keep playing! If you roll a 3 or a 5, the number of beatcoins you have at that point will be divided by 3 or 5. If you roll a 6, you leave with the beatcoins you have accumulated. If you roll a 1, you will leave with nothing! So try to roll even numbers all the time, and everything will be alright. OK, time to play!",
-			
-			mImport:"Import save",
-			mExport:"Export your save",
+			dice:"dice of doom reloaded",
+			dice_lose: "Ugh, you lost! Dunkin dicenut laughs at you, and you fall through a trapdoor on the floor. He gets to keep your %1 beatcoins!",
+			dice_win: "You win! The beatcoins you collected are yours!",
+			dice_yb: "Your beatcoins are %1 by %2. Now, you have %3.",
+			div: "divided",
+			mult: "Multiplied",
+			dicetut: "Hi! I am Dunkin Dicenuts. Want to play a game with me? The rules are simple: I will give you 5000 beatcoins. If you roll a 2 or a 4, your beatcoins are multiplied by that number and you will keep playing! If you roll a 3 or a 5, the number of beatcoins you have at that point will be divided by 3 or 5. If you roll a 6, you leave with the beatcoins you have accumulated. If you roll a 1, you will leave with nothing! So try to roll even numbers all the time, and everything will be alright. OK, time to play!",
+
+			mImport: "Import save",
+			mExport: "Export your save",
 			importError: "This doesn't seem to be a valid save string!",
 			importQuestion: "Are you sure you want to import a save? Your current save file will be stored in save.beatbackup.",
 			waitData: "You need to wait %1 before you can export or import your data because you lost some beatcoins.",
@@ -154,6 +160,7 @@ class Strings {
 			newRate: 'This is a text to speech rate test. Please press enter when done',
 			rating: 'Press right and left arrow keys to change the rate. Press enter when done',
 			mRate: 'Change speech rate',
+			pressEnter:"Press enter to continue.",
 
 			tutslot: `Welcome!
 		    Evil slots is very evil indeed.
@@ -426,13 +433,13 @@ class Strings {
 		};
 		this.strings[2] = {
 			//New Spanish
-			mImport:"Importar una partida",
-			mExport:"Exportar tu partida",
+			mImport: "Importar una partida",
+			mExport: "Exportar tu partida",
 			importError: "Error: Esto no parece ser una partida guardada...",
 			importQuestion: "Seguro que quieres importar una partida? (Tu partida actual se guardará en save.beatbackup)",
 			waitData: "Tendrás que esperar %1 antes de importar o exportar, porque has perdido monedas.",
 			exported: "Bien! Tu partida se ha guardado en el portapapeles",
-			
+
 			missions: "Este es el menú de las misiones. Pulsa enter cuando termines.",
 			mScore: "Decir la puntuación cuando suene la campanita de puntos (de 1 a 100, 100 siendo mejor)",
 			gq_win: "Has ganado! Has adivinado toda tu música! Eres todo un pro!",

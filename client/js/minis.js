@@ -1120,11 +1120,11 @@ class QuestionsGame {
 				this.packs++;
 				this.packnames.push(i);
 				for (let j = 1; j <= data.unlocks[i].level; j++) {
-					if (fs.existsSync(packDirectory+"/"+i + "/" + j + "music.ogg")) this.songs.push(i + "/" + j + "music");
+					if (fs.existsSync(packDirectory + "/" + i + "/" + j + "music.ogg")) this.songs.push(i + "/" + j + "music");
 				}
-if (fs.existsSync(packDirectory+"/"+i + "/name.ogg")) this.songs.push(i + "/name");
-if (fs.existsSync(packDirectory+"/"+i + "/loop.ogg")) this.songs.push(i + "/loop");
-				if (fs.existsSync(packDirectory+"/"+i + "/fail.ogg")) this.songs.push(i + "/fail");
+				if (fs.existsSync(packDirectory + "/" + i + "/name.ogg")) this.songs.push(i + "/name");
+				if (fs.existsSync(packDirectory + "/" + i + "/loop.ogg")) this.songs.push(i + "/loop");
+				if (fs.existsSync(packDirectory + "/" + i + "/fail.ogg")) this.songs.push(i + "/fail");
 			}
 		}
 		if (this.packs < 5 && !dbg) {
@@ -1623,15 +1623,55 @@ export class Memory {
 	}
 }//class
 
-class DiceGame {
+export class DiceGame {
 	constructor() {
-		this.beatcoins=5000;
-		this.dice=new Cube();
-			}
+		this.beatcoins = 5000;
+	}
 	async start() {
+		this.input = new KeyboardInput();
+		this.input.init();
 		await new ScrollingText(strings.get("dicetut"));
-let randomMoves=utils.randomInt(5,15);
-
-		
+		this.playing = true
+		while (this.playing) {
+			this.dice = utils.randomInt(1, 6);
+			await so.playSync("dice_roll");
+			await so.playSync("dice" + utils.randomInt(1, 4))
+			speech.speak(this.dice + "!");
+			switch (this.dice) {
+				case 3:
+					await so.playSync("dice_div3");
+					this.beatcoins = Math.floor(this.beatcoins / 3)
+					await new ScrollingText(strings.get("dice_yb", [strings.get("div"), 3, this.beatcoins]))
+					break;
+				case 5:
+					await so.playSync("dice_div5");
+					this.beatcoins = Math.floor(this.beatcoins / 5)
+					await new ScrollingText(strings.get("dice_yb", [strings.get("div"), 5, this.beatcoins]))
+					break;
+				case 2:
+					await so.playSync("dice_mult2");
+					this.beatcoins = Math.ceil(this.beatcoins * 2)
+					await new ScrollingText(strings.get("dice_yb", [strings.get("mult"), 2, this.beatcoins]))
+					break;
+				case 4:
+					await so.playSync("dice_mult4");
+					this.beatcoins = Math.ceil(this.beatcoins * 4)
+					await new ScrollingText(strings.get("dice_yb", [strings.get("mult"), 4, this.beatcoins]))
+					break;
+				case 1:
+					speech.speak(strings.get("dice_lose", [this.beatcoins]))
+					await so.playSync("dice_lost");
+					this.playing = false;
+					break;
+				case 6:
+					speech.speak(strings.get("dice_win", [this.beatcoins]))
+					await so.playSync("dice_win");
+					await addCashSync(this.beatcoins, 0);
+					this.playing = false;
+					break;
+			}
+		}
+		save();
+		st.setState(2);
 	}
 }

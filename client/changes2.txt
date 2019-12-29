@@ -1,3 +1,6 @@
+nuevo minijuego dados locos
+ahora, ganar o perder monedas reproduce un solo sonido.
+Mejoras de estabilidad.
 Arreglado un problema en el juego de adivinar la música
 Arreglado un error de mierda importando un save con una voz no instalada en la máquina de importación (de mac a windows o viceversa, a un amigo, etc).
 Ahora se puede importar y exportar la partida guardada.

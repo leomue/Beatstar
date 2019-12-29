@@ -352,7 +352,11 @@ class SoundObject {
 			}//stream
 		});// Promise
 	}
-
+async playSync(file) {
+let snd=await so.createSync(file);
+await snd.playSync();
+snd.destroy();
+}
 
 	enqueue(file, stream = false) {
 		file = this.directory + file + this.extension;

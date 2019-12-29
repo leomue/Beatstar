@@ -1,3 +1,7 @@
+New  minigame, dice of doom
+Win and lose beatcoins now plays one sound only.
+Stability improvements.
+fix error with so.directory
 Fix error in the music quizz game
 Fix a bloody error with importing a save with a tts voice that was not installed in the imported machine (from mac to windows or vice versa, a friend's computer, etc.
 You can now import and export your save between all your computers, if you wish to.
