@@ -1,6 +1,6 @@
 {
   "name": "beatstar",
-  "version": "9.1.3",
+  "version": "9.1.4",
   "description": "Beatstar JS",
   "main": "./client/index.js",
   "scripts": {
