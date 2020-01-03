@@ -4,7 +4,6 @@ import { report } from './main';
 import { lang } from './main';
 import fs from 'fs';
 import os from 'os';
-import $ from 'jquery';
 import { strings } from './strings';
 import { speech } from './tts';
 import { increase, addCash, data, actionKeys } from './main';

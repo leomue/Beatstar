@@ -135,7 +135,7 @@ class SoundObjectItem extends EventEmitter {
 		this.sound.fade(this.oldVolume, 0.15);
 	}
 	async fade(time) {
-		this.sound.fade(0, time);
+		this.sound.fade(0, time/1000);
 		return new Promise(resolve => {
 			this.sound.once('fade', () => {
 				this.sound.stop();

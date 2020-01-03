@@ -21,7 +21,6 @@
   "license": "GPL",
   "dependencies": {
     "52-deck": "^1.1.0",
-    "babel-polyfill": "^6.26.0",
     "base-64": "^0.1.0",
     "copy-to-clipboard": "^3.2.0",
     "download-file-sync": "^1.0.4",
@@ -29,7 +28,6 @@
     "hammerjs": "^2.0.8",
     "howler": "^2.1.2",
     "humanize-duration": "^3.21.0",
-    "jquery": "^3.4.1",
     "s": "^0.1.1",
     "sono": "^2.1.6",
     "speak-tts": "^2.0.8",
@@ -37,7 +35,8 @@
     "unique-random": "^2.1.0"
   },
   "devDependencies": {
-    "electron": "^7.1.5",
+    "babel-polyfill": "^6.26.0",
+    "electron": "^7.1.7",
     "parcel-bundler": "^1.12.4"
   }
 }

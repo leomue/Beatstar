@@ -60,8 +60,6 @@ const achs = [
 export var editing = false;
 
 import { OldTimer } from "./oldtimer";
-import $ from "jquery";
-
 // Import {SoundPool} from './soundPool';
 let boot = false;
 export var credits = false;

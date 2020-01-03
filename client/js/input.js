@@ -1,4 +1,3 @@
-import $ from 'jquery';
 const EventEmitter = require('events');
 'use strict';
 class KeyboardInput extends EventEmitter {
@@ -14,8 +13,6 @@ class KeyboardInput extends EventEmitter {
 
 	init() {
 		const that = this;
-		// 		$(document).keydown(function(event) { that.handleKeyDown(event); });
-		// 		$(document).keyup(function(event) { that.handleKeyUp(event); });
 		document.addEventListener('keydown', event => {
 			that.handleKeyDown(event);
 		});

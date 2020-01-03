@@ -1,6 +1,5 @@
 import "babel-polyfill";
 'use strict';
-import $ from 'jquery';
 import { KeyEvent } from './keycodes';
 import { so } from './soundObject';
 import { speech } from './tts';

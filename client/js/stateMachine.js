@@ -1,7 +1,6 @@
-import $ from 'jquery';
 import { dbg } from './main';
 import { report } from './main';
-
+const intro = so.create('logo');
 import { KeyboardInput } from './input';
 import { credits, listenPack, checkPack, learnPack, browsePacks } from './main';
 import { Menu } from './menuHandler';
@@ -20,27 +19,29 @@ class StateMachine {
 	}
 
 	setState(state) {
+		let kd=event => {
+			if (event.which == KeyEvent.DOM_VK_D) dbg = true;
+			if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
+				intro.unload();
+document.removeEventListener('keydown',kd);
+				this.setState(20);
+			}
+		}
 		try {
 			if (state == 1) {
 				event = new KeyboardInput();
 				event.init();
-				const intro = so.create('logo');
+				
 				const that = this;
 				intro.volume = 0.5;
 				intro.play();
 				intro.sound.once('ended', () => {
 					intro.unload();
-					$(document).off('keydown');
+document.removeEventListener('keydown',kd);
 					that.setState(2);
 				});
-				$(document).keydown(event => {
-					if (event.which == KeyEvent.DOM_VK_D) dbg = true;
-					if (event.which == KeyEvent.DOM_VK_SPACE || event.which == KeyEvent.DOM_VK_ESCAPE || event.which == KeyEvent.DOM_VK_RETURN) {
-						intro.unload();
-						$(document).off('keydown');
-						that.setState(20);
-					}
-				});
+				document.addEventListener('keydown',kd
+);
 				this.state = state;
 			} else if (state == 2) {
 				event = null;

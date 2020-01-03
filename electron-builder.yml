@@ -16,4 +16,4 @@ mac:
       arch:
                 - x64
 
-electronVersion: 7.1.5
+electronVersion: 7.1.7
