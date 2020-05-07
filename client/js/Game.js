@@ -1,5 +1,5 @@
 'use strict';
-import { report } from './main';
+import {questionSync, report } from './main';
 
 import { lang } from './main';
 import fs from 'fs';
@@ -222,6 +222,15 @@ class Game {
 		if (this.getscore >= 6) {
 			await getAch('fingr');
 		}
+				if (!data.donated) {
+		  let answer=await questionSync("pleaseDonate")
+  if (answer) {
+  const { shell } = require('electron').remote;
+  shell.openExternal("https://paypal.me/ogomez92/2")
+  save();
+  }
+    data.donated=true
+}
 		addCash(this.cash, 0, () => {
 			st.setState(2);
 		});

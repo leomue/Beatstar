@@ -1,4 +1,5 @@
-nuevo minijuego dados locos
+Arreglado un error al descargar packs
+nuevo minijuego dados del demonio
 ahora, ganar o perder monedas reproduce un solo sonido.
 Mejoras de estabilidad.
 Arreglado un problema en el juego de adivinar la música

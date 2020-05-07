@@ -1109,6 +1109,35 @@ export async function playQuestions() {
 	const q = new QuestionsGame();
 	if (!q.stop) await q.init();
 }
+export async function playFall() {
+	const q = new FallGame();
+	if (!q.stop) await q.init();
+}
+class FallGame {
+constructor() {
+		this.packs = 0;
+		this.packnames = [];
+this.possibleActions=[]
+this.stop=false
+		for (let i in data.unlocks) {
+			if (data.unlocks[i].level > 0) {
+				this.packs++;
+				this.packnames.push(i);
+				for (let j = 2; j <= 9; j++) {
+					if (fs.existsSync(packDirectory + "/" + i + "/a" + j+".ogg")) this.possibleActions.push({actionNumber: j, file: i + "/a" + j});
+				}
+			}
+		}
+		if (this.packs < 5 && !dbg) {
+			this.stop = true;
+			new ScrollingText(strings.get('need5'), '\n', () => {
+				st.setState(2);
+				return;
+			});
+this.possibleActions=utils.shuffle(this.possibleActions)
+}
+}
+}
 class QuestionsGame {
 	constructor() {
 		this.stop = false;

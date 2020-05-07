@@ -1,5 +1,6 @@
 " use strict";
 export let dbg = false
+
 import Tone from "tone";
 import copy from "copy-to-clipboard";
 
@@ -756,7 +757,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
     if (!data.stats) data.stats = {};
     if (debug) {
       try {
-        //await strings.check(2);
+        await strings.check(2);
         var synth = new Tone.Synth().toMaster();
         let dice = new DiceGame();
         await dice.start();
@@ -777,6 +778,7 @@ export async function checkPack(changeBoot = true, debug = dbg) {
   }
 }
 const download = function (url, dest, cb) {
+console.log("dest",dest)
   const http = require("http");
   const fs = require("fs");
   const file = fs.createWriteStream(dest);
@@ -797,7 +799,7 @@ export async function downloadPacks(arr = []) {
     let remoteHashes;
     let localHashes;
     localHashes = await rebuildHashes(true);
-    await fetch("http://oriolgomez.com/beatpacks/hashes.packdata")
+    await fetch("http://beatstar.oriolgomez.com/hashes.packdata")
       .then(event => event.text())
       .then(data => {
         remoteHashes = JSON.parse(data);
@@ -1097,19 +1099,23 @@ export async function downloadPacks(arr = []) {
         } // Speak only if getting a few packs, getting 1 or 2 is fast.
       }
 
-      await fetch(" http://oriolgomez.com/beatpacks/index.php?p=" + arr[i])
+      await fetch(" http://oriolgomez.com/beatindex.php?p=" + arr[i])
         .then(event => event.text())
         .then(data => {
           const datas = data.split("\n");
           datas.forEach(i => {
-            if (i != "") {
-              toDownload.push(i);
-            }
+                      if (i != "") {
+            i=i.split("/")
+            let len=i.length-2;
+            i=i[len]+"/"+i[len+1]
+        }
+
+              if (i!="") toDownload.push(i);
           });
         });
     } // End for loop
     let dir = packDirectory + "/";
-    let url = "http://oriolgomez.com/beatpacks/";
+    let url = "http://beatstar.oriolgomez.com/";
     const dlCounter = 0;
     const dests = [];
     for (var i in toDownload) {
@@ -1127,7 +1133,7 @@ export async function downloadPacks(arr = []) {
         fs.mkdirSync(dir + dirsplit[0]);
       }
       dir = packDirectory + "/" + i;
-      url = "http://oriolgomez.com/beatpacks/" + i;
+      url = "http://beatstar.oriolgomez.com/" + i;
       toDownload[ii] = url;
       dests.push(dir);
     }
@@ -1148,7 +1154,7 @@ export async function downloadPacks(arr = []) {
         threads,
         (fileUrl, index, next) => {
           download(fileUrl, dests[index], next);
-
+console.log(fileUrl)
           currentIndex = index;
         },
         () => {
@@ -1156,10 +1162,12 @@ export async function downloadPacks(arr = []) {
           rebuildHashes(true);
           event.justPressedEventCallback = null;
           so.directory = "./sounds/";
+          //return again
           st.setState(2);
         }
       );
     } catch (err) {
+    console.log(err)
       speech.speak("download error!");
       rebuildHashes(true);
       event.justPressedEventCallback = null;

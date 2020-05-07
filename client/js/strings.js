@@ -10,6 +10,7 @@ class Strings {
 		this.strings = {};
 		this.strings[1] = {
 			//New English
+			pleaseDonate:"Hello! Sorry for this interruption. Times are tough right now, and I would really appreciate it if you made a paypal donation of just 2 euros to support development of more games. This message will only be shown once. Press yes to open a web browser with the donation page.",
 			dice:"dice of doom reloaded",
 			dice_lose: "Ugh, you lost! Dunkin dicenut laughs at you, and you fall through a trapdoor on the floor. He gets to keep your %1 beatcoins!",
 			dice_win: "You win! The beatcoins you collected are yours!",
@@ -433,6 +434,16 @@ class Strings {
 		};
 		this.strings[2] = {
 			//New Spanish
+			dice: "Dados del demonio",
+			dice_lose: "Has perdiiiiiido! Dunkin dadonut se ríe de ti. Te caes por una trampilla en el suelo! Dunkin se queda con tus %1 monedas...",
+			dice_win: "Has ganado! Te quedas con el premio! Bieeen!",
+			dice_yb: "Tus monedas se han %1 por %2. Ahora, tienes %3",
+			div: "dividido",
+			mult: "multiplicado",
+			dicetut: "HOla! Soy dunkin dadonut. Las reglas so simples. Te voy a dar un dado y si sacas 2 o 4, las monedas se multiplican por ese número. si sacas 3 o 5, las monedas se dividen! Si sacas un 6, te quedas tus monedas y si sacas un 1, te quedarás sin nada. Mucha suerte!",
+			pressEnter: "Pulsa enter para continuar",
+			
+			pleaseDonate:"Hola! Las cosas están difíciles ahora, y apreciaría mucho una donación de tan solo 2 euros para continuar con el desarrollo de nuevos juegos. Este mensaje solo se mostrará una vez. Pulsa sí para abrir el navegador con la página de donaciones de paypal.",
 			mImport: "Importar una partida",
 			mExport: "Exportar tu partida",
 			importError: "Error: Esto no parece ser una partida guardada...",

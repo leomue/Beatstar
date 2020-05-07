@@ -1,3 +1,4 @@
+Fix pack downloading bug
 New  minigame, dice of doom
 Win and lose beatcoins now plays one sound only.
 Stability improvements.
