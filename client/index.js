@@ -15,7 +15,7 @@ let mainWindow;
 function createWindow() {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({webPreferences:{
-			nodeIntegration: true,}
+			nodeIntegration: true, enableRemoteModule: true}
 		});
   // And load the index.html of the app.
   mainWindow.loadURL(url.format({
